@@ -1,0 +1,28 @@
+.userbg {
+    background-image:    url("../../img/register.jpg");
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+.b-t{
+    border-top: 2px solid #00356b;
+}
+.not-allowed{
+    cursor: not-allowed! important;
+       
+   }
+
+.ts  {
+    width : 100%;
+    display:flex;
+}
+.ts  td {
+    width: 100%;
+    border : 1px solid #eee;
+}

@@ -1,0 +1,43 @@
+let defaultState={
+    prLineList:[],
+    emailList:[],
+    attachmentList:[]
+}
+
+const prBodyReducer = (state= defaultState,action)=>{
+    if(action.type==="POPULATE_PR_LINES"){
+        return{
+            ...state,
+            prLineList:action.payload.objectMap.prLine,
+            emailList:action.payload.objectMap.emailList,
+            attachmentList:action.payload.objectMap.attachmentList
+        }
+    }else if(action.type==="PR_SUBMIT_RES"){
+        return{
+            ...state,
+            prDto:action.payload.objectMap.prDto
+        }
+    }else if(action.type==="PR_APPROVE_RES"){
+        return{
+            ...state,
+            prDto:action.payload.objectMap.prDto
+        }
+    }else if(action.type==="PR_REJECT_RES"){
+        return{
+            ...state,
+            prDto:{
+                status:action.payload.data
+            }
+        }
+    }else if(action.type==="PR_BUYER_ASSIGN_RES"){
+        return{
+            ...state,
+            prDto:action.payload.objectMap.prDto
+        }
+    }else{
+        return{
+            ...state
+        }
+    }
+}
+export default prBodyReducer;

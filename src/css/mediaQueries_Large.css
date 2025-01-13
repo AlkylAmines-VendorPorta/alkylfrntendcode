@@ -1,0 +1,9 @@
+@import "variables.css";
+/*--------------------------------------Custom Media Queries--------------------------------------*/
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .width-adjustment{
+        width: 100% !important;
+      }
+      
+}

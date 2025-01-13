@@ -1,0 +1,145 @@
+@import './variables.css';
+
+@media screen and (max-width:1024px) {
+	.loginRight {
+		width: 40%;
+	}
+	.loginLeft {
+		width: 60%;
+	}
+	/* .wizard-v1-content {
+		margin: 110px 20px;
+	} */
+	ol.progtrckr {
+		list-style-type: none;
+		padding: 0;
+	  }
+	  
+	  ol.progtrckr li {
+		display: inline-block;
+		text-align: center;
+		line-height: 4.5rem;
+		cursor: pointer;
+	  }
+	  
+	  ol.progtrckr li span {
+		padding: 0 0.5rem;
+		font-size: 14px;
+	  }
+	  
+	  /* @media (max-width: 650px) {
+		.progtrckr li span {
+		  display: none;
+		}
+	  } */
+	  .progtrckr em {
+		display: none;
+		font-weight: 700;
+		padding-left: 1rem;
+	  }
+	  
+	  /* @media (max-width: 650px) {
+		.progtrckr em {
+		  display: inline;
+		}
+	  } */
+	  
+	  ol.progtrckr li.progtrckr-todo {
+		color: silver;
+		border-bottom: 4px solid silver;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-doing {
+		color: black;
+		border-bottom: 4px solid #CCCCCC;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-done {
+		color: black;
+		border-bottom: 4px solid #5cb85c;
+	  }
+	  
+	  ol.progtrckr li:after {
+		content: "\00a0\00a0";
+	  }
+	  
+	  ol.progtrckr li:before {
+		position: relative;
+		bottom: -3.7rem;
+		float: left;
+		left: 50%;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-todo:before {
+		content: "\039F";
+		color: silver;
+		background-color: white;
+		width: 1.2em;
+		line-height: 1.4em;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-todo:hover:before {
+		color: #ff4500;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-doing:before {
+		content: "\2022";
+		color: white;
+		background-color: #CCCCCC;
+		width: 1.2em;
+		line-height: 1.2em;
+		border-radius: 1.2em;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-doing:hover:before {
+		color: #ff4500;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-done:before {
+		content: "\2713";
+		color: white;
+		background-color: #5cb85c;
+		width: 1.2em;
+		line-height: 1.2em;
+		border-radius: 1.2em;
+	  }
+	  
+	  ol.progtrckr li.progtrckr-done:hover:before {
+		color: #333;
+	  }
+}
+
+@media screen and (max-width:768px) {
+	.resLogo{
+		width: 87px!important;
+	}
+	.alkylLogo {
+		margin-top: 5px;
+		width: 160px !important;
+	}
+	.loginRight {
+		width: 100%;
+		border-radius: 15px 15px 15px 15px;
+	}	
+	.loginLeft {
+		display: none;
+	}
+	#aa_particles{
+		height: 100vh !important;
+	}
+	canvas {
+		height: 100vh !important;
+	}
+	/* .wizard-v1-content {
+		margin: 110px 20px;
+	} */
+}
+@media only screen and (max-width: 600px) {
+	.loginContainer{
+		width:85%;
+	}
+	.alkylLogo {
+		margin-top: 5px;
+		width: 135px !important;
+	}
+}

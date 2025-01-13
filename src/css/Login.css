@@ -1,0 +1,177 @@
+@import './variables.css';
+
+*{ 
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; 
+  }
+  html,
+  body
+  {
+      margin: 0;
+    /* background: #eee; */
+    padding: 0px;
+    font-size: 12px;
+  }
+  
+  canvas
+  {
+      display: block;  
+      vertical-align: bottom;
+  }
+  
+  #aa_particles
+  {
+      z-index: 4;
+  
+      height: 100%;
+      height: auto;
+      background: #eee; 
+  }
+  
+  
+  canvas{
+      height: 620px !important;
+  }
+  .loginContainer {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    -webkit-transform: translate(50%, -50%);
+    transform: translate(50%, -50%);
+    width: 70%;
+    padding: 0px;    
+	box-shadow: 1px 3px 6px #000;
+	border-radius:15px;
+}
+.loginLeft{
+    width:65%;
+    height: auto;
+    /* background: url(../img/loginBack.jpg); */
+    /* background: url(../img/Dahej\ 2.JPG); */
+    height: 455px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    float: left;
+    border-radius: 15px 0px 0px 15px;
+}
+.loginRight{
+    height: 455px;
+    width: 35%;
+    float: left;
+    background: #fff;
+    padding: 10px 20px;
+    border-radius: 0px 15px 15px 0px;
+}
+.blueButton{
+    color: #fff;
+    background-color: #00356b;
+    border-color: #00356b;
+}
+label {
+    font-weight: normal;
+    font-size: 13px;
+}
+.noBorderRadius{
+    border-radius: 0px !important;
+}
+.carousel-inner {    border-radius: 15px 0px 0px 15px;
+}
+.form-control {
+    height: 30px;
+    padding: 0.275rem .55rem;
+    font-size: 12px;
+    border-radius: 0px;
+}
+
+
+
+/* captcha */
+
+
+.CaptchaWrap { position: relative; }
+.CaptchaTxtField { 
+  border-radius: 5px; 
+  border: 1px solid #ccc; 
+  display: block;  
+  box-sizing: border-box;
+}
+
+#UserCaptchaCode { 
+  padding: 15px 10px; 
+  outline: none; 
+  font-size: 18px; 
+  font-weight: normal; 
+  /* font-family: 'Open Sans', sans-serif; */
+  font-family:var(--primary-font);
+  width: 343px;
+}
+#CaptchaImageCode { 
+  text-align:center;
+  margin-top: 15px;
+  padding: 0px 0;
+  width: 260px;
+  height:auto;
+  overflow: hidden;
+}
+
+.capcode { 
+  font-size: 14px; 
+  display: block; 
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none; 
+  cursor: default;
+  letter-spacing: 1px;
+  color: #ccc;
+  /* font-family: 'Roboto Slab', serif; */
+  font-family:var(--primary-font);
+  font-weight: 100;
+  font-style: italic;
+}
+
+.ReloadBtn { 
+  background:url('https://cdn3.iconfinder.com/data/icons/basic-interface/100/update-64.png') left top no-repeat;   
+  background-size : 100%;
+  width: 25px; 
+  height: 25px;
+  border: 0px; outline :none;
+  position: absolute; 
+  bottom: 10px;
+    left: 267px;
+  outline: none;
+  cursor: pointer; /**/
+}
+.btnSubmit {
+  margin-top: 15px;
+  border: 0px;
+  padding: 10px 20px; 
+  border-radius: 5px;
+  font-size: 18px;
+  background-color: #1285c4;
+  color: #fff;
+  cursor: pointer;
+}
+
+.error { 
+  color: red; 
+  font-size: 12px; 
+  display: none; 
+}
+.success {
+  color: green;
+  font-size: 18px;
+  margin-bottom: 15px;
+  display: none;
+}
+#CaptchaImageCode canvas{
+    height: auto !important;
+}
+/* captcha end */
+.form-group {
+  margin-bottom: 8px;
+}
+.alkylLogo{
+    margin-top: 5px;
+}
