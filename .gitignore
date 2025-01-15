@@ -1,7 +1,7 @@
-package-lock.json
+
 node_modules/
 build/
-package.json
+
 build/asset-manifest.json
 build/index.html
 build/precache-manifest.f8086ef44564b643234ae3c400ae8b6b.js
