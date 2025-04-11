@@ -24,6 +24,7 @@ import TableToExcel from "@linways/table-to-excel";
 import moment from "moment";
 import formatDate from '../../Util/DateUtil';
 import ReportVechicle from "../ReportVehicle/ReportVehicle";
+import { Button, Container, Grid, IconButton, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from "@material-ui/core";
 
 class OutwardReport extends Component {
 
@@ -34,6 +35,10 @@ class OutwardReport extends Component {
       isLoading: false,
       outwardReportlist: [],
       asnStatusList:[],
+      searchQuery: "",
+      page: 0,
+      rowsPerPage: 50,
+      openModal:false,
       outwardDetails: {
         salesOrderNoFrom: "",
         salesOrderNoTo: "",
@@ -180,24 +185,46 @@ class OutwardReport extends Component {
             
           }
 
-
+          handleSearchChange = (event) => {
+            this.setState({ searchQuery: event.target.value });
+          };
+        
+          handleChangePage = (event, newPage) => {
+            this.setState({ page: newPage });
+          };
+        
+          handleChangeRowsPerPage = (event) => {
+            this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+          };
+          onCloseModal=()=>{
+            this.setState({
+              openModal:false
+            })
+          }
+          onOpenModal=()=>{
+            this.setState({
+              openModal:true
+            })
+          }
   render() {
 
-    const { filter } = this.props;
-    var displayService = "none";
-    var shown = {
-      display: this.state.shown ? "block" : "none"
+    const {  searchQuery, page, rowsPerPage } = this.state;
+    const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
+        }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
     };
-    var hidden = {
-      display: this.state.hidden ? "none" : "block"
-    }
-    var frmhidden = {
-      display: this.state.formDisplay ? "none" : "block"
-    }
-    var searchHidden = {
-      display: this.state.searchDisplay ? "block" : "none"
-    }
-     
+  
+    const filteredData = this.props.outwardReportlist.filter((entry) => {
+      return searchInObject(entry, searchQuery);
+    })
     return (
         <>
 
@@ -205,7 +232,7 @@ class OutwardReport extends Component {
           <Loader isLoading={this.state.isLoading} />
           {<UserDashboardHeader />}
 
-          {/* {<NewHeader/>} */}
+          <div className="wizard-v1-content" style={{marginTop:"80px"}}>
           <div 
           //className="w-100" 
           id="togglesidebar"
@@ -215,248 +242,336 @@ class OutwardReport extends Component {
               ? "display_none"
               : "display_block")
           }>
-            <div className="mt-70 boxContent">
+            {this.state.openModal && <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+            <div className="modal-backdrop"></div> <div className="modal-dialog modal-lg">
+                                       <div className="modal-content">
               <FormWithConstraints ref={formWithConstraints => this.reports = formWithConstraints}
                 onSubmit={(e) => {
 
                   // this.setState({ asndetails: { test: "" } });
                   this.changeLoaderState(true);
-
+                  this.setState({openModal:false})
                   commonSubmitForm(e, this, "outwardResponse", "/rest/getOutwardReport", "reports")
                   // this.handleSearchClick(true)
                   // this.changeLoaderState(true);
 
                 }} noValidate
               >
-                <div className="col-sm-12">
-                  <div className="row mt-2">
-                    <label className="col-sm-2 mt-4">Sales Order No</label>
-                    <div className="col-sm-2">
-                      <input type="text" className={"form-control"} name="salesOrderNoFrom"
+                <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <TextField
+                        size="small"
+                        variant="outlined"
+                        label="Sales Order No"
+                        name="salesOrderNoFrom"
                         value={this.state.outwardDetails.salesOrderNoFrom}
                         onChange={(event) => {
                           if (event.target.value.length < 60) {
-                            commonHandleChange(event, this, "outwardDetails.salesOrderNoFrom", "reports")
+                            commonHandleChange(event, this, "outwardDetails.salesOrderNoFrom", "reports");
                           }
-                        }} />
+                        }}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                {/* Second Row - 4 Fields */}
+  <Grid item xs={12}>
+    <Grid container spacing={2}>
+      <Grid item xs={6}>
+        <TextField
+          size="small"
+          variant="outlined"
+          label="Request No (From)"
+          name="requestNoFrom"
+          value={this.state.outwardDetails.requestNoFrom}
+          onChange={(event) => {
+            if (event.target.value.length < 60) {
+              commonHandleChange(event, this, "outwardDetails.requestNoFrom", "reports");
+            }
+          }}
+          fullWidth
+          InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <TextField
+          size="small"
+          variant="outlined"
+          label="Request No (To)"
+          name="requestNoTo"
+          value={this.state.outwardDetails.requestNoTo}
+          onChange={(event) => {
+            if (event.target.value.length < 60) {
+              commonHandleChange(event, this, "outwardDetails.requestNoTo", "reports");
+            }
+          }}
+          fullWidth
+          InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <TextField
+          type="date"
+          size="small"
+          variant="outlined"
+          label="Request Date (From)"
+          name="requestDateFrom"
+          value={this.state.outwardDetails.requestDateFrom}
+          onChange={(event) => {
+            if (event.target.value.length < 60) {
+              commonHandleChange(event, this, "outwardDetails.requestDateFrom", "reports");
+            }
+          }}
+          fullWidth
+          InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <TextField
+          type="date"
+          size="small"
+          variant="outlined"
+          label="Request Date (To)"
+          name="requestDateTo"
+          value={this.state.outwardDetails.requestDateTo}
+          onChange={(event) => {
+            if (event.target.value.length < 60) {
+              commonHandleChange(event, this, "outwardDetails.requestDateTo", "reports");
+            }
+          }}
+          fullWidth
+          InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+        />
+      </Grid>
+    </Grid>
+  </Grid>
+  <Grid item xs={12}>
+    <Grid container spacing={2}>
+      <Grid item xs={6}>
+        <TextField
+          select
+          size="small"
+          variant="outlined"
+          label="Freight Scope"
+          name="freightScope"
+          value={this.state.outwardDetails.freightScope}
+          onChange={(event) => {
+            commonHandleChange(event, this, "outwardDetails.freightScope", "reports");
+          }}
+          fullWidth
+          InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+        >
+          <MenuItem value="">Select</MenuItem>
+          <MenuItem value="AACL">AACL</MenuItem>
+          <MenuItem value="Customer">Customer</MenuItem>
+        </TextField>
+      </Grid>
+      <Grid item xs={6}>
+        <TextField
+          select
+          size="small"
+          variant="outlined"
+          label="Status"
+          name="status"
+          value={this.state.outwardDetails.status}
+          onChange={(event) => {
+            commonHandleChange(event, this, "outwardDetails.status", "reports");
+          }}
+          fullWidth
+          InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+        >
+          <MenuItem value="">Select</MenuItem>
+          {this.state.asnStatusList.map((item) => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.display}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
+    
+      <Grid item xs={6}>
+        <TextField
+          size="small"
+          variant="outlined"
+          label="Plant"
+          name="plant"
+          value={this.state.outwardDetails.plant}
+          onChange={(event) => {
+            if (event.target.value.length < 60) {
+              commonHandleChange(event, this, "outwardDetails.plant", "reports");
+            }
+          }}
+          fullWidth
+          InputLabelProps={{ shrink: true }}  
+           inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+        />
+      </Grid>
+      <Grid item xs={12} className="text-center">
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          size="small"
+        >
+          Search
+        </Button>
+         <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+         Cancel</Button>
+      </Grid>
+    </Grid>
+  </Grid>
+ </Grid>
+</FormWithConstraints>
+</div>
+</div>
+</div>
+}
+<Grid container spacing={2} alignItems="center" justify="flex-end">
+            <Grid item xs={9} style={{textAlign:"left"}}>
+            <Button variant="contained" size="small" color="primary" onClick={this.exportReportToExcel}>
+                Download Excel
+              </Button>
+            </Grid>
+            <Grid item xs={3}>
+              <input
+              placeholder="Search"
+              style={{fontSize: "10px", float:"right" }}
+              value={searchQuery}
+              onChange={this.handleSearchChange}
+              /><IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+            </Grid>
+          </Grid>
+          <TableContainer className="mt-1">
+                    <Table className="my-table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Sales Order No</TableCell>
+                          <TableCell>Request No</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Created By</TableCell>
+                          <TableCell>Created Date</TableCell>
+                          <TableCell>Created Time</TableCell>
+                          <TableCell>Reported By</TableCell>
+                          <TableCell>Reported Date</TableCell>
+                          <TableCell>Reported Time</TableCell>
+                          <TableCell>Gate In By</TableCell>
+                          <TableCell>Gate In Date</TableCell>
+                          <TableCell>Gate In Time</TableCell>
+                          <TableCell>Closed By</TableCell>
+                          <TableCell>Gate Out Date</TableCell>
+                          <TableCell>Gate Out Time</TableCell>
+                          <TableCell>Diff (In time & Out time)</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody id="DataTableBody">
+                      {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((asn, index) => (
+                          <TableRow onClick={() => this.handleVehicleRegistrationDetails(asn)}
+                          >
+                            <TableCell>{asn.saleOrderNo}</TableCell>
+                          
+                             <TableCell>{asn.requestNo}</TableCell>
+                          
+                            <TableCell>{this.getStatusFullForm(asn)}</TableCell>
+                            <TableCell>{asn.createdBy===null?"":(asn.createdBy.userDetails.name)}</TableCell>
+                            <TableCell>{formatDateWithoutTime(asn.created)}</TableCell>
+                            <TableCell>{formatTime(asn.created)}</TableCell>
+                            <TableCell>{asn.reportedby===null?"":(asn.reportedby.userDetails.name)}</TableCell>
+                            <TableCell>{asn.reporteddate===null?"":formatDateWithoutTime(asn.reporteddate)}</TableCell>
+                            <TableCell>{asn.reporteddate===null?"":formatTime(asn.reporteddate)}</TableCell>
+                            <TableCell>{asn.gateInby==null?"":(asn.gateInby.userDetails.name)}</TableCell>
+                            <TableCell>{asn.gateIndate===null?"":formatDateWithoutTime(asn.gateIndate)}</TableCell>
+                            <TableCell>{asn.gateIndate===null?"":formatTime(asn.gateIndate)}</TableCell>
+                            <TableCell>{asn.gateOutby==null?"":(asn.gateOutby.userDetails.name)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":formatDateWithoutTime(asn.gateOutdate)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":formatTime(asn.gateOutdate)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":
+                            this.getinoutTimeDifference(formatDate1(asn.gateIndate),formatDate1(asn.gateOutdate))}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
 
-                    </div>
-                   </div></div>
-                <div className="col-sm-12">
-
-                  <div className="row mt-2">
-                    <label className="col-sm-2 mt-4">Request No</label>
-                    <div className="col-sm-2">
-
-                      <input type="text" className="form-control" name="requestNoFrom" value={this.state.outwardDetails.requestNoFrom} onChange={(event) => {
-                        if (event.target.value.length < 60) {
-                          commonHandleChange(event, this, "outwardDetails.requestNoFrom", "reports")
-                        }
-
-
-                      }} />
-                    </div>
-
-                    <label>To </label>
-                    <div className="col-sm-2">
-                      <input type="text" className="form-control" name="requestNoTo" value={this.state.outwardDetails.requestNoTo} onChange={(event) => {
-                        if (event.target.value.length < 60) {
-                          commonHandleChange(event, this, "outwardDetails.requestNoTo", "reports")
-                        }
-
-
-                      }} />
-                    </div>
-                    <div className="col-sm-12">
-
-                      <div className="row mt-2">
-                        <label className="col-sm-2 mt-4">Request Date</label>
-                        <div className="col-sm-2">
-
-                          <input type="date" className="form-control" name="requestDateFrom" value={this.state.outwardDetails.requestDateFrom} onChange={(event) => {
-                            if (event.target.value.length < 60) {
-                              commonHandleChange(event, this, "outwardDetails.requestDateFrom", "reports")
-                            }
-
-
-                          }} />
-                        </div>
-
-                        <label>To </label>
-                        <div className="col-sm-2">
-                          <input type="date" className="form-control" name="requestDateTo" value={this.state.outwardDetails.requestDateTo} onChange={(event) => {
-                            if (event.target.value.length < 60) {
-                              commonHandleChange(event, this, "outwardDetails.requestDateTo", "reports")
-                            }
-
-
-                          }} />
-                        </div>
-                        <div className="col-sm-12">
-
-                          <div className="row mt-2">
-                            <label className="col-sm-2 mt-4">Frieght Scope </label>
-                            <div className="col-sm-2">
-                            <select className={"form-control"} name="freightScope">
-                            <option value="">Select</option>
-                              <option value="AACL">AACL</option>
-                              <option value="Customer">Customer</option>
-                            </select>
-                            </div>
-                            <label className="col-sm-1">Status </label>
-                            <div className="col-sm-2">
-                              <select className={"form-control"} name="status"
-                             value={this.state.outwardDetails.status} onChange={(event) => {
-                              {
-                               commonHandleChange(event, this, "outwardDetails.status", "reports")
-                             }}}
-                              ><option value="">Select</option>
-                              {(this.state.asnStatusList).map(item=>
-                                <option value={item.value}>{item.display}</option>
-                              )}
-                            </select>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="col-sm-12">
-                          <div className="row mt-2">
-                            <label className="col-sm-2 mt-4">Plant</label>
-                            <div className="col-sm-2">
-
-                            <input type="text" className="form-control" name="plant" value={this.state.outwardDetails.plant} onChange={(event) => {
-                                if (event.target.value.length < 60) {
-                                  commonHandleChange(event, this, "outwardDetails.plant", "reports")
-                                }
-
-
-                              }} />
-                            </div>
-                           
-                           
-                            <div className="col-sm-2">
-                                      
-                                        <button type="submit" className={"btn btn-primary"}
-                                       //  onClick={this.handleSearchClick.bind(this)}
-                                          >
-                                          Search
-                                        </button>
-                                  </div>
-                                        </div>        
-                          </div>
-
-                       
-
-                        {/* <div className="col-sm-3"><button className="btn btn-info blueButton" 
-                 onClick={() => {commonSubmitWithParam(this.props, "getasnreports", "/rest/getASNReport")}} 
-  
-                 type="button">Search</button></div>  */}
-                      </div>
-                    </div>
+                   
+                  </TableContainer>
+                  <TablePagination
+                    rowsPerPageOptions={[50, 100, 150]}
+                    component="div"
+                    count={filteredData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={this.handleChangePage}
+                    onRowsPerPageChange={this.handleChangeRowsPerPage}
+                  />
+                  <div style={{display:"none"}}>
+                  <Table  stickyHeader  id="table1">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Sales Order No</TableCell>
+                          <TableCell>Request No</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Created By</TableCell>
+                          <TableCell>Created Date</TableCell>
+                          <TableCell>Created Time</TableCell>
+                          <TableCell>Reported By</TableCell>
+                          <TableCell>Reported Date</TableCell>
+                          <TableCell>Reported Time</TableCell>
+                          <TableCell>Gate In By</TableCell>
+                          <TableCell>Gate In Date</TableCell>
+                          <TableCell>Gate In Time</TableCell>
+                          <TableCell>Closed By</TableCell>
+                          <TableCell>Gate Out Date</TableCell>
+                          <TableCell>Gate Out Time</TableCell>
+                          <TableCell>Diff (In time & Out time)</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody id="DataTableBody">
+                      {this.props.outwardReportlist.map((asn, index) => (
+                          <TableRow onClick={() => this.handleVehicleRegistrationDetails(asn)}
+                          >
+                            <TableCell>{asn.saleOrderNo}</TableCell>
+                          
+                             <TableCell>{asn.requestNo}</TableCell>
+                          
+                            <TableCell>{this.getStatusFullForm(asn)}</TableCell>
+                            <TableCell>{asn.createdBy===null?"":(asn.createdBy.userDetails.name)}</TableCell>
+                            <TableCell>{formatDateWithoutTime(asn.created)}</TableCell>
+                            <TableCell>{formatTime(asn.created)}</TableCell>
+                            <TableCell>{asn.reportedby===null?"":(asn.reportedby.userDetails.name)}</TableCell>
+                            <TableCell>{asn.reporteddate===null?"":formatDateWithoutTime(asn.reporteddate)}</TableCell>
+                            <TableCell>{asn.reporteddate===null?"":formatTime(asn.reporteddate)}</TableCell>
+                            <TableCell>{asn.gateInby==null?"":(asn.gateInby.userDetails.name)}</TableCell>
+                            <TableCell>{asn.gateIndate===null?"":formatDateWithoutTime(asn.gateIndate)}</TableCell>
+                            <TableCell>{asn.gateIndate===null?"":formatTime(asn.gateIndate)}</TableCell>
+                            <TableCell>{asn.gateOutby==null?"":(asn.gateOutby.userDetails.name)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":formatDateWithoutTime(asn.gateOutdate)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":formatTime(asn.gateOutdate)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":
+                            this.getinoutTimeDifference(formatDate1(asn.gateIndate),formatDate1(asn.gateOutdate))}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
                 </div>
-
-              </FormWithConstraints>
-            </div>
-
-          <div className="mt-2 boxContent">
-            <div className="row" >
-              <div className="col-sm-12">
-                <div class="table-proposed">
-                  <StickyHeader height={"65vh"} >
-                    <table className="table table-bordered table-header-fixed" id="table1">
-                      <thead>
-                        <tr>
-
-                          <th>Sales Order No</th>
-                          <th>Request No</th>
-                          <th>Status</th>
-                          {/* <th>Requested By</th> */}
-                           {/* <th>Invoice No</th>
-                          <th>Invoice Date</th> */}
-                         {/* <th>Invoice Amt</th> */}
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                          <th>Created Time</th>
-                          <th>Reported By</th>
-                          <th>Reported Date</th>
-                          <th>Reported Time</th>
-                          <th>Gate In By</th>
-                          <th>Gate In Date</th>
-                          <th>Gate In Time</th>
-                          <th>Closed By</th>
-                          <th>Gate Out Date</th>
-                          <th>Gate Out Time</th>
-                          <th>Diff (In time & Out time)</th>
-                        </tr>
-                      </thead>
-                      <tbody id="DataTableBody">
-                        {this.props.outwardReportlist.map((asn, index) => (
-                          <tr onClick={() => this.handleVehicleRegistrationDetails(asn)} >
-                            <td>{asn.saleOrderNo}</td>
-                          
-                             <td>{asn.requestNo}</td>
-                          
-                            <td>{this.getStatusFullForm(asn)}</td>
-                            <td>{asn.createdBy===null?"":(asn.createdBy.userDetails.name)}</td>
-                            <td>{formatDateWithoutTime(asn.created)}</td>
-                            <td>{formatTime(asn.created)}</td>
-                            <td>{asn.reportedby===null?"":(asn.reportedby.userDetails.name)}</td>
-                            <td>{asn.reporteddate===null?"":formatDateWithoutTime(asn.reporteddate)}</td>
-                            <td>{asn.reporteddate===null?"":formatTime(asn.reporteddate)}</td>
-                            <td>{asn.gateInby==null?"":(asn.gateInby.userDetails.name)}</td>
-                            <td>{asn.gateIndate===null?"":formatDateWithoutTime(asn.gateIndate)}</td>
-                            <td>{asn.gateIndate===null?"":formatTime(asn.gateIndate)}</td>
-                            <td>{asn.gateOutby==null?"":(asn.gateOutby.userDetails.name)}</td>
-                            <td>{asn.gateOutdate===null?"":formatDateWithoutTime(asn.gateOutdate)}</td>
-                            <td>{asn.gateOutdate===null?"":formatTime(asn.gateOutdate)}</td>
-                            <td>{asn.gateOutdate===null?"":
-                            this.getinoutTimeDifference(formatDate1(asn.gateIndate),formatDate1(asn.gateOutdate))}</td>
-                            {/* <td>{asn.po.reqby.name}</td>
-                            <td>{asn.invoiceNo}</td>
-                            <td>{asn.invoiceDate===null?"":formatDateWithoutTime(asn.invoiceDate)}</td>
-                            {/* <td>{getCommaSeperatedValue(getDecimalUpto(asn.invoiceAmount, 2))}</td>                             
-                             <td>{asn.createdBy===null?"":(asn.createdBy.userDetails.name)}</td>
-                            <td>{asn.reportedBy===null?"":(asn.reportedBy.userDetails.name)}</td>
-                            <td>{asn.reportedDate===null?"":formatDateWithoutTime(asn.reportedDate)}</td>
-                            <td>{asn.reportedDate===null?"":formatTime(asn.reportedDate)}</td>
-                            <td>{asn.gateinBy==null?"":(asn.gateinBy.userDetails.name)}</td>
-                            <td>{asn.gateInDate===null?"":formatDateWithoutTime(asn.gateInDate)}</td>
-                            <td>{asn.gateInDate===null?"":formatTime(asn.gateInDate)}</td>
-                            <td>{asn.gateinPostedby==null?"":(asn.gateinPostedby.userDetails.name)}</td>
-                            <td>{asn.gateOutDate===null?"":formatDateWithoutTime(asn.gateOutDate)}</td>
-                            <td>{asn.gateOutDate===null?"":formatTime(asn.gateOutDate)}</td>
-                            <td>{asn.closedBy==null?"":(asn.closedBy.userDetails.name)}</td>  */}
-
-
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-
-                    <div>
-                      <button className="btn btn-primary" onClick={this.exportReportToExcel}> Download Excel</button>
-                    </div>
-                  </StickyHeader>
                 </div>
 
-              </div>
-            </div>
-            </div>
-
-
-          </div>
           <div className={
               (this.state.loadReportVehicle == true
                 ? "display_block"
                 : "display_none")
             }  
-            >
-               {/* <VechicalRegistration
-          showSubmitButton={false}
-          vehicleRegForm={this.state.vehicleRegForm}
-          vehicleRegSAPUpdate={this.state.vehicleRegSAPUpdate}
-        /> */}
+            >              
               <ReportVechicle
                 vehicleRegCustId = {this.state.vehicleRegCustId}
                 OutwardReportdisplay={this.state.OutwardReportdisplay}

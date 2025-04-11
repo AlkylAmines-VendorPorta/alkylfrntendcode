@@ -15,11 +15,34 @@ import {
 import { submitForm } from "../../../Util/APIUtils";
 import { connect } from "react-redux";
 import * as actionCreators from "../PRList/Action/Action";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  TextField,
+  Paper,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  Button,
+  InputLabel,
+  Container,
+  IconButton
+} from "@material-ui/core";
 class PRList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       checkedItems:[],
+      openModal:false,
+      search: "",
+      page: 0,
+      rowsPerPage: 50,
       selectedItem:{
         requestedBy:{},
         approver:{},
@@ -187,6 +210,7 @@ class PRList extends Component {
 
   handleFilterClick = () => {
     this.props.onFilter &&  this.props.onFilter()
+    this.setState({openModal:false})
   }
 
   
@@ -203,13 +227,51 @@ class PRList extends Component {
 
   }
 
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
+  handleSearchChange = (event) => {
+    this.setState({ search: event.target.value });
+    
+  };
+  handlePageChange = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
 
+  handleRowsPerPageChange = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
   render() {
     const {filterBuyerList,filterPlantList,filterPRStatusList} = this.props;
     console.log("PRLIST REN PROPS",this.props);
     const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
     let filter = {};
     if(this.props.role == ROLE_BUYER_ADMIN) return null;
+    const { page, rowsPerPage, search } = this.state;
+
+    const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
+        }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+  
+    const filteredData = this.props.prList.filter((entry) => {
+      return searchInObject(entry, search);
+    });
     return (
       <>
 
@@ -217,8 +279,8 @@ class PRList extends Component {
 
 
 <div className="modal documentModal" id="documentModal" >
-            <div className="modal-dialog modal-xl mt-100">
-              <div className="modal-content">
+<div className="modal-dialog mt-100" style={{width:"800px", maxWidth:"800px"}}>
+<div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
                 <div className="modal-header">
                   Other Documents
                   <button type="button" className={"close "+ this.props.readonly} data-dismiss="modal">
@@ -265,8 +327,8 @@ class PRList extends Component {
           </div>
 
 
-    <div className="modal-dialog modal-dialog-centered modal-xl">
-      <div className="modal-content">
+    <div className="modal-dialog modal-dialog-centered modal-xl" style={{width:"800px", maxWidth:"800px", marginTop:"80px"}}>
+      <div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
         <div className="modal-header">
           <h4 className="modal-title">PR Detail</h4>
           <button type="button" className="close" data-dismiss="modal">&times;</button>
@@ -407,7 +469,7 @@ class PRList extends Component {
             <div className="form-group">
               <label className="mr-1 label_12px">Third Party Approver</label>
 
-              <button className={"btn btn-sm btn-outline-primary display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</button>
+              <Button variant="contained" size="small" color="primary" className={"display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</Button>
             </div>
           </div>
         </div>
@@ -429,7 +491,7 @@ class PRList extends Component {
                  <div className="col-sm-12 mt-2">
                    <div>
                      <StickyHeader height={250} className="table-responsive">
-                       <table className="table table-bordered table-header-fixed">
+                       <table className="my-table">
                          <thead>
                            <tr>
                              <th>#</th>
@@ -505,7 +567,7 @@ class PRList extends Component {
                                 <td>{prLine.desireVendorCode}</td>
                              </tr>
                                <tr class="hide-table-padding">
-                                 <td colSpan="11">
+                                 <td colSpan="18">
                                    <div id={"collapse" + i} class="collapse in p-1">
                                      <div className="container-fluid px-0">
                                        <div class="row m-0 p-0">
@@ -596,114 +658,104 @@ class PRList extends Component {
         <div className="row px-4 py-2" id="togglesidebar">
     { [ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN].includes(this.props.role) &&
         <>
-        <div className="row col-12">
-        <div className="col-sm-12">
-       
-        <div className="row mt-2">
-                      <label className="col-sm-2 mt-4">Pr No</label>
-                      <div className="col-sm-4">
-                        <label>From </label>
-                        <input type="number" className="form-control" id="PRNOFROM"  value={filter.prNoFrom} onChange={this.handleFilterChange.bind(this,'prNoFrom')} />
-                      </div>
-                
-                      <div className="col-sm-4">
-                        <label>To </label>
-                        <input type="number" className="form-control" id="PRNOTO"  value={filter.prNoTo} onChange={this.handleFilterChange.bind(this,'prNoTo')} />
-                      </div>
+        {this.state.openModal && <div className="customModal modal roleModal" id="updateRoleModal show" style={{ display: 'block' }}>
+          <div className="modal-backdrop"></div>
+            <div className="modal-dialog modal-lg">
+              <div className="modal-content">
+                 <Grid container spacing={2}>                   
+                 <Grid item xs={6}>
+                    <TextField label="Pr No. From" 
+                      variant="outlined" size="small" 
+                      fullWidth  
+                      value={filter.prNoFrom} 
+                      onChange={this.handleFilterChange.bind(this,'prNoFrom')}
+                     InputLabelProps={{ shrink: true }}  
+                     inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                   />
+                 </Grid>
+                 <Grid item xs={6}>
+                    <TextField label="Pr No. To" 
+                      variant="outlined" size="small" 
+                      fullWidth  
+                      value={filter.prNoTo} onChange={this.handleFilterChange.bind(this,'prNoTo')} 
+                      InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                   />
+                 </Grid>
+                 <Grid item xs={6}>
+                    <TextField label="Pr Release Date From" 
+                      variant="outlined" size="small" 
+                      fullWidth  
+                      type="date"
+                      value={filter.prDateFrom} 
+                      onChange={this.handleFilterChange.bind(this,'prDateFrom')}
+                      InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                   />
+                 </Grid>
+                 <Grid item xs={6}>
+                    <TextField label="Pr Release Date To" 
+                      variant="outlined" size="small" 
+                      fullWidth  
+                      type="date"
+                      value={filter.prDateTo} 
+                      onChange={this.handleFilterChange.bind(this,'prDateTo')} 
+                      InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                   />
+                 </Grid>
+                 <Grid item xs={6}>
+                             <FormControl fullWidth size="small" variant="outlined" 
+                              >
+                             <InputLabel shrink >Status</InputLabel>
+                               <Select name="status" 
+                               value={filter.status} onChange={this.handleFilterChange.bind(this,'status')}
+                                label="Status" 
+                                sx={{ fontSize: 12, height: "15px",  } } >
+                                 <MenuItem value="">Select</MenuItem>
+                                 {!isEmptyDeep(filterPRStatusList) && filterPRStatusList.map((item) => (
+                                   <MenuItem key={item.value} value={item.value}>{item.display}</MenuItem>
+                                 ))}
+                               </Select>
+                             </FormControl>
+                           </Grid>
+                    <Grid item xs={6}>
+                    <TextField label="Emp code." 
+                      variant="outlined" size="small" 
+                      fullWidth  
+                      value={filter.buyerCode} 
+                      onChange={this.handleFilterChange.bind(this,'buyerCode')}
+                      InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                   />
+                 </Grid>
+                 <Grid item xs={6}>
+                             <FormControl fullWidth size="small" variant="outlined" 
+                              >
+                             <InputLabel shrink >Plant</InputLabel>
+                               <Select name="Plant" 
+                               value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
+                                label="Plant" 
+                                sx={{ fontSize: 12, height: "15px",  } } >
+                                 <MenuItem value="">Select</MenuItem>
+                                 {!isEmptyDeep(filterPlantList) && filterPlantList.map((item) => (
+                                   <MenuItem key={item.value} value={item.value}>{item.display}</MenuItem>
+                                 ))}
+                               </Select>
+                             </FormControl>
+                           </Grid>
+            </Grid>
+        
 
-            </div>
-            </div>
-
-            <div className="col-sm-12">
-       
-       <div className="row mt-2">
-                     <label className="col-sm-2 mt-4">Pr Release Date</label>
-                     <div className="col-sm-4">
-                       <label>From </label>
-                       <input type="date" id="PRDATEFROM" className="form-control" max="9999-12-31" value={filter.prDateFrom} onChange={this.handleFilterChange.bind(this,'prDateFrom')} />
-                     </div>
-               
-                     <div className="col-sm-4">
-                       <label>To </label>
-                       <input type="date" id="PRDATETO" className="form-control" max="9999-12-31" value={filter.prDateTo} onChange={this.handleFilterChange.bind(this,'prDateTo')} />
-                     </div>
-
-           </div>
-           </div>
-
-      </div>
-
-
-        <div className="row mt-2 col-12">
-      <label className="col-sm-2">Status </label>
-            <div className="col-sm-4">
-              
-              <select className="form-control"
-              id="status1"
-              value={filter.status} onChange={this.handleFilterChange.bind(this,'status')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterPRStatusList) && filterPRStatusList.map(item=>
-                  <option value={item.value}>{item.display}</option>
-                )};
-              </select>
-            </div>
-      
-            <label className="col-sm-2">Emp code. </label>
-            <div className="col-sm-4">
-            <input  className="form-control" 
-            id="buyer"
-             value={filter.buyerCode} 
-             onChange={this.handleFilterChange.bind(this,'buyerCode')} />
-              
-              {/* <select className="form-control"
-              value={filter.buyerCode} onChange={this.handleFilterChange.bind(this,'buyerCode')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterBuyerList) && filterBuyerList.map(item=>
-                  <option value={item.value}>{item.display}</option>
-                )};
-              </select> */}
-            </div>
-        </div>
-
-        <div className="row col-12 mt-2">
-        <label className="col-sm-2">plant </label>
-
-        <div className="col-sm-4">
-              <select className="form-control"
-              id="plant"
-              value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterPlantList) && filterPlantList.map(item=>
-                  // <option value={item.value}>{item.display}</option>
-                     <option value={item.value}>{item.value + "-"+ item.display}</option>
-                )};
-              </select>
-            </div> 
-
-        <div className="col-sm-6">
-          <button type="button" className={"btn btn-primary"} onClick={this.handleFilterClick.bind(this)}> Search </button> &nbsp;
-          <button type="button" className={"btn btn-danger"} onClick={this.clearFields.bind(this)}> Clear </button>
-        </div>
-
-        <div className="col-sm-6">
-
-      </div>
-        <div className="col-sm-6">
-
-        <div className="row mt-2">
-        <div className="col-sm-4"></div>
-           <div className="col-sm-8">
-            {/* <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." /> */}
-            </div>
-        </div>
-
-        </div>
-
-        </div>
-          
+            <Grid item xs={12} className="mt-2" style={{textAlign:"center"}}>
+          <Button type="button" color="primary" variant="contained" size="small" onClick={this.handleFilterClick.bind(this)}> Search </Button> 
+          <Button type="button" color="secondary" className="ml-1" variant="contained" size="small" onClick={this.onCloseModal.bind(this)}> Cancel </Button>
+          <Button type="button" color="primary" className="ml-1" variant="contained" size="small" onClick={this.clearFields.bind(this)}> Clear </Button>
+         
+       </Grid>
+     </div>
+     </div>
+     </div>}    
         </>
         }
           <div className="col-12">
@@ -713,9 +765,9 @@ class PRList extends Component {
               <FormWithConstraints ref={formWithConstraints => this.prFormPurchase = formWithConstraints} onSubmit={this.onSubmit}>
               <div class="col-12">
                 <div class="table-proposed">
-                  <StickyHeader height={400} className="table-responsive width-adjustment">
+                  <TableContainer className="mt-1">
                 
-                    <table className="table table-bordered table-header-fixed">
+                    <table className="my-table">
                       <thead>
                         <tr>
 
@@ -827,7 +879,7 @@ class PRList extends Component {
                  
                     </table>
 
-                  </StickyHeader>
+                  </TableContainer>
                 </div>
                 <hr style={{ margin: "0px" }} />
                 <button onClick={this.onSubmit} type="button" className="btn btn-outline-success float-right my-2 mr-4" >&nbsp;Submit</button>
@@ -836,54 +888,76 @@ class PRList extends Component {
               </>
             :
             <>
-              <table className="table table-bordered table-header-fixed">
-                <thead>
-                  <tr>
-                    <th>PR No</th>
-                    <th>PR Type</th>
-                    <th>PR Date</th>
-                    <th>Emp. Code</th>
-                    <th>Emp. Name</th>
-                    <th>Approver</th>
-                    <th>Tech Approver..</th>
-                    <th>Status</th>
-                    <th>Release Date</th>
-                    <th>Release Time</th>
-                    <th>Approved Date</th>
-                    <th>Approved Time</th>
-                    <th>Purchase Manager Approver</th>
-                    <th>PM Approved Date</th>
-                    <th>PM Approved Time</th>
-                  </tr>
-                </thead>
-                <tbody id="DataTableBody">
-                  {this.props.prList.map((pr, i) =>{
+             <Grid container>
+                        <Grid item sm={12} className="mb-1">   
+                       
+                    <input
+                      placeholder="Search"
+                      // variant="outlined"
+                      // size="small"
+                      style={{fontSize: "10px", float:"right" }}
+                      value={search}
+                      onChange={this.handleSearchChange}
+                    /><IconButton size="small" style={{float:"right", marginRight:"10px"}}
+                     onClick={(this.onOpenModal)}
+                      color="primary"><i class="fa fa-filter"></i></IconButton>
+                    </Grid>
+                    </Grid>
+            <TableContainer>
+              <Table className="my-table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>PR No</TableCell>
+                    <TableCell>PR Type</TableCell>
+                    <TableCell>PR Date</TableCell>
+                    <TableCell>Emp. Code</TableCell>
+                    <TableCell>Emp. Name</TableCell>
+                    <TableCell>Approver</TableCell>
+                    <TableCell>Tech Approver..</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Release Date</TableCell>
+                    <TableCell>Release Time</TableCell>
+                    <TableCell>Approved Date</TableCell>
+                    <TableCell>Approved Time</TableCell>
+                    <TableCell>Purchase Manager Approver</TableCell>
+                    <TableCell>PM Approved Date</TableCell>
+                    <TableCell>PM Approved Time</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody id="DataTableBody">
+                {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((pr, i) => {
                     return (
-                      <tr onClick={() => this.props.loadPRDetails(i)}>
-                      <td>{pr.prNumber}</td>
-                      <td>{pr.docType}</td>
-                      <td>{pr.date}</td>
-                      <td>{pr.releasedBy!=null?pr.releasedBy.empCode:""}</td>
-                      <td>{pr.releasedBy!=null?pr.releasedBy.name:""}</td>
-                      {/* <td>{pr.requestedBy.empCode}</td> */}
-                      {/* <td>{pr.requestedBy.name}</td> */}
-                      {/* <td>{pr.requestedBy.empCode!=""?pr.requestedBy.name:""}</td> */}
-                      {/* <td>{pr.approver.name}</td> */}
-                      <td>{pr.approvedBy!=null?pr.approvedBy.name:""}</td>
-                      <td>{pr.tcApprover.name}</td>
-                      <td>{this.props.prStatusList[pr.status]}</td>
-                      <td>{pr.releasedDate!=null?formatDateWithoutTime(pr.releasedDate):""}</td>
-                      <td>{pr.releasedDate!=null?formatTime(pr.releasedDate):""}</td>
-                      <td>{pr.approvedDate!=null?formatDateWithoutTime(pr.approvedDate):""}</td>
-                      <td>{pr.approvedDate!=null?formatTime(pr.approvedDate):""}</td>
-                      <td>{pr.pmapprovedBy!=null?pr.pmapprovedBy.name:""}</td>
-                      <td>{pr.pmapprovedDate!=null?formatDateWithoutTime(pr.pmapprovedDate):""}</td>
-                      <td>{pr.pmapprovedDate!=null?formatTime(pr.pmapprovedDate):""}</td>
-                    </tr>
+                      <TableRow onClick={() => this.props.loadPRDetails(i)}>
+                      <TableCell>{pr.prNumber}</TableCell>
+                      <TableCell>{pr.docType}</TableCell>
+                      <TableCell>{pr.date}</TableCell>
+                      <TableCell>{pr.releasedBy!=null?pr.releasedBy.empCode:""}</TableCell>
+                      <TableCell>{pr.releasedBy!=null?pr.releasedBy.name:""}</TableCell>
+                      <TableCell>{pr.approvedBy!=null?pr.approvedBy.name:""}</TableCell>
+                      <TableCell>{pr.tcApprover.name}</TableCell>
+                      <TableCell>{this.props.prStatusList[pr.status]}</TableCell>
+                      <TableCell>{pr.releasedDate!=null?formatDateWithoutTime(pr.releasedDate):""}</TableCell>
+                      <TableCell>{pr.releasedDate!=null?formatTime(pr.releasedDate):""}</TableCell>
+                      <TableCell>{pr.approvedDate!=null?formatDateWithoutTime(pr.approvedDate):""}</TableCell>
+                      <TableCell>{pr.approvedDate!=null?formatTime(pr.approvedDate):""}</TableCell>
+                      <TableCell>{pr.pmapprovedBy!=null?pr.pmapprovedBy.name:""}</TableCell>
+                      <TableCell>{pr.pmapprovedDate!=null?formatDateWithoutTime(pr.pmapprovedDate):""}</TableCell>
+                      <TableCell>{pr.pmapprovedDate!=null?formatTime(pr.pmapprovedDate):""}</TableCell>
+                    </TableRow>
                     )  
                   })}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[50, 100, 150]}
+                component="div"
+                count={filteredData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={this.handlePageChange}
+                onRowsPerPageChange={this.handleRowsPerPageChange}
+              />
               </>
               }
              

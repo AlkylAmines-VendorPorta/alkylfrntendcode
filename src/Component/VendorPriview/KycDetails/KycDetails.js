@@ -276,7 +276,7 @@ changeLoaderState = (action) =>{
       {/* <Loader isLoading={this.state.isLoading}/> */}
       <div className="card">
               <div className="card-header">KYC Details  <span className="">     (Attachment should not be greater than 2.5MB)</span></div>
-              <div className="card-body">
+              <div className="card-body" style={{paddingLeft:"10px"}}>
         <FormWithConstraints className="mt-2" ref={formWithConstraints => this.kycDetForm = formWithConstraints} 
            onSubmit={(e)=>{this.setState({saveKycDetails:true});commonSubmitForm(e,this,"saveKYCResponse","/rest/saveKYCDetails","kycDetForm")}} noValidate > 
           {/* <form onSubmit={(e)=>{commonSubmitForm(e,this.props,"saveKYCResponse","/rest/saveKYCDetails")}}> */}
@@ -296,8 +296,8 @@ changeLoaderState = (action) =>{
                       <FieldFeedback when={value => !/^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1})+$/.test(value)}>Pan Card should be eg.ABCDF1234H</FieldFeedback>
                     </FieldFeedbacks>           
             </div>
-            <div className="col-sm-2"> </div>
-            <div className="col-sm-3">  
+            {/* <div className="col-sm-2"> </div> */}
+            <div >  
             <div class="input-group">
               <input type="hidden" disabled={isEmpty(this.state.panAttachment.attachmentId)} name="partner[panCardCopy][attachmentId]" value={this.state.panAttachment.attachmentId} />
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"panAttachment", "kycDetForm")}} style={{color:"#e9ecef"}}
@@ -383,7 +383,7 @@ changeLoaderState = (action) =>{
          <br/>
          {this.state.isGstApplicable==="Y"?
          
-         <><span>Attach last 3 filed GSTR1 & 3B details</span><table className="table table-bordered">
+         <><span>Attach last 3 filed GSTR1 & 3B details</span><table className="my-table">
             <tr>
             <td>GSTR1</td>
             <td>
@@ -432,7 +432,7 @@ className={"form-control "+this.props.readonly} />
           
           <br />
           {this.state.isGstApplicable==="Y"?
-          <table className="table table-bordered">
+          <table className="my-table">
             <tr>
             <td>3B</td>
             <td>         
@@ -632,22 +632,24 @@ className={"form-control "+this.props.readonly} />
               </FieldFeedbacks>
                   </div></>:""}
                 </div>
-              {/* </div> */}
               <hr/>
-              <br />
           <div className="row">
-            <label className="col-sm-6">
-              <div className="form-check">
-                <label className="form-check-label">
-                Is your organisation has Lower Tax Deduction Certificate 
-                  <input type="checkbox" className="form-check-input ml-4" 
-                  // disabled={this.props.disabled} 
-                  disabled={this.state.role==="VENAPP"?"":this.props.disabled} 
-                  name="isLowerDeduction" value={"Y"} checked={this.state.isLDC} 
-                  onChange={(e)=>{commonHandleChangeCheckBox(e,this,"isLDC")}}/>
-                </label>
-              </div>
-            </label>
+          <div className="d-flex align-items-center">
+  <label className="me-3 pl-4">Is your organisation has Lower Tax Deduction Certificate?</label>
+  <div className="form-check">
+    <input
+      type="checkbox"
+      className="form-check-input"
+      disabled={this.state.role === "VENAPP" ? "" : this.props.disabled}
+      name="isLowerDeduction"
+      value="Y"
+      checked={this.state.isLDC}
+      onChange={(e) => { commonHandleChangeCheckBox(e, this, "isLDC"); }}
+      style={{marginLeft:"2px"}}
+    />
+    <label className="form-check-label"></label>
+  </div>
+</div>
             <div style={{display: this.state.isLDC ? 'flex':'none'}}>
             <div className="col-sm-2">  
             <div className="input-group">            
@@ -672,7 +674,6 @@ className={"form-control "+this.props.readonly} />
               onChange={(e)=>{commonHandleChange(e,this,"validFrom")}}/>
             </div>
           
-          <br />
           {/* <div className="row"> */}
             <label className="">Valid To</label>
             <div className="col-sm-3">
@@ -688,23 +689,24 @@ className={"form-control "+this.props.readonly} />
               onChange={(e)=>{commonHandleChange(e,this,"ldcValue")}}/>
             </div>
             </div>  </div></div>
-          <hr/>
-          <br />
-          <div className="row">
-            <label className="col-sm-2">Is your organization Related Party?</label>
-            <div className="col-sm-3">
-              <div className="form-check">
-                <label className="form-check-label">
-                  <input type="checkbox" className="form-check-input" 
-                  // disabled={this.props.disabled} 
-                  disabled={this.state.role==="VENAPP"?"":this.props.disabled} 
-                  name="isRelatedParty"
-                  value={"Y"} checked={this.state.isRelatedParty} 
-                  onChange={(e)=>{commonHandleChangeCheckBox(e,this,"isRelatedParty")}}/>
-                </label>
-              </div>
+        
+          <div className="row align-items-center">
+          <label className="col-sm-3 col-form-label">Is your organization Related Party?</label>
+          <div className="col-sm-3">
+            <div className="form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                disabled={this.state.role === "VENAPP" ? "" : this.props.disabled}
+                name="isRelatedParty"
+                value="Y"
+                checked={this.state.isRelatedParty}
+                onChange={(e) => { commonHandleChangeCheckBox(e, this, "isRelatedParty"); }}
+              />
+              <label className="form-check-label"></label>
             </div>
           </div>
+        </div>
           <br />
           {/* <div className="row"> */}
           <div className="row" style={{display: this.state.isRelatedParty ? 'flex':'none'}}>

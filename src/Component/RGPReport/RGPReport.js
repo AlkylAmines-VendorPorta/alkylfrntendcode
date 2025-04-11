@@ -1,33 +1,47 @@
 import React, { Component } from "react";
-import UserDashboardHeader from "../Header/UserDashboardHeader";
-import { connect } from 'react-redux';
-import { isEmptyDeep, isEmpty } from "../../Util/validationUtil";
-import { submitToURL } from "../../Util/APIUtils";
+import { connect } from "react-redux";
 import * as actionCreators from "./Action";
-import StickyHeader from "react-sticky-table-thead";
-import {
-  commonSubmitForm, commonHandleChange, commonSubmitFormNoValidation,
-  commonSubmitWithParam
-} from "../../Util/ActionUtil";
-import { searchTableData, searchTableDataTwo } from "../../Util/DataTable";
-import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import { getIFSCDetails } from "../../Util/APIUtils";
+import UserDashboardHeader from "../Header/UserDashboardHeader";
 import Loader from "../FormElement/Loader/LoaderWithProps";
-import { useState } from "react"
-import axios from 'axios';
-import { formatDateWithoutTime,formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
-import { formatTime } from "../../Util/DateUtil";
-import { getCommaSeperatedValue, getDecimalUpto } from "../../Util/CommonUtil";
+import { submitToURL } from "../../Util/APIUtils";
+import { commonSubmitForm, commonHandleChange } from "../../Util/ActionUtil";
+import { formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
 import TableToExcel from "@linways/table-to-excel";
 
+// Material-UI Components
+import {
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  CircularProgress,
+  Container,
+  Grid,
+  InputLabel,
+  FormControl,
+  TablePagination,
+  IconButton,
+  TableContainer,
+} from "@material-ui/core";
+import { FormWithConstraints } from "react-form-with-constraints";
+import { isEmpty } from "../../Util/validationUtil";
 
 class RGPReport extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
       isLoading: false,
       getASNReportlist: [],
+      search: "",
+        page: 0,
+        rowsPerPage: 50,
+        openModal:false,
       partner: {
         partnerId: "",
         email: "",
@@ -50,16 +64,7 @@ class RGPReport extends Component {
       },
       plantDropDownList:[],
       statusDropDownList:[],
-      gateEntryListDto: {
-        reqNoFrom: "",
-        reqNoTo: "",
-        docType: "",
-        plant: "",
-        status: "",
-        reqDateFrom: "",
-        reqDateTo: "",
-        
-      }
+      gateEntryListDto: []
     
     }
   }
@@ -159,33 +164,13 @@ class RGPReport extends Component {
     if (!isEmpty(props.gateEntryListDto)) {
       this.changeLoaderState(false);
       this.setState({
-
-        gateEntryListDto: {
-            reqNoFrom: "",
-            reqNoTo: "",
-            docType: "",
-            plant: "",
-            status: "",
-            reqDateFrom: "",
-             reqDateTo: "",
-            
-          }
+        gateEntryListDto: props.gateEntryListDto
       })
     }
 
   }
 
-  getASNReports = () => {
-
-    { /*let UserName = this.state.UserName;
-    let email = this.state.email
-  let typeOfVendor = this.state.selectedVendorMode*/}
-    commonSubmitWithParam(this.props, "gateEntryResponse", "/rest/getGateEntryByFilter");
-    this.changeLoaderState(true);
-    { /* this.setState({
-      checked: {}
-    })*/}
-  }
+  
 
   handleFilterChange = (key, event) => {
     this.props.onFilterChange && this.props.onFilterChange(key, event.target.value);
@@ -196,285 +181,355 @@ class RGPReport extends Component {
       isLoading: action
     });
   }
+  // Handle pagination page change
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
 
+  // Handle rows per page change
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
+ async componentWillReceiveProps(props) {
+
+        if (!isEmpty(props.loaderState)) {
+          this.changeLoaderState(props.loaderState);
+        }
+
+
+        if (!isEmpty(props.auditreportlist)) {
+          this.changeLoaderState(false);
+          this.setState({
+            auditreportlist: props.auditreportlist
+          })
+        } else {
+          this.changeLoaderState(false);
+        }
+
+       }
+  // Handle form submission
   handleSubmit = (e) => {
-    this.setState({ loadasnDetails: true });
-    commonSubmitForm(e, this, "gateEntryResponse", "/getASNReport")
-  }
+    e.preventDefault();
+    this.setState({ isLoading: true , openModal:false});
 
-  handleFilterClick = () => {
-    this.props.onFilter && this.props.onFilter();
-    this.setState({ formDisplay: !this.state.formDisplay });
-    this.setState({ searchDisplay: !this.state.searchDisplay });
-  }
-
-  exportReportToExcel() {
-    TableToExcel.convert(document.getElementById("RGPLineReport"),{
-       name:"RGP_Report.xlsx"
+    commonSubmitForm(e, this, "gateEntryResponse", "/rest/getRGPReportByFilter", "printreports")
+      .then(() => this.setState({ isLoading: false }))
+      .catch(() => this.setState({ isLoading: false }));
+  };
+  changeLoaderState = (action) => {
+    this.setState({
+      isLoading: action
     });
   }
-
-//  handleSearchClick = () => {
-//    
-//    if(this.state.asndetails.asnNoFrom !="" || this.state.asndetails.poNoFrom !="" || this.state.asndetails.asnDateFrom != ""){
-//    //  this.changeLoaderState(false);
-//    // commonSubmitForm(e, this, "asnResponse", "/rest/getASNReport", "reports")
-//     // return false;
-//     this.isLoading.hidden=true;
-//
-//    }else{
-//      
-//      window.alert('Please Enter One of Above Value')
-//      this.changeLoaderState=false;
-//      return false;
-//    }
-//  }
-
-
-
+  // Export table data to Excel
+  exportReportToExcel = () => {
+    TableToExcel.convert(document.getElementById("RGPLineReport"), {
+      name: "RGP_Report.xlsx",
+    });
+  };
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
+  onValueChange = ({ target }) => {
+    this.setState({ search: target.value, page: 0 }); // Reset page to 0 when searching
+  };
   render() {
-    const {filterGateEntryDocList} = this.props;
-    const { filter } = this.props;
-    const material=this.props.materialgateEntryLineListDto;
-    var displayService="none";
-    var shown = {
-      display: this.state.shown ? "block" : "none"
-    };
-    var hidden = {
-      display: this.state.hidden ? "none" : "block"
+    const {
+      materialgateEntryLineListDto,
+      plantDropDownList,
+      statusDropDownList,
+      gateEntryListDto,
+      isLoading,
+      page,
+      rowsPerPage,
+      search
+    } = this.state;
+  
+    const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
         }
-    var frmhidden = {
-          display: this.state.formDisplay ? "none" : "block"
-            }  
-            var searchHidden = {
-              display: this.state.searchDisplay ? "block" : "none"
-                }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+  
+    const filteredData = this.props.gateEntryListDto.filter((entry) => {
+      return searchInObject(entry, search);
+    });
+  
     return (
       <>
-
-<React.Fragment>
-        <Loader isLoading={this.state.isLoading} />
-        {<UserDashboardHeader />}
-        <div className="w-100" id="togglesidebar">
-          <div className="mt-70 boxContent">
-            <FormWithConstraints ref={formWithConstraints => this.printreports = formWithConstraints}
-              onSubmit={(e) => {
-                
-               // this.setState({ asndetails: { test: "" } });
-                 this.changeLoaderState(true);
-                 commonSubmitForm(e, this, "gateEntryResponse", "/rest/getRGPReportByFilter", "printreports")
-               //commonSubmitForm(e, this, "gateEntryResponse", "/rest/getGateEntryMaterialByFilter", "printreports")
-               // this.handleSearchClick(true)
-              // this.changeLoaderState(true);
-                
-              }} noValidate
-            >
-              
-              {/* <input type="hidden" name='asndetails[userId]'
-              value={this.state.partner.partnerId} 
-              /> */}
-
-
-
-<div className="col-sm-12">
-              <div className="row mt-2">
-                <label className="col-sm-2 mt-4">REQ No</label>
-                <div className="col-sm-2">
-                  <input type="text" className={"form-control"} name="reqNoFrom" value={this.state.materialgateEntryLineListDto.reqNoFrom} onChange={(event) => {
-                      if (event.target.value.length < 60) {
-                        commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoFrom", "printreports")
-                      }
-                    }} />
-
-                </div>
-                <label>To </label>
-                <div className="col-sm-2">
-                  <input type="text" className="form-control" name="reqNoTo" value={this.state.materialgateEntryLineListDto.reqNoTo} onChange={(event) => {
-                    if (event.target.value.length < 60) {
-                      commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoTo", "printreports")
-                    }
-
-
-                  }} />
-                </div></div>
-                <div className="row mt-2">
-                
-                <label className="col-sm-2 mt-4">Gate Entry Date</label>
-                       
-                        <div className="col-sm-2">                       
-                          <input type="date" className="form-control" name="reqDateFrom" value={this.state.materialgateEntryLineListDto.reqDateFrom} onChange={(event) => {
-                            if (event.target.value.length < 60) {
-                              commonHandleChange(event, this, "materialgateEntryLineListDto.reqDateFrom", "reports")
-                            }
-
-
-                          }} />
-                        </div>
-
-                        <label>To </label>
-                        <div className="col-sm-2">
-                          <input type="date" className="form-control" name="reqDateTo" value={this.state.materialgateEntryLineListDto.reqDateTo} onChange={(event) => {
-                            if (event.target.value.length < 60) {
-                              commonHandleChange(event, this, "materialgateEntryLineListDto.reqDateTo", "reports")
-                            }
-
-
-                          }} />
-                        </div>
-            </div>
-                {/* <div className="row mt-2">
-                <label className="col-sm-2 mt-4">Doc Type</label>
-              <div className="col-sm-2">
-              <select className="form-control"
-              name="docType"
-              value={this.state.materialgateEntryLineListDto.docType}
-              // disabled={gateEntryDto.reqNo}
-              onChange={(event) => {
-                commonHandleChange(event, this, "materialgateEntryLineListDto.docType", "printreports")
-            }}
-              >
-                <option value="">Select</option>
-                      <option value="NRGP">NRGP</option>
-                      <option value="RGP">RGP</option>
-              </select>
-            </div>
-            </div> */}
-            <div className="row mt-2">
-            <label className="col-sm-2 mt-4">Plant </label>
-                  <div className="col-sm-2" >
-                    <select className="form-control" name="plant" 
-                      //value={gateEntryDto.plant}
-                     // disabled={gateEntryDto.reqNo}
-                     onChange={(event) => {
-                      commonHandleChange(event, this, "materialgateEntryLineListDto.plant", "printreports")
-                  }}
+        <React.Fragment>
+          <Loader isLoading={isLoading} />
+          <UserDashboardHeader />
+          <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
+            {this.state.openModal && 
+              <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+                <div className="modal-backdrop"></div><div className="modal-dialog modal-lg">
+                  <div className="modal-content">
+                    <FormWithConstraints
+                      ref={(formWithConstraints) => (this.printreports = formWithConstraints)}
+                      onSubmit={this.handleSubmit}
+                      noValidate
                     >
-                      <option value="">Select</option>
-                      {(this.state.plantDropDownList).map(item =>
-
-                        <option value={item.value}>{item.display}</option>
-                      )}
-
-                    </select>
-                  </div>
-            <label> Status </label>
-                  <div className="col-sm-2" >
-                    <select className="form-control" name="status" 
-                      //value={gateEntryDto.plant}
-                     // disabled={gateEntryDto.reqNo}
-                     onChange={(event) => {
-                      commonHandleChange(event, this, "materialgateEntryLineListDto.status", "printreports")
-                  }}
-                    >
-                      <option value="">Select</option>
-                      {(this.state.statusDropDownList).map(item =>
-
-                        <option value={item.value}>{item.display}</option>
-                      )}
-
-                    </select>
-                  </div>
-                </div>
-                
-            </div>
-              <div className="col-sm-12">
-
-                <div className="row mt-2">
-
-                  <div className="col-sm-12">
-
-                    <div className="row mt-2">
-
-                      <div className="row">
-
-                        <div className="col-sm-12 text-center">
-                          <button type="submit" className={"btn btn-primary"}>
-                            Search
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* <div className="col-sm-3"><button className="btn btn-info blueButton" 
-                 onClick={() => {commonSubmitWithParam(this.props, "getasnreports", "/rest/getASNReport")}} 
+                      <Grid container spacing={3}>
+                        {/* REQ No From */}
+                        <Grid item xs={12} sm={6} md={6}>
+                          <TextField
+                            fullWidth
+                            label="REQ No From"
+                            name="reqNoFrom"
+                            variant="outlined" size="small"
+                            value={materialgateEntryLineListDto.reqNoFrom}
+                            onChange={(event) => {
+                              if (event.target.value.length < 60) {
+                                commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoFrom", "printreports");
+                              }
+                            }}
+                            InputLabelProps={{ shrink: true }}  
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                          />
+                        </Grid>
   
-                 type="button">Search</button></div>  */}
-                    </div>
+                        {/* REQ No To */}
+                        <Grid item xs={12} sm={6} md={6}>
+                          <TextField
+                            fullWidth
+                            label="REQ No To"
+                            name="reqNoTo"
+                            variant="outlined" size="small"
+                            value={materialgateEntryLineListDto.reqNoTo}
+                            onChange={(event) => {
+                              if (event.target.value.length < 60) {
+                                commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoTo", "printreports");
+                              }
+                            }}
+                            InputLabelProps={{ shrink: true }}  
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                          />
+                        </Grid>
+  
+                        {/* REQ Date From */}
+                        <Grid item xs={12} sm={6} md={6}>
+                          <TextField
+                            fullWidth
+                            label="REQ Date From"
+                            variant="outlined" size="small"
+                            type="date"
+                            name="reqDateFrom"
+                            value={materialgateEntryLineListDto.reqDateFrom}
+                            onChange={(event) => {
+                              commonHandleChange(event, this, "materialgateEntryLineListDto.reqDateFrom", "printreports");
+                            }}
+                            InputLabelProps={{ shrink: true }}  
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                          />
+                        </Grid>
+  
+                        {/* REQ Date To */}
+                        <Grid item xs={12} sm={6} md={6}>
+                          <TextField
+                            fullWidth
+                            variant="outlined" 
+                            size="small"
+                            label="REQ Date To"
+                            type="date"
+                            name="reqDateTo"
+                            value={materialgateEntryLineListDto.reqDateTo}
+                            onChange={(event) => {
+                              commonHandleChange(event, this, "materialgateEntryLineListDto.reqDateTo", "printreports");
+                            }}
+                            InputLabelProps={{ shrink: true }}
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                          />
+                        </Grid>
+  
+                        {/* Plant Dropdown */}
+                        <Grid item xs={12} sm={6} md={6}>
+                          <FormControl fullWidth size="small" variant="outlined">
+                            <InputLabel shrink>Plant</InputLabel>
+                            <Select
+                              name="plant"
+                              value={materialgateEntryLineListDto.plant}
+                              onChange={(event) => {
+                                commonHandleChange(event, this, "materialgateEntryLineListDto.plant", "printreports");
+                              }}
+                              sx={{ fontSize: 12, height: "15px",  } }
+                            >
+                              <MenuItem value="">Select</MenuItem>
+                              {plantDropDownList.map((item) => (
+                                <MenuItem key={item.value} value={item.value}>
+                                  {item.display}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+  
+                        {/* Status Dropdown */}
+                        <Grid item xs={12} sm={6} md={6}>
+                          <FormControl fullWidth size="small" variant="outlined">
+                            <InputLabel shrink>Status</InputLabel>
+                            <Select
+                              name="status"
+                              value={materialgateEntryLineListDto.status}
+                              onChange={(event) => {
+                                commonHandleChange(event, this, "materialgateEntryLineListDto.status", "printreports");
+                              }}
+                              sx={{ fontSize: 12, height: "15px",  } }
+                            >
+                              <MenuItem value="">Select</MenuItem>
+                              {statusDropDownList.map((item) => (
+                                <MenuItem key={item.value} value={item.value}>
+                                  {item.display}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+  
+                        {/* Search Button */}
+                        <Grid item xs={12} style={{ textAlign: "center" }}>
+                          <Button type="submit" size="small" variant="contained" color="primary" >
+                            Search
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </FormWithConstraints>
                   </div>
                 </div>
               </div>
-              
-            </FormWithConstraints>
-          </div>
-
-
-          <div className="row px-4 py-2">
-            <div className="mt-2 boxContent">
-              <div class="table-proposed">
-                <StickyHeader height={"65vh"} >
-                  <table className="table table-bordered table-header-fixed" id="RGPLineReport">
-                  <thead>
-                            <tr>
-
-                              <th>Req No</th>
-                              <th>Req Date</th>
-                              <th>Return By</th>
-                              {/* <th>Department Name</th> */}
-                              <th>Requestioner Name</th>
-                              <th>Vehicle No</th>
-                              <th>Vendor Name</th>
-                              {/* <th>Vendor Address</th> */}
-                              <th>Doc Type</th>
-                              <th>Plant</th>
-                              <th>Material Details</th>
-                              <th>UOM</th>
-                              <th>Quantity</th>
-                              <th>Purpose</th>
-                              <th>Status</th>
-                              <th>Closed By</th>
-                              <th>Closed Date</th>
-
-                            </tr>
-                          </thead>
-                    <tbody>
-                     { this.props.gateEntryListDto.map((gaterntryline) => (
-                        <tr>
-                          <td>{gaterntryline.gateEntry.reqNo}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.created)}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.returnBy)}</td>
-                          {/* <td></td> */}
-                          <td>{gaterntryline.gateEntry.createdBy!=null?gaterntryline.gateEntry.createdBy.userDetails.name:""}</td>
-                          <td>{gaterntryline.gateEntry.vehicleNo}</td>
-                          <td>{gaterntryline.gateEntry.vendorName}</td>
-                          {/* <td>{ge.vendorAddress}</td> */}                          
-                          <td>{gaterntryline.gateEntry.docType}</td>
-                          <td>{gaterntryline.gateEntry.plant}</td>
-                          <td>{gaterntryline.materialCode}</td>
-                          <td>{gaterntryline.uom}</td>
-                          <td>{gaterntryline.materialQty}</td>
-                          <td>{gaterntryline.purpose}</td>
-                          <td>{gaterntryline.gateEntry.status}</td>
-                          <td>{gaterntryline.gateEntry.closedBy!=null?gaterntryline.gateEntry.closedBy.name:""}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.closedDate)}</td>
-                        </tr>))
-
-                     }
-                      
-                      
-                    </tbody>
-                  </table>
-                </StickyHeader>
-              </div>
-              <div className="row">
-                        <div className="col-sm-12 text-center">
-                                   <button className="btn btn-success" style={{justifyContent: "center"}} onClick={this.exportReportToExcel}> <i className="fa fa-download" />&nbsp; Download Excel</button>
-                                 
-                                                </div></div>
+            }
+  
+            <Grid container spacing={2} alignItems="center" justify="flex-end">
+              <Grid item xs={9} style={{textAlign:"left"}}>
+                <Button variant="contained" size="small" color="primary" onClick={this.exportReportToExcel}>
+                  Download Excel
+                </Button>
+              </Grid>
+              <Grid item xs={3}>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={search}
+                  onChange={this.onValueChange}
+                  style={{ fontSize: "10px", float:"right" }}
+                />
+                <IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+              </Grid>
+            </Grid>
+            <TableContainer className="mt-1">
+              <Table className="my-table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Req No</TableCell>
+                    <TableCell>Req Date</TableCell>
+                    <TableCell>Return By</TableCell>
+                    <TableCell>Requestioner Name</TableCell>
+                    <TableCell>Vehicle No</TableCell>
+                    <TableCell>Vendor Name</TableCell>
+                    <TableCell>Doc Type</TableCell>
+                    <TableCell>Plant</TableCell>
+                    <TableCell>Material Details</TableCell>
+                    <TableCell>UOM</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Purpose</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Closed By</TableCell>
+                    <TableCell>Closed Date</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((gaterntryline, index) => (
+                      <TableRow key={index+1} >
+                        <TableCell>{gaterntryline.gateEntry.reqNo}</TableCell>
+                        <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.created)}</TableCell>
+                        <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.returnBy)}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.createdBy?.userDetails?.name || ""}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.vehicleNo}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.vendorName}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.docType}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.plant}</TableCell>
+                        <TableCell>{gaterntryline.materialCode}</TableCell>
+                        <TableCell>{gaterntryline.uom}</TableCell>
+                        <TableCell>{gaterntryline.materialQty}</TableCell>
+                        <TableCell>{gaterntryline.purpose}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.status}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.closedBy?.name || ""}</TableCell>
+                        <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.closedDate)}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+  
+              <TablePagination
+                rowsPerPageOptions={[50, 100, 150]}
+                component="div"
+                count={filteredData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={this.handlePageChange}
+                onRowsPerPageChange={this.handleRowsPerPageChange}
+              />
+            </TableContainer>
+            <div style={{display:"none"}}>
+              <Table id="RGPLineReport" >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Req No</TableCell>
+                    <TableCell>Req Date</TableCell>
+                    <TableCell>Return By</TableCell>
+                    <TableCell>Requestioner Name</TableCell>
+                    <TableCell>Vehicle No</TableCell>
+                    <TableCell>Vendor Name</TableCell>
+                    <TableCell>Doc Type</TableCell>
+                    <TableCell>Plant</TableCell>
+                    <TableCell>Material Details</TableCell>
+                    <TableCell>UOM</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Purpose</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Closed By</TableCell>
+                    <TableCell>Closed Date</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.props.gateEntryListDto.map((gaterntryline,i) => (
+                      <TableRow key={i+1}>
+                        <TableCell>{gaterntryline.gateEntry.reqNo}</TableCell>
+                        <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.created)}</TableCell>
+                        <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.returnBy)}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.createdBy?.userDetails?.name || ""}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.vehicleNo}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.vendorName}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.docType}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.plant}</TableCell>
+                        <TableCell>{gaterntryline.materialCode}</TableCell>
+                        <TableCell>{gaterntryline.uom}</TableCell>
+                        <TableCell>{gaterntryline.materialQty}</TableCell>
+                        <TableCell>{gaterntryline.purpose}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.status}</TableCell>
+                        <TableCell>{gaterntryline.gateEntry.closedBy?.name || ""}</TableCell>
+                        <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.closedDate)}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
             </div>
           </div>
-
-        </div>
-        
-        { }</React.Fragment>
+        </React.Fragment>
       </>
     );
   }
@@ -483,4 +538,5 @@ class RGPReport extends Component {
 const mapStateToProps = (state) => {
   return state.rgpReport;
 };
+
 export default connect(mapStateToProps, actionCreators)(RGPReport);

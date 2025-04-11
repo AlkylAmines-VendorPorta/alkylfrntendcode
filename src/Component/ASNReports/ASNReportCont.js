@@ -30,11 +30,9 @@ class ASNReportCont extends Component {
       {window.location.href.endsWith("gateentry")?<UserDashboardHeader/>:<VendorDashboardHeader/>} */}
       
       <div className="page-content">
-        <div className="wizard-v1-content mt-100">
           {/* <AdvanceShipmentNoticeLeftPane /> */}
           <ASNReportContainerRightPane changeLoaderState={this.changeLoaderState}/>
         </div>
-      </div>
       </>
     );
   }

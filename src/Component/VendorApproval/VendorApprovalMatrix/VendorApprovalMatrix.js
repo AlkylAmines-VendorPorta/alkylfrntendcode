@@ -304,7 +304,7 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
     return (
       <div className="card">
         <div className="card-header">Vendor Approval</div>
-        <div className="card-body">
+        <div className="card-body" style={{paddingLeft:"10px"}}>
         <FormWithConstraints  ref={formWithConstraints => this.vendorApprvForm = formWithConstraints} 
             noValidate > 
         <input type="hidden" name="partner[bPartnerId]" value={this.props.partner.partnerId}/>
@@ -471,8 +471,7 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
                     </FieldFeedbacks>
             </div>
           </div>
-          <br/>
-          <div className="row">
+          <div className="row mt-2">
             {/* <label className="col-sm-2">Vendor Schema Group <span className="redspan">*</span> </label>
             <div className="col-sm-3">
             <select class="form-control" name="vendorSchemaGroup" 
@@ -510,8 +509,7 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
            
             
           </div>
-          <br/>
-          <div className="row">
+          <div className="row mt-2">
 
           <label className="col-sm-2">Inco Terms </label>
             <div className="col-sm-2">
@@ -560,8 +558,7 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
       
 
           </div>
-          <br/>
-          <div className="row">
+          <div className="row mt-2">
              {/* <input type="text" class="form-control" name="purchaseGroup" value={this.state.vendorMatrixApproval.purchaseGroup} onChange={(event)=>{commonHandleChange(event,this,"vendorMatrixApproval.purchaseGroup","vendorApprvForm")}} required /> */}
             {/* <label className="col-sm-2">Purchase Group</label>
             <div className="col-sm-3">
@@ -585,8 +582,7 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
             <input type="text" class="form-control readonly" name="orderCurrency" value="INR" onChange={(event)=>{commonHandleChange(event,this,"vendorMatrixApproval.orderCurrency")}} />
             </div> */}
           </div>
-          <br/>
-          <div className="row">
+          <div className="row  mt-2">
 		  <label className="col-sm-2">Industry</label>
             <div className="col-sm-3">
               <select class="form-control" name="industry" 
@@ -696,8 +692,7 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
               </div>
             </label>
           </div>
-          <br/>
-          <div className="row">
+          <div className="row  mt-2">
           <label className="col-sm-2">
               <div className="form-check">
                 <label hidden className="form-check-label">
@@ -717,7 +712,6 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
             <input  hidden type="text" class="form-control" name="description" value={this.state.vendorMatrixApproval.description} onChange={(event)=>{commonHandleChange(event,this,"vendorMatrixApproval.description")}} />
             </div> */}
           </div>
-          <br/>
           {/* <div className="row">         
             <label className="col-sm-2">Business commenced with AACL</label>
             <div className="col-sm-3">
@@ -727,7 +721,7 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
               <select className="form-control" ><option>Select Year</option></select>
             </div>
           </div> */}
-           <div className="row mt-1 ">  
+           <div className="row mt-2 ">  
                         <label className="col-sm-2" > Items / Service Offered to AACL </label>
                         <div className={"col-sm-6 "} >
                         <textarea className="formcontrol" rows="3" value={this.state.vendorMatrixApproval.description}  
@@ -740,10 +734,10 @@ if(!isEmpty(props.sapVendorMatrixApproval)){
             <button type="button" className="btn btn-primary " 
             onClick={(e)=>{this.setState({saveApprovalMatrix:true});commonSubmitWithoutEvent(e.currentTarget.form,this,"saveVendorApprovalResp","/rest/saveVendorApprovalDetails","vendorApprvForm")}}>
               Approve</button>
-            <button type="button" className="btn btn-danger mr-1"
+            <button type="button" className="btn btn-danger ml-1"
             onClick={(e)=>{this.setState({saveApprovalMatrix:true});commonSubmitWithoutEvent(e.currentTarget.form,this,"saveVendorApprovalResp","/rest/saveVendorRejectionDetails")}}>  
               Reject</button>
-        <button type="button" className="btn btn-success mr-1" 
+        <button type="button" className="btn btn-success ml-1" 
               onClick={(e)=>{commonSubmitWithParam(this.props, "getVendorApprovalMatrix", "/rest/fetchVendorApprovalDetails" , this.props.partner.vendorSapCode === null ? 0 : this.props.partner.vendorSapCode )}}>
               Fetch Data</button>
        </div>    :""} 

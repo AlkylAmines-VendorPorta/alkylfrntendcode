@@ -21,6 +21,7 @@ import {saveQuotation,downloadexcelApi,request,uploadFile,submitForm} from "./..
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import UserDashboardHeader from "../../Component/Header/UserDashboardHeader";
 import moment from "moment";
+import { Button } from "@material-ui/core";
 const delay = ms => new Promise(
     resolve => setTimeout(resolve, ms)
   );
@@ -65,6 +66,10 @@ class AdvancePayment extends Component {
           // this.setState({
           //   advancePaymentList:props.advancePaymentList
           // })
+          this.setState({
+            response: props.advancePaymentList,
+           
+           });
         }
 
         if(!isEmpty(props.getVendorPayListforApproval)){
@@ -352,6 +357,7 @@ class AdvancePayment extends Component {
       render() {
         const groupByList =this.state.advancePaymentList;
         const list=this.state.response;
+        console.log(this.state.response,"this.state.response")
           return (
             <>
             <React.Fragment>
@@ -361,63 +367,29 @@ class AdvancePayment extends Component {
             <FormWithConstraints  ref={formWithConstraints => this.advanceForm = formWithConstraints} 
             onSubmit={this.onSubmit}
             >
-            <div className="w-100">
-          <div className="mt-70 boxContent">
+           <div className="wizard-v1-content" style={{marginTop:"80px", marginBottom:"20px"}}>
            <div className="row">
            <div className="col-sm-12 text-center mt-2 ">
-                                    <label style={{fontSize:"20px"}}>Payment List To Process</label>
+                                    <label style={{fontSize:"16px"}}>Payment List To Process</label>
                                  </div>
-           {/* <div className="col-sm-9"></div>
-            <div className="col-sm-3">
-            <input type="text" id="SearchTableDataInputTwo" className="form-control" onKeyUp={searchTableDataTwo} placeholder="Search .." />
-            </div>  */}
+          
                <div className="col-sm-12 mt-2">
                <StickyHeader height={"40vh"} >
-                     <table className="table table-bordered table-header-fixed">
+                     <table className="my-table">
                        <thead>
                          <tr>  
-                         <th>Required payment</th>      
-                           {/* <th>Company Code</th> */}
-                           {/* <th>Supplier</th> */}
-                           {/* <th>Assignment</th>
-                           <th> Fiscal Year</th> */}
+                         <th>Required payment</th>  
                            <th> Document Number</th>
-                           {/* <th> Line item</th> */}
-                           {/* <th> Posting Date</th> */}
-                           {/* <th> Document Date</th> */}
-                           {/* <th> Entry Date</th> */}
-                           {/* <th> Currency</th> */}
                            <th> Reference</th>
-                           {/* <th> Document Type</th>
-                           <th>Tax Code</th> */}
-                           {/* <th>Add Tax calculation</th>
-                           <th>Tax Rate Valid-From</th> */}
                            <th>Invoice Date</th>
                            <th>Invoice Net Amount(Incl. of all Taxes)</th>
-                           {/* <th>Amount</th>
-                           <th>Amount in Functional Currency</th>
-                           <th>Functional Currency</th> */}
-                           {/* <th>Text</th> */}
-                           {/* <th>Invoice Date</th> */}
-                           {/* <th>Payment terms</th> */}
-                           {/* <th>Days 1</th> */}
                            <th>Due Date</th>
-                           {/* <th>Gap in Days</th> */}
                            <th>Flat Discount(%)</th>
-                          
-                           {/* <th>Remark</th>
-                           <th>Acceptance</th>
-                           <th>Mail Data</th> */}
-                           {/* <th>Payment Date(Next Tuesday)</th> */}
                            <th>Payment Date</th>
                            <th>interest amount</th>
-                           {/* <th>CGST(%)</th>
-                           <th>SGST(%)</th>
-                           <th>IGST(%)</th> */}
                            <th>CGST amount</th>
                            <th>SGST amount</th>
                            <th>IGST amount</th>
-                           {/* <th>Gross amount</th> */}
                            <th>Total Interest Amount</th>
                            <th>Net Payable</th>
                          </tr>
@@ -425,64 +397,25 @@ class AdvancePayment extends Component {
                        <tbody id="DataTableBodyTwo">
                             {
                               this.state.response.map((payment,i)=>
-                              // this.state.advancePaymentList.map((payment,i)=>
-                            // Object.keys(groupByList).map((payment, i) =>
                                 <tr>
                                    <td> 
                                  {payment.gapinDays > 0 && payment.gapinDays > 3?
                                  <input type="checkbox" checked={this.state.checkedItems.includes(payment)} onChange={this.onChecked.bind(this,payment)} />
                                  :<h6 style={{color:'red'}}> <span className="redspan">*</span>{"Actual Payment Date is Online"}</h6>} </td>
                                  
-                                  {/* <td>{payment.companyCode}</td>
-                                  <td>{payment.vendorCode}</td> */}
-                                  {/* <td >{payment.assignment}</td>
-                                  <td>{payment.year}</td>                                   */}
+                                 
                                   <td>{payment.documentNumber}</td>
-                                  {/* <td>{payment.lineItem}</td> */}
-                                  {/* <td>{formatDateWithoutTime(payment.postingDate)}</td> */}
-                                  {/* <td>{}</td> */}
-                                  {/* <td>{formatDateWithoutTime(payment.entryDate)}</td> */}
-                                  {/* <td>{payment.curr}</td> */}
                                   <td>{payment.reference}</td>
-                                  {/* <td>{payment.docType}</td>
-                                  <td>{payment.taxCode}</td> */}
-                                  {/* <td>{}</td>
-                                  <td>{}</td> */}
                                  <td>{payment.invoiceDate!=null?formatDateWithoutTime(payment.invoiceDate):""}</td>
                                   <td>{(payment.amountInLC).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                                  {/* <td>{payment.amount}</td>
-                                  <td>{}</td>
-                                  <td>{}</td> */}
-                                  {/* <td>{payment.text}</td> */}
-                                  {/* <td>{payment.invoiceDate!=null?formatDateWithoutTime(payment.invoiceDate):""}</td> */}
-                                  {/* <td>{payment.payTerms}</td> */}
-                                  {/* <td>{payment.days1}</td> */}
+                                  
                                   <td>{payment.invoiceDate!=null?payment.actualPaymentDate:""}</td>
-                                  {/* <td>{payment.invoiceDate!=null?payment.gapinDays:""}</td> */}
-                                  {/* <td>{payment.interestRate}</td> */}
                                   {this.state.role!="VENADM"?
                                   <td>{<input type="text" value={payment.interestRate}/>}</td>:
                                   <td>{payment.interestRate}</td>
                                 }
-                                 {/* <td> 
-                                 {payment.gapinDays > 0 && payment.gapinDays > 3?
-                                 <input type="checkbox" checked={this.state.checkedItems.includes(payment)} onChange={this.onChecked.bind(this,payment)} />
-                                 :<h6 style={{color:'red'}}> <span className="redspan">*</span>{"Actual Payment Date is Online"}</h6>} </td> */}
-                                {/* { this.state.response.map((doc,i)=>
-                                (doc.documentNumber!=payment.documentNumber?
-                                                           
-                                  <input type="checkbox" disabled={this.checkdoc(doc.documentNumber,payment.documentNumber)} checked={this.state.checkedItems.includes(payment)} onChange={this.onChecked.bind(this,payment)} />:"")
-                                 
-                                )} */}
-                                
-                                  {/* <td>{this.nextPaymentDate()}</td> */}
-                                  {/* <td>{payment.nextPaymentDateForDisplay}</td> */}
-                                  <td>{payment.nextPaymentDate}</td>
+                                <td>{payment.nextPaymentDate}</td>
                                   <td>{ this.state.checkedItems.includes(payment) ? payment.interestAmount:""}</td>
-                                  {/* <td>{this.calculateInterestAmt(payment.actualPaymentDate,payment.nextPaymentDateForDisplay,payment.amount,payment.interestRate)}</td> */}
-                                  {/* <td>{this.state.checkedItems.includes(payment) ? payment.cgst:""}</td>
-                                  <td>{this.state.checkedItems.includes(payment) ? payment.sgst:""}</td>
-                                  <td>{this.state.checkedItems.includes(payment) ? payment.igst:""}</td> */}
                                   <td>{this.state.checkedItems.includes(payment) ? payment.cgstAmount:""}</td>
                                   <td>{this.state.checkedItems.includes(payment) ? payment.sgstAmount:""}</td>
                                   <td>{this.state.checkedItems.includes(payment) ? payment.igstAmount:""}</td>
@@ -501,25 +434,24 @@ class AdvancePayment extends Component {
             <div className="row">
 
 <div className="col-sm-12 text-center">
-  <button type="button" onClick={this.onSubmit} className={"btn btn-primary"}  >
+  <Button size="small" variant="contained" color="primary" type="button" onClick={this.onSubmit} className={"btn btn-primary"}  >
     Submit & Send Mail
-  </button>
+  </Button>
 </div>
 </div>
 <div className="row p-3">
          
-<h6 style={{color:'red'}}><span>Note: if any query regarding payment please contact AACl Finance Team</span></h6></div>
+<label style={{color:'red'}}><span>Note: if any query regarding payment please contact AACl Finance Team</span></label></div>
            
          </div>
       </div>
    </div>
-   <div className="mt-70 boxContent">
    <div className="col-sm-12 text-center mt-2 ">
-                                    <label style={{fontSize:"20px"}}>PAYMENT LIST (IP/Approved/Rejected)</label>
+                                    <label style={{fontSize:"16px"}}>PAYMENT LIST (IP/Approved/Rejected)</label>
                                  </div>
-   <div className="col-sm-12 mt-2">
+   <div className="col-sm-12 mt-2 mb-5">
                <StickyHeader height={"40vh"} >
-                     <table className="table table-bordered table-header-fixed">
+                     <table className="my-table">
                        <thead>
                          <tr>                         
                            <th>Supplier</th>
@@ -585,9 +517,6 @@ class AdvancePayment extends Component {
           
            
          </div>
-
-   </div>
-   </div>
    </FormWithConstraints> 
 
             </React.Fragment>

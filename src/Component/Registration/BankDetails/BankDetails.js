@@ -1,144 +1,139 @@
 import React, { Component } from "react";
 import serialize from "form-serialize";
-import {connect} from 'react-redux';
-import { isEmpty} from "../../../Util/validationUtil";
-import { commonSubmitForm, commonHandleChange,commonSubmitWithParam, swalPrompt, commonSubmitWithoutEvent, resetForm} from "../../../Util/ActionUtil";
+import { connect } from "react-redux";
+import { isEmpty } from "../../../Util/validationUtil";
+import {
+  commonSubmitForm,
+  commonHandleChange,
+  commonSubmitWithParam,
+  swalPrompt,
+  commonSubmitWithoutEvent,
+  resetForm,
+} from "../../../Util/ActionUtil";
 import * as actionCreators from "../../Registration/BankDetails/Action";
-import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
-import swal from 'sweetalert';
+import {
+  FormWithConstraints,
+  FieldFeedbacks,
+  FieldFeedback,
+} from "react-form-with-constraints";
+import swal from "sweetalert";
+import {
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+} from "@material-ui/core";
 
 class BankDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      partnerBankDetails:{
-        partnerBankDetailId:"",
-        ifscCode:"",
-        accountNumber:"",
-        benificaryName:"",
-        bankNameDetailId:"",
-        bankNameDetails:"",
-        branchNameDetailId:"",
-        branchName:"",
-        branchState:""
+      partnerBankDetails: {
+        partnerBankDetailId: "",
+        ifscCode: "",
+        accountNumber: "",
+        benificaryName: "",
+        bankNameDetailId: "",
+        bankNameDetails: "",
+        branchNameDetailId: "",
+        branchName: "",
+        branchState: "",
       },
-      branchStateList:[],
-      vendorName:"",
-      submitSaveForm:false,
-      eventForSubmit:"",
-      loadIFSC : false
+      branchStateList: [],
+      vendorName: "",
+      submitSaveForm: false,
+      eventForSubmit: "",
+      loadIFSC: false,
     };
   }
-  saveBankDetails=(e)=>{
-      if((this.state.vendorName!=this.state.partnerBankDetails.benificaryName)){
-        this.setState({
-        formElement:e.target.form
-      })
-        swalPrompt(e,this,"saveBankDetailsAfterYesResponse","","Name as per Cheque is Different than Vendor Name","OK","CANCEL");
-      }else {
-        commonSubmitWithoutEvent(e.target.form,this,"saveBankDetailsResponse","/rest/savePartnerBankDetail","bankDetForm");
-        
-      }
-    }
-    
-    saveBankDetailsAfterYesResponse=()=>{
-      
-      var x= this.state.formElement
-      commonSubmitWithoutEvent(x,this,"saveBankDetailsResponse","/rest/savePartnerBankDetail","bankDetForm");
-      
-    }
 
-  async componentDidMount(){
-    // console.log("did mount of bank details")
-    commonSubmitWithParam(this.props,"getBankDetailsResponse","/rest/getPartnerBankDetails",this.props.partner.partnerId);
-    
+  saveBankDetails = (e) => {
+    if (this.state.vendorName !== this.state.partnerBankDetails.benificaryName) {
+      this.setState({ formElement: e.target.form });
+      swalPrompt(
+        e,
+        this,
+        "saveBankDetailsAfterYesResponse",
+        "",
+        "Name as per Cheque is Different than Vendor Name",
+        "OK",
+        "CANCEL"
+      );
+    } else {
+      commonSubmitWithoutEvent(
+        e.target.form,
+        this,
+        "saveBankDetailsResponse",
+        "/rest/savePartnerBankDetail",
+        "bankDetForm"
+      );
+    }
+  };
+
+  saveBankDetailsAfterYesResponse = () => {
+    commonSubmitWithoutEvent(
+      this.state.formElement,
+      this,
+      "saveBankDetailsResponse",
+      "/rest/savePartnerBankDetail",
+      "bankDetForm"
+    );
+  };
+
+  async componentDidMount() {
+    commonSubmitWithParam(
+      this.props,
+      "getBankDetailsResponse",
+      "/rest/getPartnerBankDetails",
+      this.props.partner.partnerId
+    );
   }
 
-  async componentWillReceiveProps(props){
-    // console.log(props.partner,"bank info");
-    
-    if(!isEmpty(props.branchStateList)){
-      
-      let branchStateArray = Object.keys(props.branchStateList).map((key) => {
-        return { display: props.branchStateList[key].name, value: props.branchStateList[key].regionId }
-      });
-      this.setState({
-        branchStateList: branchStateArray
-      })
-    }
-    if(!isEmpty(props.partnerBankDetails)){
-      
-        let bankDetail=props.partnerBankDetails;
-        let bankDetailId=bankDetail.partnerBankDetailId;
-        let bankIfscCode=bankDetail.ifscCode;
-        let accNo=bankDetail.accountNumber;
-        let bankBenificaryName=bankDetail.benificaryName;
-        let bankNameId="";
-        let bankName="";
-        // let branchState="";
-        if(!isEmpty(bankDetail.bankNameDetails)){
-          bankNameId=bankDetail.bankNameDetails.bankNameDetailsId;
-          bankName=bankDetail.bankNameDetails.name;
-        }
-        let bankBranchNameId="";
-        let bankBranchName="";
-         let bankBranchState="";
-        if(!isEmpty(bankDetail.branchName)){
-          bankBranchNameId=bankDetail.branchName.bankBranchDetailsId;
-          bankBranchName=bankDetail.branchName.branchName;
-          if(!isEmpty(bankDetail.branchName.branchState)){
-            bankBranchState=bankDetail.branchName.branchState.regionId;
-          }
-          
-        }
-        this.setState({
-          partnerBankDetails:{
-            partnerBankDetailId: bankDetailId,
-            ifscCode: bankIfscCode,
-            accountNumber: accNo,
-            benificaryName: bankBenificaryName,
-            bankNameDetailId:bankNameId,
-            bankNameDetails:bankName,
-            branchNameDetailId:bankBranchNameId,
-            branchName:bankBranchName,
-            branchState:bankBranchState
-
-          }
-        })
-    }
-    if(!isEmpty(props.vendorName)){
-      
-      // console.log(props.vendorName);
-      this.setState({
-
-        vendorName:props.vendorName
-      })
+  async componentWillReceiveProps(props) {
+    if (!isEmpty(props.branchStateList)) {
+      let branchStateArray = Object.keys(props.branchStateList).map((key) => ({
+        display: props.branchStateList[key].name,
+        value: props.branchStateList[key].regionId,
+      }));
+      this.setState({ branchStateList: branchStateArray });
     }
 
-    if(!isEmpty(props.ifscDetails) && this.state.loadIFSC){
-      
-      let bankDetails = this.state.partnerBankDetails;
-      bankDetails.bankNameDetails = props.ifscDetails.bank;
-      bankDetails.branchName = props.ifscDetails.branch;
-      this.setState({
-        loadIFSC : false,
-        partnerBankDetails : bankDetails
-      })
+    if (!isEmpty(props.partnerBankDetails)) {
+      this.setState({ partnerBankDetails: { ...props.partnerBankDetails } });
     }
 
+    if (!isEmpty(props.vendorName)) {
+      this.setState({ vendorName: props.vendorName });
+    }
   }
-  
 
   render() {
-    console.log('bank detail',this.props.readonly)
     return (
-      <div className="card">
-        <div className="card-header">Bank Details</div>
-        <div className="card-body">
-          {/* <form onSubmit={(e)=> {commonSubmitForm(e,this.props,"saveBankDetailsResponse","/rest/savePartnerBankDetail")}}> */}
-          <FormWithConstraints ref={formWithConstraints => this.bankDetForm = formWithConstraints} 
-           onSubmit={(e)=>{  commonSubmitForm(e,this,"saveBankDetailsResponse","/rest/savePartnerBankDetail","bankDetForm")}} noValidate > 
-            <input type="hidden" name="partnerBankDetailId" 
+      <Card>
+        <CardHeader title="Bank Details" />
+        <CardContent>
+          <FormWithConstraints
+            ref={(formWithConstraints) =>
+              (this.bankDetForm = formWithConstraints)
+            }
+            onSubmit={(e) => {
+              commonSubmitForm(
+                e,
+                this,
+                "saveBankDetailsResponse",
+                "/rest/savePartnerBankDetail",
+                "bankDetForm"
+              );
+            }}
+            noValidate
+          >
+           <input type="hidden" name="partnerBankDetailId" 
             value={this.state.partnerBankDetails.partnerBankDetailId}/>
             <input type="hidden" name="partner[bPartnerId]" value={this.props.partner.partnerId} />
 
@@ -229,17 +224,33 @@ class BankDetails extends Component {
                     </FieldFeedbacks>
             </div>            
           </div>
-          <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>
-                  <button type="button" className="btn btn-success mr-1" onClick={(e)=>{this.saveBankDetails(e)}}>Save</button>
-                  <button type="button" className="btn btn-danger mr-1" onClick={()=>{ commonSubmitWithParam(this.props,"getBankDetailsResponse","/rest/getPartnerBankDetails",this.props.partner.partnerId); resetForm(this.bankDetForm);}}>Cancel</button>                  
+
+            <div className="text-center mt-2">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.saveBankDetails}
+                size="small"
+              >
+                Save
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                className="ml-1"
+                size="small"
+                onClick={() => {
+                  commonSubmitWithParam(this.props, "getBankDetailsResponse", "/rest/getPartnerBankDetails", this.props.partner.partnerId);
+                  resetForm(this.bankDetForm);
+                }}
+              >
+                Cancel
+              </Button>
             </div>
           </FormWithConstraints>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 }
-const mapStateToProps=(state)=>{
-  return state.bankDetails;
-};
-export default connect (mapStateToProps,actionCreators)(BankDetails);
+export default connect((state) => state.bankDetails, actionCreators)(BankDetails);

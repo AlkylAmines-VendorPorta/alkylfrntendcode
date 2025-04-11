@@ -20,6 +20,7 @@ import FormNo from "../../FormNo/FormNo/FormNo";
 import ASNWithoutPO from "../../ASNWithoutPO/ASNWithoutPO";
 import GateEntryforCommercial from "../../GateEntryforCommercial/GateEntryforCommercial/GateEntryforCommercial";
 import STOASN from "../../STOASN/STOASN";
+import { Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@material-ui/core";
 
 const delay = ms => new Promise(
   resolve => setTimeout(resolve, ms)
@@ -675,8 +676,8 @@ var frmhidden = {
               } 
     return (
       <React.Fragment>
-      <div className="w-100">
-        <div style={ hidden} className="mt-70 boxContent">
+     <div className="wizard-v1-content " style={{marginTop:"80px"}}>
+        <div style={ hidden} className="card pt-2">
       
       <FormWithConstraints>
 
@@ -684,32 +685,34 @@ var frmhidden = {
         <div className="col-sm-12">
 
        <div className="col-sm-2">
-                              <select className={"form-control"} name="doctype"  
+       <FormControl variant="outlined" size="small" style={{ minWidth: 200 }}>
+       <InputLabel>Select Option</InputLabel>
+                              <Select  name="doctype"  label="Select Option" fullWidth
                               value={this.state.doctype} 
                          onChange={(event) => {
                               {
                                commonHandleChange(event, this, "doctype", "")
                              }}}
-                            ><option value="">Select</option>
-                              <option value="PO">PO</option>
-                              {/* <option value="STO">STO</option> */}
-                              <option value="Other">Other</option>
+                            ><MenuItem value="">Select</MenuItem>
+                              <MenuItem value="PO">PO</MenuItem>
+                              {/* <MenuItem value="STO">STO</MenuItem> */}
+                              <MenuItem value="Other">Other</MenuItem>
                               {/* {(this.state.asnStatusList).map(item=>
                                 <option value={item.value}>{item.display}</option>
                               )}  */}
-                            </select></div>
+                            </Select></FormControl></div>
                             {this.state.doctype=="PO"?
-        <div className="row mt-2">
-                      <label className="col-sm-2 mt-4">Po No</label>
-                      <div className="col-sm-2">
+        <div className="row mt-2" style={{paddingLeft:"16px"}}>
+                      
+                      <div className="col-sm-3">
                         
-                        <input type="text"  id="POSearch"  className="form-control"  value={filter.poNoFrom} onInput={ (e) => {commonHandleChange(e,this,"po.purchaseOrderNumber");}} onChange={this.handleFilterChange.bind(this,'poNoFrom') }/>
+                        <TextField label="Po No" size="small" fullWidth variant="outlined" type="text"  id="POSearch"  className="form-control"  value={filter.poNoFrom} onInput={ (e) => {commonHandleChange(e,this,"po.purchaseOrderNumber");}} onChange={this.handleFilterChange.bind(this,'poNoFrom') }/>
                       </div>
 
                       <div className="col-sm-3">
-                          <button type="button" className={"btn btn-primary"} onClick={this.handleSavePO.bind(this)}> Search </button>
+                          <Button type="button" variant="contained" color="primary" onClick={this.handleSavePO.bind(this)}> Search </Button>
                           &nbsp;
-                          <button type="button" className={"btn btn-primary"} onClick={() => {this.gateEntryASNReminder()}}> ASN Reminder </button>
+                          <Button type="button" variant="contained" color="primary" onClick={() => {this.gateEntryASNReminder()}}> ASN Reminder </Button>
                       </div>
                 
                       {/*<label>To </label>
@@ -775,20 +778,15 @@ var frmhidden = {
         {/* {this.state.doctype=="Other"?"": */}
         {this.state.doctype=="PO"?
         <div className="row">
+           <div className="col-sm-9"></div>
+           <div className="col-sm-3" style={{paddingRight:"2rem"}}>
+            <input
+             id="SearchTableDataInput" 
+             onKeyUp={searchTableData} 
+             style={{fontSize: "10px", float:"right" }}
+             placeholder="Search .." />
 
-        <div className="col-sm-6">
-
-        </div>
-
-        <div className="col-sm-6">
-
-        <div className="row mt-2">
-        <div className="col-sm-4"></div>
-           <div className="col-sm-8">
-            <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." />
-</div>
     </div>
-        </div>
 
         </div>:""
       }
@@ -802,53 +800,53 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
             </div>*/}
                <div className="col-sm-12 mt-2">
                <div className="col-sm-12 text-center mt-2 ">
-                                    <label style={{fontSize:"20px"}}>PO LIST</label>
+                                    <label style={{fontSize:"16px"}}>PO LIST</label>
                                  </div>
                 <div class="table-proposed">
                 <StickyHeader height={100} className="table-responsive width-adjustment">
-                     <table className="table table-bordered table-header-fixed">
-                       <thead>
-                         <tr>                          
-                           <th>PO No</th>
-                           {/* <th>Document Type</th> */}
-                           <th className="text-center">PO Date</th>
-                           <th className="text-center" style={{display:this.state.vendorCodeShown}}>Vendor Code</th>
-                           <th style={{display:this.state.vendorNameShown}}>Vendor Name</th>
-                           {/* <th>Plant</th> */}
-                           {/* <th>Inco Terms </th> */}
-                           {/* <th>Requested By</th> */}
-                           {/* <th>Purchase Group</th> */}
-                           <th className="text-center">Version No</th>
-                           <th>Status</th>
-                         </tr>
-                       </thead>
-                       <tbody id="DataTableBody">
+                     <Table className="my-table">
+                       <TableHead>
+                         <TableRow>                          
+                           <TableCell>PO No</TableCell>
+                           {/* <TableCell>Document Type</TableCell> */}
+                           <TableCell className="text-center">PO Date</TableCell>
+                           <TableCell className="text-center" style={{display:this.state.vendorCodeShown}}>Vendor Code</TableCell>
+                           <TableCell style={{display:this.state.vendorNameShown}}>Vendor Name</TableCell>
+                           {/* <TableCell>Plant</TableCell> */}
+                           {/* <TableCell>Inco Terms </TableCell> */}
+                           {/* <TableCell>Requested By</TableCell> */}
+                           {/* <TableCell>Purchase Group</TableCell> */}
+                           <TableCell className="text-center">Version No</TableCell>
+                           <TableCell>Status</TableCell>
+                         </TableRow>
+                       </TableHead>
+                       <TableBody id="DataTableBody">
                             {
                               this.state.purchaseOrderList.map((po,index)=>
-                                <tr onClick={()=>{this.handleFilterClick(index)}}>
-                                  <td>{po.purchaseOrderNumber}</td>
-                                  {/* <td>{po.documentType}</td> */}
-                                  <td className="text-center">{formatDateWithoutTimeWithMonthName(po.poDate)}</td>
-                                  <td className="text-center" style={{display:this.state.vendorCodeShown}}>{po.vendorCode}</td>
-                                  <td style={{display:this.state.vendorNameShown}}>{po.vendorName}</td>
-                                  {/* <td>{po.plant}</td> */}
-                                  {/* <td>{po.requestedBy.name}</td> */}
-                                  {/* <td>{po.incomeTerms}</td> */}
-                                  {/* <td>{po.purchaseGroup}</td> */}
-                                  <td className="text-center">{po.versionNumber}</td>
-                                  {/* <td>{this.state.newPoStatus[po.status]}</td> */}
-                                  <td>{po.status}</td>
-                                </tr>
+                                <TableRow onClick={()=>{this.handleFilterClick(index)}}>
+                                  <TableCell>{po.purchaseOrderNumber}</TableCell>
+                                  {/* <TableCell>{po.documentType}</TableCell> */}
+                                  <TableCell className="text-center">{formatDateWithoutTimeWithMonthName(po.poDate)}</TableCell>
+                                  <TableCell className="text-center" style={{display:this.state.vendorCodeShown}}>{po.vendorCode}</TableCell>
+                                  <TableCell style={{display:this.state.vendorNameShown}}>{po.vendorName}</TableCell>
+                                  {/* <TableCell>{po.plant}</TableCell> */}
+                                  {/* <TableCell>{po.requestedBy.name}</TableCell> */}
+                                  {/* <TableCell>{po.incomeTerms}</TableCell> */}
+                                  {/* <TableCell>{po.purchaseGroup}</TableCell> */}
+                                  <TableCell className="text-center">{po.versionNumber}</TableCell>
+                                  {/* <TableCell>{this.state.newPoStatus[po.status]}</TableCell> */}
+                                  <TableCell>{po.status}</TableCell>
+                                </TableRow>
                               )
                             }
 
-                       </tbody>
-                     </table>
+                       </TableBody>
+                     </Table>
                      </StickyHeader>
                   </div>
                     </div>
                     <div className="col-sm-12 text-center mt-2 ">
-                    <label style={{fontSize:"20px"}}>
+                    <label style={{fontSize:"16px"}}>
                                     {this.state.purchaseOrderList[0]!=null?this.state.purchaseOrderList[0].pstyp == "9" ? "SSN LIST" : "ASN LIST":"ASN LIST"}
                                       </label>
                                  </div>
@@ -856,34 +854,35 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
                  <div className="col-sm-12 mt-1">
          <div>
             <StickyHeader  className="table-responsive" style={ hidden }>
-               <table className="table table-bordered table-header-fixed">
-                  <thead>
-                     <tr>
-                        {/* <th>{this.state.po.isServicePO ? "Service Note No" : "ASN No"}</th> */}
-                         {/* <th>PO No</th> */}
-                        <th> {this.state.purchaseOrderList[0]!=null?this.state.purchaseOrderList[0].pstyp == "9" ? "Service Note No" : "ASN No":"ASN No"}</th>
-                        <th> {this.state.purchaseOrderList[0]!=null?this.state.purchaseOrderList[0].pstyp == "9" ? "SSN Date" : "ASN Date":"ASN Date"}</th>
-                        <th>Invoice No</th>
-                        <th>Invoice Date</th>
-                        <th>Status </th>
-                     </tr>
-                  </thead>
-                  <tbody id="DataTableBodyFour">
-                                    </tbody>
+               <Table className="my-table">
+                  <TableHead>
+                     <TableRow>
+                        {/* <TableCell>{this.state.po.isServicePO ? "Service Note No" : "ASN No"}</TableCell> */}
+                         {/* <TableCell>PO No</TableCell> */}
+                        <TableCell> {this.state.purchaseOrderList[0]!=null?this.state.purchaseOrderList[0].pstyp == "9" ? "Service Note No" : "ASN No":"ASN No"}</TableCell>
+                        <TableCell> {this.state.purchaseOrderList[0]!=null?this.state.purchaseOrderList[0].pstyp == "9" ? "SSN Date" : "ASN Date":"ASN Date"}</TableCell>
+                        <TableCell>Invoice No</TableCell>
+                        <TableCell>Invoice Date</TableCell>
+                        <TableCell>Status </TableCell>
+                     </TableRow>
+                  </TableHead>
+                  <TableBody id="DataTableBodyFour">
+                                    
                                     {
                               this.state.gateentryAsnList.map((asn,index)=>
-                                <tr>
-                                  <td>{asn.advanceShipmentNoticeNo!=null?asn.advanceShipmentNoticeNo:asn.serviceSheetNo}</td>
-                                  <td>{formatDateWithoutTimeWithMonthName(asn.created)}</td>       
-                                  <td>{asn.invoiceNo}</td> 
-                                  <td>{asn.invoiceDate==null?"":formatDateWithoutTime(asn.invoiceDate)}</td>
-                                  <td>{asn.status}</td>
+                                <TableRow>
+                                  <TableCell>{asn.advanceShipmentNoticeNo!=null?asn.advanceShipmentNoticeNo:asn.serviceSheetNo}</TableCell>
+                                  <TableCell>{formatDateWithoutTimeWithMonthName(asn.created)}</TableCell>       
+                                  <TableCell>{asn.invoiceNo}</TableCell> 
+                                  <TableCell>{asn.invoiceDate==null?"":formatDateWithoutTime(asn.invoiceDate)}</TableCell>
+                                  <TableCell>{asn.status}</TableCell>
 
 
-                                </tr>
+                                </TableRow>
                               )
                             }
-                                 </table>
+                            </TableBody>
+                                 </Table>
                               </StickyHeader>
                            </div>
                         </div>
@@ -891,9 +890,9 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
 }
       </FormWithConstraints>   
       </div> 
-                  <br/>
+                 
                   <div  style={ shown }>
-                    <div  className="boxContent mt-55">
+                  <div className="card p-2">
                     <FormWithConstraints ref={formWithConstraints => this.reports = formWithConstraints} 
         onSubmit={(e)=>{
           commonSubmitForm(e, this, "securityASNSubmit","/rest/saveASNDirectFor103",  "reports")
@@ -905,26 +904,26 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
                           {/* <a href={API_BASE_URL+"/rest/downloadPO/"+this.state.po.purchaseOrderNumber} className="btn btn-primary ml-2" target="_blank">Print PO</a>
                          */}
                          
-                                <button type="button" onClick={this.downloadexcelApi} className="btn btn-primary ml-2" >&nbsp;Print PO</button>
-                                <span><a href={API_BASE_URL + "/rest/download/" + attachmentId}>{ExcelFileName}</a></span>
+                                <Button variant="contained" color="primary" type="button" onClick={this.downloadexcelApi} className="btn btn-primary ml-2" >&nbsp;Print PO</Button>
+                                <span><a className="ml-1 mr-1" href={API_BASE_URL + "/rest/download/" + attachmentId}>{ExcelFileName}</a></span>
 
                           {/* <a href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_26?sap-client=100&PO=${this.state.po.purchaseOrderNumber}`}  target="_blank" className="btn btn-primary ml-2">Print PO</a> */}
                           
                           {/* {this.state.purchaseOrderList.doctyp =="PO"? */}
 
                           {this.state.po.poTypeMsg!="Directly Post 103 in portal."?
-                          <button type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
+                          <Button variant="contained" color="primary" type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
                           onClick={()=>{this.props.createASN(this.state.po,this.state.poLineArray,this.state.serviceArray,this.state.costCenterList,this.props.SSNVersion)}}
                            //  onClick={()=>{this.props.createASN(this.state.po,this.state.poLineArray,this.state.serviceArray,this.state.costCenterList,this.state.ssnFundList,this.props.SSNVersion)}}
                             >
                               {this.state.po.isServicePO?"Create Service Note":"Create ASN"}
-                        </button>            
+                        </Button>            
                          
                          :
-                         <button type="submit" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} >
+                         <Button variant="contained" color="primary" type="submit" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} >
                               Create ASN for 103 Direct
                            {/* {this.state.po.isServicePO?"Create Service Note":"Create ASN 103 Direct"} */}
-                      </button>
+                      </Button>
                          
                          }
                          {/* :
@@ -986,7 +985,7 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
                      
                   </div>
                   </FormWithConstraints>
-                  <hr className="w-100"></hr>
+                 
                   <div className="row mt-2">
                       <label className="col-sm-1">PO No</label>
                       <span className="col-sm-2">
@@ -1020,49 +1019,51 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
                   </div>
 
                  
-                  <div className="boxContent fixed-height py-1">
+                  <div className="card p-2">
           <div className={"lineItemDiv min-height-0px "+(displayService==="block"?"display_none":"")}>
            <div className="row">
            <div className="col-sm-9"></div>
-            <div className="col-sm-3">
-            <input type="text" id="SearchTableDataInputTwo" className="form-control" onKeyUp={searchTableDataTwo} placeholder="Search .." />
+            <div className="col-sm-3" style={{paddingRight:"2rem"}}>
+            <input type="text" id="SearchTableDataInputTwo" 
+             onKeyUp={searchTableDataTwo} placeholder="Search .." 
+             style={{fontSize: "10px", float:"right" }}/>
             </div> 
                <div className="col-sm-12 mt-2">
                   <StickyHeader height={150} className="table-responsive">
-                     <table className="table table-bordered table-header-fixed">
-                       <thead>
-                         <tr>                         
-                           <th> Line No </th>
-                           <th> Material Description </th>
-                           <th className="text-right"> PO Qty </th>
-                           <th> UOM </th>
-                           {/* <th className="width-120px">ASN Qty </th> */}
-                           <th>Bal Qty</th>
-                           <th className="text-right"> Rate </th>
-                           <th>Currency</th> 
-                         </tr>
-                       </thead>
-                       <tbody id="DataTableBodyTwo">
+                     <Table className="my-table">
+                       <TableHead>
+                         <TableRow>                         
+                           <TableCell> Line No </TableCell>
+                           <TableCell> Material Description </TableCell>
+                           <TableCell className="text-right"> PO Qty </TableCell>
+                           <TableCell> UOM </TableCell>
+                           {/* <TableCell className="widTableCell-120px">ASN Qty </TableCell> */}
+                           <TableCell>Bal Qty</TableCell>
+                           <TableCell className="text-right"> Rate </TableCell>
+                           <TableCell>Currency</TableCell> 
+                         </TableRow>
+                       </TableHead>
+                       <TableBody id="DataTableBodyTwo">
                             {
                               this.state.poLineArray.map((poLine)=>
-                                <tr onClick={()=>this.onClickPOLine(poLine)}>
+                                <TableRow onClick={()=>this.onClickPOLine(poLine)}>
                                   {/* onClick={()=>this.onClickPOLine(poLine)} */}
                                   {/* onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden}); commonSubmitWithParam(this.props,"getPOLines","/rest/getPOLines",poLine.poLineId)}} */}
-                                  <td>{removeLeedingZeros(poLine.lineItemNumber)}</td>
-                                  <td>{poLine.materialCode} - {poLine.material}</td>
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.poQuantity,3))}</td>
-                                  <td>{poLine.uom}</td>
-                                  {/* <td className="width-120px">{poLine.asnQuantity}</td> */}
-                                  <td>{poLine.balanceQuantity}</td>
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.rate,2))}</td>
-                                  <td>{poLine.currency}</td>
+                                  <TableCell>{removeLeedingZeros(poLine.lineItemNumber)}</TableCell>
+                                  <TableCell>{poLine.materialCode} - {poLine.material}</TableCell>
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.poQuantity,3))}</TableCell>
+                                  <TableCell>{poLine.uom}</TableCell>
+                                  {/* <td className="width-120px">{poLine.asnQuantity}</TableCell> */}
+                                  <TableCell>{poLine.balanceQuantity}</TableCell>
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.rate,2))}</TableCell>
+                                  <TableCell>{poLine.currency}</TableCell>
                                   
-                                </tr>
+                                </TableRow>
                               )
                      }
                     
-                  </tbody>
-               </table>
+                  </TableBody>
+               </Table>
             </StickyHeader>
          </div>
       </div>
@@ -1071,51 +1072,53 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
             <div className="lineItemDiv min-height-0px"  style={{display:displayService}}>
            <div className="row">
            <div className="col-sm-9"></div>
-            <div className="col-sm-3">
-            <input type="text" id="SearchTableDataInputTwo" className="form-control" onKeyUp={searchTableDataTwo} placeholder="Search .." />
+            <div className="col-sm-3" style={{paddingRight:"2rem"}}>
+            <input type="text" id="SearchTableDataInputTwo" 
+             style={{fontSize: "10px", float:"right" }}
+              onKeyUp={searchTableDataTwo} placeholder="Search .." />
             </div>
                <div className="col-sm-12 mt-2"> 
                   <StickyHeader height={150} className="table-responsive">
-                     <table className="table table-bordered table-header-fixed">
-                       <thead>
-                         <tr>             
-                           <th> Po Line No.</th>            
-                           <th> Service No.</th>
-                           <th className="w-40per">Service Description po</th>
-                           <th className="text-right"> Required Qty </th>
-                           <th> UOM </th>
-                           {/* <th>Completed Qty </th>
-                           <th>Bal Qty</th> */}
-                           <th className="text-right"> Rate </th>
-                           <th>Currency</th> 
-                           {/* <th>Plant</th> */}
-                           <th>Contract Po</th>
-                         </tr>
-                       </thead>
-                       <tbody id="DataTableBodyTwo">
+                     <Table className="my-table">
+                       <TableHead>
+                         <TableRow>             
+                           <TableCell> Po Line No.</TableCell>            
+                           <TableCell> Service No.</TableCell>
+                           <TableCell className="w-40per">Service Description po</TableCell>
+                           <TableCell className="text-right"> Required Qty </TableCell>
+                           <TableCell> UOM </TableCell>
+                           {/* <TableCell>Completed Qty </TableCell>
+                           <TableCell>Bal Qty</TableCell> */}
+                           <TableCell className="text-right"> Rate </TableCell>
+                           <TableCell>Currency</TableCell> 
+                           {/* <TableCell>Plant</TableCell> */}
+                           <TableCell>Contract Po</TableCell>
+                         </TableRow>
+                       </TableHead>
+                       <TableBody id="DataTableBodyTwo">
                             {
                               this.state.serviceArray.map((service,i)=>
                               
-                                <tr>
+                                <TableRow>
 
                                   {/* onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden}); commonSubmitWithParam(this.props,"getPOLines","/rest/getPOLines",poLine.poLineId)}} */}
-                                  <td>{removeLeedingZeros(service.parentPOlineNumber)}</td>
-                                  <td>{removeLeedingZeros(service.lineItemNumber)}</td>
-                                  <td>{service.materialCode}-{service.material}</td>
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.poQuantity,3))}</td>
-                                  <td>{service.uom}</td>
-                                  {/* <td>{service.asnQuantity}</td>
-                                  <td>{service.balanceQuantity}</td> */}
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.rate,2))}</td>
-                                  <td>{service.currency}</td>
-                                  {/* <td>{poLine.plant}</td> */}
-                                 <td>{service.contractPo}</td>
-                                </tr>
+                                  <TableCell>{removeLeedingZeros(service.parentPOlineNumber)}</TableCell>
+                                  <TableCell>{removeLeedingZeros(service.lineItemNumber)}</TableCell>
+                                  <TableCell>{service.materialCode}-{service.material}</TableCell>
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.poQuantity,3))}</TableCell>
+                                  <TableCell>{service.uom}</TableCell>
+                                  {/* <TableCell>{service.asnQuantity}</TableCell>
+                                  <TableCell>{service.balanceQuantity}</TableCell> */}
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.rate,2))}</TableCell>
+                                  <TableCell>{service.currency}</TableCell>
+                                  {/* <TableCell>{poLine.plant}</TableCell> */}
+                                 <TableCell>{service.contractPo}</TableCell>
+                                </TableRow>
                               )
                             }
                         
-                       </tbody>
-                     </table>
+                       </TableBody>
+                     </Table>
                   </StickyHeader>
                </div>
             </div>    

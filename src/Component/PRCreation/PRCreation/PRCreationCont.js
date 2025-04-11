@@ -151,8 +151,8 @@ var frmhidden = {
               } 
     return (
       <React.Fragment>
-      <div className="w-100">
-        <div style={ hidden} className="mt-70 boxContent">
+        <div style={ hidden} >
+        <div className="wizard-v1-content" style={{marginTop:"80px", marginBottom:"20px"}}>
       
       <FormWithConstraints>
 
@@ -206,7 +206,7 @@ var frmhidden = {
                                  </div>
                 <div class="table-proposed">
                 <StickyHeader height={160} className="table-responsive width-adjustment">
-                <table className="table table-bordered table-header-fixed">
+                <table className="my-table">
                 <thead>
                   <tr>
                     <th>PR No</th>

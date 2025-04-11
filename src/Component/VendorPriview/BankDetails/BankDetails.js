@@ -103,7 +103,7 @@ class BankDetails extends Component {
     return (
       <div className="card">
               <div className="card-header">Bank Details</div>
-              <div className="card-body">
+              <div className="card-body" style={{paddingLeft:"10px"}}>
           <FormWithConstraints classname="mt-2" ref={formWithConstraints => this.bankDetForm = formWithConstraints} 
            onSubmit={(e)=>{commonSubmitForm(e,this,"saveBankDetailsResponse","/rest/savePartnerBankDetail","bankDetForm")}} noValidate > 
             <input type="hidden" name="partnerBankDetailId" 
@@ -134,8 +134,7 @@ class BankDetails extends Component {
               </FieldFeedbacks>
             </div>
           </div>
-          <br />
-          <div className="row">
+          <div className="row mt-2">
             <label className="col-sm-2">Account No <span className="redspan">*</span></label>
             <div className="col-sm-3">
               <input type="text" name="accountNumber" value={this.state.partnerBankDetails.accountNumber}  required
@@ -156,8 +155,7 @@ class BankDetails extends Component {
               </FieldFeedbacks>
             </div>
           </div>
-          <br />
-          <div className="row">
+          <div className="row mt-2">
             <label className="col-sm-2">Branch Name <span className="redspan">*</span></label>
             <div className="col-sm-3">
             <input type="hidden" name="branchName[bankBranchDetailsId]" 

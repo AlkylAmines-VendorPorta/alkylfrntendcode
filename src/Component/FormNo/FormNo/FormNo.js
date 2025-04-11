@@ -174,6 +174,7 @@ class FormNo extends Component {
             poQty: "",
             uom: "",
             balQty1: "",
+            orderNo:""
 
          },
          asnIndex: "",
@@ -286,10 +287,14 @@ var givenFirstDate = new Date(firstDateOfMonth);
 var firstDay = givenFirstDate.getDay();
 var firstDayisWeekend = (firstDay === 6) || (firstDay === 0) ? "Its weekend": "Its working day";
 
-if((diffInDays>3) || ((!lastDayisWeekend) || (!firstDayisWeekend))){
+// if((diffInDays>3) || ((!lastDayisWeekend) || (!firstDayisWeekend))){
+if((diffInDays>4)){
    return firstDateOfMonth;
    
-}else{
+}else if(((!lastDayisWeekend) || (!firstDayisWeekend))){
+   return firstDateOfMonth;
+}
+else{
    return lastDayOfLastMonth
 }
 
@@ -600,7 +605,8 @@ getServiceLineFromService(service) {
       parentPOLineId: service.parentPOLineId,
       contractPo: service.contractPo,
       balanceLimit: service.balanceLimit,
-      parentLineNumber : service.parentPOlineNumber
+      parentLineNumber : service.parentPOlineNumber,
+      orderNo:service.orderNo
 
    };
 }
@@ -1726,7 +1732,7 @@ async componentDidMount() {
           <FormWithConstraints ref={formWithConstraints => this.asnFormDet = formWithConstraints}
                      onSubmit={this.onSubmit}
                      >
-                        <div style={{ display: displayAsnLine }}>
+                        <div className="wizard-v1-content" style={{ display: displayAsnLine, marginTop:"80px" }} >
                         {/* {this.props.po.doctyp=="PO"? */}
                         {/* //this.props.po.outboundDeliveryNo==""? */}
                         <div className="card mt-100" style={{padding:" 10px"}}>
@@ -2013,7 +2019,7 @@ async componentDidMount() {
 </div>
 } */}
                               
-                     <div className="boxContent " style={{ display: "none" }}>
+                     <div className="wizard-v1-content " style={{ display: "none" }}>
                         {/* <div className={this.state.showHistory?"none ":"block"}> */}
 
                          <input type="hidden" disabled={isEmpty(this.state.asnDetails.asnId)} name="advanceShipmentNoticeId" value={this.state.asnDetails.asnId} />
@@ -2046,7 +2052,7 @@ async componentDidMount() {
 
                      </div>
                      </div>
-                     <div className={"boxContent"}>
+                     <div className={"wizard-v1-content card p-2"}>
 
 <div style={{ display: displayAsnLine }}>
       <div className="row" >
@@ -2176,7 +2182,7 @@ async componentDidMount() {
                               <div className="w-100 mt-2">
                                  <div className="col-sm-12">
                                     <div className="table-responsive mt-2">
-                                       <table className="table table-bordered">
+                                       <table className="my-table">
                                           <thead className="thead-light">
                                              <tr className="row m-0">
                                                 <th className="col-1">Line No.</th>
@@ -2430,6 +2436,7 @@ async componentDidMount() {
                         </div>
                      </div>
                   </div>
+                  {this.state.role != 'SSNAPP'?
                   <div className={"modal-footer"}>
                      {['', 'SSIP'].includes(this.state.asnDetails.status) && <button
                         className={"btn btn-success"}
@@ -2439,7 +2446,7 @@ async componentDidMount() {
                         Update
                      </button>
                      }
-                  </div>
+                  </div>:""}
                </div>
             </div>
          </div>
@@ -2575,10 +2582,16 @@ async componentDidMount() {
                                                     onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceNo"); } } />
                                               </div>
                                              <label className="col-sm-2 mt-20">Invoice Date <span className="redspan">*</span></label>
-                                              <div className="col-sm-2 mt-20">
-                                                 <input type="date" className="form-control" name="invoiceDate" onKeyDown={this.controlSubmit}
-                                                    value={formatDateWithoutTimeNewDate(this.state.asnDetails.invoiceDate)}
-                                                    onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceDate"); } } />
+                                             <div className="col-sm-2 mt-4">
+                                              <input type="date" className="form-control" onKeyDown={this.controlSubmit}
+                                                  value={formatDateWithoutTimeNewDate(this.state.asnDetails.invoiceDate)}
+                                                  max="9999-12-31"                                                 
+                                                  name="invoiceDate" 
+                                                  onChange={(event) => {
+                                                    if (event.target.value.length < 60) {
+                                                       commonHandleChange(event, this, "asndetails.invoiceDate", "reports");
+                                                    }
+                                                 } } />
                                               </div>
 
                                               <label className="col-sm-2 mt-20">Service Location</label>
@@ -2622,7 +2635,10 @@ async componentDidMount() {
                                                  <input type="date" className="form-control" onKeyDown={this.controlSubmit}
                                                   value={formatDateWithoutTimeNewDate(this.state.asnDetails.servicePostingDate)}
                                                   min={this.enablelastDateofLastMonth()}
-                                                  name="servicePostingDate" onChange={(event) => {
+                                                 // max={new Date()}
+                                                  //max="9999-12-31"
+                                                  name="servicePostingDate" 
+                                                  onChange={(event) => {
                                                     if (event.target.value.length < 60) {
                                                        commonHandleChange(event, this, "asndetails.servicePostingDate", "reports");
                                                     }
@@ -2643,7 +2659,7 @@ async componentDidMount() {
                                  <div className="row mt-80"></div>
 
                   <div className="table-responsive">
-                     <table className="table table-bordered">
+                     <table className="my-table">
                         <thead className="thead-light">
                            <tr className="row m-0">
                               <th className="col-1">PO Line No.</th>
@@ -2672,6 +2688,7 @@ async componentDidMount() {
                                     <td className="col-1">
                                        <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][advanceShipmentNoticeLineId]"} value={serviceLine.asnLineId} disabled={isEmpty(serviceLine.asnLineId)} />
                                        <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][purchaseOrderLineId]"} value={serviceLine.poLineId} />
+                                       <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][orderNo]"} value={serviceLine.orderNo} />
                                        <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][lineItemNumber]"} value={serviceLine.poLineNumber} />
                                        {removeLeedingZeros(serviceLine.poLineNumber)}</td>
                                     {

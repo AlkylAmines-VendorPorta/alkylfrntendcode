@@ -17,6 +17,7 @@ import { isEmpty } from "../../Util/validationUtil";
 import { FormWithConstraints } from 'react-form-with-constraints';
 import { formatDateWithoutTime ,formatDateWithoutTimeNewDate} from "../../Util/DateUtil"
 import swal from "sweetalert";
+import { Button, TextField } from "@material-ui/core";
 class ReportVechical extends React.Component {
   constructor(props) {
     super(props)
@@ -216,7 +217,9 @@ class ReportVechical extends React.Component {
  //  this.props.changeLoaderState(true);
     commonSubmitWithParam(this.props, "cancelASN", "/rest/cancelVehicleRegistration", this.props.vehicleReg.vehicleRegistationId, value)
  }
-
+ print() {
+  window.print();
+}
   render() {
     const vehicleRegForm2 = this.state.vehicleRegForm2;
     const vehicleRegFormsales = this.state.vehicleRegForm2.saleOrderNo;
@@ -254,16 +257,19 @@ class ReportVechical extends React.Component {
         </div>
 
 {this.props.OutwardReportdisplay==true?"":
-         <div className="card my-2 m-2" >
+         <div className="card" style={{marginLeft:"20px", marginRight:"20px" }}>
         
-          <div className="card-body">
+          <div className="card-body" style={{paddingLeft:"10px"}}>
             <FormWithConstraints>
             <div class="d-flex bd-highlight">
               <div class="p-2 flex-fill bd-highlight">
                 <div className="row mt-1">
-                  <label className="col-sm-6">Vehicle Registration No </label>
-                    <div className="col-sm-6">
-                      <input
+                  <label className="col-sm-6 mb-3">Vehicle Registration No </label>
+                    <div className="col-sm-6 mb-3">
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
                         type="text"
                         className="form-control"
                         value={vehicleRegForm2.vehicleRegistrationNo}
@@ -274,9 +280,12 @@ class ReportVechical extends React.Component {
                     </div>
                   </div>
                   <div className="row mt-1">
-                    <label className="col-sm-6" >Licence No</label>
-                    <div className="col-sm-6 " >
-                      <input
+                    <label className="col-sm-6 mb-3" >Licence No</label>
+                    <div className="col-sm-6 mb-3" >
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
                         type="text"
                         className="form-control"
                         value={vehicleRegForm2.licenseNo}
@@ -288,9 +297,12 @@ class ReportVechical extends React.Component {
                  
                     </div>
                     <div className="row mt-1">
-                      <label className="col-sm-6" >Trip LSP</label>
-                      <div className="col-sm-6" >
-                        <input
+                      <label className="col-sm-6 mb-3" >Trip LSP</label>
+                      <div className="col-sm-6 mb-3" >
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
                           type="text"
                           className="form-control"
                           value={vehicleRegForm2.tripLSP}
@@ -301,10 +313,13 @@ class ReportVechical extends React.Component {
                       </div>
                     </div>
                     <div className="row mt-1">
-                      <label className="col-sm-6" for="exampleInputEmail1">Driver Name
+                      <label className="col-sm-6 mb-3" for="exampleInputEmail1">Driver Name
                       </label>
-                      <div className="col-sm-6">
-                        <input
+                      <div className="col-sm-6 mb-3">
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
                           type="text"
                           className="form-control"
                           value={vehicleRegForm2.driverName}
@@ -316,10 +331,13 @@ class ReportVechical extends React.Component {
                     </div>
                      <div className="row mt-1">
                 
-                    <label className="col-sm-6" for="exampleInputEmail1">Expiry Date
+                    <label className="col-sm-6 mb-3" for="exampleInputEmail1">Expiry Date
                     </label>
-                    <div className="col-sm-6">
-                      <input
+                    <div className="col-sm-6 mb-3">
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
                         type="date"
                         className={"form-control"}
                         // value={formatDateWithoutTime(vehicleRegForm2.expDate)}
@@ -336,10 +354,13 @@ class ReportVechical extends React.Component {
                 
                    </div>
                    <div className="row mt-1">
-                   <label className="col-sm-6" for="exampleInputEmail1">Phone No
+                   <label className="col-sm-6 mb-3" for="exampleInputEmail1">Phone No
                     </label>
-                      <div className="col-sm-6">
-                        <input
+                      <div className="col-sm-6 mb-3">
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
                           type="text"
                           className="form-control"
                           value={vehicleRegForm2.phoneNo}
@@ -364,9 +385,9 @@ class ReportVechical extends React.Component {
                       :""}  
                       <div>
                        <div className="col-sm-12"> 
-                      <button type="button" class="btn btn-primary btn-sm " data-toggle="modal" data-target="#exampleModal" onClick={() => { this.handleButtonType() }}>
+                       <Button variant="contained" color="primary"type="button"  data-toggle="modal" data-target="#exampleModal" onClick={() => { this.handleButtonType() }}>
                           Capture Driver Photo
-                        </button>
+                        </Button>
                         </div>
                       </div>
                       </div>
@@ -379,120 +400,60 @@ class ReportVechical extends React.Component {
                       </div>
                     :""}
                     <div className="col-sm-12">
-                    <button type="button" class="btn btn-primary btn-sm " data-toggle="modal" data-target="#exampleModal" onClick={() => { this.handleButtonTypeDocument() }}>
+                    <Button variant="contained" color="primary" type="button"  data-toggle="modal" data-target="#exampleModal" onClick={() => { this.handleButtonTypeDocument() }}>
                     Document Capture
-                    </button>
+                    </Button>
                     </div>
                     </div>
 
                  </div>
-                
-                 <div class="p-2 flex-fill bd-highlight" style={{'max-width':'25%'}}>
-                
-                  </div>
-                
-                {/* <div class="p-2 flex-fill bd-highlight" style={{'max-width':'25%'}}>
-                <div className="row mt-1">
-                    <div className="col-sm-12">
-                    <a  className="btn btn-success mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_36?sap-client=100&so=${vehicleRegFormsales}&vehicle=TRUCK`}
-                                     target="_blank">Print Loading Form</a> 
-                    
-                    </div>
-                    </div>
-                  </div> */}
-
-                {/* {vehicleRegForm2.status !== "CANCELLED" ?
-                <div class="p-2 flex-fill bd-highlight" style={{'max-width':'25%'}}>
-                <div className="row mt-1">
-                    <div className="col-sm-12">
-                    {<button  className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelAsn(e)}}>Cancel Request</button> }
-                    </div>
-                    </div>
-                  </div>
-                  : null} */}
+                           
             </div>
 
-              {/* <div className="row-sm-12"></div> */}
-             
-
-              {/* <div className="row mt-1"> */}
-                {/* <label className="col-sm-2" for="exampleInputEmail1">Driver Photo
-                </label>
-                <div className="col-sm-2" >
-                  <button type="button" class="btn btn-primary btn-sm " data-toggle="modal" data-target="#exampleModal" onClick={() => { this.handleButtonType() }}>
-                    Capture
-                  </button>
-                </div> */}
-                {/* <label className="col-sm-2" for="exampleInputEmail1">Document Photo
-                </label> */}
-                {/* <div className="col-sm-2 ">
-                  <button type="button" class="btn btn-primary btn-sm " data-toggle="modal" data-target="#exampleModal" onClick={() => { this.handleButtonTypeDocument() }}>
-                    Capture
-                  </button>
-                </div> */}  
-                {/* <label className="col-sm-2" for="exampleInputEmail1"> Preview Driver Image
-                <div className="col-6">
-                
-              </div>
-                </label> */}
-                {/* {vehicleRegForm2.driverPicString?
-                <div className="col-sm-2 ">
-                <img src={vehicleRegForm2.driverPicString} className="w-100 alkylLogo" alt="Alkyl" />
-                </div>
-                :""}   */}
-              {/* </div>
-              <div className="row mt-1">
-              </div> */}
-              {/* {vehicleRegForm2.docPicString?
-              <div className="row mt-1">
-                <label className="col-sm-2" for="exampleInputEmail1"> Preview Document Image
-                </label>
-                <div className="col-sm-2">
-                <img src={vehicleRegForm2.docPicString} className="w-100 alkylLogo" alt="Alkyl" />
-                </div>
-              </div>
-              :""} */}
-
               <div className="col-sm-12 m-2 d-flex justify-content-center" >
-              <a className={this.props.role!== "VENADM" ? "btn btn-primary mr-1" : "none"} href={window.location.href}><i className="fa fa-arrow-left" aria-hidden="true"></i></a>
+              <Button variant="contained" color="primary" className={this.props.role!== "VENADM" ? "btn btn-primary mr-1" : "none"} href={window.location.href}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
               {vehicleRegForm2.status === "CR" ?
                 // <div className="col-sm-12 m-2  d-flex justify-content-center">
-                  <button type="button" onClick={() => commonSubmitFormNoValidationWithData(this.state.vehicleRegForm2, this, "reportVehicle", "/rest/reportVehicle")} class="btn btn-primary">Report</button>
+                  <Button variant="contained" color="primary" type="button" onClick={() => commonSubmitFormNoValidationWithData(this.state.vehicleRegForm2, this, "reportVehicle", "/rest/reportVehicle")} class="btn btn-primary">Report</Button>
                 // </div>
                 : null}
               {vehicleRegForm2.status === "RP" ?
                 // <div className="col-sm-12 m-2  d-flex justify-content-center">
-                  <button type="button" onClick={() => commonSubmitWithParam(
+                  <Button variant="contained" color="primary" type="button" onClick={() => commonSubmitWithParam(
                     this.props,
                     "vehicleGateIN",
                     "/rest/vehicleGateIN",
                     vehicleRegForm2.vehicleRegistationId
-                  )} class="btn btn-primary">Gate IN</button>
+                  )} class="btn btn-primary">Gate IN</Button>
                 // </div>
                 : null}
               {vehicleRegForm2.status === "VGI"  && this.state.vehicleRegForm2.invoiceNo != ""?
                 // <div className="col-sm-12 m-2  d-flex justify-content-center">
-                  <button type="button" onClick={(e)=>{this.gateOutInvoiceNO(e)}} class="btn btn-primary">Gate OUT</button>
+                  <Button variant="contained" color="primary" type="button" onClick={(e)=>{this.gateOutInvoiceNO(e)}} class="btn btn-primary">Gate OUT</Button>
                 // </div>
                 : null}
 
                 {vehicleRegForm2.status === "CANCELLED" ?
                 // <div className="col-sm-12 m-2  d-flex justify-content-center">
-                  <button type="button" onClick={() => commonSubmitWithParam(
+                  <Button variant="contained" color="primary" type="button" onClick={() => commonSubmitWithParam(
                     this.props,
                     "revokeCancel",
                     "/rest/revokeCancellation",
                     vehicleRegForm2.vehicleRegistationId
-                  )} class="btn btn-warning">Revoke Cancellation</button>
+                  )} class="btn btn-warning">Revoke Cancellation</Button>
                 // </div>
                 : null}
                 &nbsp;
-                <button type="button" className="btn btn-success mr-1 " id="gateIn" 
+                {/* <Button variant="contained" color="success" type="button" className="btn btn-success mr-1 " id="gateIn" 
                                data-toggle="modal" data-target="#getReportModal"
-                               >Print</button>
+                               >Print</Button> */}
+                               <Button onClick={this.print} variant="contained" color="success" type="button" className="mr-1 "
+                               
+                               >Print</Button>
+                             
 
 {vehicleRegForm2.status !== "CANCELLED" ?
-                  <button  className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelAsn(e)}}>Cancel Request</button>
+                  <Button variant="contained" color="secondary"  type="button" onClick={(e)=>{this.onComfirmationOfCancelAsn(e)}}>Cancel Request</Button>
                 : null}       
 
 
@@ -532,7 +493,7 @@ class ReportVechical extends React.Component {
         {this.props.OutwardReportdisplay==true?
         <div className="col-sm-12 m-2 d-flex justify-content-center" >
          
-         <a className={this.props.role!== "VENADM" ? "btn btn-primary mr-1" : "none"} href={window.location.href}><i className="fa fa-arrow-left" aria-hidden="true"></i></a>
+         <Button variant="contained" color="primary" className={this.props.role!== "VENADM" ? "btn btn-primary mr-1" : "none"} href={window.location.href}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
           
               </div>:""}
       </>

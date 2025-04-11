@@ -30,6 +30,7 @@ import { FormWithConstraints } from 'react-form-with-constraints';
 import { ROLE_APPROVER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_PURCHASE_MANAGER_ADMIN,ROLE_BUYER_ADMIN,ROLE_PARTNER_ADMIN } from "../../../Constants/UrlConstants";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 import PRListBuyer from "../PRList/PRListBuyer";
+import { Button } from "@material-ui/core";
 let onSave = "";
 class PRBody extends Component {
   constructor(props) {
@@ -560,11 +561,11 @@ class PRBody extends Component {
 
   render() {
     var isTcDocSec = this.state.prDetails.isTC ? "display_block" : "display_none";
-    console.log("this.props",this.props.role);
+   // console.log("this.props",this.props.role);
     return (
       <>
         {/* <Loader isLoading={this.state.isLoading}/> */}
-        <div className="container-fluid mt-100 w-100">
+        <div className="wizard-v1-content" style={{marginTop:"80px"}}>
         <FormWithConstraints ref={formWithConstraints => this.prForm = formWithConstraints}
         onSubmit={(e)=>{{ this.setState({loadPrChangeStatus:true});
         // debugger;
@@ -581,14 +582,6 @@ class PRBody extends Component {
               this.state.prDetails.prId
             )}
            />
-
-          {/* <input
-            type="hidden"
-            name="code"
-            value={!isEmpty(onSave)?"save":""}
-           /> */}
-
-    {/* <MaterialTable prLineArray={this.props.prList}/>  */}
           <div
             className={
               "card " +
@@ -598,19 +591,6 @@ class PRBody extends Component {
             }
           >
             { this.state.prMainContainer &&
-              // <PRList prList={this.props.prList} 
-              // prStatusList={this.props.prStatusList}
-              // loadPRDetails={(i) => this.loadPRDetails(i)}
-              // // purchaseManager={false}
-              // buyerList={this.props.buyerList}
-              // purchaseManager={this.state.purchaseManager || this.state.buyer}
-              // role={this.props.role}
-              // technicalApproverList={this.props.technicalApproverList}
-              // prStatusList={this.props.prStatusList}
-              // priorityList={this.props.priorityList}
-              // changeLoaderState={this.props.changeLoaderState} groupByLists={this.props.groupByLists}
-              // loadVendorSelection={()=>this.loadVendorSelection()}
-              // />
               <>
                <div
             className={
@@ -682,7 +662,7 @@ class PRBody extends Component {
                   <input type="checkbox" name="isTC" className={"display_block mgt-5 " + this.state.technicalReadOnly} value="Y" checked={this.state.prDetails.isTC} onChange={(e) => { commonHandleChangeCheckBox(e, this, "prDetails.isTC") }}/>
                 </div>
                 <div className="col-6 col-md-2 col-lg-2">
-                  <button className={"btn btn-sm btn-outline-primary mgt-10 "+ this.props.readonly} type="button" data-toggle="modal" data-target="#documentModal"><i className="fa fa-file" />&nbsp;Documents</button>
+                  <Button variant="contained" color="primary" size="small"  className={"mgt-10 "+ this.props.readonly} type="button" data-toggle="modal" data-target="#documentModal"><i className="fa fa-file" />&nbsp;Documents</Button>
                 </div>
               </div>
               <div className="row mt-0 px-4 pt-1">
@@ -828,7 +808,7 @@ class PRBody extends Component {
                   <div className="form-group">
                     <label className="mr-1 label_12px">Third Party Approver</label>
    
-                    <button className={"btn btn-sm btn-outline-primary display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</button>
+                    <Button variant="contained" color="primary" size="small" className={"display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</Button>
                   </div>
                 </div>
               </div>
@@ -876,14 +856,14 @@ class PRBody extends Component {
                   <div className="col-sm-12 mt-2">
                     <div>
                       <StickyHeader height={250} className="table-responsive">
-                        <table className="table table-bordered table-header-fixed">
+                        <table className="my-table">
                           <thead>
                             <tr>
                               <th>#</th>
                               <th className="w-6per"> Line No.</th>
                               <th className="w-4per"> A</th>
                               <th className="w-4per"> I</th>
-                              <th className="w-40per"> Material Description </th>
+                              <th className="w-40per"> Material Description</th>
                               <th className="text-right w-7per"> Req. Qty </th>
                               <th> UOM </th>
                               <th className="text-right w-8per">Val. Price</th>
@@ -901,8 +881,8 @@ class PRBody extends Component {
                               console.log("buyer",this.props.buyerList)
                             return (<>
                                 <tr class="accordion-toggle" >
-                                  <th class="expand-button collapsed" id={"accordion" + i} data-toggle="collapse" data-parent={"#accordion" + i} href={"#collapse" + i}></th>
-                                <td>{removeLeedingZeros(prLine.prLineNumber)}</td>
+                                  <th></th>
+                                <td class="expand-button collapsed" id={"accordion" + i} data-toggle="collapse" data-parent={"#accordion" + i} href={"#collapse" + i}> {removeLeedingZeros(prLine.prLineNumber)}</td>
                                 <td>{prLine.accountAssignment}</td>
                                 <td>{prLine.i}</td>
                                 <td>{prLine.materialCode} - {prLine.materialDesc}</td>
@@ -989,7 +969,7 @@ class PRBody extends Component {
                                  <td>{prLine.desireVendorCode}</td>
                               </tr>
                                 <tr class="hide-table-padding">
-                                  <td colSpan="11">
+                                  <td colSpan="20">
                                     <div id={"collapse" + i} class="collapse in p-1">
                                       <div className="container-fluid px-0">
                                         <div class="row m-0 p-0">
@@ -1087,7 +1067,7 @@ class PRBody extends Component {
                   </div>
                   <div className="col-sm-12 mt-2">
                     <StickyHeader height={150} className="table-responsive">
-                      <table className="table table-bordered table-header-fixed">
+                      <table className="my-table">
                         <thead className="thead-light">
                           <tr>
                             <th>Line Item</th>

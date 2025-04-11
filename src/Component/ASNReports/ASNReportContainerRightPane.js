@@ -88,26 +88,7 @@ render() {
   
     return (
       <>
-          <div className="mt-2 w-100">
-          <div className="clearfix"></div>
-          {/* <div className={this.state.showGateEntryButtons?"block":"none"}>
-            <ButtonGroup handleUnloadFromParent={this.handleUnload} role={this.state.role} asn={this.state.asn}
-            showGateEntry={this.showGateEntryButtons} changeLoaderState={this.props.changeLoaderState} handle105FromParent={this.handle105} handleQCFromParent={this.handleQC}
-            changeASNStatus={this.changeUpdateASNStatusFlag} updateASNStatus={this.state.updateASNStatus}/>
-          </div> */}
-          {/* <div className="details-conatint">                  
-          Advance Shipment Notice Details
-            </div>
-            <div className="form-group right-side-label">
-             <label className="col-6">Vendor Name : {this.props.purchaseOrder.vendorName}</label>
-            <label className="col-6">PO No : {this.props.purchaseOrder.purchaseOrderNumber}</label>
-            <label className="col-6">Vendor Code : {this.props.purchaseOrder.vendorCode}</label>
-            <label className="col-6">Status : {this.props.purchaseOrder.status}</label> 
-        </div> */}
-         <div className="col-sm-12 mt-2" id="togglesidebar">
              <ASNReports/>
-          </div>
-      </div>
       </>
     );
   }

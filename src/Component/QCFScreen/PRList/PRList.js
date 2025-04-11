@@ -5,13 +5,35 @@ import { isEmpty } from "../../../Util/validationUtil";
 import {
   commonSubmitWithParam
 } from "../../../Util/ActionUtil";
+
 import * as actionCreators from "./Action/Action";
-import { connect } from "react-redux";
+import { connect } from "react-redux";import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  TextField,
+  Paper,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  Button,
+  InputLabel,
+  Container,
+  IconButton
+} from "@material-ui/core";
+
 class PRList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadGenerateQCF:""
+      loadGenerateQCF:"",
+      page: 0,
+      rowsPerPage: 50,
     };
   }
 
@@ -33,72 +55,64 @@ class PRList extends Component {
       this.props.loadQCFDetails(i);
     // }
   }
+  handlePageChange = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
 
+  handleRowsPerPageChange = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
   render() {
-
+    const { page, rowsPerPage } = this.state;
     return (
       <>
-        <div className="row px-4 py-2" id="togglesidebar">
+        <div className="row" id="togglesidebar">
           <div className="col-sm-9"></div>
           <div className="col-sm-3">
             <input
               type="text"
               id="SearchTableDataInput"
-              className="form-control"
+              style={{fontSize: "10px", float:"right" }}
               onKeyUp={searchTableData}
               placeholder="Search .."
-            />
+            />            
           </div>
           <div className="col-12">
-            <StickyHeader height={450} className="table-responsive mt-2">
-              <table className="table table-bordered table-header-fixed">
-                <thead>
-                  <tr>
-                    {/* <th>PR No</th>
-                    <th>PR Type</th>
-                    <th>PR Date</th> */}
-                    <th>Enquiry No</th>
-                    <th>RFQ No</th>
-                    <th>QCF No</th>
-                    <th>Enquiry End Date</th>
-                    <th>Buyer Name/Code</th>
-                    {/* <th>Emp. Code</th>
-                    <th>Emp. Name</th>
-                    <th>Buyer Code</th>
-                    <th>Buyer Name</th> */}
-                    {/* <th>Approver</th>
-                    <th>Tech Approver</th> */}
-                    <th>Status</th>
-                    {/* <th>Generate QCF</th> */}
-                  </tr>
-                </thead>
-                <tbody id="DataTableBody">
+            <TableContainer className="mt-1">
+              <Table className="my-table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Enquiry No</TableCell>
+                    <TableCell>RFQ No</TableCell>
+                    <TableCell>QCF No</TableCell>
+                    <TableCell>Enquiry End Date</TableCell>
+                    <TableCell>Buyer Name/Code</TableCell>
+                    <TableCell>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody id="DataTableBody">
                   {this.props.prList.map((pr, i) =>
-                    <tr>
-                      {/* <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.prNumber}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.docType}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.date}</td> */}
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.enquiryId}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.rfqNo!=null?pr.rfqNo:""}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.qcfNo!=null?pr.qcfNo:""}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.bidEndDate}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.createdBy?.userName+"-"+pr.createdBy?.name}</td>
-                      {/* <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.requestedBy.name}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.buyer.empCode}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.buyer.name}</td> */}
-                      {/* <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.approver.name}</td>
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.tcApprover.name}</td> */}
-                      <td onClick={() => this.handleQCFDetails(pr,i)}>{pr.code ? pr.code:this.props.prStatusList[pr.status]}</td>
-                      {/* {isEmpty(pr.qcfNo)?
-                          <td className="w-10per"> <button type="button" onClick={()=>this.generateQCF(i)} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" /></button> </td>
-                        :
-                          <td>Already Generated!</td>
-                      } */}
-                    </tr>
+                    <TableRow>
+                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.enquiryId}</TableCell>
+                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.rfqNo!=null?pr.rfqNo:""}</TableCell>
+                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.qcfNo!=null?pr.qcfNo:""}</TableCell>
+                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.bidEndDate}</TableCell>
+                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.createdBy?.userName+"-"+pr.createdBy?.name}</TableCell>
+                     <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.code ? pr.code:this.props.prStatusList[pr.status]}</TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
-            </StickyHeader>
+                </TableBody>
+              </Table>
+            </TableContainer>
+             <TablePagination
+                rowsPerPageOptions={[50, 100, 150]}
+                component="div"
+                count={this.props.prList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={this.handlePageChange}
+                onRowsPerPageChange={this.handleRowsPerPageChange}
+              />
           </div>
         </div>
       </>

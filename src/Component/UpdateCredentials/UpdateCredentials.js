@@ -14,6 +14,18 @@ import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-w
 import swal from 'sweetalert';
 import { statusForVendor } from "../../Util/CommonUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, TablePagination, TextField,
+  Grid,
+  Container,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Button,
+  IconButton
+} from "@material-ui/core";
 
 class UpdateCredentials extends Component {
 
@@ -27,6 +39,10 @@ class UpdateCredentials extends Component {
       updateUserNameAndEmailStatus: '',
       generateLoginOfVendor: [],
       checked: {},
+      searchQuery: "",
+      page: 0,
+      rowsPerPage: 50,
+      openModal:false,
       selectedVendorMode: 'RG',
       defaultOption: 'RG',
       userEmail: '',
@@ -718,7 +734,7 @@ class UpdateCredentials extends Component {
       updateUserNameAndEmailStatus: ''
 
     })
-
+    this.onOpenModal();
   }
 
   displayUserInfoForAll = (user) => {
@@ -729,7 +745,7 @@ class UpdateCredentials extends Component {
       updateUserNameAndEmailStatus: ''
 
     })
-
+    this.onOpenModal();
   }
 
   displayUserInfoForResendInvitation = (user) => {
@@ -740,7 +756,7 @@ class UpdateCredentials extends Component {
       updateUserNameAndEmailStatus: ''
 
     })
-
+    this.onOpenModal();
   }
 
   updateEmail = () => {
@@ -846,17 +862,44 @@ class UpdateCredentials extends Component {
     this.setState({ loadCompanyDetails: true }); 
     commonSubmitForm(e, this, "getUserByUserNameOrEmailResp", "/getUserByUsernameOrEmail", "comDetForm")
   }
+  handleSearchChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+  };
 
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
   render() {
     const { checked } = this.state;
+    const { searchQuery, page, rowsPerPage } = this.state;
+    const filteredData = this.props.userList.filter((entry) =>
+      Object.values(entry).some((val) =>
+        val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
     // console.log("LISTOFGENERATING", this.state.generateLoginOfVendor);
     // console.log("User", this.state.selectedVendorMode);
     return (
       <>
         <Loader isLoading={this.state.isLoading} />
         {<UserDashboardHeader />}
-        <div className="container-fluid mt-100 w-100">
+        <div className="wizard-v1-content" style={{marginTop:"80px"}}>
           <div className="card mb-1">
+            
             <FormWithConstraints ref={formWithConstraints => this.comDetForm = formWithConstraints}
               onSubmit={this.handleSubmit} noValidate >
               <div className="row px-4 py-2">
@@ -873,261 +916,260 @@ class UpdateCredentials extends Component {
                     <FieldFeedback when="*"></FieldFeedback>
                   </FieldFeedbacks>
                 </div>
-                <div class="col-12 col-md-8 col-lg-8 pr-0">
-                  <div class="form-group form-inline" style={{ marginTop: "25px" }}>
-                    {/* <div class="custom-control custom-radio custom-control-inline">
-                          <input type="radio" onChange={e => this.checkboxHandler(e, "Y")} class="custom-control-input" id="pgr" name={"courier"} value="Y" checked={this.state.defaultOption === "Y" ? true : false} />
-                          <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="pgr">View Invited Vendor</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                          <input type="radio" onChange={e => this.checkboxHandler(e, "N")} class="custom-control-input" id="pgi" name={"courier"} value="N" checked={this.state.defaultOption === "N" ? true : false} />
-                          <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="pgi">View UnInvited Vendor</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                          <input type="radio" onChange={e => this.checkboxHandler(e, "Both")} class="custom-control-input" id="both" name={"courier"} value="Both" checked={this.state.defaultOption === "Both" ? true : false} />
-                          <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="both">Both</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                          <input type="radio" onChange={e => this.checkboxHandler(e, "internaluser")} class="custom-control-input" id="internaluser" name={"courier"} value="internaluser" checked={this.state.defaultOption === "internaluser" ? true : false} />
-                          <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="internaluser">Internal Users</label>
-                        </div> */}
+                <div class="col-9 col-md-9 col-lg-9 pr-0">                
+                  <div class="form-group form-inline" style={{ marginTop: "5px" }}>    
+                  <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" onChange={e => this.checkboxHandler(e, "ALL")} class="custom-control-input" id="all" name={"courier"} value="ALL" checked={this.state.defaultOption === "ALL"} />
+                      <label class="custom-control-label" style={{ fontSize: "13px", fontWeight: "700" }} for="all">All</label>
+                    </div>               
                     <div class="custom-control custom-radio custom-control-inline">
                       <input type="radio" onChange={e => this.checkboxHandler(e, "RG")} class="custom-control-input" id="rg" name={"courier"} value="RG" checked={this.state.defaultOption === "RG"} />
-                      <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="rg">Registered Vendors</label>
+                      <label class="custom-control-label" style={{ fontSize: "13px", fontWeight: "700" }} for="rg">Registered Vendors</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
                       <input type="radio" onChange={e => this.checkboxHandler(e, "NRG")} class="custom-control-input" id="nrg" name={"courier"} value="NRG" checked={this.state.defaultOption === "NRG"} />
-                      <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="nrg">Un-Registered Vendors Invited</label>
+                      <label class="custom-control-label" style={{ fontSize: "13px", fontWeight: "700" }} for="nrg">Un-Registered Vendors Invited</label>
                     </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                      <input type="radio" onChange={e => this.checkboxHandler(e, "ALL")} class="custom-control-input" id="all" name={"courier"} value="ALL" checked={this.state.defaultOption === "ALL"} />
-                      <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="all">All</label>
-                    </div>
+                    
                     <div class="custom-control custom-radio custom-control-inline">
                       <input type="radio" onChange={e => this.checkboxHandler(e, "IN")} class="custom-control-input" id="in" name={"courier"} value="IN" checked={this.state.defaultOption === "IN"} />
-                      <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="in"> Invited Vendor List (Invited)</label>
+                      <label class="custom-control-label" style={{ fontSize: "13px", fontWeight: "700" }} for="in"> Invited Vendor List (Invited)</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
                       <input type="radio" onChange={e => this.checkboxHandler(e, "RESEND")} class="custom-control-input" id="resend" name={"courier"} value="RESEND" checked={this.state.defaultOption === "RESEND"} />
-                      <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="resend">Resend Invitation for Vendor (Invited)</label>
+                      <label class="custom-control-label" style={{ fontSize: "13px", fontWeight: "700" }} for="resend">Resend Invitation for Vendor (Invited)</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
                       <input type="radio" onChange={e => this.checkboxHandler(e, "internaluser")} class="custom-control-input" id="internaluser" name={"courier"} value="internaluser" checked={this.state.defaultOption === "internaluser"} />
-                      <label class="custom-control-label" style={{ fontSize: "1rem", fontWeight: "700" }} for="internaluser">Internal Users</label>
+                      <label class="custom-control-label" style={{ fontSize: "13px", fontWeight: "700" }} for="internaluser">Internal Users</label>
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md-1 col-lg-1 pl-0">
-                  <div className={"text-center " + this.props.displayDiv} style={{ marginTop: "20px" }}>
-                    {/* <button type="submit" className="btn btn-success mr-1">Save</button> */}
-                    <button type="button" className="btn btn-outline-primary mr-1" onClick={() => { this.setState({ loadCompanyDetails: true }); this.getUser() }} ><i className="fa fa-search"></i> Search</button>
+                <div class="col-12 col-md-12 col-lg-12 pl-0">
+                  <div className={"text-center " + this.props.displayDiv} style={{ marginTop: "5px" }}>
+                    <Button type="button" size="small" variant="contained" color="primary" onClick={() => { this.setState({ loadCompanyDetails: true }); this.getUser() }} >Search</Button>
                   </div>
                 </div>
               </div>
-              {/* <div className="row">
-                    <label className="col-sm-2">Enter UserName <span className="redspan">*</span></label>
-                    <div className="col-sm-3">
-                      <input type="text" className={"form-control " + this.props.readonly} required
-                        name="UserName" value={this.state.UserName}
-                        onChange={(event) => { commonHandleChange(event, this, "UserName", "comDetForm") }} />
-                    </div>
-                    <FieldFeedbacks for="name">
-                      <FieldFeedback when="*"></FieldFeedback>
-                    </FieldFeedbacks>
-                  </div> */}
+              
             </FormWithConstraints>
           </div>
 
-          <div className={"card mb-1 " + (isEmpty(this.props.userList) || this.state.defaultOption === "ALL" || this.state.defaultOption === "RESEND" ? "display_none" : "display_block")}>
-            <div className="row px-4 py-2">
-              <div class="col-12">
-                <div class="table-proposed">
-                  <StickyHeader height={400} className="table-responsive width-adjustment">
-                    <table className="table table-bordered table-header-fixed">
-                      <thead>
-                        <tr>
+          <div className={"mb-1 " + (isEmpty(this.props.userList) || this.state.defaultOption === "ALL" || this.state.defaultOption === "RESEND" ? "display_none" : "display_block")}>
+          
+          
+           <Grid container spacing={2} alignItems="center" justify="flex-end">
+                        <Grid item xs={9} style={{textAlign:"left"}}>
+                          <Button variant="contained" size="small" color="primary" onClick={this.inviteVendorsForLogin}>
+                          <i className="fa fa-envelope"></i>&nbsp;Send Invite
+                          </Button> {this.state.loginGeneratedResponseMessage}
+                        </Grid>
+                        <Grid item xs={3}>
+                          <input
+                            type="text"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={this.handleSearchChange}
+                            style={{ fontSize: "10px", float:"right" }}
+                          />
+                          {/* <IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton> */}
+                        </Grid>
+                      </Grid>
+            <TableContainer className="mt-1">
+                    <Table className="my-table">
+                      <TableHead>
+                        <TableRow>
 
                           {this.state.requestedUsersType !== "internaluser" &&
                             <>
-                              <th>Invite</th>
+                              <TableCell>Invite</TableCell>
                             </>
                           }
 
 
-                          <th> {this.state.requestedUsersType == "internaluser" ? "Employee Code" : "Vendor Code"}</th>
-                          <th>Email</th>
+                          <TableCell> {this.state.requestedUsersType == "internaluser" ? "Employee Code" : "Vendor Code"}</TableCell>
+                          <TableCell>Email</TableCell>
 
 
                           {this.state.requestedUsersType !== "internaluser" &&
                             <>
-                              <th>Company name</th>
-                              {/* <th style={{ width: "150px" }}>PAN No</th> */}
-                              <th>Status</th>
+                              <TableCell>Company name</TableCell>
+                              <TableCell>Status</TableCell>
                             </>
                           }
 
                           {this.state.requestedUsersType !== "internaluser" &&
                             <>
-                              <th>State</th>
-                              {/* <th style={{ width: "150px" }}>PAN No</th> */}
-                              <th>District</th>
+                              <TableCell>State</TableCell>
+                              <TableCell>District</TableCell>
                             </>
                           }
 
                           {this.state.requestedUsersType === "internaluser" &&
                             <>
-                              <th>Designation</th>
-                              <th>Department</th>
-                              <th>Plant</th>
+                              <TableCell>Designation</TableCell>
+                              <TableCell>Department</TableCell>
+                              <TableCell>Plant</TableCell>
                             </>
                           }
-
-
-
-
-
-                          {/* <th style={{ width: "150px" }}>Vendor SAP Code</th>
-                          <th style={{ width: "100px" }}>is Invited</th> */}
-                          <th>Edit</th>
-                          {/* <th className={this.props.displayDiv}>Delete</th> */}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.props.userList.map((user, index) => (
-                          <tr>
+                          <TableCell>Edit</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                      {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
+                          <TableRow>
 
 
                             {this.state.requestedUsersType !== "internaluser" &&
                               <>
-                                <td> {(user.createdBy != null ? user.createdBy.isInvited : user.isInvited) === 'Y' ? <></> :
+                                <TableCell> {(user.createdBy != null ? user.createdBy.isInvited : user.isInvited) === 'Y' ? <></> :
 
                                   <input type="checkbox" id={"checkbox" + index} onChange={e => this.inviteVendorCheckboxHandler(e, user, index)} checked={checked[index] || false} />
 
-                                }</td>
+                                }</TableCell>
                               </>
                             }
 
-                            <td>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? user.createdBy.partner.vendorSapCode : <></>}</> : <>{user.userName}</>}</td>
-                            <td>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null ? user.createdBy.email : <></>}</> : <>{user.email}</>}</td>
-
-                            {/* <td style={{ width: "150px" }}>{user.partner.vendorSapCode}</td>
-                            <td style={{ width: "100px" }}>{user.partner.isInvited}</td> */}
-
-
+                            <TableCell>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? user.createdBy.partner.vendorSapCode : <></>}</> : <>{user.userName}</>}</TableCell>
+                            <TableCell>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null ? user.createdBy.email : <></>}</> : <>{user.email}</>}</TableCell>
 
 
                             {
                               this.state.requestedUsersType !== "internaluser" &&
                               <>
-                                <td>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? user.createdBy.partner.name : <></>}</> : <>{user.partner.name}</>}</td>
-                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</td> */}
-                                <td>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? statusForVendor(user.createdBy.partner.status) : <></>}</> : <>{statusForVendor(user.partner.status)}</>}</td>
+                                <TableCell>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? user.createdBy.partner.name : <></>}</> : <>{user.partner.name}</>}</TableCell>
+                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</TableCell> */}
+                                <TableCell>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? statusForVendor(user.createdBy.partner.status) : <></>}</> : <>{statusForVendor(user.partner.status)}</>}</TableCell>
                               </>
                             }
                             {
                               this.state.requestedUsersType !== "internaluser" &&
                               <>
-                                <td>{user.location ? user.location.region ? user.location.region.name : "" : ""}</td>
+                                <TableCell>{user.location ? user.location.region ? user.location.region.name : "" : ""}</TableCell>
 
-                                <td>{user.location ? user.location.district ? user.location.district.name : "" : ""}</td>
+                                <TableCell>{user.location ? user.location.district ? user.location.district.name : "" : ""}</TableCell>
                               </>
                             }
                             {
                               this.state.requestedUsersType === "internaluser" &&
                               <>
-                                <td>{user.email}</td>
-                                <td>{user.partner.name}</td>
-                                <td>{user.partner.panNumber}</td>
+                                <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.partner.name}</TableCell>
+                                <TableCell>{user.partner.panNumber}</TableCell>
                               </>
                             }
 
 
-                            <td>
+                            <TableCell>
 
-                              <button className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")} data-toggle="modal" data-target="#EditUserInfo" type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.displayUserInfo(user) }} >
+                              <button className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")}  type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.displayUserInfo(user) }} >
                                 <i
                                   className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                   aria-hidden="true"
                                 ></i>
-                                <i
+                                {/* <i
                                   className={"fa fa-eye " + this.props.displayDiv1}
                                   aria-hidden="true"
-                                ></i>
+                                ></i> */}
                               </button>
-                            </td>
+                            </TableCell>
 
-                          </tr>
+                          </TableRow>
                         ))}
 
-                      </tbody>
-                    </table>
+                      </TableBody>
+                    </Table>
 
-                  </StickyHeader>
-                </div>
-                <hr style={{ margin: "0px" }} />
-                {this.state.loginGeneratedResponseMessage}
-                <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button>
+                    </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[50, 100, 150]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
+         
+                
+                {/* {this.state.loginGeneratedResponseMessage}
+                <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button> */}
+                
               </div>
-            </div>
-          </div>
+            
 
           {/* FOR ALL CATEGORY */}
-          <div className={"card mb-1 " + (isEmpty(this.props.userList) || this.state.defaultOption !== "ALL" ? "display_none" : "display_block")}>
-            <div className="row px-4 py-2">
-              <div class="col-12">
-                <div class="table-proposed">
-                  <StickyHeader height={400} className="table-responsive width-adjustment">
-                    <table className="table table-bordered table-header-fixed">
-                      <thead>
-                        <tr>
+          <div className={"mb-1 " + (isEmpty(this.props.userList) || this.state.defaultOption !== "ALL" ? "display_none" : "display_block")}>
+            
+             <Grid container spacing={2} alignItems="center" justify="flex-end">
+                        <Grid item xs={9} style={{textAlign:"left"}}>
+                        <Button variant="contained" size="small" color="primary" onClick={this.inviteVendorsForLogin}>
+                          <i className="fa fa-envelope"></i>&nbsp;Send Invite
+                          </Button> {this.state.loginGeneratedResponseMessage}
+                        </Grid>
+                        <Grid item xs={3}>
+                          <input
+                            type="text"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={this.handleSearchChange}
+                            style={{ fontSize: "10px", float:"right" }}
+                          />
+                          <IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+                        </Grid>
+                      </Grid>
+            <TableContainer className="mt-1">
+                    <Table className="my-table">
+                      <TableHead>
+                        <TableRow>
 
                           {this.state.requestedUsersType !== "internaluser" &&
                             <>
-                              <th>Invite</th>
+                              <TableCell>Invite</TableCell>
                             </>
                           }
 
 
-                          <th> {this.state.requestedUsersType == "internaluser" ? "Employee Code" : "Vendor Code"}</th>
-                          <th>Email</th>
+                          <TableCell> {this.state.requestedUsersType == "internaluser" ? "Employee Code" : "Vendor Code"}</TableCell>
+                          <TableCell>Email</TableCell>
                           <>
-                            <th>Company name</th>
-                            {/* <th style={{ width: "150px" }}>PAN No</th> */}
-                            <th>Status</th>
+                            <TableCell>Company name</TableCell>
+                            {/* <th style={{ width: "150px" }}>PAN No</TableCell> */}
+                            <TableCell>Status</TableCell>
                           </>
                           <>
-                            <th>State</th>
-                            {/* <th style={{ width: "150px" }}>PAN No</th> */}
-                            <th>District</th>
+                            <TableCell>State</TableCell>
+                            {/* <th style={{ width: "150px" }}>PAN No</TableCell> */}
+                            <TableCell>District</TableCell>
                           </>
 
 
-                          {/* <th style={{ width: "150px" }}>Vendor SAP Code</th>
-                          <th style={{ width: "100px" }}>is Invited</th> */}
-                          <th>Edit</th>
-                          {/* <th className={this.props.displayDiv}>Delete</th> */}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.props.userList.map((user, index) => (
-                          <tr>
+                          {/* <th style={{ width: "150px" }}>Vendor SAP Code</TableCell>
+                          <th style={{ width: "100px" }}>is Invited</TableCell> */}
+                          <TableCell>Edit</TableCell>
+                          {/* <th className={this.props.displayDiv}>Delete</TableCell> */}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                      {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
+                          <TableRow>
 
 
                             {this.state.requestedUsersType !== "internaluser" &&
                               <>
-                                <td> {(user[7] === 'Y') ? <></> :
+                                <TableCell> {(user[7] === 'Y') ? <></> :
 
                                   <input type="checkbox" id={"checkbox" + index} onChange={e => this.inviteVendorCheckboxHandlerForAll(e, user, index)} checked={checked[index] || false} />
 
-                                }</td>
+                                }</TableCell>
                               </>
                             }
 
-                            <td>{<>{user[2]}</>}</td>
-                            <td>{user[4]}</td>
+                            <TableCell>{<>{user[2]}</>}</TableCell>
+                            <TableCell>{user[4]}</TableCell>
 
-                            {/* <td style={{ width: "150px" }}>{user.partner.vendorSapCode}</td>
-                            <td style={{ width: "100px" }}>{user.partner.isInvited}</td> */}
+                            {/* <td style={{ width: "150px" }}>{user.partner.vendorSapCode}</TableCell>
+                            <td style={{ width: "100px" }}>{user.partner.isInvited}</TableCell> */}
 
 
 
@@ -1135,249 +1177,147 @@ class UpdateCredentials extends Component {
                             {
                               this.state.requestedUsersType !== "internaluser" &&
                               <>
-                                <td>{user[1]}</td>
-                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</td> */}
-                                <td>{statusForVendor(user[8])}</td>
+                                <TableCell>{user[1]}</TableCell>
+                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</TableCell> */}
+                                <TableCell>{statusForVendor(user[8])}</TableCell>
                               </>
                             }
-                            <td>{user[6]}</td>
+                            <TableCell>{user[6]}</TableCell>
 
-                            <td>{user[5]}</td>
+                            <TableCell>{user[5]}</TableCell>
 
 
-                            <td>
+                            <TableCell>
 
-                              <button className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")} data-toggle="modal" data-target="#EditUserInfo" type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.displayUserInfoForAll(user) }} >
+                              <button className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")} type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.displayUserInfoForAll(user) }} >
                                 <i
                                   className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                   aria-hidden="true"
                                 ></i>
-                                <i
+                                {/* <i
                                   className={"fa fa-eye " + this.props.displayDiv1}
                                   aria-hidden="true"
-                                ></i>
-                              </button>
-                            </td>
+                                ></i> */}
 
-                          </tr>
+                              </button>
+                            </TableCell>
+
+                          </TableRow>
                         ))}
 
-                      </tbody>
-                    </table>
-
-                  </StickyHeader>
-                </div>
-                <hr style={{ margin: "0px" }} />
-                {this.state.loginGeneratedResponseMessage}
-                <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button>
-              </div>
-            </div>
-          </div>
+                      </TableBody>
+                    </Table>
+                    </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[50, 100, 150]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
+         
+                {/* {this.state.loginGeneratedResponseMessage}
+                <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button> */}
+                <div className="clearfix"></div>  </div>
           {/* FOR ALL CATEGORY */}
 
           {/* FOR RESEND INVITATION CATEGORY */}
-          <div className={"card mb-1 " + (isEmpty(this.props.userList) || this.state.defaultOption !== "RESEND" ? "display_none" : "display_block")}>
-            <div className="row px-4 py-2">
-              <div class="col-12">
-                <div class="table-proposed">
-                  <StickyHeader height={400} className="table-responsive width-adjustment">
-                    <table className="table table-bordered table-header-fixed">
-                      <thead>
-                        <tr>
+          <div className={"mb-1 " + (isEmpty(this.props.userList) || this.state.defaultOption !== "RESEND" ? "display_none" : "display_block")}>
+             
+             <Grid container spacing={2} alignItems="center" justify="flex-end">
+                        <Grid item xs={9} style={{textAlign:"left"}}>
+                        <Button variant="contained" size="small" color="primary" onClick={this.inviteVendorsForLogin}>
+                          <i className="fa fa-envelope"></i>&nbsp;Send Invite
+                          </Button>
+                          {this.state.loginGeneratedResponseMessage}
+                        </Grid>
+                        <Grid item xs={3}>
+                          <input
+                            type="text"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={this.handleSearchChange}
+                            style={{ fontSize: "10px", float:"right" }}
+                          />
+                          <IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+                        </Grid>
+                      </Grid>
+            <TableContainer className="mt-1">
+                    <Table className="my-table">
+                      <TableHead>
+                        <TableRow>
                           {this.state.requestedUsersType !== "internaluser" &&
-                            <th>Invite</th>
+                            <TableCell>Invite</TableCell>
                           }
-                          <th> {this.state.requestedUsersType == "internaluser" ? "Employee Code" : "Vendor Code"}</th>
-                          <th>Email</th>
-                          <th>Company name</th>
-                          <th>Status</th>
-                          <th>Edit</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.props.userList.map((user, index) => (
-                          <tr>
+                          <TableCell> {this.state.requestedUsersType == "internaluser" ? "Employee Code" : "Vendor Code"}</TableCell>
+                          <TableCell>Email</TableCell>
+                          <TableCell>Company name</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Edit</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                      {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
+                          <TableRow>
                             {this.state.requestedUsersType !== "internaluser" &&
                               <>
-                                <td>
+                                <TableCell>
                                   <input type="checkbox" id={"checkbox" + index} onChange={e => this.inviteVendorCheckboxHandlerForAll(e, user, index)} checked={checked[index] || false} />
-                                </td>
+                                </TableCell>
                               </>
                             }
-                            <td>{<>{user[6]}</>}</td>
-                            <td>{<>{user[2]}</>}</td>
+                            <TableCell>{<>{user[6]}</>}</TableCell>
+                            <TableCell>{<>{user[2]}</>}</TableCell>
                             {
                               this.state.requestedUsersType !== "internaluser" &&
                               <>
-                                <td>{user[1]}</td>
-                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</td> */}
-                                <td>{statusForVendor(user[5])}</td>
+                                <TableCell>{user[1]}</TableCell>
+                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</TableCell> */}
+                                <TableCell>{statusForVendor(user[5])}</TableCell>
                               </>
                             }
-                            <td>
+                            <TableCell>
                               <button className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")} data-toggle="modal" data-target="#EditUserInfo" type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.displayUserInfoForResendInvitation(user) }} >
                                 <i
                                   className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                   aria-hidden="true"
                                 ></i>
-                                <i
+                                {/* <i
                                   className={"fa fa-eye " + this.props.displayDiv1}
                                   aria-hidden="true"
-                                ></i>
+                                ></i> */}
                               </button>
-                            </td>
+                            </TableCell>
 
-                          </tr>
+                          </TableRow>
                         ))}
-                      </tbody>
-                    </table>
-
-                  </StickyHeader>
+                      </TableBody>
+                    </Table> 
+                    </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[50, 100, 150]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
+         
+                
+                {/* {this.state.loginGeneratedResponseMessage}
+                <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button> */}
                 </div>
-                <hr style={{ margin: "0px" }} />
-                {this.state.loginGeneratedResponseMessage}
-                <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button>
-              </div>
-            </div>
-          </div>
-          {/* FOR RESEND INVITATION CATEGORY */}
-
         </div>
 
-        {/* <div id="accordion">
-          
-          <div className="card">
-            <div className="card-header">
-              <a
-                className="collapsed card-link"
-                data-toggle="collapse"
-                href="#collapseTwo"
-                onClick={() => { this.setState({ loadAddressList: true, newButtonFlag: true }); commonSubmitWithParam(this.props, "getCompAddressInformation", "/rest/getCompanyAddressInfo", this.getPartnerId()) }}
-              >
-                Address Details
-            </a>
-            </div>
-            <div id="collapseTwo" className="collapse" data-parent="#accordion" >
-              <div className="card-body">
-                {/* <form onSubmit={(e)=>{commonSubmitForm(e,this.props,"saveAddressDetailsResp","/rest/saveCompanyAddress")}} > 
-
-                <div className="row">
-                  <div className="col-sm-12 mt-3">
-                    <table className="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Address </th>
-                          <th>Country</th>
-                          <th>Postal Code</th>
-                          <th>State</th>
-                          <th>District</th>
-                          <th>Edit</th>
-                          <th className={this.props.displayDiv}>Delete</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.addressArray.map((addr, index) =>
-                          <tr className={this.state["selectedAddress" + index]}>
-                            <td>{addr.address1 + ", " + addr.address2 + ", " + addr.address3}</td>
-                            <td>{addr.countryName}</td>
-                            <td>{addr.postalCode} </td>
-                            <td>{addr.stateName}</td>
-                            <td>{addr.districtName}</td>
-                            <td>
-                              <button className={this.state.editButtonFlag ? "btn btn-info not-allowed" : "btn btn-info"} type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.loadAddressForEdit(index) }} >
-                                <i
-                                  className={"fa fa-pencil-square-o " + this.props.displayDiv}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={"fa fa-eye " + this.props.displayDiv1}
-                                  aria-hidden="true"
-                                ></i>
-                              </button>
-                            </td>
-                            <td className={this.props.displayDiv}>
-                              <button className="btn btn-danger" type="button" onClick={() => { this.swalWithPromptDeleteforCompanyAddress(addr.partnerCompanyAddressId); }}>
-                                <i className="fa fa-trash" aria-hidden="true"></i>
-                              </button>
-                            </td>
-                          </tr>
-                        )}
-
-                      </tbody>
-                    </table>
-                    <div className="clearfix"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-
-            <div id="collapseThree" className="collapse" data-parent="#accordion">
-              <div className="card-body">
-                 <form onSubmit={(e)=> {commonSubmitForm(e,this.props,"saveContactDetailsResp","/rest/saveCompanyContactDetails")}}>
-
-                <div className="row">
-                  <div className="col-sm-12 mt-4">
-                    <table className="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Salutation</th>
-                          <th>Person Name</th>
-                          <th>Designation</th>
-                          <th>Department</th>
-                          <th>Mobile No</th>
-                          <th>Telephone No</th>
-                          {/* <th>Fax No</th> 
-                          <th>Mail ID</th>
-                          <th>Edit</th>
-                          <th className={this.props.displayDiv}>Delete</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.contactDetailsArray.map((contact, index) =>
-                          <tr className={this.state["selectedContact" + index]}>
-                            <td>{contact.title}</td>
-                            <td>{contact.personName}</td>
-                            <td>{contact.designation}</td>
-                            <td>{contact.department} </td>
-                            <td>{contact.mobileNo}</td>
-                            <td>{contact.telephoneNo}</td>
-                            <td>{contact.email}</td>
-                            <td>
-                              <button className={this.state.editButtonFlag ? "btn btn-info not-allowed" : "btn btn-info"} type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.loadContactForEdit(index) }}>
-                                <i
-                                  className={"fa fa-pencil-square-o " + this.props.displayDiv}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={"fa fa-eye " + this.props.displayDiv1}
-                                  aria-hidden="true"
-                                ></i>
-                              </button>
-                            </td>
-                            <td className={this.props.displayDiv}>
-                              <button className="btn btn-danger" type="button" onClick={() => { this.swalWithPromptDeleteforContactDetails(contact.userDetailsId) }}>
-                                <i className="fa fa-trash" aria-hidden="true"></i>
-                              </button>
-                            </td>
-                          </tr>
-                        )}
-
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
+        
         {/* Online Order Details modal sections start*/}
-        <div className="modal fade" id="EditUserInfo">
-          <div className="modal-dialog modal-lg mt-100">
-            <div className="modal-content">
-
+        {this.state.openModal && 
+            <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+                                    <div className="modal-backdrop"></div><div className="modal-dialog modal-lg">
+                                       <div className="modal-content">
 
               <FormWithConstraints ref={formWithConstraints => this.comDetForm = formWithConstraints}
                 onSubmit={(e) => { this.changeLoaderState(true); this.setState({ loadCompanyDetails: true, updatingInformation: true, generatePasswordDisabled: true }); commonSubmitForm(e, this, "updateUserNameAndEmailOfUser", "/rest/updateUserNameOrEmail", "comDetForm") }} noValidate >
@@ -1388,7 +1328,7 @@ class UpdateCredentials extends Component {
                   <h4 className="modal-title col-sm-4">Edit </h4>
 
                   <div className="col-sm-4 buttons-depot-order-details">
-                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+                    <button type="button" className="close" onClick={this.onCloseModal}>&times;</button>
                   </div>
                 </div>
                 <div className="modal-body">
@@ -1443,12 +1383,12 @@ class UpdateCredentials extends Component {
                   {/* <button type="button" className="btn btn-primary" data-dismiss="modal">Update</button> */}
                   <button type="button" className="btn btn-outline-warning mr-2" disabled={this.state.generatePasswordDisabled} onClick={() => { this.setState({ loadCompanyDetails: true, generatePasswordDisabled: true }); this.generatePassword() }} ><i className="fa fa-key"></i> Generate Password</button>
                   <button type="submit" className="btn btn-outline-success mr-2" ><i className="fa fa-floppy-o"></i> Save</button>
-                  <button type="button" className="btn btn-outline-danger" data-dismiss="modal"><i className="fa fa-times"></i> Close</button>
+                  <button type="button" className="btn btn-outline-danger" onClick={this.onCloseModal}><i className="fa fa-times"></i> Close</button>
                 </div>
               </FormWithConstraints>
             </div>
           </div>
-        </div>
+        </div>}
         {/*Online Order Details Modal section End */}
       </>
     );

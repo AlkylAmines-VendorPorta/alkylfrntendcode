@@ -85,7 +85,7 @@ class VendorList extends Component {
           </div>
           <div className="col-12">
             <StickyHeader height={450} className="table-responsive mt-2">
-              <table className="table table-bordered table-header-fixed">
+              <table className="my-table">
                 <thead>
                   <tr>
                     <th className="w-25per"> Vendor Code & Name </th>

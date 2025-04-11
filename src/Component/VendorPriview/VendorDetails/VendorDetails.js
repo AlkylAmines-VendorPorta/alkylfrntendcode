@@ -133,7 +133,7 @@ class VendorDetails extends Component {
       <React.Fragment>
         <Loader isLoading={this.state.isLoading}/>
         <UserDashboardHeader />
-        <div className="page-content">
+        <div className="page-content" >
           <div className="wizard-v1-content">
             <div className="wizard-form">
               <div className="step-progress">

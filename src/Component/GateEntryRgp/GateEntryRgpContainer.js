@@ -49,9 +49,7 @@ class GateEntryRgpContainer extends Component {
     // console.log("loadlist",this.state.loadList)
     return (
       <>
-       <div className="w-100">
-          <div className="mt-100 boxContent" >
-        <div id="togglesidebar" >
+       
           <div class="noprint">
         <UserDashboardHeader/>
         </div>
@@ -80,9 +78,6 @@ class GateEntryRgpContainer extends Component {
             :
             null
           }
-        </div>
-        </div>
-        </div>
       </>
     );
   }

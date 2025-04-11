@@ -44,6 +44,9 @@ class QCFCompare extends Component {
     super(props);
     this.state = {
       dataComparing: false,
+      freightColumn:false,
+      pckngFwdColumn:false,
+      otherChargeColumn:false,
       i:"",
       loadTableData:false,
       bidderList:[],
@@ -175,6 +178,11 @@ recipient:[]
       this.setProposedReason(props);
       this.props.changeLoaderState(false);
   }
+
+  if(!isEmpty(props.priceBidList)){
+    this.showorHideBidderOtherChargesColumns(props.priceBidList);
+  }
+
   if(!isEmpty(this.props.loadApproverList)){
     let QCFApprovalGroup2List=[];
     let QCFApprovalGroup1List=[];
@@ -775,6 +783,105 @@ console.log('i',bid,this.state.i);
     return (Math.round(basicAmount*100)/100).toLocaleString('en-IN',{ minimumFractionDigits: 2 });
   }
 
+
+  showorHideBidderOtherChargesColumns=(priceBidList)=>{
+    priceBidList.map((priceBid)=>{
+     
+        if(priceBid.itemBid.bidder.totalFreightChargeAmt!="" || priceBid.totalFreightCharge!=0){
+              this.setState({freightColumn:true })
+        }
+        if(priceBid.itemBid.bidder.totalPackingChargeAmt!="" || priceBid.totalPackingFwdChargeAmt!=0){
+             this.setState({pckngFwdColumn:true })
+        }
+        if(priceBid.itemBid.bidder.totalOtherChargeAmt!="" || priceBid.otherChargesAmt!=0){
+             this.setState({otherChargeColumn:true })
+        }
+      
+    }
+    )
+   
+  }
+
+  getBidderFreightAmount=(i)=>{
+
+   
+    let columns = [];
+
+
+    for (var i = 0; i < this.state.i; i++) {
+      columns.push(<>
+        <th></th>
+        <th>{this.gettotalFeightAmount(i)}</th></>);
+    }
+    return columns;
+  }
+
+
+  gettotalFeightAmount(i){
+    let totalFeightAmount=0
+    this.state.priceBidList.map((priceBid)=>{
+      if(priceBid.itemBid.bidder.bidderId===this.state.bidderList[i].bidderId){
+      if(priceBid.itemBid.bidder.otherChargeType==="item_level"){
+        totalFeightAmount=totalFeightAmount+ priceBid.totalFreightCharge
+      }
+      else{
+        totalFeightAmount=priceBid.itemBid.bidder.totalFreightChargeAmt
+      }
+    }})
+
+    return Number(totalFeightAmount);
+  }
+
+  getBidderPackingFWDAmount=(i)=>{
+   
+    let columns = [];
+    for (var i = 0; i < this.state.i; i++) {
+      columns.push(<>
+        <th></th>
+        <th>{this.getpackingAmount(i)}</th></>);
+    }
+    return columns;
+  }
+
+  getpackingAmount=(i)=>{
+    let totalPckingFwdAmount=0
+      this.state.priceBidList.forEach((priceBid)=>{
+       if(priceBid.itemBid.bidder.bidderId===this.state.bidderList[i].bidderId){
+                 if(priceBid.itemBid.bidder.otherChargeType==="item_level"){
+                       totalPckingFwdAmount=totalPckingFwdAmount+ priceBid.totalPackingFwdChargeAmt
+                    }else{
+                       totalPckingFwdAmount=priceBid.itemBid.bidder.totalPackingChargeAmt
+                    }
+     }})
+
+     return Number(totalPckingFwdAmount);
+  }
+
+  getBidderOtherAmount=()=>{
+   
+    let columns = [];
+    for (var i = 0; i < this.state.i; i++) {
+      columns.push(<>
+        <th></th>
+        <th>{this.gettotalOtherAmount(i)}</th></>);
+    }
+    return columns;
+  }
+
+gettotalOtherAmount(i){
+  let totalOtherAmount=0
+  this.state.priceBidList.forEach((priceBid)=>{
+    if(priceBid.itemBid.bidder.bidderId===this.state.bidderList[i].bidderId){
+        if(priceBid.itemBid.bidder.otherChargeType==="item_level"){
+              totalOtherAmount=totalOtherAmount+ priceBid.otherChargesAmt
+          }
+      else{
+         totalOtherAmount=priceBid.itemBid.bidder.totalOtherChargeAmt
+          }
+  }})
+  return Number(totalOtherAmount);
+}
+
   generateGrossValue = () => {
     let columns = [];
     for (var i = 0; i < this.state.i; i++) {
@@ -1232,7 +1339,7 @@ toPdf(){
                 <div class="table-proposed" >
                   {/* <StickyHeader height={height} className="table-responsive w-max-content"> */}
                   {/* <StickyHeader className="table-responsive w-max-content"> */}
-                    <table ref={ref => this._pdfPrint = ref} id="capture" className="table table-bordered table-header-fixed table-qcf text-center w-max-content">
+                    <table ref={ref => this._pdfPrint = ref} id="capture" className="my-table">
                       <thead>
                         <tr>
                            {/* <th rowSpan="3">Line Item</th> */}
@@ -1285,6 +1392,36 @@ toPdf(){
                           <th></th>
                           <th></th>
                         </tr>
+                        {this.state.freightColumn===true?
+                        <tr className="text-right border_top_1 border_left_1 border_right_1">
+                          <th></th>
+                          <th></th>
+                          <th>Freight</th>
+                         
+                          {this.getBidderFreightAmount()}
+                          <th></th>
+                          <th></th>
+                        </tr>:""}
+                        {this.state.pckngFwdColumn===true?
+                        <tr className="text-right border_top_1 border_left_1 border_right_1">
+                          <th></th>
+                          <th></th>
+                          <th>Packing & Fwd</th>
+                          
+                          {this.getBidderPackingFWDAmount()}   
+                          <th></th>
+                          <th></th>
+                        </tr>:""}
+                        {this.state.otherChargeColumn===true?
+                        <tr className="text-right border_top_1 border_left_1 border_right_1">
+                          <th></th>
+                          <th></th>
+                          <th>Other Charges</th>
+                        
+                          {this.getBidderOtherAmount()}
+                          <th></th>
+                          <th></th>
+                        </tr>:""}
                         {/* <tr className="text-right border_left_1 border_right_1 resultant_data"> */}
                         <tr className="text-right border_left_1 border_right_1 ">
                           <th></th>
@@ -1387,7 +1524,7 @@ toPdf(){
 
 
                  <div class="table-proposed" style={{ display: 'none' }}>
-                    <table id="reasonList" className="table table-bordered table-header-fixed table-qcf text-center w-max-content">
+                    <table id="reasonList" className="my-table">
                       <thead>
                         <tr>
                            <th rowSpan="1">Description</th>                          
@@ -1560,7 +1697,7 @@ toPdf(){
                                                             <div className="col-sm-12 text-center mt-2 ">
                                                                 <label style={{ fontSize: "20px" }}>Group 1 List</label>
                                                             </div>
-                                                            <table className="table table-bordered">
+                                                            <table className="my-table">
                                                                 <thead class="thead-light">
                                                                     <tr>
                                                                         <th>Invite</th>
@@ -1598,7 +1735,7 @@ toPdf(){
                                                             <div className="col-sm-12 text-center mt-2 ">
                                                                 <label style={{ fontSize: "20px" }}>Group 2 List</label>
                                                             </div>
-                                                            <table className="table table-bordered">
+                                                            <table className="my-table">
                                                                 <thead class="thead-light">
                                                                     <tr>
                                                                         <th>Invite</th>

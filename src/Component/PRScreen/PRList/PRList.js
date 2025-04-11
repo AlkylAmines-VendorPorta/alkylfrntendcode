@@ -17,11 +17,39 @@ import { connect } from "react-redux";
 import * as actionCreators from "../PRList/Action/Action";
 import { getUserDto, getFileAttachmentDto,getDecimalUpto,removeLeedingZeros } from "../../../Util/CommonUtil";
 import swal from "sweetalert";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  TextField,
+  Paper,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  Button,
+  InputLabel,
+  Container,
+  IconButton,
+  Typography,
+  Checkbox,
+  ListItemText
+} from "@material-ui/core";
 class PRList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       checkedItems:[],
+      search: "",
+      page: 0,
+      rowsPerPage: 50,
+      openModal:false,
+      openModalNew:false,
+      selectedItemsPr: [],
       selectedItem:{
         requestedBy:{},
         approver:{},
@@ -75,7 +103,7 @@ class PRList extends Component {
   }
 
   getDocuments =()=>{
-    debugger
+    
     console.log("this.state.selectedItem",this.state.selectedItem.prId);
     commonSubmitWithParam(this.props, "getDocuments", "/rest/getAttachmentbyPrId", this.state.selectedItem.prId);
     this.setState({loadGetDocuments:true})
@@ -137,7 +165,7 @@ else
   componentWillReceiveProps(nextProps){
     let list = groupBy(nextProps.prList, 'prNumber');
     this.setState({prList: list})
-debugger
+
     if(this.state.loadGetDocuments && !isEmpty(nextProps.documents)){
       this.props.changeLoaderState(false);
       this.setGetDocuments(nextProps); 
@@ -201,6 +229,7 @@ debugger
 
   handleFilterClick = () => {
     this.props.onFilter &&  this.props.onFilter()
+    this.setState({openModal:false})
   }
 
   clearFields = () => {
@@ -215,12 +244,68 @@ debugger
 
 
   }
+  handleSearchChange = (event) => {
+    this.setState({ search: event.target.value });
+    
+  };
+  handlePageChange = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
+  handleChange = (key,event) => {
+    const selectedValues = event.target.value; // The selected values (array of item.value)
+    const selectedValuesStr = selectedValues.join(", ");
+    this.setState({
+      selectedItemsPr: event.target.value,  // Update selected items
+    });
+    this.props.onFilterChange && this.props.onFilterChange(key, selectedValuesStr);
+  };
+  handleRowsPerPageChange = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
+  onCloseModaNew=()=>{
+    this.setState({
+      openModalNew:false
+    })
+  }
+  onOpenModalNew=()=>{
+    this.setState({
+      openModalNew:true
+    })
+  }
 
-  render() {
+render() {
+    const { page, rowsPerPage, search , selectedItemsPr} = this.state;
     const {filterBuyerList,filterPlantList,filterPRStatusList,filterPurhaseGroupList} = this.props;
     const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
     let filter = {};
     if(this.props.role == ROLE_BUYER_ADMIN) return null;
+    const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
+        }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+  
+    const filteredData = this.props.prList.filter((entry) => {
+      return searchInObject(entry, search);
+    });
+    const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
     return (
       <>
 
@@ -228,8 +313,8 @@ debugger
 
 
 <div className="modal documentModal" id="documentModal" >
-            <div className="modal-dialog modal-xl mt-100">
-              <div className="modal-content">
+            <div className="modal-dialog mt-100" style={{width:"800px", maxWidth:"800px"}}>
+              <div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
                 <div className="modal-header">
                   Other Documents
                   <button type="button" className={"close "+ this.props.readonly} data-dismiss="modal">
@@ -276,8 +361,8 @@ debugger
           </div>
 
 
-    <div className="modal-dialog modal-dialog-centered modal-xl">
-      <div className="modal-content">
+    <div className="modal-dialog modal-dialog-centered modal-xl" style={{width:"800px", maxWidth:"800px", marginTop:"80px"}}>
+      <div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
         <div className="modal-header">
           <h4 className="modal-title">PR Detail</h4>
           <button type="button" className="close" data-dismiss="modal">&times;</button>
@@ -418,7 +503,7 @@ debugger
             <div className="form-group">
               <label className="mr-1 label_12px">Third Party Approver</label>
 
-              <button className={"btn btn-sm btn-outline-primary display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</button>
+              <Button variant="contained" size="small" color="primary" className={"display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</Button>
             </div>
           </div>
         </div>
@@ -434,13 +519,13 @@ debugger
                      id="SearchTableDataInputTwo"
                      className="form-control"
                      // onKeyUp={searchTableDataTwo}
-                     placeholder="Search .."
+                     placeholder="Search"
                    />
                  </div>
                  <div className="col-sm-12 mt-2">
                    <div>
                      <StickyHeader height={250} className="table-responsive">
-                       <table className="table table-bordered table-header-fixed">
+                       <table className="my-table">
                          <thead>
                            <tr>
                              <th>#</th>
@@ -517,7 +602,7 @@ debugger
                                 <td>{prLine.desireVendorCode}</td>
                              </tr>
                                <tr class="hide-table-padding">
-                                 <td colSpan="11">
+                                 <td colSpan="18">
                                    <div id={"collapse" + i} class="collapse in p-1">
                                      <div className="container-fluid px-0">
                                        <div class="row m-0 p-0">
@@ -605,342 +690,432 @@ debugger
   </div>
 </div>
        
-        <div className="row px-4 py-2" >
+        <div className="row" >
     { [ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN].includes(this.props.role) &&
         <>
-        <div className="row col-12">
-        <div className="col-sm-12">
-       
-        <div className="row mt-2">
-                      <label className="col-sm-2 mt-4">Pr No</label>
-                      <div className="col-sm-4">
-                        <label>From </label>
-                        <input type="number" className="form-control" id="PRNOFROM" value={filter.prNoFrom} onChange={this.handleFilterChange.bind(this,'prNoFrom')} />
-                      </div>
-                
-                      <div className="col-sm-4">
-                        <label>To </label>
-                        <input type="number" className="form-control" id="PRNOTO" value={filter.prNoTo} onChange={this.handleFilterChange.bind(this,'prNoTo')} />
-                      </div>
-
-            </div>
-            </div>
-
-            <div className="col-sm-12">
-       
-       <div className="row mt-2">
-                     <label className="col-sm-2 mt-4">Pr Release Date</label>
-                     <div className="col-sm-4">
-                       <label>From </label>
-                       <input type="date" className="form-control" id="PRDATEFROM" value={filter.prDateFrom} max="9999-12-31" onChange={this.handleFilterChange.bind(this,'prDateFrom')} />
-                     </div>
-               
-                     <div className="col-sm-4">
-                       <label>To </label>
-                       <input type="date" className="form-control" id="PRDATETO" value={filter.prDateTo} max="9999-12-31" onChange={this.handleFilterChange.bind(this,'prDateTo')} />
-                     </div>
-
-           </div>
-           </div>
-
-      </div>
-
-
-      <div className="row mt-2 col-12">
-      <label className="col-sm-2">Status </label>
-            <div className="col-sm-4">
-              
-              <select className="form-control"
-              id="status1"
-              value={filter.status} onChange={this.handleFilterChange.bind(this,'status')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterPRStatusList) && filterPRStatusList.map(item=>
-                  <option value={item.value}>{item.display}</option>
-                )};
-              </select>
-            </div>
+         {this.state.openModal && <div className="customModal modal roleModal" id="updateRoleModal show" style={{ display: 'block' }}>
+          <div className="modal-backdrop"></div>
+            <div className="modal-dialog modal-lg">
+                <div className="modal-content">
+                  <Grid container spacing={2}>
+                     <Grid item xs={6}>
+                        <TextField label="Pr No From" 
+                         variant="outlined" size="small" 
+                         fullWidth  
+                         value={filter.prNoFrom} 
+                          onChange={this.handleFilterChange.bind(this,'prNoFrom')} 
+                          InputLabelProps={{ shrink: true }}  
+                          inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField label="Pr No To" 
+                         variant="outlined" size="small" 
+                         fullWidth  
+                         value={filter.prNoTo} 
+                         onChange={this.handleFilterChange.bind(this,'prNoTo')} 
+                          InputLabelProps={{ shrink: true }}  
+                          inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField label="Pr Release Date From" 
+                        type="date"
+                         variant="outlined" size="small" 
+                         fullWidth  
+                         value={filter.prDateFrom} max="9999-12-31" 
+                         onChange={this.handleFilterChange.bind(this,'prDateFrom')} 
+                          InputLabelProps={{ shrink: true }}  
+                          inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField label="Pr Release Date To" 
+                        type="date"
+                         variant="outlined" size="small" 
+                         fullWidth  
+                         value={filter.prDateTo} max="9999-12-31"
+                         onChange={this.handleFilterChange.bind(this,'prDateTo')}
+                          InputLabelProps={{ shrink: true }}  
+                          inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                                <FormControl fullWidth size="small" variant="outlined" 
+                                 >
+                                <InputLabel shrink >Status</InputLabel>
+                                  <Select name="status" 
+                                  value={filter.status} onChange={this.handleFilterChange.bind(this,'status')}
+                                  label="Status" 
+                                   sx={{ fontSize: 12, height: "15px",  } } >
+                                    <MenuItem value="">Select</MenuItem>
+                                    {!isEmptyDeep(filterPRStatusList) && filterPRStatusList.map((item) => (
+                                      <MenuItem key={item.value} value={item.value}>{item.display}</MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                              </Grid>
+                              <Grid item xs={6}>
+                        <TextField label="Buyer" 
+                         variant="outlined" size="small" 
+                         fullWidth  
+                         value={filter.buyerCode} 
+                         onChange={this.handleFilterChange.bind(this,'buyerCode')}
+                          InputLabelProps={{ shrink: true }}  
+                          inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                                <FormControl fullWidth size="small" variant="outlined" 
+                                 >
+                                <InputLabel shrink >Plant</InputLabel>
+                                  <Select name="plant" 
+                                   value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
+                                  label="Plant" 
+                                   sx={{ fontSize: 12, height: "15px",  } } >
+                                    <MenuItem value="">Select</MenuItem>
+                                    {!isEmptyDeep(filterPlantList) && filterPlantList.map((item) => (
+                                      <MenuItem key={item.value} value={item.value}>{item.display}</MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                              </Grid>
+                    </Grid>
       
-            <label className="col-sm-2">buyer </label>
-            <div className="col-sm-4">
-            <input  className="form-control" 
-            id="buyer"
-             value={filter.buyerCode} 
-             onChange={this.handleFilterChange.bind(this,'buyerCode')} />
-              {/* <select className="form-control"
-              value={filter.buyerCode} onChange={this.handleFilterChange.bind(this,'buyerCode')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterBuyerList) && filterBuyerList.map(item=>
-                  <option value={item.value}>{item.display}</option>
-                )};
-              </select> */}
-            </div>
+
+       
+<Grid item xs={12} style={{textAlign:"center"}} className="mt-2">
+           <Button type="button" size="small" variant="contained" onClick={this.handleFilterClick.bind(this)} color="primary"> Search</Button>
+            <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+            Cancel</Button>
+            <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+          </Grid>
+       
         </div>
-
-        <div className="row col-12 mt-2">
-        <label className="col-sm-2">plant </label>
-
-        <div className="col-sm-4">
-              <select className="form-control"
-              id="plant"
-              value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterPlantList) && filterPlantList.map(item=>
-                // <option value={item.value}>{item.display}</option>
-                  <option value={item.value}>{item.value+"-"+item.display}</option>
-                )};
-              </select>
-            </div> 
-
-        <div className="col-sm-6">
-          <button type="button" className={"btn btn-primary"} onClick={this.handleFilterClick.bind(this)}> Search </button> &nbsp;
-         <button type="button" className={"btn btn-danger"} onClick={this.clearFields.bind(this)}> Clear </button>
         </div>
-
-        <div className="col-sm-6">
-
-      </div>
-        <div className="col-sm-6">
-
-        <div className="row mt-2">
-        <div className="col-sm-4"></div>
-           <div className="col-sm-8">
-            {/* <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." /> */}
-            </div>
-        </div>
-
-        </div>
-
-        </div>
-          
+        </div>}
         </>
         }
-          <div className="col-12">
+        
             {/* <StickyHeader height={450} className="table-responsive mt-2"> */}
               {this.props.purchaseManager ?
               <>
+               {this.state.openModalNew && 
+              <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+                <div className="modal-backdrop"></div><div className="modal-dialog modal-lg">
+                  <div className="modal-content">
               <FormWithConstraints ref={formWithConstraints => this.prFormPurchase = formWithConstraints} onSubmit={this.onSubmit}>
 
-        <div className="row mt-2">
-                      <label className="col-sm-2 mt-4">Pr No</label>
-                      <div className="col-sm-4">
-                        <label>From </label>
-                        <input type="number" className="form-control" id="PRNOFROM"  value={this.props.filter.prNoFrom} onChange={this.handleFilterChange.bind(this,'prNoFrom')} />
-                      </div>
-                
-                      <div className="col-sm-4">
-                        <label>To </label>
-                        <input type="number" className="form-control" id="PRNOTO"  value={this.props.filter.prNoTo} onChange={this.handleFilterChange.bind(this,'prNoTo')} />
-                      </div>
+              <Grid container spacing={2}>
+  {/* PR Number Row */}
+  <Grid item xs={12} container alignItems="center" spacing={2}>
+   
+    <Grid item xs={6}>
+      <TextField
+        label="PR NO. From"
+        variant="outlined"
+        size="small"
+        fullWidth
+        type="number"
+        value={this.props.filter.prNoFrom}
+        onChange={this.handleFilterChange.bind(this, 'prNoFrom')}
+        InputLabelProps={{ shrink: true }}
+        inputProps={{ style: { fontSize: 12, height: "15px" } }}
+      />
+    </Grid>
+    <Grid item xs={6}>
+      <TextField
+        label="PR NO. To"
+        variant="outlined"
+        size="small"
+        fullWidth
+        type="number"
+        value={this.props.filter.prNoTo}
+        onChange={this.handleFilterChange.bind(this, 'prNoTo')}
+        InputLabelProps={{ shrink: true }}
+        inputProps={{ style: { fontSize: 12, height: "15px" } }}
+      />
+    </Grid>
+  </Grid>
 
-                      </div>
-            
-         <div className="row mt-2">
-                     <label className="col-sm-2 mt-4">Pr Release Date</label>
-                     <div className="col-sm-4">
-                       <label>From </label>
-                       <input type="date" className="form-control"  value={filter.prDateFrom} onChange={this.handleFilterChange.bind(this,'prDateFrom')} />
-                     </div>
-               
-                     <div className="col-sm-4">
-                       <label>To </label>
-                       <input type="date" className="form-control"  value={filter.prDateTo} onChange={this.handleFilterChange.bind(this,'prDateTo')} />
-                     </div>
+  {/* PR Release Date Row */}
+  <Grid item xs={12} container alignItems="center" spacing={2}>
+   
+    <Grid item xs={6}>
+      <TextField
+        label="PR Date From"
+        variant="outlined"
+        size="small"
+        fullWidth
+        type="date"
+        value={filter.prDateFrom}
+        onChange={this.handleFilterChange.bind(this, 'prDateFrom')}
+        InputLabelProps={{ shrink: true }}
+        inputProps={{ style: { fontSize: 12, height: "15px" } }}
+      />
+    </Grid>
+    <Grid item xs={6}>
+      <TextField
+        label="PR Date To"
+        variant="outlined"
+        size="small"
+        fullWidth
+        type="date"
+        value={filter.prDateTo}
+        onChange={this.handleFilterChange.bind(this, 'prDateTo')}
+        InputLabelProps={{ shrink: true }}
+        inputProps={{ style: { fontSize: 12, height: "15px" } }}
+      />
+    </Grid>
+  </Grid>
 
-           </div>
+  {/* Purchase Group Row */}
+  <Grid item xs={12} container alignItems="center" spacing={2}>
+    
+    <Grid item xs={6}>
+      {/* <FormControl fullWidth size="small" variant="outlined">
+        <InputLabel shrink>Purchase Group From</InputLabel>
+        <Select
+          value={filter.purchaseGroupFrom}
+          onChange={this.handleFilterChange.bind(this, 'purchaseGroupFrom')}
+          label="Purchase Group From"
+          sx={{ fontSize: 12, height: "15px" }}
+        >
+          <MenuItem value="">Select</MenuItem>
+          {!isEmptyDeep(filterPurhaseGroupList) && filterPurhaseGroupList.map(item => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.display + "-" + item.value}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl> */}
+       <FormControl fullWidth size="small" variant="outlined">
+                <InputLabel shrink>Purchase Group</InputLabel>
+                <Select
+                  multiple
+                  value={this.state.selectedItemsPr}
+                 // onChange={this.handleChange}
+                  onChange={this.handleChange.bind(this,'purchaseGroupFrom')}
+                  sx={{ fontSize: 12, height: "15px" }}
+                  renderValue={(selected) => {
+                    // Display both item.display and item.value as selected items
+                    return selectedItemsDisplay.map(item => `${item.display} - ${item.value}`).join(", ");
+                  }}  // Custom display for selected items
+                >
+                  {!isEmpty(filterPurhaseGroupList) && filterPurhaseGroupList.map((item, i) => (
+                    <MenuItem  key={i + 1} value={item.value} style={{padding:"0px"}}>
+                      <Checkbox size="small" checked={this.state.selectedItemsPr.indexOf(item.value) > -1} />
+                      <ListItemText className="customListItemText" primary={item.display + " - " + item.value} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+    
+    {/* <Grid item xs={6}>
+      <FormControl fullWidth size="small" variant="outlined">
+        <InputLabel shrink>Purchase Group To</InputLabel>
+        <Select
+          value={filter.purchaseGroupTo}
+          onChange={this.handleFilterChange.bind(this, 'purchaseGroupTo')}
+          label="Purchase Group To"
+          sx={{ fontSize: 12, height: "15px" }}
+        >
+          <MenuItem value="">Select</MenuItem>
+          {!isEmptyDeep(filterPurhaseGroupList) && filterPurhaseGroupList.map(item => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.display + "-" + item.value}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Grid> */}
+  </Grid>
 
-           <div className="row mt-2">
-                     <label className="col-sm-2 mt-4">Purchase Group</label>
-                     <div className="col-sm-4">
-                     <label>From</label>
-                     <select className="form-control"
-              
-              value={filter.purchaseGroupFrom} onChange={this.handleFilterChange.bind(this,'purchaseGroupFrom')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterPurhaseGroupList) && filterPurhaseGroupList.map(item=>
-                  <option value={item.value }>{item.display + "-" +item.value}</option>
-                )};
-              </select>
-              </div>
-              <div className="col-sm-4">
-              <label>To</label>
-              <select className="form-control"
-              
-              value={filter.purchaseGroupTo} onChange={this.handleFilterChange.bind(this,'purchaseGroupTo')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterPurhaseGroupList) && filterPurhaseGroupList.map(item=>
-                  <option value={item.value }>{item.display + "-" +item.value}</option>
-                )};
-              </select>
-                      
-                     </div>
-                     {/* <div className="col-sm-4">
-                     <label>From</label>
-                       <input type="text" className="form-control"  value={filter.purchaseGroupFrom} onChange={this.handleFilterChange.bind(this,'purchaseGroupFrom')} />
-                     </div>
-
-                     <div className="col-sm-4">
-                       <label>To</label>
-                       <input type="text" className="form-control"  value={filter.purchaseGroupTo} onChange={this.handleFilterChange.bind(this,'purchaseGroupTo')} />
-                     </div> */}
-
-           </div>
-
-           <div className="row mt-2">
-           <label className="col-sm-2 mt-4">Status</label>
-                     <div className="col-sm-2">
-                     <label> </label>
-              <select className="form-control"
-              id="status1"
-              value={filter.status} onChange={this.handleFilterChange.bind(this,'status')}
-              required>
-                <option value="">Select</option>
-                {!isEmptyDeep(filterPRStatusList) && filterPRStatusList.map(item=>
-                  <option value={item.value}>{item.display}</option>
-                )};
-              </select>
-            </div>
-
-           </div>
+ 
+    
+    <Grid item xs={6}>
+      <FormControl fullWidth size="small" variant="outlined">
+        <InputLabel shrink>Status</InputLabel>
+        <Select
+          value={filter.status}
+          onChange={this.handleFilterChange.bind(this, 'status')}
+          label="Status"
+          sx={{ fontSize: 12, height: "15px" }}
+        >
+          <MenuItem value="">Select</MenuItem>
+          {!isEmptyDeep(filterPRStatusList) && filterPRStatusList.map(item => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.display}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Grid>
+  </Grid>
+</Grid>
 
            <div className="col-sm-12 text-center mt-4">
-           <button type="button" className={"btn btn-primary"} onClick={this.handleFilterClick.bind(this)}> Search </button>
+           <Button type="button" color="primary" variant="contained" size="small" onClick={this.handleFilterClick.bind(this)}> Search </Button>
+           <Button type="button" color="secondary" className="ml-1" variant="contained" size="small" onClick={this.onCloseModaNew}> Cancel </Button>
    
         </div>
+
+        </FormWithConstraints>
+        </div>
+        </div>
+        </div>}
+
               <div class="col-12">
              
               <div className="row" >
                                  <div className="col-sm-9"></div>
                                  <div className="col-sm-3">
-                                 &nbsp;
-                                  {/* <input type="text" id="SearchTableDataInputThree" className="form-control" onKeyUp={searchTableDataThree} placeholder="Search .." /> */}
+                                <input type="text" id="SearchTableDataInputThree"
+                                 //className="form-control" 
+                                 onKeyUp={searchTableDataThree} placeholder="Search .." 
+                                 style={{fontSize: "10px", float:"right" }}/> 
+                                 <IconButton size="small" style={{float:"right", marginRight:"10px"}} 
+                                 onClick={(this.onOpenModalNew)} color="primary">
+                                  <i class="fa fa-filter"></i></IconButton>
                                  </div>
                                  </div>
 
-                <div class="table-proposed">
-                  <StickyHeader height={400} className="table-responsive width-adjustment">
+               
+                  <TableContainer className="mt-1">
                 
-                    <table className="table table-bordered table-header-fixed">
-                      <thead>
-                        <tr>
-                          <th>
-                            <input type="checkbox" checked={this.state.checked} onChange={this.toggleChecked} style={{marginRight:5}} />
-                          {/* Release */}
-                          Rel
-                          </th>
-                          <th>PR No</th>
-                          <th></th>
-                          <th>PR Date</th>
-                          <th>Line No.</th>
-                          <th>Status</th>
-                          <th>Material Code & Description</th>
-                          <th>Req. Qty.</th>
-                          <th> UOM </th>
-                          <th> Val. Price </th>
-                          <th> Plant </th>
-                          <th> Delivery Date </th>
-                          {/*<th> Required Date </th>*/}
-                          <th> Desire Vendor </th>
-                          <th> Material Group </th>
-                          <th> Buyer </th>
-                          <th> Tracking No </th>
+                  <table className="my-table">
+  <thead>
+    <tr>
+      <th>
+        <input 
+          type="checkbox" 
+          checked={this.state.checked} 
+          onChange={this.toggleChecked} 
+          style={{marginRight: 5}} 
+        />
+        Rel
+      </th>
+      <th>PR No</th>
+      <th></th>
+      <th>PR Date</th>
+      <th>Line No.</th>
+      <th>Status</th>
+      <th>Material Code & Description</th>
+      <th>Req. Qty.</th>
+      <th>UOM</th>
+      <th>Val. Price</th>
+      <th>Plant</th>
+      <th>Delivery Date</th>
+      <th>Desire Vendor</th>
+      <th>Material Group</th>
+      <th>Buyer</th>
+      <th>Tracking No</th>
+    </tr>
+  </thead>
+  <tbody id="DataTableBodyThree" className="table-header-fixed-min">
+    {Object.keys(groupByList).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, i) => {
+      console.log('groupByList', groupByList);
+      let itemData = groupByList[key];
+      let childs = !isEmptyDeep(itemData) ? itemData : [];
+      
+      return (
+        <>
+          {/* <tr>
+            
+          </tr> */}
+          {!isEmptyDeep(childs) && childs.map((item, index) => {
+            return (
+              <tr>
+                <td style={{minWidth: "20px"}}>
+              <input 
+                type="checkbox" 
+                checked={this.state.checkedItems.includes(key)} 
+                onChange={this.onChecked.bind(this, key)} 
+              />
+            </td>
+            <td style={{minWidth: "10px"}}>{key}</td>
+            <td>
+              <button 
+                type="button" 
+                onClick={this.handleSelect.bind(this, itemData)} 
+                data-toggle="modal" 
+                className="btn btn-light" 
+                data-target="#viewPrDetail"
+              >
+                View PR
+              </button>
+            </td>
+              
+                <td style={{minWidth: "20px"}}>
+                  {formatDateWithoutTimeNewDate2(item.pr.date != null ? item.pr.date : "")}
+                </td>
+                <td style={{minWidth: "20px"}}>
+                  {removeLeedingZeros(item.prLineNumber)}
+                </td>
+                <td>{this.props.prStatusList[item.status]}</td>
+                <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
+                <td style={{minWidth: "5px"}}>{item.reqQty}</td>
+                <td style={{minWidth: "26px"}}>{item.uom}</td>
+                <td style={{minWidth: "20px"}}>{item.price}</td>
+                <td style={{minWidth: "26px"}}>
+                  {item.plantDesc != null ? `${item.plant}-${item.plantDesc}` : item.plant}
+                </td>
+                <td>
+                  <input
+                    type="date" 
+                    min={disablePastDate()}
+                    max="9999-12-31"
+                    className={"form-control"}
+                    value={item.deliverDate}
+                    onChange={(event) => {
+                      this.commonHandleChange(event, "deliverDate", key, index);
+                    }}
+                  />
+                </td>
+                <td>
+                  {!isEmptyDeep(item.desiredVendor) 
+                    ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - ` : ''}${item.desiredVendor.userName ? item.desiredVendor.userName : ''}`
+                    : '-'}
+                </td>
+                <td>
+                  {`${item.matGrp ? `${item.matGrp} - ` : ''}${item.matGrpDesc ? item.matGrpDesc : ''}`}
+                </td>
+                <td>
+                  <select
+                    className={"form-control"}
+                    onChange={(event) => {
+                      this.commonHandleChange(event, "buyer", key, index);
+                    }}
+                    value={item.buyer ? item.buyer.userId : null}
+                  >
+                    <option value="">Select Buyer</option>
+                    {!isEmptyDeep(this.props.buyerList) && this.props.buyerList.map(records => {
+                      return (
+                        <option value={records.userId}>{records.name}</option>
+                      );
+                    })}
+                  </select>
+                </td>
+                <td>{item.trackingNo}</td>
+              </tr>
+            );
+          })}
+        </>
+      );
+    })}
+  </tbody>
+</table>
+<TablePagination
+                              rowsPerPageOptions={[50, 100, 150]}
+                              component="div"
+                              count={Object.keys(groupByList).length}
+                              rowsPerPage={rowsPerPage}
+                              page={page}
+                              onPageChange={this.handlePageChange}
+                              onRowsPerPageChange={this.handleRowsPerPageChange}
+                            />
 
-                        </tr>
-                      </thead>
-                      <tbody id="DataTableBodyThree" className="table-header-fixed-min">
-                        {Object.keys(groupByList).map((key, i) => {
-                          console.log('groupByList',groupByList)
-                          let itemData = groupByList[key];
-                          let childs = !isEmptyDeep(itemData) ? itemData:[];
-                          return (
-                            <>
-                            <tr>
-                              <td style={{minWidth:"20px"}}>
-                                <input type="checkbox" checked={this.state.checkedItems.includes(key)} onChange={this.onChecked.bind(this,key)} />
-                              </td>
-
-                              <td style={{minWidth:"10px"}}>{key}</td>
-                              <td>
-                              <button type="button" onClick={this.handleSelect.bind(this,itemData)} data-toggle="modal" className="btn btn-light" data-target="#viewPrDetail">View PR</button>
-                              </td>
-                            </tr>
-                            {
-                              !isEmptyDeep(childs) && childs.map((item,index) => {
-                                return (
-                                  <tr>
-                                    <td colSpan="3"></td>
-                                    <td style={{minWidth:"20px"}}>{formatDateWithoutTimeNewDate2(item.pr.date!=null?item.pr.date:"")}</td>
-                                    <td style={{minWidth:"20px"}}>{removeLeedingZeros(item.prLineNumber)}</td>
-                                    <td>{this.props.prStatusList[item.status]}</td>
-                                    <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
-                                    <td style={{minWidth:"5px"}}>{item.reqQty}</td>
-                                    <td style={{minWidth:"26px"}}>{item.uom}</td>
-                                    <td style={{minWidth:"20px"}}>{item.price}</td>
-                                    {/* <td style={{minWidth:"26px"}}>{item.plant}</td> */}
-                                    <td style={{minWidth:"26px"}}>{item.plantDesc!=null?item.plant+"-"+item.plantDesc:item.plant}</td>
-                                    <td>
-                                      <input
-                                        type="date" 
-                                        min={disablePastDate()}
-                                        max="9999-12-31"
-                                        className={"form-control"}
-                                          value={item.deliverDate}
-                                        onChange={(event) => {
-                                          this.commonHandleChange(event,  "deliverDate",key,index);
-                                        }}
-                                      />
-                                    </td>
-                                    {/*<td>
-                                      <input
-                                        type="date"
-                                        className={"form-control"}
-                                          value={item.requiredDate}
-                                        onChange={(event) => {
-                                          this.commonHandleChange(event,"requiredDate",key,index);
-                                        }}
-                                      />
-                                    </td>*/}
-                                   
-                                    <td>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</td>
-                                    <td>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</td>
-                                    <td>
-                                    <>
-                                      <select
-                                        className={"form-control"}
-                                        onChange={(event) => {
-                                          this.commonHandleChange(event, "buyer",key,index);
-                                        }}
-                                        value={item.buyer ? item.buyer.userId:null}
-                                      >
-                                        <option value="">Select Buyer</option>
-                                        {!isEmptyDeep(this.props.buyerList) && this.props.buyerList.map(records =>{
-                                          return (
-                                            <option value={records.userId}>{records.name}</option>
-                                          )
-                                        })}
-                                      </select>
-
-                                   </>
-                                   </td>
-                                    <td>{item.trackingNo}</td>
-
-                                  </tr>
-                                )
-                              })
-                            }
-                            </>
-                        )})}
-
-                      </tbody>
-                 
-                    </table>
-
-                  </StickyHeader>
-                </div>
+                  </TableContainer>
           
                 <div className="col-sm-12 text-center">
                 <hr style={{ margin: "0px" }} />
@@ -948,13 +1123,26 @@ debugger
               </div>
 
               </div>
-     </FormWithConstraints>
+    
               </>
             :
             <>
-       
-
-              <table className="table table-bordered table-header-fixed">
+            <div className="wizard-v1-content">
+        <Grid container >
+                            <Grid item sm={12} className="mb-1">   
+                            
+                        <input
+                          placeholder="Search"
+                          // variant="outlined"
+                          // size="small"
+                          style={{fontSize: "10px", float:"right" }}
+                          value={search}
+                          onChange={this.handleSearchChange}
+                        /><IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+                        </Grid>
+                        </Grid>
+              <TableContainer>
+              <table className="my-table">
                 <thead>
                   <tr>
                     <th>PR No</th>
@@ -975,7 +1163,7 @@ debugger
                   </tr>
                 </thead>
                 <tbody id="DataTableBody">
-                  {this.props.prList.map((pr, i) =>{
+                  {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((pr, i) =>{
                     return (
                       <tr onClick={() => this.props.loadPRDetails(i)}>
                       <td>{pr.prNumber}</td>
@@ -1002,11 +1190,21 @@ debugger
                   })}
                 </tbody>
               </table>
+              <TablePagination
+                              rowsPerPageOptions={[50, 100, 150]}
+                              component="div"
+                              count={filteredData.length}
+                              rowsPerPage={rowsPerPage}
+                              page={page}
+                              onPageChange={this.handlePageChange}
+                              onRowsPerPageChange={this.handleRowsPerPageChange}
+                            />
+              </TableContainer>
+              </div>
               </>
               }
              
             {/* </StickyHeader> */}
-          </div>
         </div>
       </>
     );

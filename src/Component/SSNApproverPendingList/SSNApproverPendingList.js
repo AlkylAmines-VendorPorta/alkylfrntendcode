@@ -4,19 +4,6 @@ import StickyHeader from "react-sticky-table-thead";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import {
     commonSubmitWithParam, 
-    commonHandleChange, 
-    commonSubmitFormNoValidation, 
-    commonSubmitForm, 
-    commonSubmitFormNoValidationWithData,
-    commonHandleChangeCheckBox, 
-    commonSetState, 
-    commonHandleFileUpload, 
-    commonSubmitFormValidation,
-    commonHandleReverseChangeCheckBox, 
-    swalPrompt, commonSubmitWithoutEvent,
-    commonHandleFileUploadInv, 
-    swalWithTextBox, 
-    swalWithDate
  } from "../../Util/ActionUtil";
  import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
  import * as actionCreators from "./Action";
@@ -29,7 +16,7 @@ import AdvanceShipmentNotice from "../AdvanceShipmentNotice/AdvanceShipmentNotic
 import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName } from "../../Util/DateUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../Util/CommonUtil";
-
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Grid, Container } from '@material-ui/core';
 
  const height_dy = window.innerHeight - 135;
  const delay = ms => new Promise(
@@ -46,6 +33,9 @@ class SSNApproverPendingList extends Component {
         unload: false,
         updateASNStatus : false,
         SSNVersion:"",
+        searchQuery: "",
+        page: 0,
+        rowsPerPage: 50,
         po:{        
           poId : "",
           purchaseOrderNumber: "",
@@ -425,67 +415,102 @@ showASNHistory = () =>{
  
     
 }
+handleSearchChange = (event) => {
+  this.setState({ searchQuery: event.target.value });
+};
+
+handleChangePage = (event, newPage) => {
+  this.setState({ page: newPage });
+};
+
+handleChangeRowsPerPage = (event) => {
+  this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+};
   render() {
+    const {  searchQuery, page, rowsPerPage } = this.state;
     var shown = {
       display: this.state.shown ? "block" : "none"
     };
     var hidden = {
       display: this.state.hidden ? "none" : "block"
         }
+        const searchInObject = (obj, searchTerm) => {
+          return Object.keys(obj).some((key) => {
+            const value = obj[key];
+            if (typeof value === 'object' && value !== null) {
+              return searchInObject(value, searchTerm);
+            }
+            if (value === null || value === undefined) {
+              return false;
+            }
+            return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+          });
+        };
+      
+        const filteredData = this.state.ApprovalPendingServiceSheetLIst.filter((entry) => {
+          return searchInObject(entry, searchQuery);
+        });
     return (
       <>
         <Loader isLoading={this.state.isLoading} />
         {<UserDashboardHeader />}
         <FormWithConstraints>
         <div className="w-100"   style={ hidden}>
-        <div className="mt-70 boxContent">
-        <div className="row px-4 py-2">
-          <div className="col-sm-9"></div>
-          <div className="col-sm-3">
-            <input
-              type="text"
-              id="SearchTableDataInputThree"
-              className="form-control"
-              onKeyUp={searchTableDataThree}
-              placeholder="Search .."
-            />
-          </div>
-          <div className="col-sm-12 mt-2">
-         <div id="togglesidebar">
-            <StickyHeader height={height_dy} className="table-responsive">
-               <table className="table table-bordered table-header-fixed">
-                  <thead>
-                     <tr>
-                        <th>Service Note No</th>
-                        <th>PO No</th>
-                        {/*<th>Invoice Date </th>*/}
-                        <th>SSN Date</th>
-                        <th>Vendor</th>
-                        <th>Document No</th>
-                        <th>Status </th>
-                     </tr>
-                  </thead>
-                  <tbody id="DataTableBodyThree">
-                  {this.state.ApprovalPendingServiceSheetLIst.map((sslist, index) => (
-                          <tr onClick={(e) => { this.loadASNForEdit(sslist)}}>
-                            <td>{sslist.serviceSheetNo}</td>
-                            <td>{sslist.po.purchaseOrderNumber}</td>
-                            <td>{formatDateWithoutTime(sslist.created)}</td>
-                            <td>{sslist.po.vendorName}</td>
-                            <td>{sslist.invoiceNo != null ? sslist.invoiceNo : sslist.deliveryNoteNo}</td>
-                            <td>{this.state.serviceSheetStatusList[sslist.status]}</td>
-                            </tr>
-                  ))}
-                     
-                       
-                                    </tbody>
-                                 </table>
-                              </StickyHeader>
-                           </div>
-                        </div>
-        </div>
-        </div>
+        <div className="wizard-v1-content" style={{marginTop:"80px"}}>
+          <Grid container spacing={2} alignItems="center" justify="flex-end">
+            <Grid item xs={3}>
+              <input
+                placeholder="Search"
+                value={searchQuery}
+                onChange={this.handleSearchChange}
+                style={{fontSize: "10px", float:"right" }}
+              />
+            </Grid>
+          </Grid>
+          <TableContainer className="mt-1">
+         <Table className="my-table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Service Note No</TableCell>
+                          <TableCell>PO No</TableCell>
+                          <TableCell>SSN Date</TableCell>
+                          <TableCell>Vendor</TableCell>
+                          <TableCell>Document No</TableCell>
+                          <TableCell>Status</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                      {filteredData.length > 0 ? (
+                          filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((sslist, index) => (
+                            <TableRow key={index} onClick={() => this.loadASNForEdit(sslist)}>
+                              <TableCell>{sslist.serviceSheetNo}</TableCell>
+                              <TableCell>{sslist.po.purchaseOrderNumber}</TableCell>
+                              <TableCell>{formatDateWithoutTime(sslist.created)}</TableCell>
+                              <TableCell>{sslist.po.vendorName}</TableCell>
+                              <TableCell>{sslist.invoiceNo != null ? sslist.invoiceNo : sslist.deliveryNoteNo}</TableCell>
+                              <TableCell>{this.state.serviceSheetStatusList[sslist.status]}</TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={6} align="center">
+                              No data available
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
 
+                    </Table>
+                    <TablePagination
+                                  rowsPerPageOptions={[50, 10, 150]}
+                                  component="div"
+                                  count={filteredData.length}
+                                  rowsPerPage={rowsPerPage}
+                                  page={page}
+                                  onPageChange={this.handleChangePage}
+                                  onRowsPerPageChange={this.handleChangeRowsPerPage}
+                                />
+                                </TableContainer></div>
      
         </div>
         <div style={ shown }

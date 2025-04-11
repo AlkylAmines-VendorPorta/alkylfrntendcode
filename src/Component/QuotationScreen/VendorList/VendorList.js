@@ -12,11 +12,36 @@ import {
 } from "../../../Util/ActionUtil";
 import { ROLE_NEGOTIATOR_ADMIN,ROLE_BUYER_ADMIN } from "../../../Constants/UrlConstants";
 import * as actionCreators from "./Action/Action";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  TextField,
+  Paper,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  Button,
+  InputLabel,
+  Container,
+  IconButton
+} from "@material-ui/core";
+import { API_BASE_URL } from "../../../Constants";
+import axios from "axios";
 class VendorList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       bidderLineArray: [],
+      search: "",
+      page: 0,
+      rowsPerPage: 50,
+      openModal:false,
       filter: {
         enqNoFrom: null,
         enqNoTo: null,
@@ -96,13 +121,60 @@ class VendorList extends Component {
 
 
   }
+  handleSearchChange = (event) => {
+    this.setState({ search: event.target.value });
+    
+  };
+  handlePageChange = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
 
+  handleRowsPerPageChange = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
+  resendEnquiry = async (id) => {
+    this.setState({ loading: true, error: null }); // Reset error and set loading
+
+    try {
+      // Replace the URL with your API endpoint
+      const response = await axios.get(`${API_BASE_URL}/resendEnquiryMailToBidder/${id}`);
+      this.setState({ data: response.data, loading: false }); // Update state with the API response data
+    } catch (error) {
+      this.setState({ loading: false, error: error.message }); // Handle any errors
+    }
+  };
   render() {
-    // console.log("Bidder Line Array is in:",this.props.bidderList)
+    const { page, rowsPerPage, search } = this.state;
+    const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
+        }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+  
+    const filteredData = this.state.bidderLineArray.filter((entry) => {
+      return searchInObject(entry, search);
+    });
     const { filter } = this.state;
     return (
       <>
-        <div className="row px-4 py-2" id="togglesidebar">
+        <>
           {/* {!this.props.role === ROLE_NEGOTIATOR_ADMIN ? */}
           {!this.props.role === ROLE_BUYER_ADMIN ?
             <><div className="col-sm-9">
@@ -118,162 +190,203 @@ class VendorList extends Component {
                 />
               </div></>
             : null}
-          <div className="col-sm-12">
-            <div className="row mt-2">
-              <label className="col-sm-2 mt-4">Enq No</label>
-              <div className="col-sm-4">
-                <label>From </label>
-                <input type="number" id="ENQNOFROM" className="form-control" value={filter.enqNoFrom}
-                  onChange={(e) => commonHandleChange(e, this, "filter.enqNoFrom")}
-                />
-              </div>
-              <div className="col-sm-4">
-                <label>To </label>
-                <input type="number" id="ENQNOTO" className="form-control" value={filter.enqNoTo}
+             {this.state.openModal && <div className="customModal modal roleModal" id="updateRoleModal show" style={{ display: 'block' }}>
+          <div className="modal-backdrop"></div>
+                                    <div className="modal-dialog modal-lg">
+                                       <div className="modal-content">
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+              <TextField label="Enq No From" 
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.enqNoFrom}
+              onChange={(e) => commonHandleChange(e, this, "filter.enqNoFrom")}
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+           <Grid item xs={6}>
+              <TextField label="Enq No To" 
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.enqNoTo}
                   onChange={(e) => commonHandleChange(e, this, "filter.enqNoTo")}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-12">
-            <div className="row mt-2">
-              <label className="col-sm-2 mt-4">Enq Date</label>
-              <div className="col-sm-4">
-                <label>From </label>
-                <input type="date" max="9999-12-31" id="ENQDATEFROM" className="form-control" value={filter.enqDateFrom}
-                  onChange={(e) => commonHandleChange(e, this, "filter.enqDateFrom")}
-                />
-              </div>
-              <div className="col-sm-4">
-                <label>To </label>
-                <input type="date" max="9999-12-31" id="ENQDATETO" className="form-control" value={filter.enqDateTo}
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+           <Grid item xs={6}>
+              <TextField label="Enq Date From" 
+              type="date"
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.enqDateFrom}
+              onChange={(e) => commonHandleChange(e, this, "filter.enqDateFrom")}
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+           <Grid item xs={6}>
+              <TextField label="Enq Date To" 
+              type="date"
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.enqDateTo}
                   onChange={(e) => commonHandleChange(e, this, 'filter.enqDateTo')}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-12">
-            <div className="row mt-2">
-              <label className="col-sm-2 mt-4">Enq End Date</label>
-              <div className="col-sm-4">
-                <label>From </label>
-                <input type="date" max="9999-12-31" id="ENQENDDATEFROM" className="form-control" value={filter.enqEndDateFrom}
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+           <Grid item xs={6}>
+              <TextField label="Enq End Date From" 
+              type="date"
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.enqEndDateFrom}
                   onChange={(e) => commonHandleChange(e, this, "filter.enqEndDateFrom")}
-                />
-              </div>
-              <div className="col-sm-4">
-                <label>To </label>
-                <input type="date" max="9999-12-31" id="ENQENDDATETO"  className="form-control" value={filter.enqEndDateTo}
-                  onChange={(e) => commonHandleChange(e, this, 'filter.enqEndDateTo')}
-                />
-              </div>
-            </div>
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+           <Grid item xs={6}>
+              <TextField label="Enq End Date To" 
+              type="date"
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.enqEndDateTo}
+              onChange={(e) => commonHandleChange(e, this, 'filter.enqEndDateTo')}
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+           <Grid item xs={6}>
+              <FormControl fullWidth size="small" variant="outlined" 
+              >
+              <InputLabel shrink >Enq Status </InputLabel>
+                <Select name="status" 
+                value={filter.enqStatus}
+                onChange={(e) => commonHandleChange(e, this, "filter.enqStatus")}
+                label="Enq Status" 
+                sx={{ fontSize: 12, height: "15px",  } } >
+                  <MenuItem value="">Select</MenuItem>
+                  {(this.state.enqStatus).map((item) => (
+                    <MenuItem key={item.value} value={item.value}>{item.display}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth size="small" variant="outlined" 
+              >
+              <InputLabel shrink >Bid Status </InputLabel>
+                <Select name="status" 
+                value={filter.biiderStatus}
+                onChange={(e) => commonHandleChange(e, this, "filter.biiderStatus")}
+                label="Bid Status" 
+                sx={{ fontSize: 12, height: "15px",  } } >
+                  <MenuItem value="">Select</MenuItem>
+                  {(this.state.bidderStatus).map((item) => (
+                    <MenuItem key={item.value} value={item.value}>{item.display}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+           <Grid item xs={6}>
+              <TextField label="Buyer (Employee code)" 
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.buyerCode}
+              onChange={(e) => commonHandleChange(e, this, "filter.buyerCode")}
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+           <Grid item xs={6}>
+              <TextField label="Vendor Code" 
+              variant="outlined" size="small" 
+              fullWidth
+              value={filter.vendorCode}
+              onChange={(e) => commonHandleChange(e, this, "filter.vendorCode")}
+              InputLabelProps={{ shrink: true }}  
+              inputProps={{ style: { fontSize: 12, height: "15px",  } }}  
+              />
+           </Grid>
+        </Grid>
+        <Grid item xs={12} className="mt-3" style={{textAlign:"center"}}>
+              <Button size="small" color="primary" variant="contained" type="button"  
+              onClick={() => {
+                this.setState({ openModal:false});
+                this.props.loadVendorList(null, this.state.filter);
+              }}> Search </Button> 
+              <Button size="small"  color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+                 Cancel</Button>
+                <Button size="small" color="primary" variant="contained" type="button" className={"ml-1"} onClick={this.clearFields.bind(this)}> Clear </Button>
+        </Grid>
           </div>
-          <div className="col-sm-12">
-            <div className="row mt-2">
-              <label className="col-sm-2">Enq Status </label>
-              <div className="col-sm-3">
-                <select className="form-control"
-                  value={filter.enqStatus}
-                  onChange={(e) => commonHandleChange(e, this, "filter.enqStatus")}
-                  id="ENQSTATUS" 
-                >
-                  <option value="">Select</option>
-                  {
-                    (this.state.enqStatus).map(item =>
-                      <option value={item.value}>{item.display}</option>
-                    )}
-                </select>
-              </div>
-              <label className="col-sm-2">Bid Status</label>
-              <div className="col-sm-3">
-                <select className="form-control"
-                  value={filter.biiderStatus}
-                  onChange={(e) => commonHandleChange(e, this, "filter.biiderStatus")}
-                  id="BIDSTATUS" 
-                >
-                  <option value="">Select</option>
-                  {
-                    (this.state.bidderStatus).map(item =>
-                      <option value={item.value}>{item.display}</option>
-                    )}
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-12">
-            <div className="row mt-2">
-              <label className="col-sm-2">Buyer (Employee code) </label>
-              <div className="col-sm-3">
-                <input type="text" className="form-control" value={filter.buyerCode}
-                  onChange={(e) => commonHandleChange(e, this, "filter.buyerCode")}
-                  id="BUYER" 
-                />
-              </div>
-              <label className="col-sm-2">Vendor Code</label>
-              <div className="col-sm-3">
-                <input type="text" className="form-control" value={filter.vendorCode}
-                  onChange={(e) => commonHandleChange(e, this, "filter.vendorCode")}
-                  id="VENDOR" 
-                />
-              </div>
-              <button type="button" className={"btn btn-primary"} onClick={() => this.props.loadVendorList(null, this.state.filter)}> Search </button> &nbsp;
-              <button type="button" className={"btn btn-danger"} onClick={this.clearFields.bind(this)}> Clear </button>
-            </div>
-          </div>
-          {/* <div className="col-sm-6">
-            <div className="row mt-2">
-              <div className="col-sm-4"></div>
-              <div className="col-sm-8">
-                <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." />
-              </div>
-            </div>
+      </div>
+  </div>}
 
-          </div> */}
-          <div className="col-12">
-            <StickyHeader height={450} className="table-responsive mt-2">
-              <table className="table table-bordered table-header-fixed">
+          <Grid container>
+            <Grid item sm={12} className="mb-1">   
+            <input
+            placeholder="Search"
+            // variant="outlined"
+            // size="small"
+            style={{fontSize: "10px", float:"right" }}
+            value={search}
+            onChange={this.handleSearchChange}
+        /><IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+        </Grid>
+        </Grid>
+          <TableContainer>
+              <table className="my-table">
                 <thead>
                   <tr>
-                    {/* {this.props.role === ROLE_NEGOTIATOR_ADMIN ? */}
-                    {(this.props.role === ROLE_BUYER_ADMIN) || (this.props.role === ROLE_NEGOTIATOR_ADMIN) ?
-                      <>
+                  
                         <th className="w-15per">Enq No</th>
                         <th className="w-15per">Enq Date</th>
                         <th className="w-15per">Vendor Name</th>
                         <th className="w-15per">Buyer Name</th>
                         <th className="w-25per"> Enq End Date </th>
-                        <th className="w-10per">Status</th>
-                      </>
-                      :
-                      <>
-                        <th className="w-25per"> Bidder Code & Name </th>
-                      </>
-                    }
+                        <th className="w-10per">Status</th>                        
+                        <th className="w-10per">Action</th>
+                        {(this.props.role === ROLE_BUYER_ADMIN) || (this.props.role === ROLE_NEGOTIATOR_ADMIN) &&  <th className="w-25per"> Bidder Code & Name </th>}
+                    
+                    
                   </tr>
                 </thead>
                 <tbody id="DataTableBody">
-                  {this.state.bidderLineArray.map((el, i) =>
+                {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((el, i) => 
                     // this.props.role === ROLE_NEGOTIATOR_ADMIN ?
-                    (this.props.role === ROLE_BUYER_ADMIN) || (this.props.role === ROLE_NEGOTIATOR_ADMIN) ?
-                      <tr onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>
-                        <td>{el.enquiry.enquiryId}</td>
-                        <td>{formatDateWithoutTime(el.enquiry.created)}</td>
-                        <td>{el.partner.vendorSapCode + "-" + el.partner.name}</td>
-                        <td>{el.enquiry.createdBy.userName + " - " + el.enquiry.createdBy.name}</td>
-                        <td>{formatDateWithoutTime(el.enquiry.bidEndDate)}</td>
-                        <td>{el.status}</td>
-                      </tr>
-                      :
-                      <tr onClick={() => this.props.loadVendorQuotationByBidder(this.props.prIndex, el.bidderId)}>
-                        <td>{el.bidderId + " & " + el.name}</td>
+                    
+                      <tr >
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.enquiry.enquiryId}</td>
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDateWithoutTime(el.enquiry.created)}</td>
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.partner.vendorSapCode + "-" + el.partner.name}</td>
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.enquiry.createdBy.userName + " - " + el.enquiry.createdBy.name}</td>
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDateWithoutTime(el.enquiry.bidEndDate)}</td>
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.status}</td>
+                        <td className="w-10per"><Button size="small" variant="contained"
+                         color="primary" 
+                         style={{fontSize:"8px", margin:"2px 0px"}}
+                         onClick={()=>this.resendEnquiry(el.bidderId)}
+                         >Resend Enquiry</Button></td>
+                        {(this.props.role === ROLE_BUYER_ADMIN) || (this.props.role === ROLE_NEGOTIATOR_ADMIN) && <td>{el.bidderId + " & " + el.name}</td>}
                       </tr>
                   )}
                 </tbody>
               </table>
-            </StickyHeader>
-          </div>
-        </div>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[50, 100, 150]}
+                component="div"
+                count={filteredData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={this.handlePageChange}
+                onRowsPerPageChange={this.handleRowsPerPageChange}
+              />
+        </>
       </>
     );
   }

@@ -181,8 +181,8 @@ class QCFBody extends Component {
                         this.props.annexureDto.annexureId
                     )}
                 />
-                <div className="container-fluid mt-100 w-100" id="togglesidebar">
-                    <div className={"card "+
+                <div className="wizard-v1-content" style={{marginTop:"80px"}} id="togglesidebar">
+                    <div className={" "+
                         (this.state.loadPrList == true
                           ? "display_block"
                           : "display_none")

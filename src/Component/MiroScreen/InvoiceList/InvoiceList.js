@@ -217,7 +217,7 @@ class InvoiceList extends Component {
          
                      <div className="col-sm-12 mt-2">
                      <font  >
-                        <table className="table table-bordered">
+                        <table className="my-table">
                         <thead>
                            <tr>
                               <th className="width-100px">ASN No / SSE No</th>

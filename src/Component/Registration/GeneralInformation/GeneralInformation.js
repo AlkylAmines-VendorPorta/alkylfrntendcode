@@ -10,6 +10,7 @@ import {
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 import { saveUserFormApi } from "../../../Util/APIUtils";
 import swal from 'sweetalert';
+import { Button } from "@material-ui/core";
 
 class GeneralInformation extends Component {
 
@@ -671,7 +672,7 @@ class GeneralInformation extends Component {
   render() {
     return (
 
-      <div id="accordion">
+      <div id="accordion" style={{marginTop:"80px"}}>
         <div className="card">
           <div className="card-header">
             {/* <a className="card-link" data-toggle="collapse" href="#collapseOne">
@@ -717,7 +718,6 @@ class GeneralInformation extends Component {
                     </FieldFeedbacks>
                   </div>
                 </div>
-                <br />
                 <div className="row">
                   <label className="col-sm-2">Vendor Name <span className="redspan">*</span></label>
                   <div className="col-sm-3">
@@ -733,8 +733,8 @@ class GeneralInformation extends Component {
                   </FieldFeedbacks>
                 </div>
                 <div className={"col-sm-12 text-center " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" className="btn btn-danger mr-1" onClick={() => { this.setState({ loadCompanyDetails: true });  commonSubmitWithParam(this.props, "populateCompanyDetails", "/rest/getCompanyDetails", this.getPartnerId());resetForm(this.comDetForm); }} >Cancel</button>
+                  <Button size="small" variant="contained" color="primary" type="submit" className="mr-1">Save</Button>
+                  <Button size="small" variant="contained" color="secondary" type="button" className="mr-1" onClick={() => { this.setState({ loadCompanyDetails: true });  commonSubmitWithParam(this.props, "populateCompanyDetails", "/rest/getCompanyDetails", this.getPartnerId());resetForm(this.comDetForm); }} >Cancel</Button>
                 </div>
               </FormWithConstraints>
             </div>
@@ -872,17 +872,17 @@ class GeneralInformation extends Component {
 
                 </div>
                 <div className={"col-sm-12 text-center " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" onClick={() => { this.resetaddressDetails(); this.setState({ editButtonFlag: false,countryFlag:false}) }} className="btn btn-danger mr-1">Clear</button>
-                  <button type="button"className={this.state.newButtonFlag ? "btn btn-primary not-allowed" : "btn btn-primary"} disabled={this.state.newButtonFlag}  
+                  <Button size="small" variant="contained" color="primary" type="submit" className="btn btn-success mr-1">Save</Button>
+                  <Button size="small" variant="contained" color="secondary" type="button" onClick={() => { this.resetaddressDetails(); this.setState({ editButtonFlag: false,countryFlag:false}) }} className="btn btn-danger mr-1">Clear</Button>
+                  <Button size="small" variant="contained" color="primary" type="button"className={this.state.newButtonFlag ? "btn btn-primary not-allowed" : "btn btn-primary"} disabled={this.state.newButtonFlag}  
                   onClick={()=>{this.resetaddressDetails(); }  }>
                     New &nbsp;<i className="fa fa-plus" aria-hidden="true"></i>
-                  </button>
+                  </Button>
                 </div>
               </FormWithConstraints>
               <div className="row">
                 <div className="col-sm-12 mt-3">
-                  <table className="table table-bordered">
+                  <table className="my-table">
                     <thead>
                       <tr>
                         <th>Address </th>
@@ -906,7 +906,7 @@ class GeneralInformation extends Component {
                           <td>{addr.stateName}</td>
                           <td>{addr.districtName}</td>
                           <td>
-                            <button className={this.state.editButtonFlag ? "btn btn-info not-allowed" : "btn btn-info"} type="button" disabled={this.state.editButtonFlag  ? true : false} onClick={() => { this.loadAddressForEdit(index,addr) }} >
+                            <Button className={this.state.editButtonFlag ? "not-allowed" : ""} size="small" variant="contained" color="primary" type="button" disabled={this.state.editButtonFlag  ? true : false} onClick={() => { this.loadAddressForEdit(index,addr) }} >
                               <i
                                 className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                 aria-hidden="true"
@@ -915,12 +915,12 @@ class GeneralInformation extends Component {
                                 className={"fa fa-eye " + this.props.displayDiv1}
                                 aria-hidden="true"
                               ></i>
-                            </button>
+                            </Button>
                           </td>
                           <td className={this.props.displayDiv}>
-                            <button className="btn btn-danger" type="button" onClick={() => { this.swalWithPromptDeleteforCompanyAddress(addr.partnerCompanyAddressId); }}>
+                            <Button size="small" variant="contained" color="secondary" type="button" onClick={() => { this.swalWithPromptDeleteforCompanyAddress(addr.partnerCompanyAddressId); }}>
                               <i className="fa fa-trash" aria-hidden="true"></i>
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       )})}
@@ -1072,16 +1072,16 @@ class GeneralInformation extends Component {
                   </div>
                 </div>
                 <div className={"col-sm-12 text-center " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" onClick={() => { this.resetContactDetails(); this.setState({ editContactFlag: false }) }} className="btn btn-danger mr-1" >Clear</button>
-                  <button type="button" onClick={() => this.resetContactDetails()} className={this.state.newButtonFlag ? "btn btn-primary not-allowed" : "btn btn-primary"} disabled={this.state.newButtonFlag}>
+                  <Button size="small" variant="contained" color="primary" type="submit" className="mr-1">Save</Button>
+                  <Button size="small" variant="contained" color="secondary" type="button" onClick={() => { this.resetContactDetails(); this.setState({ editContactFlag: false }) }} className="mr-1" >Clear</Button>
+                  <Button size="small" variant="contained" color="primary" type="button" onClick={() => this.resetContactDetails()} className={this.state.newButtonFlag ? "btn btn-primary not-allowed" : "btn btn-primary"} disabled={this.state.newButtonFlag}>
                     New &nbsp;<i className="fa fa-plus" aria-hidden="true"></i>
-                  </button>
+                  </Button>
                 </div>
               </FormWithConstraints>
               <div className="row">
                 <div className="col-sm-12 mt-4">
-                  <table className="table table-bordered">
+                  <table className="my-table">
                     <thead>
                       <tr>
                         <th>Salutation</th>
@@ -1107,7 +1107,7 @@ class GeneralInformation extends Component {
                           <td>{contact.telephoneNo}</td>
                           <td>{contact.email}</td>
                           <td>
-                            <button className={this.state.editContactFlag ? "btn btn-info not-allowed" : "btn btn-info"} type="button" disabled={this.state.editContactFlag ? true : false} onClick={() => { this.loadContactForEdit(index) }}>
+                            <Button className={this.state.editContactFlag ? "not-allowed" : ""} type="button" disabled={this.state.editContactFlag ? true : false} onClick={() => { this.loadContactForEdit(index) }}>
                               <i
                                 className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                 aria-hidden="true"
@@ -1116,12 +1116,12 @@ class GeneralInformation extends Component {
                                 className={"fa fa-eye " + this.props.displayDiv1}
                                 aria-hidden="true"
                               ></i>
-                            </button>
+                            </Button>
                           </td>
                           <td className={this.props.displayDiv}>
-                            <button className="btn btn-danger" type="button" onClick={() => { this.swalWithPromptDeleteforContactDetails(contact.userDetailsId) }}>
+                            <Button size="small" variant="contained" color="secondary" type="button" onClick={() => { this.swalWithPromptDeleteforContactDetails(contact.userDetailsId) }}>
                               <i className="fa fa-trash" aria-hidden="true"></i>
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       )}

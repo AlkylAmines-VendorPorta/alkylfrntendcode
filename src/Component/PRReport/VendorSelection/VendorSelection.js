@@ -322,7 +322,7 @@ class VendorSelection extends Component {
                             <div className="col-sm-12 mt-2">
                                 <div>
                                     <StickyHeader height={350} className="table-responsive">
-                                        <table className="table table-bordered table-header-fixed">
+                                        <table className="my-table">
                                             <thead>
                                                 <tr>
                                                     <th className="w-40per"> Vendor Code & Name / Email ID </th>
@@ -405,7 +405,7 @@ class VendorSelection extends Component {
                                             <div className="col-12">
                                                 <div>
                                                     <StickyHeader height={200} className="table-responsive">
-                                                        <table className="table table-bordered table-header-fixed">
+                                                        <table className="my-table">
                                                             <thead>
                                                                 <tr>
                                                                     <th className="w-2per">Ch</th>

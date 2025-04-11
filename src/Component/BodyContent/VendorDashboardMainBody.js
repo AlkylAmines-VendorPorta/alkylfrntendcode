@@ -19,6 +19,8 @@ import AdvanceShipmentNotice from "./../AdvanceShipmentNotice/AdvanceShipmentNot
 import swal from "sweetalert";  
 import { API_BASE_URL } from "./../../Constants";
 import {saveQuotation,downloadexcelApi,request,uploadFile} from "./../../Util/APIUtils";
+import { Description } from "@material-ui/icons";
+import { Box, Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 const delay = ms => new Promise(
     resolve => setTimeout(resolve, ms)
   );
@@ -590,85 +592,42 @@ var frmhidden = {
               console.log("podetails.."+this.state.po);
             
         return (
-          <div class="container-fluid mt-100 w-100">
-              {/* <div class="card">
-                <div className="row px-4 py-2">
-                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                    <div className="mixed-chart">
-                        <Chart
-                        options={this.state.options}
-                        series={this.state.series}
-                        type="bar"
-                        width="300"
-                        />
-                    </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                <div className="mixed-chart">
-                        <Chart
-                        options={this.state.options}
-                        series={this.state.series}
-                        type="line"
-                        width="300"
-                        />
-                    </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                <div className="donut">
-                    <Chart options={this.state.optionsDonut} series={this.state.seriesDonut} type="donut" width="300" />
-                </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                <div className="mixed-chart">
-                        <Chart
-                        options={this.state.optionsBar}
-                        series={this.state.seriesBar}
-                        type="bar"
-                        width="300"
-                        />
-                    </div>
-                </div>
-              </div>
-            
-            </div> */}
+          <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
+             
               <div className="col-sm-12 mt-2">
           
                 
                     </div>
                     <div  style={ shown }>
-                    <div  className="boxContent mt-55">
+                    <div  className="card p-2">
                   <div className="row">
                       <div className="col-sm-12 text-right">
-                          { /*<button className="btn btn-primary" type="button" onClick={()=>{this.setState({loadVendorpoList:true, shown: !this.state.shown, hidden: !this.state.hidden});}}><i className="fa fa-arrow-left" aria-hidden="true"></i></button>*/}
-                          <a className={this.props.role=== "VENADM" ? "btn btn-primary mr-1" : "none"} href={window.location.href}><i className="fa fa-arrow-left" aria-hidden="true"></i></a>
-                          {/* <button type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
-                             onClick={()=>{this.props.createASN(this.state.po,this.state.poLineArray)}}
-                           //  onClick={()=>{this.props.createASN(this.state.po,this.state.poLineArray,this.state.serviceArray,this.state.costCenterList,this.props.SSNVersion)}}
-                            >
-</button> */}
-    <button type="button" onClick={this.downloadexcelApi} className="btn btn-primary ml-2" >&nbsp;Print PO</button>
+                        
+                      <Button color="primary" variant="contained" size="small" className={this.props.role=== "VENADM" ? "mr-1" : "none"} href={window.location.href}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
+                        
+                          <Button color="primary" variant="contained" size="small" type="button" onClick={this.downloadexcelApi} className="btn btn-primary ml-2" >&nbsp;Print PO</Button>
                                 <span><a href={API_BASE_URL + "/rest/download/" + attachmentId}>{ExcelFileName}</a></span>
 
-                              <button type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
+                                <Button color="primary" variant="contained" size="small" type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
                            
                              onClick={()=>{this.props.createASN(this.state.po,this.state.poLineArray,this.state.serviceArray,this.state.costCenterList,this.props.SSNVersion)}}
                             >
                             
                              {this.state.po.isServicePO?"Create Service Note":"Create ASN"}
-                          </button>
-                          <button type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
+                          </Button>
+                          <Button color="primary" variant="contained" size="small"  type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
                              onClick={()=>{this.getASNHistory()}}
                             >
                              {this.state.po.isServicePO?"Service History":"ASN History"}
-                          </button>
-                          <button type="button" className={(this.state.po.status==="REL" || this.state.po.status==="REJ")?"btn btn-success ml-2 inline-block":"btn btn-success ml-2 none"} 
+                          </Button>
+                          <Button color="success" variant="contained" size="small" type="button" className={(this.state.po.status==="REL" || this.state.po.status==="REJ")?"btn btn-success ml-2 inline-block":"btn btn-success ml-2 none"} 
                             onClick={()=>{this.setState({loadPODetails: true}); commonSubmitWithParam(this.props,"poAcceptance","/rest/acceptPO/",this.state.po.poId)}}>
                              Accept
-                          </button>
-                          <button type="button"  className={this.state.po.status==="REL"?"btn btn-danger ml-2 inline-block":" btn btn-danger ml-2 none"} 
+                          </Button>
+                          <Button color="secondary" variant="contained" size="small" type="button"  className={this.state.po.status==="REL"?"btn btn-danger ml-2 inline-block":" btn btn-danger ml-2 none"} 
                             onClick={()=>{this.rejectPO()}}>
                               Reject
-                          </button>
+                          </Button>
                       </div>
                   </div>
                   <hr className="w-100"></hr>
@@ -691,22 +650,18 @@ var frmhidden = {
                       <span className="col-sm-2">
                       {formatDateWithoutTimeWithMonthName(this.state.po.date)}
                       </span>   
-                      {/* <label className="col-sm-2">Requested by</label>
-                      <span className="col-sm-3">
-                      {this.state.po.requestedBy.name} 
-                      </span>   */}
                       
                       <label className="col-sm-1">Status</label>
                       <span className="col-sm-1">
                          {this.state.newPoStatus[this.state.po.status]}  
-                        {/*  {this.state.po.status}*/}
+                      
                       </span>  
                   </div> 
                 
                   </div>
 
                  
-                  <div className="boxContent fixed-height py-1">
+                  <div className="card p-2">
           <div className={"lineItemDiv min-height-0px "+(displayService==="block"?"display_none":"")}>
            <div className="row">
            <div className="col-sm-9"></div>
@@ -715,15 +670,13 @@ var frmhidden = {
             </div> 
                <div className="col-sm-12 mt-2">
                   <StickyHeader height={150} className="table-responsive">
-                     <table className="table table-bordered table-header-fixed">
+                     <table className="my-table">
                        <thead>
                          <tr>                         
                            <th> Line No </th>
                            <th> Material Description </th>
                            <th className="text-right"> PO Qty </th>
                            <th> UOM </th>
-                           {/* <th className="width-120px">ASN Qty </th> */}
-                           {/* <th>Bal Qty</th> */}
                            <th className="text-right"> Rate </th>
                            <th>Currency</th> 
                          </tr>
@@ -732,14 +685,10 @@ var frmhidden = {
                             {
                               this.state.poLineArray.map((poLine)=>
                                 <tr onClick={()=>this.onClickPOLine(poLine)}>
-                                  {/* onClick={()=>this.onClickPOLine(poLine)} */}
-                                  {/* onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden}); commonSubmitWithParam(this.props,"getPOLines","/rest/getPOLines",poLine.poLineId)}} */}
                                   <td>{removeLeedingZeros(poLine.lineItemNumber)}</td>
                                   <td>{poLine.materialCode} - {poLine.material}</td>
                                   <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.poQuantity,3))}</td>
                                   <td>{poLine.uom}</td>
-                                  {/* <td className="width-120px">{poLine.asnQuantity}</td> */}
-                                  {/* <td>{poLine.balanceQuantity}</td> */}
                                   <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.rate,2))}</td>
                                   <td>{poLine.currency}</td>
                                   
@@ -762,7 +711,7 @@ var frmhidden = {
             </div>
                <div className="col-sm-12 mt-2"> 
                   <StickyHeader height={150} className="table-responsive">
-                     <table className="table table-bordered table-header-fixed">
+                     <table className="my-table">
                        <thead>
                          <tr>             
                            <th> Po Line No.</th>            
@@ -770,11 +719,8 @@ var frmhidden = {
                            <th className="w-40per">Service Description po</th>
                            <th className="text-right"> Required Qty </th>
                            <th> UOM </th>
-                           {/* <th>Completed Qty </th>
-                           <th>Bal Qty</th> */}
                            <th className="text-right"> Rate </th>
                            <th>Currency</th> 
-                           {/* <th>Plant</th> */}
                            <th>Contract Po</th>
                          </tr>
                        </thead>
@@ -783,18 +729,13 @@ var frmhidden = {
                               this.state.serviceArray.map((service,i)=>
                               
                                 <tr>
-
-                                  {/* onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden}); commonSubmitWithParam(this.props,"getPOLines","/rest/getPOLines",poLine.poLineId)}} */}
                                   <td>{removeLeedingZeros(service.parentPOlineNumber)}</td>
                                   <td>{removeLeedingZeros(service.lineItemNumber)}</td>
                                   <td>{service.materialCode}-{service.material}</td>
                                   <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.poQuantity,3))}</td>
                                   <td>{service.uom}</td>
-                                  {/* <td>{service.asnQuantity}</td>
-                                  <td>{service.balanceQuantity}</td> */}
                                   <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.rate,2))}</td>
                                   <td>{service.currency}</td>
-                                  {/* <td>{poLine.plant}</td> */}
                                  <td>{service.contractPo}</td>
                                 </tr>
                               )
@@ -853,71 +794,56 @@ var frmhidden = {
                  <br/>
                  <br/>
                  </div>
-            <div class="card" id="togglesidebar" style={ hidden}>
-                <div className="row px-4 py-2">
-                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                  <div className="card">
-                    {/* <Link to="/purchasesummary"> */}
-                      <div className="content">
-                        <div className="row">
-                          <div className="col-4">
-                            <div className="icon-big icon-success text-center">
-                              <i
-                                className="fa fa-file-text"
-                                aria-hidden="true"
-                              ></i>
-                            </div>
-                          </div>
-                          <div className="col-8">
-                            <div className="numbers">
-                              <p class="card-head">Open Purchase Orders</p>
-                              {/* <span class="px-2">{this.state.totalPoCount}</span> */}
-                              <span class="px-2">{this.state.totalOpenPoCount}</span>
-                            </div>
-                          </div>
-                        </div>
-                        {/* <div className="row mt-3 mb-3"></div> */}
-                        {/* <div className="footer">
-                          <hr />
-                          <div className="row w-100">
-                            <div className="col-12">
-                            
-                              <p className="font_size_point9rem pb-0 mb-0 font_weight_500 text-secondary">
-                                New PO's :  {this.state.releasedPoCount}
-                                <span></span>
-                              </p>
-                              <p className="font_size_point9rem pb-0 mb-0 font_weight_500 text-warning">
-                                Open PO's :  {this.state.openPoCount}
-                                <span></span>
-                              </p>
-                              <p className="font_size_point9rem pb-0 mb-0 font_weight_500 text-info">
-                                Open ASN/SEN : {this.state.openPoAsnCount}
-                                <span></span>
-                              </p>
-                              <p className="font_size_point9rem pb-0 mb-0 font_weight_500 text-success">
-                                Open Gate Entry : 
-                                <span></span>
-                              </p>
-                              <p className="font_size_point9rem pb-0 mb-0 font_weight_500 text-primary">
-                                Pending Bill Booking : {this.state.pendingPoBillBookingCount}
-                                <span></span>
-                              </p>
-                            </div>
-                          </div>
-                        </div> */}
-                      </div>
-                    {/* </Link> */}
-                  </div>
-                </div>
-              </div>
-            </div>
+           
+            <Card id="togglesidebar" style={ hidden}>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card>
+              <CardContent>
+                <Grid container alignItems="center">
+                  <Grid item xs={4}>
+                    <Box 
+                      display="flex" 
+                      justifyContent="center" 
+                      alignItems="center"
+                      color="success.main"
+                    >
+                      <Description fontSize="large" />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={8}>
+                    <Box>
+                      <Typography 
+                        variant="subtitle2" 
+                        component="p" 
+                        color="textSecondary"
+                      >
+                        Open Purchase Orders
+                      </Typography>
+                      <Typography 
+                        variant="h6" 
+                        component="span" 
+                        px={1}
+                      >
+                        {this.state.totalOpenPoCount}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
 
-            <div className="card" style={ hidden}>
+            <div className="card p-2" style={ hidden} >
             <div className="row" >
               <div className="col-sm-12">
                 <div class="table-proposed">
                   <StickyHeader height={"65vh"} >
-                    <table className="table table-bordered table-header-fixed">
+                    <table className="my-table">
                       <thead>
                         <tr>
                           <th>PO No</th>

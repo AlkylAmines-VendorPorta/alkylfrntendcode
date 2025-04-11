@@ -9,17 +9,23 @@ import {
   commonSubmitForm, commonHandleChange, commonSubmitFormNoValidation,
   commonSubmitWithParam
 } from "../../Util/ActionUtil";
-import { searchTableData, searchTableDataTwo } from "../../Util/DataTable";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 import { getIFSCDetails } from "../../Util/APIUtils";
 import Loader from "../FormElement/Loader/LoaderWithProps";
-import { useState } from "react"
-import axios from 'axios';
 import { formatDateWithoutTime,formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
-import { formatTime } from "../../Util/DateUtil";
-import { getCommaSeperatedValue, getDecimalUpto } from "../../Util/CommonUtil";
 import TableToExcel from "@linways/table-to-excel";
-
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, TablePagination, TextField,
+  Grid,
+  Container,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Button,
+  IconButton
+} from "@material-ui/core";
 
 class MaterialInwardReport extends Component {
 
@@ -27,6 +33,10 @@ class MaterialInwardReport extends Component {
     super(props)
     this.state = {
       isLoading: false,
+      search: "",
+      page: 0,
+      rowsPerPage: 50,
+      openModal:false,
       getASNReportlist: [],
       partner: {
         partnerId: "",
@@ -213,62 +223,72 @@ class MaterialInwardReport extends Component {
        name:"RGP_Report.xlsx"
     });
   }
+  handleSearchChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+  };
 
-//  handleSearchClick = () => {
-//    
-//    if(this.state.asndetails.asnNoFrom !="" || this.state.asndetails.poNoFrom !="" || this.state.asndetails.asnDateFrom != ""){
-//    //  this.changeLoaderState(false);
-//    // commonSubmitForm(e, this, "asnResponse", "/rest/getASNReport", "reports")
-//     // return false;
-//     this.isLoading.hidden=true;
-//
-//    }else{
-//      
-//      window.alert('Please Enter One of Above Value')
-//      this.changeLoaderState=false;
-//      return false;
-//    }
-//  }
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
 
-
-
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
+  onValueChange = ({ target }) => {
+    this.setState({ search: target.value, page: 0 }); // Reset page to 0 when searching
+  };
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
   render() {
-    const {filterGateEntryDocList} = this.props;
-    const { filter } = this.props;
-    const material=this.props.materialgateEntryLineListDto;
-    var displayService="none";
-    var shown = {
-      display: this.state.shown ? "block" : "none"
-    };
-    var hidden = {
-      display: this.state.hidden ? "none" : "block"
+    const { search, page, rowsPerPage } = this.state;
+    const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
         }
-    var frmhidden = {
-          display: this.state.formDisplay ? "none" : "block"
-            }  
-            var searchHidden = {
-              display: this.state.searchDisplay ? "block" : "none"
-                }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+  
+    const filteredData = this.props.materialgateEntryLineListDto.filter((entry) => {
+      return searchInObject(entry, search);
+    });
     return (
       <>
 
 <React.Fragment>
         <Loader isLoading={this.state.isLoading} />
         {<UserDashboardHeader />}
-        <div className="w-100" id="togglesidebar">
-          <div className="mt-70 boxContent">
-            <FormWithConstraints ref={formWithConstraints => this.printreports = formWithConstraints}
-              onSubmit={(e) => {
-                
-               // this.setState({ asndetails: { test: "" } });
-                 this.changeLoaderState(true);
-               //  commonSubmitForm(e, this, "gateEntryResponse", "/rest/getRGPReportByFilter", "printreports")
-                commonSubmitForm(e, this, "gateEntryResponse", "/rest/getGateEntryMaterialByFilter", "printreports")
-               // this.handleSearchClick(true)
-              // this.changeLoaderState(true);
-                
-              }} noValidate
-            >
+        <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
+        {this.state.openModal && 
+              <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+               <div className="modal-backdrop"></div> <div className="modal-dialog modal-lg">
+                  <div className="modal-content">
+        <FormWithConstraints ref={formWithConstraints => this.printreports = formWithConstraints}
+        onSubmit={(e) => {
+          
+         // this.setState({ asndetails: { test: "" } });
+           this.changeLoaderState(true);
+           this.setState({openModal:false})
+         //  commonSubmitForm(e, this, "gateEntryResponse", "/rest/getRGPReportByFilter", "printreports")
+          commonSubmitForm(e, this, "gateEntryResponse", "/rest/getGateEntryMaterialByFilter", "printreports")
+         // this.handleSearchClick(true)
+        // this.changeLoaderState(true);
+          
+        }} noValidate
+      >
               
               {/* <input type="hidden" name='asndetails[userId]'
               value={this.state.partner.partnerId} 
@@ -277,220 +297,224 @@ class MaterialInwardReport extends Component {
 
 
         <div className="col-sm-12">
-              <div className="row mt-2">
-                <label className="col-sm-2 mt-4">REQ No</label>
-                <div className="col-sm-2">
-                  <input type="text" className={"form-control"} name="reqNoFrom" value={this.state.materialgateEntryLineListDto.reqNoFrom} onChange={(event) => {
-                      if (event.target.value.length < 60) {
-                        commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoFrom", "printreports")
-                      }
-                    }} />
+              <div className="row mt-3">
+                <div className="col-sm-6">
+                  <TextField label="REQ No From" variant="outlined" size="small" type="text" className={"form-control"} name="reqNoFrom" 
+                  value={this.state.materialgateEntryLineListDto.reqNoFrom} onChange={(event) => {
+                    if (event.target.value.length < 60) {
+                      commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoFrom", "printreports")
+                    }
+                  }} 
+                  InputLabelProps={{ shrink: true }}  
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} />
 
                 </div>
-                <label>To </label>
-                <div className="col-sm-2">
-                  <input type="text" className="form-control" name="reqNoTo" value={this.state.materialgateEntryLineListDto.reqNoTo} onChange={(event) => {
-                    if (event.target.value.length < 60) {
-                      commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoTo", "printreports")
-                    }
+                <div className="col-sm-6">
+                <TextField label="REQ No To" variant="outlined" size="small" type="text" className="form-control" 
+                name="reqNoTo" value={this.state.materialgateEntryLineListDto.reqNoTo} onChange={(event) => {
+                  if (event.target.value.length < 60) {
+                    commonHandleChange(event, this, "materialgateEntryLineListDto.reqNoTo", "printreports")
+                  }
 
 
-                  }} />
-                </div></div>
-                {/* <div className="row mt-2">
-                
-                <label className="col-sm-2 mt-4">Gate Entry Date</label>
-                       
-                        <div className="col-sm-2">                       
-                          <input type="date" className="form-control" name="reqDateFrom" value={this.state.materialgateEntryLineListDto.reqDateFrom} onChange={(event) => {
-                            if (event.target.value.length < 60) {
-                              commonHandleChange(event, this, "materialgateEntryLineListDto.reqDateFrom", "reports")
-                            }
-
-
-                          }} />
-                        </div>
-
-                        <label>To </label>
-                        <div className="col-sm-2">
-                          <input type="date" className="form-control" name="reqDateTo" value={this.state.materialgateEntryLineListDto.reqDateTo} onChange={(event) => {
-                            if (event.target.value.length < 60) {
-                              commonHandleChange(event, this, "materialgateEntryLineListDto.reqDateTo", "reports")
-                            }
-
-
-                          }} />
-                        </div>
-            </div> */}
-                {/* <div className="row mt-2">
-                <label className="col-sm-2 mt-4">Doc Type</label>
-              <div className="col-sm-2">
-              <select className="form-control"
-              name="docType"
-              value={this.state.materialgateEntryLineListDto.docType}
-              // disabled={gateEntryDto.reqNo}
-              onChange={(event) => {
-                commonHandleChange(event, this, "materialgateEntryLineListDto.docType", "printreports")
-            }}
-              >
-                <option value="">Select</option>
-                      <option value="NRGP">NRGP</option>
-                      <option value="RGP">RGP</option>
-              </select>
-            </div>
-            </div> */}
-            <div className="row mt-2">
-            <label className="col-sm-2 mt-4">Plant </label>
-                  <div className="col-sm-2" >
-                    <select className="form-control" name="plant" 
-                      //value={gateEntryDto.plant}
-                     // disabled={gateEntryDto.reqNo}
-                     onChange={(event) => {
+                }}
+                InputLabelProps={{ shrink: true }}  
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} />
+                </div>
+            
+                  <div className="col-sm-6 mt-4" >
+                  <FormControl variant="outlined" fullWidth size="small">
+                  <InputLabel shrink>Plant</InputLabel>
+                    <Select  name="plant" label="Plant" 
+                    value={this.state.materialgateEntryLineListDto.plant}                     
+                    onChange={(event) => {
                       commonHandleChange(event, this, "materialgateEntryLineListDto.plant", "printreports")
                   }}
+                  sx={{ fontSize: 12, height: "15px",  } }
                     >
-                      <option value="">Select</option>
+                      <MenuItem value="">Select</MenuItem>
                       {(this.state.plantDropDownList).map(item =>
 
-                        <option value={item.value}>{item.display}</option>
+                        <MenuItem value={item.value}>{item.display}</MenuItem>
                       )}
 
-                    </select>
+                    </Select>
+                    </FormControl>
                   </div>
-            <label> Status </label>
-                  <div className="col-sm-2" >
-                    <select className="form-control" name="status" 
-                      //value={gateEntryDto.plant}
-                     // disabled={gateEntryDto.reqNo}
-                     onChange={(event) => {
+                  <div className="col-sm-6 mt-4" >
+                  <FormControl variant="outlined" fullWidth size="small">
+                  <InputLabel shrink>Status</InputLabel>
+                    <Select  name="status" label="Status" 
+                    value={this.state.materialgateEntryLineListDto.status}                     
+                    onChange={(event) => {
                       commonHandleChange(event, this, "materialgateEntryLineListDto.status", "printreports")
                   }}
+                  sx={{ fontSize: 12, height: "15px",  } }
                     >
-                      <option value="">Select</option>
+                      <MenuItem value="">Select</MenuItem>
                       {(this.state.statusDropDownList).map(item =>
 
-                        <option value={item.value}>{item.display}</option>
+                        <MenuItem value={item.value}>{item.display}</MenuItem>
                       )}
 
-                    </select>
+                    </Select>
+                    </FormControl>
                   </div>
+                 
                 </div>
-                
-            </div>
-              <div className="col-sm-12">
-
-                <div className="row mt-2">
-
-                  <div className="col-sm-12">
-
-                    <div className="row mt-2">
-
-                      <div className="row">
-
-                        <div className="col-sm-12 text-center">
-                          <button type="submit" className={"btn btn-primary"}>
+                <div className="col-sm-12 text-center mt-2">
+                          <Button variant="contained" size="small" color="primary" type="submit" >
                             Search
-                          </button>
+                          </Button>
+                           <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+                           Cancel</Button>
                         </div>
-                      </div>
-
-                      {/* <div className="col-sm-3"><button className="btn btn-info blueButton" 
-                 onClick={() => {commonSubmitWithParam(this.props, "getasnreports", "/rest/getASNReport")}} 
-  
-                 type="button">Search</button></div>  */}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            </div>
+             
               
             </FormWithConstraints>
-          </div>
+</div>
+</div>
+</div>}
 
-
-          <div className="row px-4 py-2">
-            <div className="mt-2 boxContent">
-              <div class="table-proposed">
-                <StickyHeader height={"65vh"} >
-                  <table className="table table-bordered table-header-fixed" id="RGPLineReport">
-                 
-                    <thead>
-                          <tr>
-                            <th>Req No</th>
-                            <th>Document No</th>
-                            <th>Req Date</th>
-                            <th>Return By</th>
+          <Grid container spacing={2} alignItems="center" justify="flex-end">
+              <Grid item xs={9} style={{textAlign:"left"}}>
+                <Button variant="contained" size="small" color="primary" onClick={this.exportReportToExcel}>
+                  Download Excel
+                </Button>
+              </Grid>
+              <Grid item xs={3}>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={search}
+                  onChange={this.onValueChange}
+                  style={{ fontSize: "10px", float:"right" }}
+                />
+                <IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+              </Grid>
+            </Grid>
+            <TableContainer className="mt-1">
+              <Table className="my-table">
+                <TableHead>
+                <TableRow>
+                            <TableCell>Req No</TableCell>
+                            <TableCell>Document No</TableCell>
+                            <TableCell>Req Date</TableCell>
+                            <TableCell>Return By</TableCell>
                             
-                            <th>Requestioner Name</th>
-                            <th>Vehicle No</th>
-                            <th>Vendor Name</th>
+                            <TableCell>Requestioner Name</TableCell>
+                            <TableCell>Vehicle No</TableCell>
+                            <TableCell>Vendor Name</TableCell>
                            
-                            <th>Doc Type</th>
-                            <th>Plant</th>
-                            <th>Material Details</th>
-                            <th>UOM</th>
-                            <th>Material Quantity</th>
-                            <th>Gate In Quantity</th>
-                            <th>Accepted Quantity</th>
-                            <th>Rejected Quantity</th>
-                            <th>Purpose</th>
-                            <th>Material Status</th>
-                            <th>Material Closed Date</th>
+                            <TableCell>Doc Type</TableCell>
+                            <TableCell>Plant</TableCell>
+                            <TableCell>Material Details</TableCell>
+                            <TableCell>UOM</TableCell>
+                            <TableCell>Material Quantity</TableCell>
+                            <TableCell>Gate In Quantity</TableCell>
+                            <TableCell>Accepted Quantity</TableCell>
+                            <TableCell>Rejected Quantity</TableCell>
+                            <TableCell>Purpose</TableCell>
+                            <TableCell>Material Status</TableCell>
+                            <TableCell>Material Closed Date</TableCell>
                           
-                          </tr>
-                        </thead>
-                        
-                      
-                          
-                  
-                    <tbody id="DataTableBody">
-                     
-                      {this.props.materialgateEntryLineListDto.map((gaterntrylineList) => (
-                        <tr>
-                          <td>{gaterntrylineList.gateEntryLine.gateEntry.reqNo}</td>
-                          <td>{gaterntrylineList.materialGateIn.docNo}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntrylineList.gateEntryLine.gateEntry.created)}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntrylineList.gateEntryLine.gateEntry.returnBy)}</td>
-                         
-                          <td>{gaterntrylineList.gateEntryLine.gateEntry.createdBy!=null?gaterntrylineList.gateEntryLine.gateEntry.createdBy.userDetails.name:""}</td>
-                          <td>{gaterntrylineList.gateEntryLine.gateEntry.vehicleNo}</td>
-                          <td>{gaterntrylineList.gateEntryLine.gateEntry.vendorName}</td>
-                          
-                          <td>{gaterntrylineList.gateEntryLine.gateEntry.docType}</td>
-                          <td>{gaterntrylineList.gateEntryLine.gateEntry.plant}</td>
-                          <td>{gaterntrylineList.gateEntryLine.materialCode}</td>
-                          <td>{gaterntrylineList.gateEntryLine.uom}</td>
-                          <td>{gaterntrylineList.gateEntryLine.materialQty}</td>
-                          <td>{gaterntrylineList.gateInQty}</td>
-                          <td>{gaterntrylineList.acceptQty}</td>
-                          <td>{gaterntrylineList.rejectQty}</td>
-                          <td>{gaterntrylineList.gateEntryLine.purpose}</td>
-                          <td>{gaterntrylineList.materialGateIn.status}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntrylineList.materialGateIn.closedDate)}</td>
-                          
-                        </tr>
-                      ))}
-                      
-                      
-                    </tbody>
+                          </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((gaterntrylineList, index) => (
+                    <TableRow>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.reqNo}</TableCell>
+                    <TableCell>{gaterntrylineList.materialGateIn.docNo}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate1(gaterntrylineList.gateEntryLine.gateEntry.created)}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate1(gaterntrylineList.gateEntryLine.gateEntry.returnBy)}</TableCell>
                    
-                  
-                      
-                      
-                      
-                      
-                      
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.createdBy!=null?gaterntrylineList.gateEntryLine.gateEntry.createdBy.userDetails.name:""}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.vehicleNo}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.vendorName}</TableCell>
+                    
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.docType}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.plant}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.materialCode}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.uom}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.materialQty}</TableCell>
+                    <TableCell>{gaterntrylineList.gateInQty}</TableCell>
+                    <TableCell>{gaterntrylineList.acceptQty}</TableCell>
+                    <TableCell>{gaterntrylineList.rejectQty}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.purpose}</TableCell>
+                    <TableCell>{gaterntrylineList.materialGateIn.status}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate1(gaterntrylineList.materialGateIn.closedDate)}</TableCell>
+                    
+                  </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[50, 100, 150]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
+        <div style={{display:"none"}}>
+        <Table id="RGPLineReport">
+                <TableHead>
+                <TableRow>
+                            <TableCell>Req No</TableCell>
+                            <TableCell>Document No</TableCell>
+                            <TableCell>Req Date</TableCell>
+                            <TableCell>Return By</TableCell>
+                            
+                            <TableCell>Requestioner Name</TableCell>
+                            <TableCell>Vehicle No</TableCell>
+                            <TableCell>Vendor Name</TableCell>
+                           
+                            <TableCell>Doc Type</TableCell>
+                            <TableCell>Plant</TableCell>
+                            <TableCell>Material Details</TableCell>
+                            <TableCell>UOM</TableCell>
+                            <TableCell>Material Quantity</TableCell>
+                            <TableCell>Gate In Quantity</TableCell>
+                            <TableCell>Accepted Quantity</TableCell>
+                            <TableCell>Rejected Quantity</TableCell>
+                            <TableCell>Purpose</TableCell>
+                            <TableCell>Material Status</TableCell>
+                            <TableCell>Material Closed Date</TableCell>
+                          
+                          </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredData.map((gaterntrylineList, index) => (
+                    <TableRow>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.reqNo}</TableCell>
+                    <TableCell>{gaterntrylineList.materialGateIn.docNo}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate1(gaterntrylineList.gateEntryLine.gateEntry.created)}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate1(gaterntrylineList.gateEntryLine.gateEntry.returnBy)}</TableCell>
                    
-  
-                  </table>
-                </StickyHeader>
-              </div>
-              <div className="row">
-                        <div className="col-sm-12 text-center">
-                                   <button className="btn btn-success" style={{justifyContent: "center"}} onClick={this.exportReportToExcel}> <i className="fa fa-download" />&nbsp; Download Excel</button>
-                                 
-                                                </div></div>
-            </div>
-          </div>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.createdBy!=null?gaterntrylineList.gateEntryLine.gateEntry.createdBy.userDetails.name:""}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.vehicleNo}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.vendorName}</TableCell>
+                    
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.docType}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.plant}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.materialCode}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.uom}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.materialQty}</TableCell>
+                    <TableCell>{gaterntrylineList.gateInQty}</TableCell>
+                    <TableCell>{gaterntrylineList.acceptQty}</TableCell>
+                    <TableCell>{gaterntrylineList.rejectQty}</TableCell>
+                    <TableCell>{gaterntrylineList.gateEntryLine.purpose}</TableCell>
+                    <TableCell>{gaterntrylineList.materialGateIn.status}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate1(gaterntrylineList.materialGateIn.closedDate)}</TableCell>
+                    
+                  </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+        </div>
 
         </div>
         

@@ -91,9 +91,7 @@ loadPRDetails=(index)=> {
 render() {
     return (
       <>
-          <div className="w-100">
         
-        <div className="col-sm-12" id="togglesidebar">
             <div>              
               <PRCreationCont filter={this.props.filter} onFilterChange={this.handleFilterChange} onFilter={this.handleFilterClick} prList={this.props.prListcreation}  loadPRDetails={(i) => this.loadPRDetails(i)} 
               user={this.props.user} 
@@ -119,9 +117,6 @@ render() {
              filterPRStatusList={this.state.filterPRStatusList}
              />
             </div> */}
-
-         </div>
-      </div>
       </>
     );
   }

@@ -162,7 +162,7 @@ class EarlyPaymentReport extends Component {
               <div className="col-sm-12">
                 <div class="table-proposed">
                   <StickyHeader height={"65vh"} >
-                    <table className="table table-bordered table-header-fixed"  id="EarlyPaymentReport">
+                    <table className="my-table"  id="EarlyPaymentReport">
                       <thead>
                         <tr>
 

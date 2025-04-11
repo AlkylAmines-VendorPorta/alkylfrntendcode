@@ -21,6 +21,7 @@ import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-w
 import { isEmpty } from "lodash-es";
 import StickyHeader from "react-sticky-table-thead";
 import { searchTableData, searchTableDataTwo} from "../../Util/DataTable";
+import { Button, Checkbox, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from "@material-ui/core";
 
 class AsnComponent extends React.Component{
   constructor(){
@@ -161,8 +162,8 @@ class AsnComponent extends React.Component{
     return (
       <div className="col-sm-12 mt-2">
         <div className="row mt-2">
-          <label className="col-sm-1">
-            {this.props.type} no <span className="redspan">*</span>
+          {/* <label className="col-sm-1" style={{textTransform:"capitalize"}}>
+            {this.props.type} No. <span className="redspan">*</span>
           </label>
           <div className="col-sm-3">
             <input
@@ -172,21 +173,37 @@ class AsnComponent extends React.Component{
               onChange={this.onChange.bind(this,'asnno')}
             />
 
-          </div>
-
+          </div> */}
+          
           <div className="col-sm-3">
-          <button className="btn btn-success" onClick={this.onSearch}>
+                  <TextField
+                    fullWidth
+                    value={form.asnno ? form.asnno:''}
+                    required
+                    onChange={this.onChange.bind(this,'asnno')}
+                    label={
+                      <span style={{textTransform:"capitalize"}}>
+                        {this.props.type} No. 
+                      </span>
+                    }
+                    variant="outlined"
+                    size="small"                    
+                  />
+                </div>
+          <div className="col-sm-3">
+          {/* <button className="btn btn-success" onClick={this.onSearch}>
             Search
-          </button>
+          </button> */}
+          <Button variant="contained" color="primary" onClick={this.onSearch}>Search</Button>
 
           </div>
 
           { !isEmpty(statusList) &&
             <>
 
-              <label className="col-sm-1">Status <span className="redspan">*</span> </label>
+              {/* <label className="col-sm-1">Status <span className="redspan">*</span> </label> */}
                 <div className="col-sm-3">
-                <select className="form-control"
+                {/* <select className="form-control"
                         value={form.status ? form.status:''} 
                         onChange={this.onChange.bind(this,'status')}
                         required>
@@ -194,7 +211,22 @@ class AsnComponent extends React.Component{
                           {(statusList).map(item=>
                             <option value={item.value}>{item.title}</option>
                           )};
-                        </select>
+                        </select> */}
+                      <FormControl fullWidth size="small" variant="outlined" required>
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                          value={form.status || ""}
+                          onChange={this.onChange.bind(this, "status")}
+                          label="Status"
+                        >
+                          <MenuItem value="">Select</MenuItem>
+                          {statusList.map((item) => (
+                            <MenuItem key={item.value} value={item.value}>
+                              {item.title}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
 
                 </div>
             </>
@@ -207,7 +239,7 @@ class AsnComponent extends React.Component{
        
         { this.props.type == 'po' && !isEmpty(detail) &&
             <div className="row mt-2">
-              <label className="col-sm-1">Employee code  <span className="redspan">*</span> </label>
+              {/* <label className="col-sm-1">Employee code  <span className="redspan">*</span> </label>
                 <div className="col-sm-3">
                
                 <input
@@ -218,6 +250,21 @@ class AsnComponent extends React.Component{
                   onChange={this.onChange.bind(this,'vendorCode')}
                 />
 
+                </div> */}
+                <div className="col-sm-3">
+                  <TextField
+                    fullWidth
+                    value={form.vendorCode ? form.vendorCode:''}
+                    required
+                    onChange={this.onChange.bind(this,'vendorCode')}
+                    label={
+                      <span >
+                        Employee code
+                      </span>
+                    }
+                    variant="outlined"
+                    size="small"                    
+                  />
                 </div>
               </div>
         }
@@ -225,12 +272,18 @@ class AsnComponent extends React.Component{
 
     
         <div className="col-sm-12 text-center mt-5" style={{marginTop:'40px !important'}}>
-          <button type="submit" className="btn btn-success" onClick={this.onSave} disabled={isEmpty(this.state.detail)}>
+          {/* <button type="submit" className="btn btn-success" onClick={this.onSave} disabled={isEmpty(this.state.detail)}>
             Save
           </button>
           <button type="button" className="btn btn-danger ml-2" onClick={this.onReset}>
             Cancel
-          </button>
+          </button> */}
+          <Button variant="contained" color="primary" onClick={this.onSave} disabled={isEmpty(this.state.detail)}>
+            Save
+          </Button>
+          <Button variant="contained" color="secondary" className="ml-2" onClick={this.onReset}>
+            Cancel
+          </Button>
         </div>
   </div>
     )
@@ -252,7 +305,10 @@ class CustomComponent extends Component {
         attachmentId:"",
         fileName:""
       },
-      vendorList:[]
+      vendorList:[],
+      searchQuery: "",
+      page: 0,
+      rowsPerPage: 5
     };
     this.asnForm = null;
   }
@@ -295,14 +351,31 @@ if(props.vendorList){
       this.setState({vendorList:props.vendorList})
     }
   }
+  handleSearchChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+  };
+
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
   render() {
+    const { searchQuery, page, rowsPerPage } = this.state;
+    const filteredData = this.props.vendorList.filter((entry) =>
+      Object.values(entry).some((val) =>
+        val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
     return (
       <React.Fragment>
     
         <UserDashboardHeader />
 
-
-        <div className="card mt-100" id="togglesidebar">
+        <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
+        <div className="card" id="togglesidebar">
           <div className="card-body">       
 
           <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -340,10 +413,27 @@ if(props.vendorList){
 
                 <div className="col-sm-12 mt-2">
                   <div className="row mt-2">
-                    <label className="col-sm-2">
+                  <div className="col-sm-3">
+                  <TextField
+                    fullWidth
+                    value={this.state.pono}
+                    name="pono"
+                    onChange={(event) => {
+                      commonHandleChange(event, this, "pono", "asnForm");
+                    }}
+                    label={
+                      <span>
+                        PO No. <span style={{ color: "red" }}>*</span>
+                      </span>
+                    }
+                    variant="outlined"
+                    size="small"                    
+                  />
+                </div>
+                    {/* <label className="col-sm-2">
                       PO No. <span className="redspan">*</span>
-                    </label>
-                    <div className="col-sm-3">
+                    </label> */}
+                    {/* <div className="col-sm-3">
                       <input
                         type="text"
                         className="form-control"
@@ -359,11 +449,28 @@ if(props.vendorList){
                           );
                         }}
                       />
-                      <FieldFeedbacks for="pono">
+                      {/* <FieldFeedbacks for="pono">
                         <FieldFeedback when="*"></FieldFeedback>
-                      </FieldFeedbacks>
-                    </div>
-                    <label className="col-sm-2">
+                      </FieldFeedbacks> *
+                    </div> */}
+                    <div className="col-sm-3">
+                  <TextField
+                    fullWidth
+                    value={this.state.invoiceno}
+                    name="invoiceno"
+                    onChange={(event) => {
+                      commonHandleChange(event, this, "invoiceno", "asnForm");
+                    }}
+                    label={
+                      <span>
+                        Invoice No. <span style={{ color: "red" }}>*</span>
+                      </span>
+                    }
+                    variant="outlined"
+                    size="small"                    
+                  />
+                </div>
+                    {/* <label className="col-sm-2">
                       Invoice No. <span className="redspan">*</span>
                     </label>
                     <div className="col-sm-3">
@@ -385,10 +492,28 @@ if(props.vendorList){
                             <FieldFeedbacks for="invoiceno">
                       <FieldFeedback when="*"></FieldFeedback>
                     </FieldFeedbacks>
-                    </div>
-              
+                    </div> */}
+              <div className="col-sm-3">
+                  <TextField
+                    type="date"
+                    fullWidth
+                    value={this.state.invoicedate}
+                    name="invoicedate"
+                    onChange={(event) => {
+                      commonHandleChange(event, this, "invoicedate", "asnForm");
+                    }}
+                    label={
+                      <span>
+                        Invoice Date
+                      </span>
+                    }
+                    variant="outlined"
+                    size="small"    
+                    InputLabelProps={{ shrink: true }}                
+                  />
+                </div>
                   </div>
-                  <div className="row mt-2">
+                  {/* <div className="row mt-2">
                     <label className="col-sm-2">Invoice Date </label>
                     <div className="col-sm-3">
                       <input
@@ -407,91 +532,112 @@ if(props.vendorList){
                         }}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-sm-12 text-center mt-20" >
-                    <button type="submit" className="btn btn-success">
+                    {/* <button type="submit" className="btn btn-success">
                       Save
                     </button>
                     <button type="button" className="btn btn-danger ml-2 mr-1" onClick={this.onReset}>
                       Cancel
-                    </button>
+                    </button> */}
+                     <Button variant="contained" color="primary" type="submit">
+            Save
+          </Button>
+          <Button variant="contained" color="secondary" className="ml-2" onClick={this.onReset}>
+            Cancel
+          </Button>
+          <Button variant="contained" color="primary" className="ml-2" onClick={this.showAsnReminder}>
+                        Show ASN Reminder <i className="btn btn-danger ml-2 fa fa-refresh"></i>
+                      </Button>
 {/* <button type="button" className="btn btn-danger ml-2 icon-refresh" onClick={this.showAsnReminder}>
                             Show ASN Reminder
                     </button>*/}
-                    <button type="button"  onClick={this.showAsnReminder}>Show ASN Reminder <i className="btn btn-danger ml-2 fa fa-refresh"></i>
-                    </button>
+                    {/* <button type="button"  onClick={this.showAsnReminder}>Show ASN Reminder <i className="btn btn-danger ml-2 fa fa-refresh"></i>
+                    </button> */}
                   </div>
                 </div>
             
               </FormWithConstraints>
 
 {/* FOR RESEND INVITATION CATEGORY */}
-<div className={"card mb-1 " + (isEmpty(this.props.vendorList)  ? "display_none" : "display_block")}>
-            <div className="row px-4 py-2">
-              <div class="col-12">
-              <div className="col-sm-3">
+<div className={"mb-1 " + (isEmpty(this.props.vendorList)  ? "display_none" : "display_block")}>
+            {/* <div className="row px-4 py-2">
+              <div class="col-12"> */}
+              {/* <div className="col-sm-3">
             <input type="text" id="SearchTableDataInputTwo" className="form-control" onKeyUp={searchTableDataTwo} placeholder="Search .." />
             </div>
             <div className="col-sm-3">
               &nbsp;
-            </div>
-                <div class="table-proposed">
-                  <StickyHeader height={400} className="table-responsive width-adjustment">
-                    <table className="table table-bordered table-header-fixed">
-                      <thead class="thead-light">
-                        <tr>
-                          <th>Invite</th>
-                          <th>Vendor Email</th>
-                          <th>VendorCode-Name</th>
-                          <th>UserCode-Name</th>
-                          <th>Location</th>
-                          <th>PO NO</th>
-                          <th>Invoice NO</th>
-                          <th>Invoice Date</th>
-                          <th>Delete</th>
-                        </tr>
-                      </thead>
-                      <tbody id="DataTableBodyTwo">
-                        {this.props.vendorList.map((vendor, index) => (
-                          <tr>
-                            {
-                              <>
-                                <td>
-                                  {/*<input type="checkbox" id={"checkbox" + index} onChange={e => this.inviteVendorCheckboxHandlerForAll(e, user, index)} checked={checked[index] || false} /> */}
-                                  <input type="checkbox" id={"checkbox" + index}  />
-                                </td>
-                              </>
-                            }
-                            <td>{<>{vendor['vendorEmail']}</>}</td>
-                            <td>{(vendor.vendor==null ? "": (vendor.vendor.userName==null?"":vendor.vendor.userName) + (vendor.vendor.name==null?"": '-'+ vendor.vendor.name))}</td>
-                            <td>{vendor.createdBy.userName + '-' + vendor.createdBy.name}</td>
-                            <td align="left">{vendor.createdBy.userDetails.plant}</td>
-                            <td>{<>{vendor['poNo']}</>}</td>
-                            <td>{<>{vendor['invoiceNo']}</>}</td>
-                            <td>{<>{vendor['invoiceDate']}</>}</td>
-                            <td>
-                              {/*<button className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")} data-toggle="modal" data-target="#EditUserInfo" type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.displayUserInfoForResendInvitation(user) }} > */}
-                              <button className={"btn btn-outline-info "} data-toggle="modal" data-target="#EditUserInfo" type="button" onClick={() => { this.deleteAsnReminder(vendor) }}>
-                                <i
-                                  className={"fa fa-trash "}
-                                  aria-hidden="true"
-                                ></i>
-                              </button>
-                            </td>
-
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    
-                    </StickyHeader>
-                </div>
+            </div> */}
+            <Grid container spacing={2} alignItems="center" justify="flex-end">
+            <Grid item xs={3}>
+              <TextField
+                label="Search"
+                variant="outlined"
+                fullWidth
+                value={searchQuery}
+                onChange={this.handleSearchChange}
+                margin="dense"
+              />
+            </Grid>
+          </Grid>
+            <Paper className="mt-3">
+            <TableContainer>
+                <StickyHeader height={400} className="table-responsive width-adjustment">
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Invite</TableCell>
+                                <TableCell>Vendor Email</TableCell>
+                                <TableCell style={{width:"100px"}}>VendorCode-Name</TableCell>
+                                <TableCell>UserCode-Name</TableCell>
+                                <TableCell>Location</TableCell>
+                                <TableCell>PO NO</TableCell>
+                                <TableCell>Invoice NO</TableCell>
+                                <TableCell>Invoice Date</TableCell>
+                                <TableCell>Delete</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody id="DataTableBodyTwo">
+                            {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((vendor, index) => (
+                                <TableRow>
+                                  <TableCell>
+                                    <Checkbox id={"checkbox" + index} />
+                                  </TableCell>
+                                  <TableCell>{vendor['vendorEmail']}</TableCell>
+                                  <TableCell style={{width:"100px"}}>{(vendor.vendor == null ? "" : (vendor.vendor.userName == null ? "" : vendor.vendor.userName) + (vendor.vendor.name == null ? "" : '-' + vendor.vendor.name))}</TableCell>
+                                  <TableCell>{vendor.createdBy.userName + '-' + vendor.createdBy.name}</TableCell>
+                                  <TableCell align="left">{vendor.createdBy.userDetails.plant}</TableCell>
+                                  <TableCell>{vendor['poNo']}</TableCell>
+                                  <TableCell>{vendor['invoiceNo']}</TableCell>
+                                  <TableCell>{vendor['invoiceDate']}</TableCell>
+                                  <TableCell>
+                                    <Button variant="outlined" color="primary" onClick={() => { this.deleteAsnReminder(vendor) }}>
+                                      <i className="fa fa-trash" aria-hidden="true"></i>
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </StickyHeader>
+                </TableContainer>
+                <TablePagination
+              rowsPerPageOptions={[10, 25, 50]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
+                </Paper>
                 <hr style={{ margin: "0px" }} />
                 {this.state.loginGeneratedResponseMessage}
                 <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick= {this.inviteVendorsForLogin }><i className="fa fa-envelope"></i>&nbsp;Send Reminder</button>
               </div>
-            </div>
-          </div>
+            {/* </div>
+          </div> */}
           {/* FOR RESEND INVITATION CATEGORY */}
           </div>
           
@@ -531,7 +677,7 @@ if(props.vendorList){
         
           <div className="col-sm-12 mt-2">
                   <div className="row mt-2">
-                    <label className="col-sm-2">
+                    {/* <label className="col-sm-2">
                       Enq No. <span className="redspan">*</span>
                     </label>
                     <div className="col-sm-3">
@@ -549,15 +695,27 @@ if(props.vendorList){
                           );
                         }}
                       />
-                       <button type="button" onClick={()=>commonSubmitWithParam(this.props,"getEnqByID","/rest/getEnqByID",this.state.enqNo)} className="btn btn-success">
-                        Search
-                      </button>
-                    </div>
-                    </div>
-              
-                  </div>
-                  <div className="row mt-2">
-                    <label className="col-sm-2"> Date </label>
+                      </div> */}
+                      
+                      <div className="col-sm-3">
+                        <TextField
+                          fullWidth
+                          value={this.state.enqNo}
+                          name="enqNo"
+                          required
+                          onChange={(event) => {
+                            commonHandleChange(
+                              event,
+                              this,
+                              "enqNo"
+                            );
+                          }}
+                          label="Enq No."
+                          variant="outlined"
+                          size="small"                    
+                        />
+                      </div>
+                      {/* <label className="col-sm-2"> Date </label>
                     <div className="col-sm-3">
                       <input
                         type="date"
@@ -572,24 +730,46 @@ if(props.vendorList){
                           );
                         }}
                       />
+                    </div> */}
+                    <div className="col-sm-3">
+                        <TextField
+                          fullWidth
+                          type="date"
+                          value={this.state.enqDate}
+                          name="enqDate"
+                          required
+                          onChange={(event) => {
+                            commonHandleChange(
+                              event,
+                              this,
+                              "enqDate"
+                            );
+                          }}
+                          label="Date"
+                          variant="outlined"
+                          size="small"     
+                          InputLabelProps={{shrink:true} }              
+                        />
+                      </div>
+                      <div className="col-sm-3">
+                      <Button variant="contained" color="primary" onClick={()=>commonSubmitWithParam(this.props,"getEnqByID","/rest/getEnqByID",this.state.enqNo)}>Search</Button>
+                    </div>
                     </div>
                   </div>
-                  <div className="col-sm-12 text-center">
-                    <button type="submit" className="btn btn-success"
-                    // commonSubmitFormNoValidationWithData(data, this, "getBidderQuotByPrId", "/rest/getBidderByFilter");
-                    onClick={()=>commonSubmitFormNoValidationWithData({enquiryId:this.state.enqNo,bidEndDate:this.state.enqDate},this,"updateEnqEndDate","/rest/updateEnqEndDate")}
+                  <div className="col-sm-12 text-center mt-3">
+                    <Button variant="contained" color="primary"
+                      onClick={() => commonSubmitFormNoValidationWithData({ enquiryId: this.state.enqNo, bidEndDate: this.state.enqDate }, this, "updateEnqEndDate", "/rest/updateEnqEndDate")}
                     >
                       Save
-                    </button>
-                    {/* <button type="button" className="btn btn-danger ml-2" onClick={this.onReset}>
-                      Cancel
-                    </button> */}
+                    </Button>
                   </div>
+                
                 </div>
 
 </div>
         
           </div>
+        </div>
         </div>
 
       </React.Fragment>

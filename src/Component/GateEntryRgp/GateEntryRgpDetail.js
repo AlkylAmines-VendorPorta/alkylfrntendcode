@@ -33,11 +33,12 @@ import Loader from "../FormElement/Loader/LoaderWithProps";
 import alkylLogo from "../../img/Alkyl logo.png";
 import printlogo from "../../img/logoPrint.png";
 import RCLogo from "../../img/RC-Logo.jpg";
-import { Col, Divider, Row, Table } from 'antd';
+import { Col, Divider, Row } from 'antd';
 
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { TableBody,Table, TableRow, TableCell, TableHead, Button } from "@material-ui/core";
 
 const delay = ms => new Promise(
   resolve => setTimeout(resolve, ms)
@@ -294,7 +295,9 @@ transporterDetails=()=>{
   print() {
     window.print();
   }
-
+  handleRedirect = () => {
+    window.location.reload();
+   };
   subtotal() {
     let gateEntryLineList = this.state.gateEntryDto.gateEntryLineList;
     let totalAmount = 0;
@@ -339,17 +342,17 @@ transporterDetails=()=>{
       })
     }
     return  (
-      <table>
-      <tr>
-        <td>{name}</td>
-      </tr> 
-      <tr>
-      <td>{formatDateWithoutTimeNewDate1(created)}</td>
-    </tr>
-    <tr>
-    <td>{ created===null?"":formatTime(created)}</td>
-  </tr>
-  </table>
+      <Table>
+      <TableRow>
+        <TableCell>{name}</TableCell>
+      </TableRow> 
+      <TableRow>
+      <TableCell>{formatDateWithoutTimeNewDate1(created)}</TableCell>
+    </TableRow>
+    <TableRow>
+    <TableCell>{ created===null?"":formatTime(created)}</TableCell>
+  </TableRow>
+  </Table>
    
     )
   }
@@ -375,19 +378,19 @@ transporterDetails=()=>{
       })
     }
     return  (
-      <table>
-      <tr>
-        <td>{name}</td>
-      </tr> 
-      <tr>
-      {/* <td>{formatDateWithoutTimeNewDate1(hodDate)}</td> */}
-      <td>{formatDateWithoutTimeNewDate1(plantheadDate)}</td>
-    </tr>
-    <tr>
-    {/* <td>{ hodDate===null?"":formatTime(hodDate)}</td> */}
-    <td>{ plantheadDate===null?"":formatTime(plantheadDate)}</td>
-  </tr>
-  </table>
+      <Table>
+      <TableRow>
+        <TableCell>{name}</TableCell>
+      </TableRow> 
+      <TableRow>
+      {/* <TableCell>{formatDateWithoutTimeNewDate1(hodDate)}</TableCell> */}
+      <TableCell>{formatDateWithoutTimeNewDate1(plantheadDate)}</TableCell>
+    </TableRow>
+    <TableRow>
+    {/* <TableCell>{ hodDate===null?"":formatTime(hodDate)}</TableCell> */}
+    <TableCell>{ plantheadDate===null?"":formatTime(plantheadDate)}</TableCell>
+  </TableRow>
+  </Table>
    
     )
     //name
@@ -412,17 +415,17 @@ transporterDetails=()=>{
       })
     }
     return  (
-      <table>
-      <tr>
-        <td>{name}</td>
-      </tr> 
-      <tr>
-      <td>{formatDateWithoutTimeNewDate1(hodDate)}</td>
-    </tr>
-    <tr>
-    <td>{ hodDate===null?"":formatTime(hodDate)}</td>
-  </tr>
-  </table>
+      <Table>
+      <TableRow>
+        <TableCell>{name}</TableCell>
+      </TableRow> 
+      <TableRow>
+      <TableCell>{formatDateWithoutTimeNewDate1(hodDate)}</TableCell>
+    </TableRow>
+    <TableRow>
+    <TableCell>{ hodDate===null?"":formatTime(hodDate)}</TableCell>
+  </TableRow>
+  </Table>
    
     )
   //   let name = ""
@@ -442,15 +445,15 @@ transporterDetails=()=>{
   //   }
   //   return  (
   //     <table>
-  //     <tr>
-  //       <td>{name}</td>
-  //     </tr> 
-  //     <tr>
-  //     <td>{formatDateWithoutTimeNewDate1(fhDate)}</td>
-  //   </tr>
-  //   <tr>
-  //   <td>{ fhDate===null?"":formatTime(fhDate)}</td>
-  // </tr>
+  //     <TableRow>
+  //       <TableCell>{name}</TableCell>
+  //     </TableRow> 
+  //     <TableRow>
+  //     <TableCell>{formatDateWithoutTimeNewDate1(fhDate)}</TableCell>
+  //   </TableRow>
+  //   <TableRow>
+  //   <TableCell>{ fhDate===null?"":formatTime(fhDate)}</TableCell>
+  // </TableRow>
  // </table>
    
   // )
@@ -477,17 +480,17 @@ transporterDetails=()=>{
       })
     }
     return  (
-      <table>
-      <tr>
-        <td>{name}</td>
-      </tr> 
-      <tr>
-      <td>{formatDateWithoutTimeNewDate1(commercialDate)}</td>
-    </tr>
-    <tr>
-    <td>{ commercialDate===null?"":formatTime(commercialDate)}</td>
-  </tr>
-  </table>
+      <Table>
+      <TableRow>
+        <TableCell>{name}</TableCell>
+      </TableRow> 
+      <TableRow>
+      <TableCell>{formatDateWithoutTimeNewDate1(commercialDate)}</TableCell>
+    </TableRow>
+    <TableRow>
+    <TableCell>{ commercialDate===null?"":formatTime(commercialDate)}</TableCell>
+  </TableRow>
+  </Table>
    
     )
     //name
@@ -539,15 +542,16 @@ transporterDetails=()=>{
       display: this.state.formDisplay ? "none" : "block"
     }
     var searchHidden = {
-      display: this.state.searchDisplay ? "block" : "none"
+      display: this.state.searchDisplay ? "block" : "none",
+      width:"98%",
+      margin:"0px auto",
+      background:"#fff",
+      marginTop:"80px"
     }
     // console.log("plantDropDownListplantDropDownList",this.state.plantDropDownList);
     return (
       <>
-        <div>
-
-          <button type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} class="btn btn-primary">Print Details</button>
-        </div>
+      
         <div style={searchHidden} >
         <fieldset class="scheduler-border">
           <b style={{fontSize:"2vw"}}>Alkyl Amines Chemicals Ltd.</b>
@@ -580,23 +584,23 @@ transporterDetails=()=>{
           <fieldset class="scheduler-border">
           <Row>
             <Col span={8}>
-            <table>
-                <tr>
-                  <th>Request No :</th>
-                  <td>{gateEntryDto.reqNo}</td>
-                </tr>
-              </table>
+            <Table>
+                <TableRow>
+                  <TableCell>Request No :</TableCell>
+                  <TableCell>{gateEntryDto.reqNo}</TableCell>
+                </TableRow>
+              </Table>
             </Col>
             <Col span={8}>
             </Col>
             <Col span={8} align="right">
-            <table>
-                <tr>
-                  <th> Date :</th>
-                  {/* <td>{formatDateWithoutTime(gateEntryDto.created)}</td> */}
-                  <td>{formatDateWithoutTimeNewDate1(gateEntryDto.created)}</td>
-                </tr>
-              </table>
+            <Table>
+                <TableRow>
+                  <TableCell> Date :</TableCell>
+                  {/* <TableCell>{formatDateWithoutTime(gateEntryDto.created)}</TableCell> */}
+                  <TableCell>{formatDateWithoutTimeNewDate1(gateEntryDto.created)}</TableCell>
+                </TableRow>
+              </Table>
             </Col>
           </Row>
 
@@ -612,60 +616,58 @@ transporterDetails=()=>{
               }
             </b> */} 
             {/* <table>
-                  <tr>
+                  <TableRow>
                   <b>From,</b>
-                    </tr>
-                    <tr>
-                    <td><b> {this.plantAddress() } </b></td>
-                  </tr>
+                    </TableRow>
+                    <TableRow>
+                    <TableCell><b> {this.plantAddress() } </b></TableCell>
+                  </TableRow>
                   <br/>
                 </table> */}
-                <table>
-                  <tr>
-                    <th>From</th>
-                    </tr>
-                    <tr>
-                    <td> {this.plantAddress() } </td>
-                  </tr>
-                  <tr>
-                    <th></th>
-                    <td>.</td>
-                  </tr>
-                </table>
+                <Table>
+                  <TableRow>
+                    <TableCell>From</TableCell>
+                    </TableRow>
+                    <TableRow>
+                    <TableCell> {this.plantAddress() } </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>.</TableCell>
+                  </TableRow>
+                </Table>
             </fieldset>
           </Col> 
             <Col span={12}>
             <fieldset class="scheduler-border">
-            <table>
-                  <tr>
-                    <th>To,</th>
-                    </tr>
-                    <tr>
-                    <td>{gateEntryDto.vendorName}</td>
-                  </tr>
-                  <tr>
-                    <td>{gateEntryDto.vendorAddress}</td>
-                  </tr>
-                  <br/>
-                
-                </table>
+            <Table>
+                  <TableRow>
+                    <TableCell>To,</TableCell>
+                    </TableRow>
+                    <TableRow>
+                    <TableCell>{gateEntryDto.vendorName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>{gateEntryDto.vendorAddress}</TableCell>
+                  </TableRow>                
+                </Table>
             </fieldset>
             </Col>
             {/* <Col span={8} offset={8}>
               <table>
-                <tr>
-                  <th>Request No :</th>
-                  <td>{gateEntryDto.reqNo}</td>
-                </tr>
-                <tr>
-                  <th>Date:</th>
-                  <td>{formatDateWithoutTime(gateEntryDto.created)}</td>
-                </tr>
-                <tr>
-                  <th>Department :</th>
+                <TableRow>
+                  <TableCell>Request No :</TableCell>
+                  <TableCell>{gateEntryDto.reqNo}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Date:</TableCell>
+                  <TableCell>{formatDateWithoutTime(gateEntryDto.created)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Department :</TableCell>
 
-                  <td>{this.createdBy()}</td>
-                </tr>
+                  <TableCell>{this.createdBy()}</TableCell>
+                </TableRow>
               </table>
             </Col> */}
           </Row>
@@ -673,29 +675,29 @@ transporterDetails=()=>{
           <Col span={12} style={{height:"10px"}}>
             <fieldset class="scheduler-border">
             <div>
-              <table>
-                <tr>
-                  <th> <b>PAN NO:</b></th>
-                  <td> AAACA6783F<br></br></td>
-                </tr>
-                <tr>
-                  <th>  <b>CIN No:</b></th>
-                  <td>L99999MH1979PLC021796<br></br></td>
-                </tr>
-                <tr>
-                  <th><b>GST NO:</b></th>
-                  <td>  27AAACA6783F1ZM<br></br></td>
-                </tr>
-                <tr>
-                 <td>.</td>
-                </tr>
-                <tr>
-                 <td>.</td>
-                </tr>
-                <tr>
-                 <td>.</td>
-                </tr>
-              </table>
+              <Table>
+                <TableRow>
+                  <TableCell> <b>PAN NO:</b></TableCell>
+                  <TableCell> AAACA6783F<br></br></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>  <b>CIN No:</b></TableCell>
+                  <TableCell>L99999MH1979PLC021796<br></br></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell><b>GST NO:</b></TableCell>
+                  <TableCell>  27AAACA6783F1ZM<br></br></TableCell>
+                </TableRow>
+                <TableRow>
+                 <TableCell>.</TableCell>
+                </TableRow>
+                <TableRow>
+                 <TableCell>.</TableCell>
+                </TableRow>
+                <TableRow>
+                 <TableCell>.</TableCell>
+                </TableRow>
+              </Table>
              
           
          </div>
@@ -704,36 +706,36 @@ transporterDetails=()=>{
 
           <Col span={12}>
             <fieldset class="scheduler-border">
-            <table>
-            <tr>
-                  <th>Department Name :</th>
-                  <td>{this.createdByDepartment()}</td>
-                </tr>
-                {/* <tr>
-                  <th>Department Code :</th>
-                  <td>{this.createdBy()}</td>
-                </tr> */}
-                <tr>
-                  <th>Requestioner Name :</th>
-                  <td>{this.createdBy()}</td>
-                </tr>
-                <tr>
-                  <th>Transporter :</th>
-                  <td>{gateEntryDto.transporterName}</td>
-                </tr>
-                <tr>
-                  <th>Driver Name :</th>
-                  <td>{ }</td>
-                </tr>
-                <tr>
-                  <th>LR NO. :</th>
-                  <td>{ }</td>
-                </tr>
-                <tr>
-                  <th>Vehicle NO. :</th>
-                  <td>{gateEntryDto.vehicleNo}</td>
-                </tr>
-              </table>
+            <Table>
+            <TableRow>
+                  <TableCell>Department Name :</TableCell>
+                  <TableCell>{this.createdByDepartment()}</TableCell>
+                </TableRow>
+                {/* <TableRow>
+                  <TableCell>Department Code :</TableCell>
+                  <TableCell>{this.createdBy()}</TableCell>
+                </TableRow> */}
+                <TableRow>
+                  <TableCell>Requestioner Name :</TableCell>
+                  <TableCell>{this.createdBy()}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Transporter :</TableCell>
+                  <TableCell>{gateEntryDto.transporterName}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Driver Name :</TableCell>
+                  <TableCell>{ }</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>LR NO. :</TableCell>
+                  <TableCell>{ }</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Vehicle NO. :</TableCell>
+                  <TableCell>{gateEntryDto.vehicleNo}</TableCell>
+                </TableRow>
+              </Table>
             </fieldset>
           </Col> 
           </Row>
@@ -746,87 +748,87 @@ transporterDetails=()=>{
             </div>
           </Row> */}
           <Row>
-          <table className="table table-bordered" >
-                <tr className="row m-0">
-                  {/* <th>#</th> */}
-                  <td className="col-1" ><b> Sr No.</b> </td>
-                  <td className="col-4" ><b> Material Details</b></td>
-                  <td className="col-1" ><b>UOM</b></td>
-                  <td className="col-1" ><b>Quantity</b> </td>
-                  <td className="col-1" ><b> Rate</b> </td>
-                  <td className="col-1"><b>Amount</b></td>
-                  <td className="col-2" ><b>Ref.DocNo. (GPRN) / Date</b></td>
-                  <td className="col-1" ><b>Exp.Ret. Date</b></td>
-                  {/* <td className="w-6per" ><b>Purpose</b></td> */}
-                </tr>
-                {/* <tr>
+          <Table className="my-table" >
+                <TableRow className="row m-0">
+                  {/* <TableCell>#</TableCell> */}
+                  <TableCell className="col-1" ><b> Sr No.</b> </TableCell>
+                  <TableCell className="col-4" ><b> Material Details</b></TableCell>
+                  <TableCell className="col-1" ><b>UOM</b></TableCell>
+                  <TableCell className="col-1" ><b>Quantity</b> </TableCell>
+                  <TableCell className="col-1" ><b> Rate</b> </TableCell>
+                  <TableCell className="col-1"><b>Amount</b></TableCell>
+                  <TableCell className="col-2" ><b>Ref.DocNo. (GPRN) / Date</b></TableCell>
+                  <TableCell className="col-1" ><b>Exp.Ret. Date</b></TableCell>
+                  {/* <TableCell className="w-6per" ><b>Purpose</b></TableCell> */}
+                </TableRow>
+                {/* <TableRow>
                
-                </tr> */}
-              <tbody>
+                </TableRow> */}
+              <TableBody>
                 {gateEntryLineList.map((item, i) => {
                   return (
                     <>
-                      <tr className="row m-0">
-                        <td className="col-1" >{item.serialNo}</td>
-                        <td className="col-4" >{item.materialCode}</td>
-                        <td className="col-1">{item.uom}</td>
-                        <td className="col-1">{getDecimalUpto(item.materialQty, 3)}</td>
-                        <td className="col-1">{getDecimalUpto(item.materialRate, 2)}</td>
-                        <td className="col-1">{getDecimalUpto(item.materialCost, 2)}</td>                       
-                        <td className="col-2">{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</td>
-                        <td className="col-1"></td>
-                        {/* <td>{item.purpose}</td> */}
+                      <TableRow className="row m-0">
+                        <TableCell className="col-1" >{item.serialNo}</TableCell>
+                        <TableCell className="col-4" >{item.materialCode}</TableCell>
+                        <TableCell className="col-1">{item.uom}</TableCell>
+                        <TableCell className="col-1">{getDecimalUpto(item.materialQty, 3)}</TableCell>
+                        <TableCell className="col-1">{getDecimalUpto(item.materialRate, 2)}</TableCell>
+                        <TableCell className="col-1">{getDecimalUpto(item.materialCost, 2)}</TableCell>                       
+                        <TableCell className="col-2">{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</TableCell>
+                        <TableCell className="col-1"></TableCell>
+                        {/* <TableCell>{item.purpose}</TableCell> */}
                         
                        
-                      <tr>
-                      <td><b>Purpose:</b> {item.purpose} </td>
-                      {/* <td>{item.purpose}</td> */}
-                      </tr>
-                      </tr>
+                      <TableRow>
+                      <TableCell><b>Purpose:</b> {item.purpose} </TableCell>
+                      {/* <TableCell>{item.purpose}</TableCell> */}
+                      </TableRow>
+                      </TableRow>
                     </>
                   )
                 })
                 }
-              </tbody>
+              </TableBody>
 
-            </table>
+            </Table>
             </Row >
             <fieldset class="scheduler-border">        
-              <table  align="right">
-                <tr>
-                  <th>**Total Amount** :</th>
-                  <td><b>{this.subtotal()}</b></td>
-                </tr>
+              <Table  align="right">
+                <TableRow>
+                  <TableCell>**Total Amount** :</TableCell>
+                  <TableCell><b>{this.subtotal()}</b></TableCell>
+                </TableRow>
 
-              </table>    
+              </Table>    
           </fieldset>
           <fieldset class="scheduler-border"> 
           <Row >
             <Col span={8}>
               <b>
-                <table>
-                  {/* <tr>
-                    <th>Purpose:</th>
-                    <td>{gateEntryDto.purpose}</td>
-                  </tr> */}
-                  <tr>
-                    <th>Expected Return Date :</th>
-                    <td>{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</td>
-                  </tr>
-                </table>
+                <Table>
+                  {/* <TableRow>
+                    <TableCell>Purpose:</TableCell>
+                    <TableCell>{gateEntryDto.purpose}</TableCell>
+                  </TableRow> */}
+                  <TableRow>
+                    <TableCell>Expected Return Date :</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</TableCell>
+                  </TableRow>
+                </Table>
               </b>
 
             </Col>
 
             <Col span={8} offset={8}>
               <b>
-                <table>
+                <Table>
 
-                  <tr>
-                    <th>Vehicle Type :</th>
-                    <td>{gateEntryDto.vehicleType}</td>
-                  </tr>
-                </table>
+                  <TableRow>
+                    <TableCell>Vehicle Type :</TableCell>
+                    <TableCell>{gateEntryDto.vehicleType}</TableCell>
+                  </TableRow>
+                </Table>
               </b>
             </Col>
 
@@ -836,12 +838,12 @@ transporterDetails=()=>{
           <Row >
           <Col span={8}>
               <b>
-                <table>
-                  <tr>
-                    <th>Remarks:</th>
-                    <td>{gateEntryDto.remark}</td>
-                  </tr>
-                </table>
+                <Table>
+                  <TableRow>
+                    <TableCell>Remarks:</TableCell>
+                    <TableCell>{gateEntryDto.remark}</TableCell>
+                  </TableRow>
+                </Table>
                 <br/><br/>
               </b>
 
@@ -864,57 +866,57 @@ transporterDetails=()=>{
           <b>E.& O.E.</b>
           <Row>
             <Col span={6}>
-              <tr>
-                <th>PREPARED BY :</th>
+              <TableRow>
+                <TableCell>PREPARED BY :</TableCell>
 
-              </tr>
-              <tr>
-                <td>{this.preparedBy()}</td>
-              </tr>
+              </TableRow>
+              <TableRow>
+                <TableCell>{this.preparedBy()}</TableCell>
+              </TableRow>
 
             </Col>
             <Col span={6}>
-              <tr>
-                <th>APPROVED BY :</th>
-              </tr>
+              <TableRow>
+                <TableCell>APPROVED BY :</TableCell>
+              </TableRow>
               {"RGP" === gateEntryDto.docType?
-               <tr>
-               {/* <td>{this.authorizedBy()}</td> */}
-               <td>{this.approvedBy()}</td>
-             </tr>:
-              <tr>
-                <td>{this.approvedBy()}</td>
-              </tr>}
+               <TableRow>
+               {/* <TableCell>{this.authorizedBy()}</TableCell> */}
+               <TableCell>{this.approvedBy()}</TableCell>
+             </TableRow>:
+              <TableRow>
+                <TableCell>{this.approvedBy()}</TableCell>
+              </TableRow>}
             </Col>
       {"RGP" === gateEntryDto.docType?
           <>
             <Col span={8}>
               
-              <tr>
-                <th>STORE IN-CHARGE/AUTHORISED BY:</th>
-              </tr>
-              <tr>
-                <td>{this.storeInchargeBy()}</td>
-              </tr>
+              <TableRow>
+                <TableCell>STORE IN-CHARGE/AUTHORISED BY:</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{this.storeInchargeBy()}</TableCell>
+              </TableRow>
             </Col>
             </>
             :
             <>
             <Col span={6}>
-              <tr>
-                <th>AUTHORISED BY :</th>
-              </tr>
-              <tr>
-                <td>{this.authorizedBy()}</td>
-              </tr>
+              <TableRow>
+                <TableCell>AUTHORISED BY :</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{this.authorizedBy()}</TableCell>
+              </TableRow>
             </Col>
             <Col span={6}>
-              <tr>
-                <th>STORE IN-CHARGE :</th>
-              </tr>
-              <tr>
-                <td>{this.storeInchargeBy()}</td>
-              </tr>
+              <TableRow>
+                <TableCell>STORE IN-CHARGE :</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{this.storeInchargeBy()}</TableCell>
+              </TableRow>
             </Col></>} 
           </Row>
           <br/>
@@ -922,19 +924,23 @@ transporterDetails=()=>{
           <br/>
         </fieldset> 
 
-          <Row align={"center"} style={{ marginTop: 50 }}>
-            <button type="button" id="printbtn" class="btn btn-primary" onClick={this.print}>Print</button>
+          <Row align={"center"} style={{ marginTop: 50 }}>            
+            <Button color="primary" variant="contained" className="mb-2" size="small" type="button" id="printbtn"  onClick={this.print}>Print</Button>
+            <Button color="primary" variant="contained" size="small" type="button" className="ml-2 mb-2" onClick={this.goBack}>Back</Button>
           </Row>
           <div>
 
 
           </div>
         </div>
-        <div className="container-fluid mt-100 w-100" id="togglesidebar"  >
+        <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
           <FormWithConstraints ref={formWithConstraints => this.prForm = formWithConstraints}>
             <div style={frmhidden}>
               <div className="card my-2" >
-
+               <div className="col-lg-12">
+              
+              <Button color="primary" variant="contained" size="small" type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} >Print Details</Button>
+              </div>
                 <div className="row mt-0 px-4 pt-2">
                   <label className="col-sm-2">Type</label>
                   <div className="col-sm-2">
@@ -1002,7 +1008,7 @@ transporterDetails=()=>{
                          </div>
                          
                          <div className="col-sm-3">
-                          <button type="button" className={"btn btn-primary"} onClick={this.searchVendorData.bind(this)}> Search </button>
+                          <Button variant="contained" color="primary" type="button" className={"btn btn-primary"} onClick={this.searchVendorData.bind(this)}> Search </Button>
                       </div>
                        </div> :""
   }
@@ -1037,14 +1043,6 @@ transporterDetails=()=>{
                         }}
 
                       />
-                      {/* <input
-                        type="text"
-                        className="form-control"
-                        value={gateEntryDto.vendorAddress}
-                        onChange={(e) => {
-                          commonHandleChange(e, this, "gateEntryDto.vendorAddress");
-                        }}
-                      /> */}
                     </span>
                   </div>
                   <label className="col-sm-2">Status</label>
@@ -1057,48 +1055,10 @@ transporterDetails=()=>{
 
 
 
-                <div className="row mt-0 px-4 pt-2">
-                  {/* <label className="col-sm-2">PO NO</label>
-                  <div className="col-sm-2">
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="1"
-                      disabled={gateEntryDto.reqNo}
-                      value={gateEntryDto.poNo}
-                      onChange={(e) => {
-                        commonHandleChange(e, this, "gateEntryDto.poNo");
-                      }}
-                    />
-
-                  </div> */}
-                  {/* <div className="col-sm-2"></div>
-                  <div className="col-sm-2"></div>
-                  <label className="col-sm-2"></label>
-                  <div className="col-sm-2" >
-                  </div>
-                  <label className="col-sm-2">Status</label>
-                  <div className="col-sm-2" >
-                    <span className="display_block">
-                      {gateEntryDto.status}
-                    </span>
-                  </div>*/}
-                </div>
+               
                 {"NRGP" === gateEntryDto.docType?"":
                 <div className="row mt-0 px-4 pt-2">
-                  {/* <label className="col-sm-2">Purpose..</label>
-                  <div className="col-sm-2" >
-                    <textarea
-                      class="form-control" rows="1"
-                    //  disabled={gateEntryDto.reqNo}
-                      value={gateEntryDto.purpose}
-                      onChange={(e) => {
-                        commonHandleChange(e, this, "gateEntryDto.purpose");
-                      }}
-                    />
-                  </div> */}
-
-                  {/* <label className="col-sm-2"></label>
-                  <div className="col-sm-2" >
-                  </div> */}
-                  {/* <label className="col-sm-2">Return By</label> */}
+                  
                   <label className="col-sm-2">Expected Return Date</label>
                   <div className="col-sm-2" >
                     <input type="date" className="form-control" name="returnBy" value={formatDateWithoutTimeNewDate(gateEntryDto.returnBy)} 
@@ -1174,18 +1134,11 @@ transporterDetails=()=>{
          variant="outlined" />
       )}
     />
-                    {/* <textarea
-                      class="form-control" rows="1"
-                    //  disabled={gateEntryDto.reqNo}
-                      value={gateEntryDto.transporterName}
-                      onChange={(e) => {
-                        commonHandleChange(e, this, "gateEntryDto.transporterName");
-                      }}
-                    /> */}
+                 
                   </div>
                   </div>
 
-                <div className="row mt-1 px-4 pt-2">
+                <div className="row mt-1 px-4 pt-2 mb-2">
                   <label className="col-sm-2">Remarks</label>
                   <div className="col-sm-6" >
                     <textarea
@@ -1209,139 +1162,38 @@ transporterDetails=()=>{
                 </div>
 
 
-
-
-                {/* <div className="row mt-0 px-4 pt-1">
-
-                  <div className="col-6 col-md-2 col-lg-2">
-                    <label className="mr-4 label_12px">Req No</label>
-                    <span className="display_block">
-                      {gateEntryDto.reqNo}
-                    </span>
-                  </div>
-
-                  <div className="col-6 col-md-2 col-lg-2">
-                    <label className="mr-4 label_12px">Vendor Name</label>
-                    <span className="display_block">
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={gateEntryDto.vendorName}
-                        onChange={(e) => {
-                          commonHandleChange(e, this, "gateEntryDto.vendorName");
-                        }}
-                      />
-                    </span>
-                  </div>
-
-                  <div className="col-12 col-md-4 col-lg-4">
-                    <label className="mr-4 label_12px">Vendor Address</label>
-                    <span className="display_block">
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={gateEntryDto.vendorAddress}
-                        onChange={(e) => {
-                          commonHandleChange(e, this, "gateEntryDto.vendorAddress");
-                        }}
-                      />
-                    </span>
-                  </div>
-
-                  <div className="col-6 col-md-2 col-lg-2">
-                    <label className="mr-4 label_12px">PO Number</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={gateEntryDto.poNo}
-                      onChange={(e) => {
-                        commonHandleChange(e, this, "gateEntryDto.poNo");
-                      }}
-                    />
-                  </div>
-
-                  <div className="col-6 col-md-2 col-lg-2">
-                    <label className="mr-4 label_12px">Remark</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={gateEntryDto.remark}
-                      onChange={(e) => {
-                        commonHandleChange(e, this, "gateEntryDto.remark");
-                      }}
-                    />
-                  </div>
-
-                  <div className="col-6 col-md-2 col-lg-2">
-                    <label className="mr-4 label_12px">Status</label>
-                    <span className="display_block">
-                      {gateEntryDto.status}
-                    </span>
-                  </div>
-
-                  <div className="col-6 col-md-2 col-lg-2">
-                    <label className="mr-4 label_12px">Doc Type</label>
-                    <select className="form-control" 
-                      value={gateEntryDto.docType}
-                      onChange={(e) => {
-                        commonHandleChange(e, this, "gateEntryDto.docType");
-                      }}
-                    >
-                      <option value="">Select</option>
-                      <option value="NRGP">NRGP</option>
-                      <option value="RGP">RGP</option>
-                    </select>
-                  </div>
-                  {gateEntryDto.status.includes("REJECTED")?
-                  <div className="col-6 col-md-2 col-lg-2">
-                    <label className="mr-4 label_12px">Reject Reason</label>
-                    <span className="display_block">
-                      {"HOD REJECTED"===gateEntryDto.status?gateEntryDto.hodRejectDesc:"FH REJECTED"===gateEntryDto.status?gateEntryDto.rejectDesc:gateEntryDto.commRejectDesc}
-                    </span>
-                  </div>:null}
-
-
-                </div> */}
               </div>
               <div className="card my-2">
                 <div className="lineItemDiv min-height-0px">
                   <div className="row px-4 py-2">
                     <div className="col-sm-9"></div>
-                    {/* <div className="col-sm-3">
-                      <input
-                        type="text"
-                        id="SearchTableDataInputTwo"
-                        className="form-control"
-                        onKeyUp={searchTableDataTwo}
-                        placeholder="Search .."
-                      />
-                    </div> */}
+                    
                     <div className="col-sm-12 mt-2">
                       <div>
                         <StickyHeader height={250} className="table-responsive">
-                          <table className="table table-bordered table-header-fixed">
-                            <thead>
-                              <tr>
-                                {/* <th>#</th> */}
-                                <th className="w-6per"> Sr No. </th>
-                                <th className="w-12per"> Material</th>
-                                {/* <th className="w-4per"> Material Description</th> */}
-                                <th className="w-7per">Qty </th>
-                                <th className="w-6per"> UOM</th>
+                          <Table className="my-table">
+                            <TableHead>
+                              <TableRow>
+                                {/* <TableCell>#</TableCell> */}
+                                <TableCell className="w-6per"> Sr No. </TableCell>
+                                <TableCell className="w-12per"> Material</TableCell>
+                                {/* <TableCell className="w-4per"> Material Description</TableCell> */}
+                                <TableCell className="w-7per">Qty </TableCell>
+                                <TableCell className="w-6per"> UOM</TableCell>
 
-                                <th className="w-8per"> Rate </th>
-                                <th className="w-8per">Cost</th>
-                              { "NRGP" === gateEntryDto.docType?"": <th className="w-8per">Repairing Cost</th>}
-                                <th className="w-8per">Purpose</th>
-                              </tr>
-                            </thead>
-                            <tbody id="DataTableBodyTwo">
+                                <TableCell className="w-8per"> Rate </TableCell>
+                                <TableCell className="w-8per">Cost</TableCell>
+                              { "NRGP" === gateEntryDto.docType?"": <TableCell className="w-8per">Repairing Cost</TableCell>}
+                                <TableCell className="w-8per">Purpose</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody id="DataTableBodyTwo">
                               {gateEntryLineList.map((item, i) => {
                                 return (
                                   <>
-                                    <tr class="accordion-toggle" >
-                                      {/* <th class="expand-button collapsed" id={"accordion" + i} data-toggle="collapse" data-parent={"#accordion" + i} href={"#collapse" + i}></th> */}
-                                      <td>
+                                    <TableRow class="accordion-toggle" >
+                                      {/* <TableCell class="expand-button collapsed" id={"accordion" + i} data-toggle="collapse" data-parent={"#accordion" + i} href={"#collapse" + i}></TableCell> */}
+                                      <TableCell>
                                         <label className="mr-4 label_12px">{item.serialNo}</label>
                                         {/* <input
                                           type="text"
@@ -1351,8 +1203,8 @@ transporterDetails=()=>{
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".serialNo");
                                           }}
                                         /> */}
-                                      </td>
-                                      <td>
+                                      </TableCell>
+                                      <TableCell>
                                         <input
                                           type="text"
                                           className={"form-control"}
@@ -1362,8 +1214,8 @@ transporterDetails=()=>{
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".materialCode");
                                           }}
                                         />
-                                      </td>
-                                      {/* <td>
+                                      </TableCell>
+                                      {/* <TableCell>
                                         <input
                                           type="text"
                                           className={"form-control"}
@@ -1372,9 +1224,9 @@ transporterDetails=()=>{
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".materialDesc");
                                           }}
                                         />
-                                      </td> */}
+                                      </TableCell> */}
 
-                                      <td>
+                                      <TableCell>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1385,8 +1237,8 @@ transporterDetails=()=>{
                                             commonSetState(this, "gateEntryDto.gateEntryLineList." + i + ".materialCost", item.materialQty * item.materialRate)
                                           }}
                                         />
-                                      </td>
-                                      <td>
+                                      </TableCell>
+                                      <TableCell>
                                         <input
                                           type="text"
                                           className={"form-control"}
@@ -1396,8 +1248,8 @@ transporterDetails=()=>{
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".uom");
                                           }}
                                         />
-                                      </td>
-                                      <td>
+                                      </TableCell>
+                                      <TableCell>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1408,8 +1260,8 @@ transporterDetails=()=>{
                                             commonSetState(this, "gateEntryDto.gateEntryLineList." + i + ".materialCost", item.materialQty * item.materialRate)
                                           }}
                                         />
-                                      </td>
-                                      {/* <td>
+                                      </TableCell>
+                                      {/* <TableCell>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1418,12 +1270,12 @@ transporterDetails=()=>{
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".materialCost");
                                           }}
                                         />
-                                      </td> */}
-                                      <td>
+                                      </TableCell> */}
+                                      <TableCell>
                                         <label className="mr-4 label_12px">{item.materialCost}</label>
-                                      </td>
+                                      </TableCell>
                                       { "NRGP" === gateEntryDto.docType?"": 
-                                      <td>
+                                      <TableCell>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1433,8 +1285,8 @@ transporterDetails=()=>{
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".repairingCost");
                                           }}
                                         />
-                                      </td>}
-                                      <td>
+                                      </TableCell>}
+                                      <TableCell>
                                       <textarea
                                               class="form-control" rows="1"
                                             //  disabled={gateEntryDto.reqNo}
@@ -1443,8 +1295,8 @@ transporterDetails=()=>{
                                              commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".purpose");
                                                  }}
                                                    />
-                                      </td>
-                                      <td>
+                                      </TableCell>
+                                      <TableCell>
 
                                         <button
                                           className={
@@ -1465,58 +1317,58 @@ transporterDetails=()=>{
                                             aria-hidden="true"
                                           ></i>
                                         </button>
-                                      </td>
-                                    </tr>
+                                      </TableCell>
+                                    </TableRow>
                                   </>
                                 )
                               })
                               }
-                            </tbody>
-                          </table>
+                            </TableBody>
+                          </Table>
                         </StickyHeader>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <hr className="my-1" />
-              <div className="row px-4 py-0">
-                <div className="col-12">
+              
+                <div className="col-12 mb-2">
                   <div className="d-flex justify-content-center">
                     {/* {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED", "FH REJECTED", "HOD REJECTED"].includes(gateEntryDto.status) ? */}
                     {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED", "PLANT HEAD REJECTED", "HOD REJECTED"].includes(gateEntryDto.status) ?
-                      <button type="button" onClick={this.handleSubmit} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Save</button> : null}
+                      <Button color="primary" variant="contained" type="button" onClick={this.handleSubmit} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Save</Button> : null}
                     {"CREATED" === gateEntryDto.status && <>
-                      <button type="button" onClick={() => this.updateStatus("hodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button>
-                      <button type="button" onClick={(e) => this.updateStatusRemark(e, "hodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</button></>}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("hodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "hodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
                     {/* {"NRGP" === gateEntryDto.docType && "FH APPROVED" === gateEntryDto.status && <>
-                      <button type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button>
-                      <button type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</button></>} */}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>} */}
                     {"NRGP" === gateEntryDto.docType && "PLANT HEAD APPROVED" === gateEntryDto.status && <>
-                      <button type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button>
-                      <button type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</button></>}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
 
                     {"RGP" === gateEntryDto.docType && "HOD APPROVED" === gateEntryDto.status && <>
-                      {/* <button type="button" onClick={() => this.updateStatus("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button> */}
-                      <button type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button>
-                      <button type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</button></>}
+                      {/* <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button> */}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
 
                     {/* {"HOD APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType && <>
-                      <button type="button" onClick={() => this.updateStatus("functionalApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button>
-                      <button type="button" onClick={(e) => this.updateStatusRemark(e, "functionalReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</button></>} */}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("functionalApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "functionalReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>} */}
 
                     {"HOD APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType && <>
-                      <button type="button" onClick={() => this.updateStatus("plantheadApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button>
-                      <button type="button" onClick={(e) => this.updateStatusRemark(e, "plantheadReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</button></>}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("plantheadApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "plantheadReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
 
 
                     {"COMMERCIAL APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType &&
-                      <button type="button" onClick={() => this.updateStatus("nrgpClosed")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</button>}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("nrgpClosed")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</Button>}
                     {"COMMERCIAL APPROVED" === gateEntryDto.status && "RGP" === gateEntryDto.docType &&
-                      <button type="button" onClick={() => this.updateStatus("rgpGateout")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</button>}
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("rgpGateout")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</Button>}
                       {!isEmpty(gateEntryDto.status) && gateEntryDto.status!== "CANCELED" ?
-                       <button className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</button> 
+                       <Button color="primary" variant="contained" className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</Button> 
+                       
                       :""}
+                      <Button variant="contained" size="small" className="ml-2" color="primary" type="button" onClick={this.handleRedirect}>Back</Button> 
                   </div>
                 </div>
               </div>

@@ -348,7 +348,7 @@ class QuotationBody extends Component {
     // var isTcDocSec = this.state.prDetails.isTC ? "display_block" : "display_none";
     return (
       <>
-        <div className="container-fluid mt-100 w-100" id="togglesidebar">
+        <div className="wizard-v1-content" style={{marginTop:"80px"}}>
           <input
             type="hidden"
             name="prId"
@@ -359,7 +359,7 @@ class QuotationBody extends Component {
           />
           <div
             className={
-              "card " +
+              " " +
               (this.state.prMainContainer == true
                 ? "display_block"
                 : "display_none")
@@ -374,7 +374,7 @@ class QuotationBody extends Component {
           </div>
 
           <div
-            className={"card " +
+            className={" " +
               (this.state.vendorList == true
                 ? "display_block"
                 : "display_none")

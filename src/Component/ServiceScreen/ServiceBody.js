@@ -30,7 +30,7 @@ class ServiceBody extends Component {
   render() {
     return (
       <>
-        <div className="container-fluid mt-100 w-100">
+       <div className="wizard-v1-content" style={{marginTop:"80px"}}>
           <div className="card">
             <div className="row px-4 py-2">
               <div className="col-12">

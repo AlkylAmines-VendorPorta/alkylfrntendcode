@@ -22,6 +22,7 @@ import {
   swalWithTextBox,
   swalWithTextBoxDynamicMessage
 } from "../../Util/ActionUtil";
+import { useHistory } from 'react-router-dom';
 import { isEmpty, isEmptyDeep } from "../../Util/validationUtil";
 import { connect } from "react-redux";
 import * as actionCreators from "./Action/Action";
@@ -34,6 +35,7 @@ import alkylLogo from "../../img/Alkyl logo.png";
 import printlogo from "../../img/logoPrint.png";
 import RCLogo from "../../img/RC-Logo.jpg";
 import { Col, Divider, Row, Table } from 'antd';
+import { Button } from "@material-ui/core";
 
 
 
@@ -134,7 +136,9 @@ class GateEntryRgpDetail extends Component {
       this.props.changeLoaderState(true);
         commonSubmitWithParam(this.props,"updateStatus","/rest/"+this.state.url, this.state.gateEntryDto.gateEntryId, remark);
   }
-
+  handleRedirect = () => {
+   window.location.reload();
+  };
   getEmptyGateEntryLineObj = (serialSize) => {
     return {
       gateEntryLineId: "",
@@ -187,7 +191,10 @@ handleFilterClick = () => {
   this.setState({ searchDisplay: !this.state.searchDisplay });
   commonSubmitWithParam(this.props,"getFormNo",'/rest/formNoPrint',this.state.gateEntryDto.plant, this.state.gateEntryDto.docType)
 }
-
+goBack=()=>{
+  this.setState({ formDisplay: !this.state.formDisplay });
+  this.setState({ searchDisplay: !this.state.searchDisplay });
+}
 onComfirmationOfCancelGateEntry(e) {
      
   swalWithTextBox(e, this, "onCancelGateEntryRequest");
@@ -489,14 +496,15 @@ plantAddress() {
       display: this.state.formDisplay ? "none" : "block"
     }
     var searchHidden = {
-      display: this.state.searchDisplay ? "block" : "none"
+      display: this.state.searchDisplay ? "block" : "none",
+      width:"98%",
+      margin:"0px auto",
+      background:"#fff",
+      marginTop:"80px"
     }
     return (
       <>
-      <div>
-
-      <button type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} class="btn btn-primary">Print Details</button>     
-        </div>
+     
         <div style={searchHidden} >
         <fieldset class="scheduler-border">
           <b style={{fontSize:"2vw"}}>Alkyl Amines Chemicals Ltd.</b>
@@ -705,7 +713,7 @@ plantAddress() {
             </div>
           </Row> */}
           <Row>
-          <table className="table table-bordered" >
+          <table className="my-table" >
                 <tr className="row m-0">
                   {/* <th>#</th> */}
                   <td className="col-1" ><b> Sr No.</b> </td>
@@ -933,7 +941,7 @@ plantAddress() {
             </div>
           </Row> */}
           {/* <Row gutter={24} style={{ marginTop: 48 }}>
-            <table className="table table-bordered table-header-fixed">
+            <table className="my-table">
               <thead>
                 <tr>
                   <th>#</th>
@@ -1069,8 +1077,9 @@ plantAddress() {
             </Col>
           </Row> */}
 
-          <Row align={"center"} style={{ marginTop: 50 }}>
-            <button type="button" id="printbtn" class="btn btn-primary" onClick={this.print}>Print</button>
+          <Row align={"center"} style={{ marginTop: 10, marginBottom:10 }}>
+            <Button color="primary" variant="contained" className="mb-2" size="small" type="button" id="printbtn"  onClick={this.print}>Print</Button>
+            <Button color="primary" variant="contained" size="small" type="button" className="ml-2 mb-2" onClick={this.goBack}>Back</Button>
           </Row>
           <div>
 
@@ -1078,12 +1087,15 @@ plantAddress() {
           </div>
         </div>
 
-        <div className="container-fluid mt-100 w-100">
+        <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
           <FormWithConstraints ref={formWithConstraints => this.prForm = formWithConstraints}>
             <div style={frmhidden}>
               <div className="card my-2">
                 <div className="row mt-0 px-4 pt-1">
+                <div className="col-lg-12">
 
+<Button color="primary" variant="contained" size="small" type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} >Print Details</Button>
+</div>
                   <div className="col-6 col-md-2 col-lg-2">
                     <label className="mr-4 label_12px">Req No</label>
                     <span className="display_block">
@@ -1154,7 +1166,7 @@ plantAddress() {
                     </span>
                   </div>
 
-                  <div className="col-6 col-md-2 col-lg-2">
+                  <div className="col-6 col-md-2 col-lg-2 mb-2">
                     <label className="mr-4 label_12px">Doc Type</label>
                     <select className="form-control" 
                       value={gateEntryDto.docType}
@@ -1195,7 +1207,7 @@ plantAddress() {
                     <div className="col-sm-12 mt-2">
                       <div>
                         <StickyHeader height={250} className="table-responsive">
-                          <table className="table table-bordered table-header-fixed">
+                          <table className="my-table">
                             <thead>
                               <tr>
                                 {/* <th>#</th> */}
@@ -1342,42 +1354,20 @@ plantAddress() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <hr className="my-1" />
-              <div className="row px-4 py-0">
+              <div className="row px-4 py-0 mb-2">
                 <div className="col-12">
                   <div className="d-flex justify-content-center">
                     {/* {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED","FH REJECTED","HOD REJECTED"].includes(gateEntryDto.status) && */}
-                      <button type="button" onClick={this.handleSubmit} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Release</button>
+                    <Button variant="contained" size="small" color="primary" type="button" onClick={this.handleSubmit} className="mr-2"><i className="fa fa-check" />&nbsp;Release</Button>
                       {gateEntryDto.status!== "CANCELED" ?
-                       <button className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</button> 
+                       <Button variant="contained" size="small" color="secondary" type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</Button> 
+                       
                       :""}
-                      
-                    {/* {"CREATED"===gateEntryDto.status &&<>
-                      <button type="button" onClick={()=>this.updateStatus("hodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;HOD Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"hodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;HOD Reject</button></>}
-                      
-                      {"NRGP"===gateEntryDto.docType && "FH APPROVED"===gateEntryDto.status &&<>
-                      <button type="button" onClick={()=>this.updateStatus("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM REJ</button></>}
-
-                      {"RGP"===gateEntryDto.docType && "HOD APPROVED"===gateEntryDto.status &&<>
-                      <button type="button" onClick={()=>this.updateStatus("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM REJ</button></>}
-
-                    {"HOD APPROVED"===gateEntryDto.status && "NRGP"===gateEntryDto.docType &&<>
-                      <button type="button" onClick={()=>this.updateStatus("functionalApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Functional Head Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"functionalReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Functional Head REJ</button></>}
-
-                    {"COMMERCIAL APPROVED"===gateEntryDto.status && "NRGP"===gateEntryDto.docType &&
-                      <button type="button" onClick={()=>this.updateStatus("nrgpClosed")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</button>}
-                    {"COMMERCIAL APPROVED"===gateEntryDto.status && "RGP"===gateEntryDto.docType &&
-                    <button type="button" onClick={()=>this.updateStatus("rgpGateout")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</button>} */}
-                  </div>
+                      <Button variant="contained" size="small" className="ml-2" color="primary" type="button" onClick={this.handleRedirect}>Back</Button> 
+                    </div>
                 </div>
               </div>
-
-
+              </div>
             </div>
 
 

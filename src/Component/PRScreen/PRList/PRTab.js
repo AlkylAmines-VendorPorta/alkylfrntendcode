@@ -201,8 +201,8 @@ class PRList extends Component {
 
 
 <div className="modal documentModal" id="documentModal" >
-            <div className="modal-dialog modal-xl mt-100">
-              <div className="modal-content">
+<div className="modal-dialog mt-100" style={{width:"800px", maxWidth:"800px"}}>
+<div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
                 <div className="modal-header">
                   Other Documents
                   <button type="button" className={"close "+ this.props.readonly} data-dismiss="modal">
@@ -249,8 +249,8 @@ class PRList extends Component {
           </div>
 
 
-    <div className="modal-dialog modal-dialog-centered modal-xl">
-      <div className="modal-content">
+    <div className="modal-dialog modal-dialog-centered modal-xl" style={{width:"800px", maxWidth:"800px", marginTop:"80px"}}>
+      <div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
         <div className="modal-header">
           <h4 className="modal-title">PR Detail</h4>
           <button type="button" className="close" data-dismiss="modal">&times;</button>
@@ -411,7 +411,7 @@ class PRList extends Component {
                  <div className="col-sm-12 mt-2">
                    <div>
                      <StickyHeader height={250} className="table-responsive">
-                       <table className="table table-bordered table-header-fixed">
+                       <table className="my-table">
                          <thead>
                            <tr>
                              <th>#</th>
@@ -487,7 +487,7 @@ class PRList extends Component {
                                 <td>{prLine.desireVendorCode}</td>
                              </tr>
                                <tr class="hide-table-padding">
-                                 <td colSpan="11">
+                                 <td colSpan="18">
                                    <div id={"collapse" + i} class="collapse in p-1">
                                      <div className="container-fluid px-0">
                                        <div class="row m-0 p-0">
@@ -690,7 +690,7 @@ class PRList extends Component {
                 <div class="table-proposed">
                   <StickyHeader height={400} className="table-responsive width-adjustment">
                 
-                    <table className="table table-bordered table-header-fixed">
+                    <table className="my-table">
                       <thead>
                         <tr>
 
@@ -813,7 +813,7 @@ class PRList extends Component {
             <>
        
 
-              <table className="table table-bordered table-header-fixed">
+              <table className="my-table">
                 <thead>
                   <tr>
                     <th>PR No</th>

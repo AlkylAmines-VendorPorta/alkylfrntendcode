@@ -839,7 +839,7 @@ else{
   
                       <div className="row">
                         <div className="col-sm-12 mt-4">
-                          <table className="table table-bordered" style={{ width: "100%" }} >
+                          <table className="my-table" style={{ width: "100%" }} >
                             <tbody>
                            
                               <tr className="ts">

@@ -32,6 +32,7 @@ import { FormWithConstraints } from 'react-form-with-constraints';
 import { ROLE_APPROVER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_PURCHASE_MANAGER_ADMIN,ROLE_BUYER_ADMIN,ROLE_PARTNER_ADMIN } from "../../../Constants/UrlConstants";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 import PRListBuyer from "../PRList/PRListBuyer";
+import { Button } from "@material-ui/core";
 // import { setActionValue } from "sweetalert/typings/modules/state";
 let onSave = "";
 class PRBody extends Component {
@@ -598,7 +599,7 @@ class PRBody extends Component {
     return (
       <>
         {/* <Loader isLoading={this.state.isLoading}/> */}
-        <div className="mt-100 w-100" id="togglesidebar" >
+        <div className="wizard-v1-content" style={{marginTop:"80px"}}>
         <FormWithConstraints ref={formWithConstraints => this.prForm = formWithConstraints}
         onSubmit={(e)=>{{ this.setState({loadPrChangeStatus:true});
         // debugger;
@@ -625,7 +626,7 @@ class PRBody extends Component {
     {/* <MaterialTable prLineArray={this.props.prList}/>  */}
           <div
             className={
-              "card " +
+              " " +
               (this.state.prMainContainer == true
                 ? "display_block"
                 : "display_none")
@@ -871,7 +872,7 @@ class PRBody extends Component {
                   <div className="form-group">
                     <label className="mr-1 label_12px">Third Party Approver</label>
    
-                    <button className={"btn btn-sm btn-outline-primary display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</button>
+                    <Button variant="contained" size="small" color="primary" className={"display_block " + this.state.technicalReadOnly} type="button" data-toggle="modal" data-target="#multipleBuyerModal"><i className="fa fa-user" />&nbsp;Third Party Approver</Button>
                   </div>
                 </div>
               </div>
@@ -919,8 +920,8 @@ class PRBody extends Component {
                   <div className="col-sm-12 mt-2">
                     <div>
                       <StickyHeader height={250} className="table-responsive">
-                      {/* <table className="table table-bordered table-header-fixed"> */}
-                        <table className="quotatiiontable table-bordered table-header-fixed">
+                      {/* <table className="my-table"> */}
+                        <table className="my-table">
                           <thead>
                             <tr>
                               <th>#</th>
@@ -1035,7 +1036,7 @@ class PRBody extends Component {
                                  <td>{prLine.desireVendorCode}</td>
                               </tr>
                                 <tr class="hide-table-padding">
-                                  <td colSpan="11">
+                                  <td colSpan="18">
                                     <div id={"collapse" + i} class="collapse in p-1">
                                       <div className="container-fluid px-0">
                                         <div class="row m-0 p-0">
@@ -1135,7 +1136,7 @@ class PRBody extends Component {
                   </div>
                   <div className="col-sm-12 mt-2">
                     <StickyHeader height={150} className="table-responsive">
-                      <table className="table table-bordered table-header-fixed">
+                      <table className="my-table">
                         <thead className="thead-light">
                           <tr>
                             <th>Line Item</th>
@@ -1221,8 +1222,8 @@ class PRBody extends Component {
           null
           :
           <div className="modal documentModal" id="documentModal" >
-            <div className="modal-dialog modal-xl mt-100">
-              <div className="modal-content">
+            <div className="modal-dialog mt-100" style={{width:"800px", maxWidth:"800px"}}>
+            <div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
                 <div className="modal-header">
                   Other Documents
                   <button type="button" className={"close "+ this.props.readonly} data-dismiss="modal">
@@ -1401,7 +1402,7 @@ class PRBody extends Component {
                     :null}
                   </>
                 ))}
-       <div className="col-sm-3">
+       <div className="col-sm-6">
                      {this.props.role == ROLE_REQUISTIONER_ADMIN || this.props.role == ROLE_APPROVER_ADMIN?  
                         <button
                               className="btn btn-primary"
@@ -1506,11 +1507,11 @@ class PRBody extends Component {
 
           <div
             className={
-              "card " +
+              "wizard-v1-content " +
               (this.props.role == ROLE_BUYER_ADMIN && this.state.prVendorSelection == false
                 ? "display_block"
                 : "display_none")
-            }
+            } style={{marginTop:"10px"}}
           >
             {/* { this.state.buyer && */}
               <PRListBuyer 

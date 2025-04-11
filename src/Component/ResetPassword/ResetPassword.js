@@ -106,7 +106,7 @@ import { isEqual, omit } from 'lodash-es';
         <UserDashboardHeader />
       <div className="page-content w-50">
       <div className="wizard-v1-content b-t">
-        <div className="wizard-form">
+      <div className="wizard-form" style={{boxShadow: "1px 2px 3px",  background: "#fff", padding: "10px", marginTop:"80px"}}>
           <h3 className="text-center">Reset Your Password</h3>
       <form  onSubmit={this.handleSubmit}>
       <FormWithConstraints ref={formWithConstraints => this.forms = formWithConstraints}

@@ -43,8 +43,7 @@ class MaterialGetInContainer extends Component {
     // console.log("gateEntry list",this.props.gateEntryList);
     return (
       <>
-       <div className="w-100">
-          <div className="mt-100 boxContent" >
+       <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
         <div className="">
         <UserDashboardHeader/>
           {this.state.loadList?
@@ -73,7 +72,6 @@ class MaterialGetInContainer extends Component {
             :
             null
           } */}
-        </div>
         </div>
         </div>
       </>

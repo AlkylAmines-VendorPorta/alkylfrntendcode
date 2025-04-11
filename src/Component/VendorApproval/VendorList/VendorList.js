@@ -1,14 +1,25 @@
 import React, { Component } from "react";
-import serialize from "form-serialize";
 import { connect } from "react-redux";
 import { isEmpty } from "../../../Util/validationUtil";
 import * as actionCreators from "../../VendorApproval/VendorList/Action";
 import {
   commonSubmitWithParam,
-  getObjectFromPath
+  getObjectFromPath,
 } from "../../../Util/ActionUtil";
-import { searchTableData, searchTableDataTwo } from "../../../Util/DataTable";
-import VendorApprovalMatrix from "../VendorApprovalMatrix/VendorApprovalMatrix";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination,
+  IconButton,
+  TextField,
+  Button,
+  Grid,
+} from "@material-ui/core";
 
 class VendorList extends Component {
   constructor(props) {
@@ -16,20 +27,27 @@ class VendorList extends Component {
     this.state = {
       currentSelectedVendor: "",
       vendorList: [],
-      search:''
+      search: "",
+      searchFilter: "",
+      page: 0,
+      openModal:false,
+      rowsPerPage: 50,
+      hoveredRow: null,
     };
   }
 
-  onValueChange = ({target}) => {
-    console.log('value',target.value)
-    this.setState({search:target.value})
-  }
+  onValueChange = ({ target }) => {
+    this.setState({ search: target.value, page: 0 }); // Reset page to 0 when searching
+  };
+  onValueChangeFilter = ({ target }) => {
+    this.setState({ searchFilter: target.value, page: 0 }); // Reset page to 0 when searching
+  };
 
-  getVendorFromObj(vendor) {
+  getVendorFromObj = (vendor) => {
     if (!isEmpty(vendor)) {
       let email = vendor.email;
       let name = "";
-      let mobileNumber="";
+      let mobileNumber = "";
       if (!isEmpty(vendor.userDetails)) {
         name = vendor.userDetails.name;
         mobileNumber = vendor.userDetails.mobileNo;
@@ -37,7 +55,7 @@ class VendorList extends Component {
       let invitedBy = "";
       let dept = "";
       let designation = "";
-	  let vendorCode = vendor.userName;
+      let vendorCode = vendor.userName;
       if (!isEmpty(vendor.createdBy)) {
         invitedBy = vendor.createdBy.name;
         if (!isEmpty(vendor.createdBy.userDetails)) {
@@ -45,8 +63,7 @@ class VendorList extends Component {
           designation = vendor.createdBy.userDetails.userDesignation;
         }
       }
-       let company = vendor.partner.name;
-     // let company = vendor.userDetails.partner.name;
+      let company = vendor.partner.name;
       if (!isEmpty(vendor.partner)) {
         company = vendor.partner.name;
       }
@@ -59,58 +76,45 @@ class VendorList extends Component {
         department: dept,
         invitedBy: invitedBy,
         mobNo: mobileNumber,
-        partner: vendor.partner,	
-        vendorCode : vendorCode
+        partner: vendor.partner,
+        vendorCode: vendorCode,
       };
     }
-  }
+    return null;
+  };
 
   onSelectVendorRow = (selectedRow, partner) => {
-    
     this.setState({
-      previousVendor: selectedRow
-    });
-
-    let previousVendor = getObjectFromPath(
-      "",
-      this.state.currentSelectedVendor
-    );
-    this.setState(previousVendor);
-
-    let currentVendor = getObjectFromPath("selected", selectedRow);
-    this.setState(currentVendor);
-
-    this.setState({
-      currentSelectedVendor: selectedRow
+      previousVendor: selectedRow,
+      currentSelectedVendor: selectedRow,
     });
 
     this.props.updatePartner(partner);
   };
 
-  statusForVendor = vendor => {
+  statusForVendor = (vendor) => {
     if (isEmpty(vendor.partner)) {
       return "";
     }
-    // console.log(vendor);
     let list = ["In Progress", "Approved", "Rejected", "Drafted", "Complete"];
 
-    if (vendor.partner.status == "IP") {
+    if (vendor.partner.status === "IP") {
       return list[0];
     }
-    if (vendor.partner.status == "AP") {
+    if (vendor.partner.status === "AP") {
       return list[1];
     }
-    if (vendor.partner.status == "RJ") {
+    if (vendor.partner.status === "RJ") {
       return list[2];
     }
-    if (vendor.partner.status == "DR") {
+    if (vendor.partner.status === "DR") {
       return list[3];
     } else {
       return list[4];
     }
   };
+
   async componentDidMount() {
-     
     commonSubmitWithParam(
       this.props,
       "populateVendorList",
@@ -120,93 +124,166 @@ class VendorList extends Component {
   }
 
   onSearch = () => {
-    console.log('onSearch',this.state.search);
+   // console.log("onSearch", this.state.searchFilter);
     commonSubmitWithParam(
       this.props,
       "populateVendorList",
-      `/rest/getVendorsForProfile/${this.state.search}`,
-     null
+      `/rest/getVendorsForProfile/${this.state.searchFilter}`,
+      null
     );
-  }
+    this.setState({openModal:false})
+  };
 
-  async componentWillReceiveProps(props) {
-    if (!isEmpty(props.vendorList)) {
-      let vendorArray = [];
-      props.vendorList.map(vendor => {
-        vendorArray.push(this.getVendorFromObj(vendor));
-      });
+  componentDidUpdate(prevProps) {
+    if (prevProps.vendorList !== this.props.vendorList) {
+      if (!isEmpty(this.props.vendorList)) {
+        let vendorArray = [];
+        this.props.vendorList.forEach((vendor) => {
+          const vendorObj = this.getVendorFromObj(vendor);
+          if (vendorObj) {
+            vendorArray.push(vendorObj);
+          }
+        });
 
-      this.setState({
-        vendorList: vendorArray
-      });
+        this.setState({
+          vendorList: vendorArray,
+        });
+      }
     }
   }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
   render() {
-    console.log('this.props',this.props)
+    const { vendorList, search, page, rowsPerPage, hoveredRow } = this.state;
+
+    // Filter vendors based on search query
+    const filteredVendors = vendorList.filter((vendor) =>
+      Object.values(vendor).some((value) =>
+        String(value).toLowerCase().includes(search.toLowerCase())
+    ));
+
     return (
-      <div className="card" id="togglesidebar">
-        <div className="card-header">Vendor Details <input placeholder="search" onChange={this.onValueChange} value={this.state.search} /> <button onClick={this.onSearch}>Search</button> </div>
-        <div className="card-body">
-          <div className="row">
-            <div class="col-sm-9"></div>
-            <div class="col-sm-3">
-              <input
-                type="text"
-                id="SearchTableDataInput"
-                className="form-control"
-                onKeyUp={searchTableData}
-                placeholder="Search .."
-              />
-            </div>
-            <div className="col-sm-12 mt-2">
-              <table class="table table-bordered scrollTable">
-                <thead>
-                  <tr>
-                    <th>Person Name </th>
-                    <th>Mobile No</th>
-                    <th>Mail ID</th>
-                    <th>Company Name</th>
-					          <th>Vendor</th>
-                    <th>Invited By</th>
-                    <th>Department</th>
-                    <th>Designation</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody id="DataTableBody">
-                  {this.state.vendorList.map((vendor, index) => (
-                    <tr key={index}
-                      onClick={e =>
-                        this.onSelectVendorRow(
-                          "selectedVendor" + index,
-                          vendor.partner
-                        )
-                      }
-                      className={this.state["selectedVendor" + index]}
-                    >
-                      <td> {vendor.name} </td>
-                      <td> {vendor.mobNo} </td>
-                      <td> {vendor.email} </td>
-                      <td> {vendor.companyName} </td>
-					            <td> {vendor.vendorCode} </td>
-                      <td> {vendor.invitedBy} </td>
-                      <td> {vendor.department} </td>
-                      <td> {vendor.designation} </td>
-                      <td> {this.statusForVendor(vendor)} </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="clearfix"></div>
-            </div>
-          </div>
-        </div>
+      <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
+      {this.state.openModal && 
+                  <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+                                         <div className="modal-backdrop"></div>
+                                          <div className="modal-dialog modal-sm">
+                                             <div className="modal-content">
+                         
+                            <div className="col-sm-12">
+                              <div className="row mt-2">
+                                                 <div className="col-sm-12 mb-4 mt-4">
+      
+                                                       <TextField variant="outlined" size="small"
+                                                        label="Vendor Details" 
+                                                        InputLabelProps={{shrink:true}}
+                                                        type="text" className="form-control"                                                         
+                                                        onChange={this.onValueChangeFilter} value={this.state.searchFilter}
+                                                       inputProps={{ style: { fontSize: 12, height: "15px",  background:"#fff" } }}  />
+                                                    </div>
+                                                    
+                                               
+                             <div className="col-sm-12 text-center mt-4" style={{textAlign:"center"}}>  
+                             <Button size="small" color="primary" variant="contained" type="button"  className={"btn btn-primary"}
+                             onClick={this.onSearch}>
+                                    Search</Button>
+                                    <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+                                    Cancel</Button>
+                              </div>
+                             
+                                </div>
+      
+                             
+                                
+                                
+                                </div>
+      </div></div></div>}
+      <Grid container spacing={2} alignItems="center" justify="flex-end">
+      <Grid item xs={9} style={{textAlign:"left"}}>
+        </Grid>
+         <Grid item xs={3}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={this.onValueChange}
+            style={{fontSize: "10px", float:"right" }}
+          />
+          <IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+          </Grid>
+          </Grid>
+        <TableContainer component={Paper}>
+          <Table className="my-table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Person Name</TableCell>
+                <TableCell>Mobile No</TableCell>
+                <TableCell>Mail ID</TableCell>
+                <TableCell>Company Name</TableCell>
+                <TableCell>Vendor Code</TableCell>
+                <TableCell>Invited By</TableCell>
+                <TableCell>Department</TableCell>
+                <TableCell>Designation</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredVendors
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((vendor, index) => (
+                  <TableRow
+                    key={index}
+                    onClick={() =>
+                      this.onSelectVendorRow(
+                        "selectedVendor" + index,
+                        vendor.partner
+                      )
+                    }
+                    
+                  >
+                    <TableCell>{vendor.name}</TableCell>
+                    <TableCell>{vendor.mobNo}</TableCell>
+                    <TableCell>{vendor.email}</TableCell>
+                    <TableCell>{vendor.companyName}</TableCell>
+                    <TableCell>{vendor.vendorCode}</TableCell>
+                    <TableCell>{vendor.invitedBy}</TableCell>
+                    <TableCell>{vendor.department}</TableCell>
+                    <TableCell>{vendor.designation}</TableCell>
+                    <TableCell>{this.statusForVendor(vendor)}</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[25, 50, 100]}
+          component="div"
+          count={filteredVendors.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={this.handleChangePage}
+          onRowsPerPageChange={this.handleChangeRowsPerPage}
+        />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return state.vendorListInfo;
-};
+const mapStateToProps = (state) => state.vendorListInfo;
 export default connect(mapStateToProps, actionCreators)(VendorList);

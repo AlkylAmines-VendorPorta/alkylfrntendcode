@@ -9,6 +9,7 @@ import {
     commonHandleChange, commonSubmitWithParam, swalPrompt, resetForm} from "../../../Util/ActionUtil";
 import { FormWithConstraints } from 'react-form-with-constraints';
 import swal from "sweetalert";
+import { Button } from "@material-ui/core";
 
 
 class IMSDetails extends Component {
@@ -392,14 +393,14 @@ class IMSDetails extends Component {
             </div>           
           </div>
           <div className={"col-sm-12 text-center mt-3 " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
+                  <Button size="small" variant="contained" color="primary" type="submit" className="mr-1">Save</Button>
                   
-                  <button type="button" className="btn btn-danger mr-1"  onClick={()=>{commonSubmitWithParam(this.props,"getIMSDetailsResponse","/rest/getIMSDetails",this.props.partner.partnerId); resetForm(this.forms)}}>Cancel</button>                  
+                  <Button size="small" variant="contained" color="secondary" type="button" className="mr-1"  onClick={()=>{commonSubmitWithParam(this.props,"getIMSDetailsResponse","/rest/getIMSDetails",this.props.partner.partnerId); resetForm(this.forms)}}>Cancel</Button>                  
            
           </div>
           <div className={"col-sm-12 text-center mt-3 "+ this.props.displayDiv}>
-          <button type="button" className="btn btn-primary mr-1"
-                  onClick={(e)=>swalPrompt(e,this,"submitConfirmation","","I declare that the information furnished above is correct to the best of my knowledge.","I Agree","Disagree")}>Submit</button>
+          <Button size="small" variant="contained" color="primary"type="button" className="mr-1"
+                  onClick={(e)=>swalPrompt(e,this,"submitConfirmation","","I declare that the information furnished above is correct to the best of my knowledge.","I Agree","Disagree")}>Submit</Button>
                   
           </div>
             </FormWithConstraints>

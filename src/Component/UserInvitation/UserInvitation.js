@@ -249,10 +249,10 @@ class UserInvitation extends Component {
       <React.Fragment>
         <Loader isLoading={this.state.isLoading} />
         <div className="userbg">
-        <UserDashboardHeader />
-        <div className="page-content w-50">
+        <UserDashboardHeader /> 
+        <div className="page-content w-50" >
           <div className="wizard-v1-content b-t">
-            <div className="wizard-form">
+            <div className="wizard-form" style={{boxShadow: "1px 2px 3px",  background: "#fff", padding: "10px", marginTop:"80px"}}>
               <h3 className="text-center">Invitation Details</h3>
               <FormWithConstraints  ref={formWithConstraints => this.inviteForm = formWithConstraints} 
                onSubmit={(e)=> { this.setState({loadSaveResp:true,partner:{test:""}});
@@ -426,7 +426,7 @@ class UserInvitation extends Component {
                           </div>
                           <div class="row">
                                 <div className="col-sm-12 mt-2">
-                                <table class="table table-bordered scrollTable">
+                                <table class="my-table">
                                   <thead>
                                     <tr>
                                       <th>Person Name </th>

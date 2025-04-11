@@ -30,6 +30,7 @@ import serialize from "form-serialize";
 import { currentDate } from "../../../Constants/commonConstants";
 import {getReferenceListDataApi, submitToSAPURL,savetoServer} from "../../../Util/APIUtils"
 import TableToExcel from "@linways/table-to-excel";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Grid, Button, TableFooter } from '@material-ui/core';
 
 const SwalNew = require('sweetalert2')
 const height_dy = window.innerHeight - 135;
@@ -44,6 +45,9 @@ class GateEntryForCommerical extends Component {
     super(props)
     this.state = {
        show:true,
+       searchQuery: "",
+       page: 0,
+       rowsPerPage: 50,
        securityPOHeaderDto: {
          asnNumber: "",
          asnDate: "",
@@ -109,8 +113,8 @@ class GateEntryForCommerical extends Component {
       //     photoIdProof:""
       // },
       gateentryAsnList:[],
-         cancelSsnButton: "block",
-         cancelAsnButton: "block",
+         cancelSsnButton: "inline-block",
+         cancelAsnButton: "inline-block",
          flagforSSN: false,
          psTypeFlag: true,
          displayDivForAsnHistoryTable: "",
@@ -563,7 +567,7 @@ getPurchaseOrderFromObj(po){
 
    
  showDiv() {
-   document.getElementById('welcomeDiv').style.display = "block";
+   document.getElementById('welcomeDiv').style.display = "inline-block";
 }
 
    CheckInvoiceFromObjForDelivery = (obj) => {
@@ -1130,9 +1134,7 @@ async componentWillReceiveProps(props) {
          this.setState({
             asnDetails: asn
          });
-         // setTimeout(() => {
-         //    window.location.reload();
-         // }, 1000)
+        
       }
       if (!isEmpty(props.role)&& this.state.loadRole){
          this.setState({
@@ -1140,39 +1142,7 @@ async componentWillReceiveProps(props) {
          })
       }
 
-      // if (!isEmpty(props.role) && this.state.loadRole) {
-
-      //    var viewAsn = props.role === "SECADM" || props.role === "OHCADM"
-      //       || props.role === "SFTADM";
-      //    this.setState({
-      //       loadRole: false,
-      //       role: props.role,
-      //       asnShown: viewAsn,
-      //       vendorNameShown: props.role === "VENADM" ? "none" : "block",
-      //       // vendorNameShown:"none"
-      //    });
-      //    props.updateRole(props.role);
-      // }
-
-      // if (!isEmpty(props.newRole)) {
-
-      //    var viewAsn = props.newRole === "SECADM" || props.newRole === "OHCADM"
-      //       || props.newRole === "SFTADM";
-      //    this.setState({
-      //       loadRole: false,
-      //       role: props.newRole,
-      //       asnShown: viewAsn,
-      //       vendorNameShown: props.newRole === "VENADM" ? "none" : "show",
-      //       // vendorNameShown:"none"
-      //    });
-      // }
-
-      // if(!isEmpty(props.backAction)){
-      //    this.backAction = props.backAction;
-      // }else{
-      //    this.backAction = this.showASNHistory;
-      // }
-
+     
    }
 
    showASNHistory = () => {
@@ -1212,20 +1182,6 @@ async componentDidMount() {
        });
    }
 
-   //  getPurchaseOrderFromObj(po){
-   //    return {
-   //      poId : po.purchaseOrderId,
-   //      purchaseOrderNumber: po.purchaseOrderNumber,
-   //      poDate: formatDateWithoutTime(po.date),
-   //      vendorCode: po.vendorCode,
-   //      vendorName: po.vendorName,
-   //      incomeTerms: po.incomeTerms,
-   //      purchaseGroup: po.purchaseGroup,
-   //      versionNumber: po.versionNumber,
-   //      status: po.status,
-   //      documentType: po.documentType
-   //    }
-   //  }
 
    loadASNForEdit(asn) {
       this.props.showHistoryFalse();
@@ -1392,21 +1348,6 @@ async componentDidMount() {
       }
 
    }
-   //nikhil code
-   //onClickStrLoc = (idx, orderNo, matcode, plant) => {
-    //  this.setState({
-    ///     currentPOLineIndex: idx,
-    //     loadOrderNo: orderNo,
-    //     loadMatcode: matcode,
-    //     loadPlant: plant
-
-     // });
-
-      //nikhil code
-      //commonSubmitWithParam(this.props, "getStorageLocFromSAP", "/rest/getStorageLocFromSAP", orderNo, matcode, plant);
-      //nikhil code 
-
-  // }
 
    rejectPOSheet = () => {
       swal("Enter reason for rejection..", {
@@ -1504,12 +1445,7 @@ async componentDidMount() {
       this.setState({ loadASNDetails: true, loadASNLineList: true, saveServiceLines: true });
       commonSubmitFormValidation(e, this, "submitServiceSheet", "/rest/submitServiceSheet")
    }
-   // handleSearch=(i)=>{
-   //    this.props.asnList.map((asn, index) => 
-   //       (index === this.props.asnList.length-1?
-   //       commonSubmitWithParam(this.props,"securityASNSubmit","/rest/printSecurityGateInForm",this.state.asnDetails.asnId)                   
-   //       :""))}
-
+  
    handleSearch=(i)=>{
       this.state.asnLineArray.map((asn, index) => 
          (index === this.state.asnLineArray.length-1?
@@ -1560,36 +1496,8 @@ async componentDidMount() {
             });
          
 
-         // const form = e.currentTarget.form;
-         // let data = this.getSerializedForm(form);
-      
-         // commonSubmitFormNoValidationWithData(data, this, "asnUnLoadResponse", "/rest/asn101")
    }
-   // onSave = (e) => {
-      
-   //    e.preventDefault();
-   //    const form = e.currentTarget.form;
-   //    let data = this.getSerializedForm(form);
-   //    this.props.changeASNStatus(true);
-   //    // commonSubmitFormNoValidation(e,this,"asnUnLoadResponse","/rest/asn105")
-   //    SwalNew.fire({
-   //       title: 'Please enter Posting Dat',
-   //       icon: 'info',
-   //       html: ' <input type="date" id="postingDate" name="value">',
-   //       confirmButtonText: 'submit'
-   //    })
-   //       .then((result) => {
-
-   //          let postingDate = document.getElementById('postingDate').value;
-   //          // var postingDate =datetype.getElementById("postingDate").value.value;
-   //          this.setState(prevState => ({ asnDetails: { ...prevState.asnDetails, postingDate } }), () => {
-   //             data = { ...data, postingDate }
-   //             commonSubmitFormNoValidationWithData(data, this, "asnUnLoadResponse", "/rest/asn105")
-   //          })
-
-   //       });
-      
-   // }
+  
 
    onStorageLocationUpdate = () => {
       const { selectedStorageLocationListItem, asnLineArray } = this.state;
@@ -1655,23 +1563,12 @@ async componentDidMount() {
    }
 
    handleCheckBoxChange (state){
-      //this.setState({isSameLocation:!this.state.isSameLocation})
+      
       
       this.setState((state) => {
-         // Important: read `state` instead of `this.state` when updating.
          return {count: this.state.isSameLocation}
        });
-     // this.setState({isSameLocation:!this.state.isSameLocation})
-      // this.setState((prevState) => {
-      //    return {
-      //       ...prevState,
-      //       isSameLocation: !prevState.status
-      //    }
-      // })
-      // let currState = event.target.checked;
-      // this.setState({
-      //    isSameLocation:currState
-      // });
+     
    
   }
 
@@ -1744,7 +1641,17 @@ async componentDidMount() {
    onEdit = () => {
       this.setState({ canEdit: true })
    }
-
+   handleSearchChange = (event) => {
+      this.setState({ searchQuery: event.target.value });
+    };
+  
+    handleChangePage = (event, newPage) => {
+      this.setState({ page: newPage });
+    };
+  
+    handleChangeRowsPerPage = (event) => {
+      this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+    };
    render() {
       const coalMaterialList=this.state.asnLineArray[0];
       const securityPOHeaderDto = this.state.securityPOHeaderDto;
@@ -1776,18 +1683,24 @@ async componentDidMount() {
       if (this.props.SSNVersion == 2) {
          showBtn = showBtn && this.state.role != 'VENADM';
       }
+      const { searchQuery, page, rowsPerPage } = this.state;
+      const filteredData = this.state.asnArray.filter((entry) =>
+        Object.values(entry).some((val) =>
+          val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
       return (
          <>
             <Loader isLoading={this.state.isLoading} />
             <UserDashboardHeader />
-            <div className="w-100 mt-3">
+            <div className="w-100" >
                <div className={this.state.showHistory ? "none" : "row mt-2 block"}>
                   <FormWithConstraints ref={formWithConstraints => this.asnFormDet = formWithConstraints}
                     onSubmit={this.onSubmit}
                      >
-                          <div className="card mt-100" style={{padding:" 10px"}}>
+                          <div className="card" style={{padding:" 10px"}}>
                         <div className="row mt-1"></div>
-                        <div class={window.location.href.endsWith("gateentry") ? "none" : "col-sm-2"}><button className="btn btn-primary" type="button" onClick={() => { this.resetAsn(); window.location.reload();}}><i className="fa fa-arrow-left" aria-hidden="true"></i></button>
+                        <div class={window.location.href.endsWith("gateentry") ? "none" : "col-sm-2"}><Button color="primary" variant="contained" type="button" onClick={() => { this.resetAsn(); window.location.reload();}}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
          </div>
 
 
@@ -1909,9 +1822,7 @@ async componentDidMount() {
                                           <input type="hidden" name="invoice[fileName]" value={this.state.asnDetails.invoiceDoc.fileName} disabled={(isEmpty(this.state.asnDetails.invoiceDoc.attachmentId)) || (this.state.asnDetails.invoiceApplicable ? false : true)} />
                                           <input type="file" onChange={(e) => { commonHandleFileUploadInv(e, this, "asnDetails.invoiceDoc") }} disabled={(this.state.asnDetails.invoiceApplicable ? false : true)}
                                              className={"form-control "} name="invoiceAttach"/>
-                                          {/* <FieldFeedbacks for="invoiceAttach">
-                                             <FieldFeedback when={(value) => isEmpty(value) && isEmpty(this.state.snDetails.invoiceDoc.attachmentId)}> Inovice File Mandatory</FieldFeedback>
-                                          </FieldFeedbacks> */}
+                                         
                                           <div className="input-group-append">
                                              <button className="btn btn-danger clearFile" onClick={() => { this.clearInoviceAttachment() }} type="button">X</button>
                                           </div>
@@ -1999,14 +1910,7 @@ async componentDidMount() {
                            <label className="col-sm-2" >Version</label>
                            <label className="col-sm-2" >{this.state.po.versionNumber}</label>
                         </div>
-                        {/* <div className="row mt-1">              
-                        <label className="col-sm-1" >PO Date</label>
-                        <label className="col-sm-2" >{this.state.po.poDate}</label> 
-                        <label className="col-sm-2" >Inco Terms</label>
-                        <label className="col-sm-2" >{this.state.po.incomeTerms}</label>
-                        <label className="col-sm-2" >Status</label>
-                        <label className="col-sm-2" >{this.state.po.status}</label>
-                     </div>   */}
+                    
 
                      </div>
                      </>
@@ -2020,7 +1924,7 @@ async componentDidMount() {
                      :"")
 
                      )}
-                     <div className={"boxContent"}>
+                     <div className={"card"} style={{padding:"10px"}}>
 
 <div style={{ display: displayAsnLine }}>
       <div className="row" >
@@ -2029,8 +1933,8 @@ async componentDidMount() {
         {/*   { <button className={this.state.asnDetails.status=="CLOSED" || this.state.asnDetails.status=="BOOKED" || this.state.asnDetails.status=="CANCELED"?"none":"btn btn-primary mx-1 my-2 block"} type="button" onClick={e => this.onComfirmationOfCancelAsn(e)}>Cancel ASN</button>} */ }
          
          </div>
-         {this.state.openStorageLocationModal && <div className="modal roleModal" id="locationModal show" style={{ display: 'block' }}>
-            <div className="modal-dialog modal-md mt-100">
+         {this.state.openStorageLocationModal && <div className="modal roleModal customModal" id="locationModal show" style={{ display: 'block' }}>
+         <div className="modal-backdrop"></div><div className="modal-dialog modal-md mt-100">
                <div className="modal-content">
                   <div className="modal-header">
                      Select storage location
@@ -2048,9 +1952,7 @@ async componentDidMount() {
                               <label>Storage location</label>
                            </div>
                            <div className="col-3 mb-1 border_bottom_1_e0e0e0">
-                              {/* <input type="checkbox" value={this.state.isSameLocation}   onChange={this.state.isSameLocation =! this.state.isSameLocation} ref="complete"/>
-                              <input type="checkbox" checked={this.state.isSameLocation}  onChange={()=>{this.setState({ isSameLocation: !this.state.isSameLocation}, this.isSameLocation ? '': this.setState({selectedLocation:undefined}))}}   ref="complete"/>
-                                 <label>Same</label> */}
+                              
                            </div>
                            <div className="col-2 mb-1 border_bottom_1_e0e0e0">
                               <label>Action</label>
@@ -2064,24 +1966,7 @@ async componentDidMount() {
                                  </div>
 
                                  <div className="col-6">
-                                    {/*
-                                   line 1440 input
-                                    value={item.quantity=this.state.itemQuantity}
-                     <select className="form-control" 
-                        value={item.storageLocation}
-                        onChange={this.onStorageLocationChange.bind(this,index,'storageLocation')}
-                     >
-                        <option value="">Select</option>
-                        {/* {(this.state.storageLocationList).map(strLoc =>
-                           <option value={strLoc.value}>{strLoc.value+"-"+strLoc.display}</option>
-                        )} */}
-
-                                                   {/* { <option value={this.getStorageLocation(this.state.asnDetails.asnId)}>{this.getStorageLocation(this.state.asnDetails.asnId)}</option>
-                              } }
-                     </select>
-                           </div>
-
-                           */}
+                                   
 
                                     <select className="form-control"
                                       value={/*this.state.selectedLocation*/ item.storageLocation}
@@ -2089,11 +1974,7 @@ async componentDidMount() {
                                     
                                     >
                                        <option value="">Select</option>
-                                      {/* {(Object.entries(this.state.locationList)).forEach(([key, val]) =>{
-                                          
-                                            <option value='1111'>{222}</option>
-                                           // console.log("-----"+val);
-                                       })}  */}
+                                     
                                       {(Object.entries(this.state.locationList)).map(strLoc =>
                                           <option value={strLoc[0]}>{strLoc[0]+'-'+strLoc[1]}</option>
                                        )}
@@ -2142,244 +2023,153 @@ async componentDidMount() {
          <div className="col-sm-3">
             <input type="text" id="SearchTableDataInputThree" className="form-control" onKeyUp={searchTableDataThree} placeholder="Search .." />
          </div>
-         <div className="w-100 mt-2">
-            <div className="col-sm-12">
-               <div className="table-responsive mt-2">
-                  <table className="table table-bordered">
-                     <thead className="thead-light">
-                        <tr className="row m-0">
-                           <th className="col-1">Line No.</th>
-                           <th
-                              className={
-                                 // (this.state.grn || this.state.asnDetails.status === "GRN") && !this.state.qc ? "col-3" : this.state.qc ? "col-6" : "col-7"
-                                 (this.state.grn || this.state.asnDetails.status === "GRN") && !this.state.qc ? "col-3" : this.state.qc ? "col-4" : "col-5"
-                              }
-                           >Material Description </th>
-                           {/* <th className="col-2 text-right" style={{disable:this.props.createASNFlag}}> PO Qty </th> */}
+         
+        <TableContainer>
+          <Table >
+            <TableHead className="thead-light">
+              <TableRow>
+                <TableCell>Line No.</TableCell>
+                <TableCell>
+                  Material Description
+                </TableCell>
+                <TableCell>Qty</TableCell>
+                <TableCell>UOM</TableCell>
+                <TableCell>Rate</TableCell>
 
-                           <th className="col-1"> Qty </th>
-                           {/* <th className="col-1">Bal Qty</th> */}
-                           <th className="col-1"> UOM </th> 
-                           <th className="col-1"> Rate </th>
-                           {/* <th>Currency</th>  */}
-                           {/* <th>Plant</th> */}
-                           {/* {this.state.grn || this.state.qc || this.state.asnDetails.status === "GRN" ? <> */}
-                           {this.state.grn || this.state.qc || this.state.asnDetails.status === "GRN" || ((coalMaterialList!=null?(coalMaterialList.materialCode==="510144" || coalMaterialList.materialCode==="510050" || coalMaterialList.materialCode==="510044"):"") && (this.state.asnDetails.status === "GATE_IN"))? <>
-                              <th className="col-1">Rejected Qty</th>
-                           </> : <></>}
-                           {((coalMaterialList!=null?(coalMaterialList.materialCode==="510144" || coalMaterialList.materialCode==="510050" || coalMaterialList.materialCode==="510044"):"") &&  (this.state.asnDetails.status === "GATE_IN")) ? <>
-                              <th className="col-1">Confirm Qty</th></> : <></>}
-                           {this.state.grn || this.state.asnDetails.status === "GRN" ? <>
-                              <th className="col-1">Shortage Qty</th>
-                              <th className="col-1">Confirm Qty</th>
-                              <th className="col-1">Storage Location</th>
-                              <th className="col-1">Valuation Type</th>
+                {(this.state.grn || this.state.qc || this.state.asnDetails.status === "GRN" || ((coalMaterialList != null ? (coalMaterialList.materialCode === "510144" || coalMaterialList.materialCode === "510050" || coalMaterialList.materialCode === "510044") : "") && (this.state.asnDetails.status === "GATE_IN"))) && (
+                  <TableCell>Rejected Qty</TableCell>
+                )}
 
-                           </> : <></>}
-                        </tr>
-                     </thead>
-                     <tbody id="DataTableBodyThree">
-                        {
-                           this.state.asnLineArray.map((asnLine, index) =>
-                              <tr className="row m-0">
-                                 {/* onClick={(e)=>{this.onClickAsnLine(asnLine.asnLineId,asnLine.poLineId,index)}}*/}
+                {((coalMaterialList != null ? (coalMaterialList.materialCode === "510144" || coalMaterialList.materialCode === "510050" || coalMaterialList.materialCode === "510044") : "") && (this.state.asnDetails.status === "GATE_IN")) && (
+                  <TableCell>Confirm Qty</TableCell>
+                )}
 
-                                 {asnLine.poLineId!=""?
-                                 <td className="col-1">
-                                    <input type="hidden" name={"asnLineList[" + index + "][advanceShipmentNoticeLineId]"} value={asnLine.asnLineId} disabled={isEmpty(asnLine.asnLineId)} />
-                                    <input type="hidden" name={"asnLineList[" + index + "][poLine][purchaseOrderLineId]"} value={asnLine.poLineId} />
-                                    <input type="hidden" name={"asnLineList[" + index + "][poLine][lineItemNumber]"} value={asnLine.poLineNumber} />
-                                    {removeLeedingZeros(asnLine.poLineNumber)}</td>
-                                    :
-                                    <td className="col-1"><input type="hidden" name={"asnLineList[" + index + "][advanceShipmentNoticeLineId]"} value={asnLine.asnLineId} disabled={isEmpty(asnLine.asnLineId)} />{asnLine.asnLineNumber}</td>} 
+                {(this.state.grn || this.state.asnDetails.status === "GRN") && (
+                  <>
+                    <TableCell>Shortage Qty</TableCell>
+                    <TableCell>Confirm Qty</TableCell>
+                    <TableCell>Storage Location</TableCell>
+                    <TableCell>Valuation Type</TableCell>
+                  </>
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.asnLineArray.map((asnLine, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    {asnLine.poLineId !== "" ? (
+                      <>
+                        <input type="hidden" name={`asnLineList[${index}][advanceShipmentNoticeLineId]`} value={asnLine.asnLineId} />
+                        {removeLeedingZeros(asnLine.poLineNumber)}
+                      </>
+                    ) : (
+                      <>
+                        <input type="hidden" name={`asnLineList[${index}][advanceShipmentNoticeLineId]`} value={asnLine.asnLineId} />
+                        {asnLine.asnLineNumber}
+                      </>
+                    )}
+                  </TableCell>
 
-                                    {asnLine.poLineId!=""?
-                                 <td className={
-                                    // (this.state.grn || this.state.asnDetails.status === "GRN") && !this.state.qc ? "col-3" : this.state.qc ? "col-6" : "col-7"
-                                    (this.state.grn || this.state.asnDetails.status === "GRN") && !this.state.qc ? "col-3" : this.state.qc ? "col-4" : "col-5"
-                                 }>
-                                    <input type="hidden" name={"asnLineList[" + index + "][poLine][code]"} value={asnLine.materialCode} />
-                                    <input type="hidden" name={"asnLineList[" + index + "][poLine][name]"} value={asnLine.materialName} />
-                                    {asnLine.materialCode}-{asnLine.materialName}
-                                 </td>:
-                                 <td 
-                                 className={
-                                    // (this.state.grn || this.state.asnDetails.status === "GRN") && !this.state.qc ? "col-3" : this.state.qc ? "col-6" : "col-7"
-                                    (this.state.grn || this.state.asnDetails.status === "GRN") && !this.state.qc ? "col-3" : this.state.qc ? "col-4" : "col-5"
-                                 } 
-                                 >
-                                    <input type="hidden" name={"asnLineList[" + index + "][name]"} value={asnLine.materialName} />
-                                    {asnLine.materialName}
-                                 </td>}
-                                 {/* <td className="col-2 text-right">
-               <input type="hidden" name={"asnLineList["+index+"][poLine][poQuantity]"} value={asnLine.poQty} />
-               {getDecimalUpto(asnLine.poQty,3)}
-            </td> */}
-                                 <td className="col-1">
-                                                         <input type="text" onKeyDown={textRestrict} placeholder="0.000"
-                                                            className={"form-control " + ((this.state.asnDetails.status === 'DR' || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
-                                                            name={"asnLineList[" + index + "][deliveryQuantity]"}
-                                                            defaultValue={(this.props.po.isServicePO) ?
-                                                               1 :this.state.asnLineArray[index].deliveryQuantity}
-                                                            onChange={(e) => {
-                                                               (this.props.po.isServicePO)
-                                                               ? e.preventDefault() : this.calculateBasicAmount(e, index, "asnLineArray")
-                                                            }} />
-                                                      </td>
-                                                      {/* <td className="col-1">
-                                    <input type="hidden" name={"asnLineList["+index+"][poLine][balanceQuantity]"} value={asnLine.balQty} />
-                                    {asnLine.balQty}
-                                 </td>  */}
-                                 {asnLine.poLineId!=""?
-                                                      <td className="col-1">
-                                                         <input type="hidden" name={"asnLineList[" + index + "][poLine][uom]"} value={asnLine.uom} />
-                                                         {asnLine.uom}
-                                                      </td>:<td className="col-1">
-                                                      <input type="hidden" name={"asnLineList[" + index + "][uom]"} value={asnLine.uom} />
-                                                      {asnLine.uom}</td>}
-                                                      {/* <td>
-                                    <input type="hidden" name={"asnLineList["+index+"][poLine][balanceQuantity]"} value={asnLine.balQty} />
-                                    {asnLine.balQty}
-                                 </td> */}
-                                 {asnLine.poLineId!=""?
-                                                     <td className="col-1 text-right">
+                  <TableCell>
+                    {asnLine.poLineId !== "" ? (
+                      <>
+                        <input type="hidden" name={`asnLineList[${index}][poLine][code]`} value={asnLine.materialCode} />
+                        <input type="hidden" name={`asnLineList[${index}][poLine][name]`} value={asnLine.materialName} />
+                        {asnLine.materialCode} - {asnLine.materialName}
+                      </>
+                    ) : (
+                      <>
+                        <input type="hidden" name={`asnLineList[${index}][name]`} value={asnLine.materialName} />
+                        {asnLine.materialName}
+                      </>
+                    )}
+                  </TableCell>
 
+                  <TableCell>
+                    <input type="text" placeholder="0.000" className="form-control" name={`asnLineList[${index}][deliveryQuantity]`} defaultValue={this.props.po.isServicePO ? 1 : this.state.asnLineArray[index].deliveryQuantity} />
+                  </TableCell>
 
+                  <TableCell>
+                    <input type="hidden" name={`asnLineList[${index}][uom]`} value={asnLine.uom} />
+                    {asnLine.uom}
+                  </TableCell>
 
-                                    <input type="hidden" name={"asnLineList[" + index + "][poLine][rate]"} value={getDecimalUpto(asnLine.poRate)} />
-                                    {getCommaSeperatedValue(getDecimalUpto(asnLine.poRate, 2))}
-                                    <input type="hidden" name={"asnLineList[" + index + "][poLine][plant]"} value={asnLine.plant} />
-                                 </td>:<td className="col-1 text-right">
-                                        {getCommaSeperatedValue(getDecimalUpto(asnLine.poRate, 2))}
-                        
-                                         </td>}
-                                 {/*<td>{asnLine.plant}</td> */}
+                  <TableCell>
+                    <input type="hidden" name={`asnLineList[${index}][poLine][rate]`} value={getDecimalUpto(asnLine.poRate)} />
+                    {getCommaSeperatedValue(getDecimalUpto(asnLine.poRate, 2))}
+                  </TableCell>
 
-    {/* {this.state.grn || this.state.qc || this.state.asnDetails.status === "GRN" ? <>
-                                    <td className="col-1"><input type="text" name={"asnLineList[" + index + "][rejectedQuantity]"} value={asnLine.rejectedQuantity}
-                                       onChange={(e) => { commonHandleChange(e, this, "asnLineArray." + index + ".rejectedQuantity") }} className="form-control" /></td>
-                                 </> : <></>} */}
+                  {(this.state.grn || this.state.qc || this.state.asnDetails.status === "GRN" || ((coalMaterialList != null ? (coalMaterialList.materialCode === "510144" || coalMaterialList.materialCode === "510050" || coalMaterialList.materialCode === "510044") : "") && (this.state.asnDetails.status === "GATE_IN"))) && (
+                    <TableCell>
+                      <input type="text" name={`asnLineList[${index}][rejectedQuantity]`} value={getDecimalUpto(asnLine.rejectedQuantity, 3)} className="form-control" />
+                    </TableCell>
+                  )}
 
-                                 {this.state.grn || this.state.qc || this.state.asnDetails.status === "GRN" || ((coalMaterialList!=null?(coalMaterialList.materialCode==="510144" || coalMaterialList.materialCode==="510050" || coalMaterialList.materialCode==="510044"):"") && (this.state.asnDetails.status === "GATE_IN")) ? <>
-                                    <td className="col-1"><input type="text" name={"asnLineList[" + index + "][rejectedQuantity]"} value={getDecimalUpto(asnLine.rejectedQuantity,3)}
-                                       onChange={(e) => { commonHandleChange(e, this, "asnLineArray." + index + ".rejectedQuantity") }} className={(((coalMaterialList.materialCode==="510144" || coalMaterialList.materialCode==="510050" || coalMaterialList.materialCode==="510044") && this.state.asnDetails.status==="103_Posted" )?"form-control readonly":"form-control")} /></td>
-                                 </> : <></>}
-                                 {((coalMaterialList!=null?(coalMaterialList.materialCode==="510144" || coalMaterialList.materialCode==="510050" || coalMaterialList.materialCode==="510044"):"") &&  (this.state.asnDetails.status === "GATE_IN")) ? <>
-                                 <td className="col-1"><input type="text" name={"asnLineList[" + index + "][confirmQuantity]"}
-                                       value={asnLine.confirmQuantity = getDecimalUpto(asnLine.deliveryQuantity - asnLine.rejectedQuantity - asnLine.shortageQuantity,3)}
-                                       className="form-control readonly" /></td>
-                                 </> : <></>}
-                                 {this.state.grn || this.state.asnDetails.status === "GRN"  ? 
-                                 <>
-                                    <td className="col-1"><input type="text" name={"asnLineList[" + index + "][shortageQuantity]"} value={asnLine.shortageQuantity}
-                                       onChange={(e) => { commonHandleChange(e, this, "asnLineArray." + index + ".shortageQuantity") }} className="form-control" /></td>
-                                    
-                                    <td className="col-1"><input type="text" name={"asnLineList[" + index + "][confirmQuantity]"}
-                                       value={asnLine.confirmQuantity = getDecimalUpto(asnLine.deliveryQuantity - asnLine.rejectedQuantity - asnLine.shortageQuantity,3)}
-                                       className="form-control readonly" /></td>
-                                    
-                                    <td className="col-1">
-                                       <button className={"btn btn-sm btn-outline-primary mgt-10 "} onClick={this.onSelectLocationCostCenter.bind(this, asnLine)} type="button" data-toggle="modal" data-target="#locationModal">
-                                          select
-                                       </button>
+                  {((coalMaterialList != null ? (coalMaterialList.materialCode === "510144" || coalMaterialList.materialCode === "510050" || coalMaterialList.materialCode === "510044") : "") && (this.state.asnDetails.status === "GATE_IN")) && (
+                    <TableCell>
+                      <input type="text" name={`asnLineList[${index}][confirmQuantity]`} value={getDecimalUpto(asnLine.deliveryQuantity - asnLine.rejectedQuantity - asnLine.shortageQuantity, 3)} className="form-control readonly" />
+                    </TableCell>
+                  )}
 
-                                       {
-                                          !isEmpty(asnLine.asnLineCostCenter) && asnLine.asnLineCostCenter.map((item, i) => {
-                                             return (
-                                                <>
-                                                   <input type="hidden" name={"asnLineList[" + index + "][asnLineCostCenter][" + i + "][asnLine]"} value={asnLine.asnLineId} />
-                                                   <input type="hidden" name={"asnLineList[" + index + "][asnLineCostCenter][" + i + "][storageLocation]"} value={item.storageLocation} />
-                                                   <input type="hidden" name={"asnLineList[" + index + "][asnLineCostCenter][" + i + "][quantity]"} value={item.quantity} />
-                                                </>
-                                             )
-                                          })
-                                       }
-                                       {/* <select className={"form-control"} name={"asnLineList["+index+"][storageLocation]"}
-            value={asnLine.storageLocation}
-            onChange={(event) => commonHandleChange(event, this, "asnLineArray."+index+".storageLocation")}>
-            <option value="">Select</option>
-            {(this.state.storageLocationList).map(strLoc =>
-               <option value={strLoc.value}>{strLoc.value+"-"+strLoc.display}</option>
-            )}
-         </select> */}
+                  {(this.state.grn || this.state.asnDetails.status === "GRN") && (
+                    <>
+                      <TableCell>
+                        <input type="text" name={`asnLineList[${index}][shortageQuantity]`} value={asnLine.shortageQuantity} className="form-control" />
+                      </TableCell>
 
-                                    </td>
-                                    <td className="col-1">
-                                    <input type="text" onKeyDown={textRestrict} 
-                                                            className={"form-control "}
-                                                            name={"asnLineList[" + index + "][valueType]"}
-                                                            
-                                                             />
-                                    </td>
+                      <TableCell>
+                        <input type="text" name={`asnLineList[${index}][confirmQuantity]`} value={getDecimalUpto(asnLine.deliveryQuantity - asnLine.rejectedQuantity - asnLine.shortageQuantity, 3)} className="form-control readonly" />
+                      </TableCell>
 
-                                 </> : <></>}
-                              </tr>
-                           )
-                        }
-                     </tbody>
-                  </table>
-                   {/* <div className={this.state.asnDetails.status=== "GATE_IN"|| this.state.asnDetails.status==="CANCELED"?"col-sm-12 text-center mt-2 ":"none"}>
-                  <button type="submit" className={"btn btn-primary mr-1 "} id="report" onClick={this.handleClick}>POST 103</button> 
-                
-      </div> */}  
-      {/* {this.state.asnLineArray.map((asnLine, index) =>
-                            
-                            (     index==0?             
-                      (asnLine.poNumber===""?
-      <div className={this.state.asnDetails.status=== "REPORTED"?"col-sm-12 text-center mt-2 ":"none"}>  
-         <button type="submit" className="btn btn-success mr-1 " id="gateIn" 
-                onClick={this.handleGateINClick}
-                              >Gate IN</button>
-      </div> :      
-      <div className={this.state.asnDetails.status=== "REPORTED"?"col-sm-12 text-center mt-2 ":"none"}>  
-         <button type="button" className="btn btn-success mr-1 " id="gateIn" 
-               onClick={this.handleGateINClick}
-                              >Gate IN</button>
-      </div>):""))} */}
+                      <TableCell>
+                        <button className="btn btn-sm btn-outline-primary" type="button">
+                          Select
+                        </button>
+                      </TableCell>
 
-      <div className={this.state.asnDetails.status=== "IT"?"col-sm-12 text-center mt-2 ":"none"}>  
-         <button type="button" className="btn btn-success mr-1 "  id="reports" 
+                      <TableCell>
+                        <input type="text" className="form-control" name={`asnLineList[${index}][valueType]`} />
+                      </TableCell>
+                    </>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+<Grid container className="mt-3">
+     <Grid item xs={12} style={{textAlign:"center"}}>
+         <button type="button" className={this.state.asnDetails.status=== "IT"?"btn btn-success mr-1":"none"}  id="reports" 
                onClick={ (e)=> {commonSubmitWithParam(this.props,"securityASNSubmit","/rest/reportSecurityStatusUpdate",this.state.asnDetails.asnId); document.getElementById("reports").style.display = 'none';}}
                               >Report</button>
-      </div>
+      
 
-      <div id="welcomeDiv"  style={{display:"none"}} className="col-sm-12 text-right mt-2 ">
-                               <button type="button" className="btn btn-success mr-1 " id="gateIn" 
+     
+                               <button type="button" className="btn btn-success mr-1 " id="welcomeDiv gateIn" 
                                data-toggle="modal" data-target="#getReportModal"
-                               onClick={this.handleSearch}
+                               onClick={this.handleSearch} style={{display:"none"}}
                                >Print</button>
-                               </div>
+                              
 
-       {/* <div id="welcomeDiv" className={this.state.asnDetails.status=== "GATE_IN" || this.state.asnDetails.status=== "103_Posted" || this.state.asnDetails.status=== "GRN" || this.state.asnDetails.status === "GATE_OUT" ?"col-sm-12 text-right mt-2 ":"none"}>
-                               <button type="button" className="btn btn-success mr-1 " id="gateIn"   onClick={this.handleSearch}
-                               data-toggle="modal" data-target="#getReportModal"
-                               
-                               >Print</button>
-                               </div> */}
-
-
-<div className="mt-2 px-4 py-1">
-                            <div className="col-12">
-                              <div className="mt-1 d-flex justify-content-center">
                                  
-                              <div id="welcomeDiv" className={this.state.asnDetails.status=== "GATE_IN" || this.state.asnDetails.status=== "103_Posted" || this.state.asnDetails.status=== "GRN" || this.state.asnDetails.status === "GATE_OUT" ?"col-sm-1":"none"}>
-                               <button type="button" className="btn btn-success mr-1 " id="gateIn"   onClick={this.handleSearch}
+                              <button type="button" className="btn btn-success mr-1" id="gateIn welcomeDiv"   onClick={this.handleSearch}
                                data-toggle="modal" data-target="#getReportModal">Print</button>
-                               </div>
+                               
                                {this.state.asnLineArray.map((asnLine, index) =>
                             
                             (     index==0?             
                       (asnLine.poNumber===""?
-      <div className={this.state.asnDetails.status=== "REPORTED"?"col-sm-2":"none"}>  
-         <button type="submit" className="btn btn-success mr-1 " id="gateIn" 
+      
+         <button type="submit" className={this.state.asnDetails.status=== "REPORTED"?"cbtn btn-success mr-1":"none"} id="gateIn" 
                 onClick={this.handleGateINClick}
                               >Gate IN</button>
-      </div> :      
-      <div className={this.state.asnDetails.status=== "REPORTED"?"col-sm-2":"none"}>  
-         <button type="button" className="btn btn-success mr-1 " id="gateIn" 
+       :      
+      
+         <button type="button" className={this.state.asnDetails.status=== "REPORTED"?"btn btn-success mr-1":"none"} id="gateIn" 
                onClick={this.handleGateINClick}
                               >Gate IN</button>
-      </div>):""))}
+      ):""))}
 
                                {!['CLOSED', 'BOOKED', 'CANCELED'].includes(this.state.asnDetails.status) && <button style={{ display: this.state.cancelAsnButton }} className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelAsn(e) ; }}>Cancel ASN</button> }
                                &nbsp;&nbsp;&nbsp;&nbsp;
@@ -2393,30 +2183,30 @@ async componentDidMount() {
                         (asnLine.poLine==null?
                         (asnLine.advanceshipmentnotice.doctyp =="STO"?
                            (this.state.show?
-                           <div className="col-sm-12 text-center" >
+                          
                         <button type="button" className={((this.state.asnDetails.status==="GATE_IN" && this.state.role==="STRADM")
                          ? "btn btn-primary mx-1 my-2 inline-block":"none")} 
                               onClick={this.handle105} >
                               POST 101
                      </button>
-                             </div>
-  :<div className="col-sm-12 text-center">
-                  <button type="button" className={"btn btn-warning mr-1" }onClick={this.onSaved}>Save </button> </div> )
+                            
+  :
+                  <button type="button" className={"btn btn-warning mr-1" }onClick={this.onSaved}>Save </button>  )
                      :""):
-                     <div className={ asnLine.advanceshipmentnotice.doctyp!="STO" && asnLine.advanceshipmentnotice.doctyp!="Other" && (this.state.asnDetails.status=== "GATE_IN" &&  (this.state.role==="STRADM" || this.state.role==="SECADM") || this.state.asnDetails.status==="CANCELED")?"col-sm-2":"none"}>
-      <button type="submit" className={"btn btn-primary mr-1 "} id="report" onClick={this.handleClick}>POST 103</button> 
+                    
+      <button type="submit" className={ asnLine.advanceshipmentnotice.doctyp!="STO" && asnLine.advanceshipmentnotice.doctyp!="Other" && (this.state.asnDetails.status=== "GATE_IN" &&  (this.state.role==="STRADM" || this.state.role==="SECADM") || this.state.asnDetails.status==="CANCELED")?"btn btn-primary mr-1":"none"}  id="report" onClick={this.handleClick}>POST 103</button> 
     
-</div>):""))
+):""))
 
    }  
 
 {(this.props.asnLineList).map((asnLine,index)=>
                            (index==0?
                            (asnLine.poLine!=null?
-                     <div className={((this.state.asnDetails.status==="103_Posted" || this.state.asnDetails.status==="CLOSED" || this.state.asnDetails.status==="GATE_OUT" && this.state.role==="STRADM")
-                                    ? "col-sm-2":"none")} >
-                              <button type="button" className={this.state.role==="STRADM"?"btn btn-primary mr-1":"none"} id="report" onClick={this.handle105}>POST 105</button>  
-                           </div>:""):""))}
+                     
+                              <button type="button" className={((this.state.asnDetails.status==="103_Posted" || this.state.asnDetails.status==="CLOSED" || this.state.asnDetails.status==="GATE_OUT" && this.state.role==="STRADM")
+                                    ? "btn btn-primary mr-1":"none")} id="report" onClick={this.handle105}>POST 105</button>  
+                           :""):""))}
 
 
 
@@ -2425,49 +2215,47 @@ async componentDidMount() {
                            
                            (asnLine.poNumber!=""?
                               (index==0?
-                           <div className={(((this.state.asnDetails.status==="GRN" || this.state.asnDetails.status==="CLOSED" || this.state.asnDetails.status==="103_Posted" && this.state.role==="SECADM") )
-                                    ? "col-sm-2":"none")}>
+                        
                            <button type="button" 
-                          className={"btn btn-primary mr-1 "}
+                          className={(((this.state.asnDetails.status==="GRN" || this.state.asnDetails.status==="CLOSED" || this.state.asnDetails.status==="103_Posted" && this.state.role==="SECADM") )
+                           ? "btn btn-primary mr-1":"none")}
                             onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitWithParam(this.props,"gateOutResponse","/rest/asnGateOut",this.state.asnDetails.asnId)}} >
                                 Gate Out
                             </button>
-                            </div>:""):""))} 
+                            :""):""))} 
                             {(this.state.asnLineArray).map((asnLine,index)=>
                            
                            (asnLine.poNumber==""?
                               (index==0?
-                                 <div className={(((this.state.asnDetails.status==="GATE_IN" && asnLine.doctyp==="Other" && (this.state.role==="STRADM" || this.state.role==="SECADM") ))
-                                    ? "col-sm-2":"none")}>
+                                 
                            <button type="button" 
-                          className={"btn btn-primary mr-1 "}
+                          className={(((this.state.asnDetails.status==="GATE_IN" && asnLine.doctyp==="Other" && (this.state.role==="STRADM" || this.state.role==="SECADM") ))
+                           ? "btn btn-primary mr-1":"none")}
                           onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitWithParam(this.props,"gateOutResponse","/rest/asnGateOutWithoutPO",this.state.asnDetails.asnId)}} >
                            {/*   onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitWithParam(this.props,"gateOutResponse","/rest/asnGateOut",this.state.asnDetails.asnId)}} > */}
                                 Gate Out
                             </button>
-                            </div>:""):""))}
+                            :""):""))}
                             {(this.state.asnLineArray).map((asnLine,index)=>
                            
                            (asnLine.poNumber=="0"?
                              (index==0?
-                           <div className={(((this.state.asnDetails.status==="GATE_IN_101" && this.state.role==="STRADM" && asnLine.doctyp==="STO") )
-                                    ? "col-sm-2":"none")}>
+                           
                            <button type="button" 
-                          className={"btn btn-primary mr-1 "}
+                          className={(((this.state.asnDetails.status==="GATE_IN_101" && this.state.role==="STRADM" && asnLine.doctyp==="STO") )
+                           ? "btn btn-primary mr-1":"none")}
                             onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitWithParam(this.props,"gateOutResponse","/rest/asnGateOut",this.state.asnDetails.asnId)}} >
                                 Gate Out
                             </button>
-                            </div>:""):""))} 
+                            :""):""))} 
                            
                                  
-                                 
-                                 </div></div></div>
+                            </Grid>
+                             </Grid>
 
       {/* {!['CLOSED', 'BOOKED', 'CANCELED'].includes(this.state.asnDetails.status) && <button style={{ display: this.state.cancelAsnButton }} className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelAsn(e) ; }}>Cancel ASN</button> } */}
                </div>
-                      </div>
-                              </div>
-                           </div>
+                     
                         </div>
                         {
 
@@ -2483,8 +2271,8 @@ async componentDidMount() {
                                     </div>
                                  }
 
-                                 {this.state.openModal && <div className="modal roleModal" id="updateRoleModal show" style={{ display: 'block' }}>
-                                    <div className="modal-dialog modal-md mt-100">
+                                 {this.state.openModal && <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+                                 <div className="modal-backdrop"></div> <div className="modal-dialog modal-md mt-100">
                                        <div className="modal-content">
                                           <div className="modal-header">
                                              Select Costs
@@ -2595,107 +2383,145 @@ async componentDidMount() {
                                  <div className="lineItemDiv mt-2">
                                     <div className="col-sm-12">
                                        <div className="table-responsive">
-                                          <table className="table table-bordered">
-                                             <thead className="thead-light">
-                                                <tr className="row m-0">
-                                                   <th className="col-1">PO Line No.</th>
-                                                   <th className="col-1">Service No.</th>
-                                                   <th className="col-2">Service Description</th>
-                                                   <th className="col-2 text-right"> PO Qty </th>
-                                                   <th className="col-1"> UOM </th>
-                                                   <th className="col-1"> Qty </th>
-                                                   <th className="col-1"> Bal Qty </th>
-                                                   <th className="col-2 text-right"> Rate </th>
-                                                   <th className="col-1 text-right"> Cost center </th>
-                                                </tr>
-                                             </thead>
-                                             <tbody id="DataTableBodyThree">
-                                                {
-                                                   this.state.serviceLineArray.map((serviceLine, index) => {
-                                                      let el = this.state.asnLineMap[serviceLine.parentPOLineId ? serviceLine.parentPOLineId : serviceLine.parentLineId];
-                                                      return (
-                                                         <tr className="row m-0">
+                                       <Paper elevation={3} style={{ padding: "10px" }}>
+        <TableContainer>
+          <Table className="my-table">
+            <TableHead className="thead-light">
+              <TableRow>
+                <TableCell>PO Line No.</TableCell>
+                <TableCell>Service No.</TableCell>
+                <TableCell>Service Description</TableCell>
+                <TableCell align="right">PO Qty</TableCell>
+                <TableCell>UOM</TableCell>
+                <TableCell>Qty</TableCell>
+                <TableCell>Bal Qty</TableCell>
+                <TableCell align="right">Rate</TableCell>
+                <TableCell align="right">Cost Center</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.serviceLineArray.map((serviceLine, index) => {
+                let el = this.state.asnLineMap[
+                  serviceLine.parentPOLineId
+                    ? serviceLine.parentPOLineId
+                    : serviceLine.parentLineId
+                ];
 
-                                                            <td className="col-1">
-                                                               {/* <input type="hidden" name={"asnLineList["+this.state.asnLineMap[serviceLine.parentPOLineId]+"][serviceLineList]["+index+"][poLine][lineItemNumber]"} value={serviceLine.parentLineNumber} /> */}
-                                                               {removeLeedingZeros(serviceLine.parentLineNumber)}</td>
+                return (
+                  <TableRow key={index}>
+                    <TableCell>
+                      {removeLeedingZeros(serviceLine.parentLineNumber)}
+                    </TableCell>
 
-                                                            <td className="col-1">
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][advanceShipmentNoticeLineId]"} value={serviceLine.asnLineId} disabled={isEmpty(serviceLine.asnLineId)} />
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][purchaseOrderLineId]"} value={serviceLine.poLineId} />
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][lineItemNumber]"} value={serviceLine.poLineNumber} />
-                                                               {removeLeedingZeros(serviceLine.poLineNumber)}</td>
-                                                            {
-                                                               !isEmpty(serviceLine.asnLineCostCenter) && serviceLine.asnLineCostCenter.map((item, i) => {
-                                                                  return (
-                                                                     <>
-                                                                        {item.asnLineCostCenterId && <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][asnLineCostCenter][" + i + "][asnLineCostCenterId]"} value={item.asnLineCostCenterId} />}
-                                                                        <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][asnLineCostCenter][" + i + "][advanceShipmentNoticeLineId]"} value={serviceLine.asnLineId} />
-                                                                        <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][asnLineCostCenter][" + i + "][costCenter]"} value={item.costCenter} />
-                                                                        <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][asnLineCostCenter][" + i + "][quantity]"} value={item.quantity} />
-                                                                     </>
-                                                                  )
-                                                               })
-                                                            }
-                                                            <td className="col-2">
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][code]"} value={serviceLine.materialCode} />
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][name]"} value={serviceLine.materialName} />
-                                                               {serviceLine.materialCode}-{serviceLine.materialName}
-                                                            </td>
-                                                            <td className="col-2 text-right">
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][poQuantity]"} value={serviceLine.poQty} />
-                                                               {getCommaSeperatedValue(getDecimalUpto(serviceLine.poQty, 3))}
-                                                            </td>
-                                                            <td className="col-1">
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][uom]"} value={serviceLine.uom} />
-                                                               {serviceLine.uom}
-                                                            </td>
-                                                            {/*-------input type-------*/}
-                                                            <td className="col-1">
-                                                               <input type="number"
-                                                                  step=".01" onKeyDown={textRestrict}
-                                                                // maxLength={5}
-                                                                 placeholder="0.000"
-                                                                  className={"form-control " + ((['DR', 'SSRJ'].includes(this.state.asnDetails.status) || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
-                                                                  name={"asnLineList[" + el + "][serviceLineList][" + index + "][deliveryQuantity]"}
-                                                                  defaultValue={this.state.serviceLineArray[index].deliveryQuantity}
-                            
-                                                                  // onChange = {(e)=>{commonHandleChange(e,this,"serviceLineArray."+index+".deliveryQuantity")}} 
-                                                                  onChange={(e) => {this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
-                                                               />
-                                                            </td>
-                                                            {/*-------input type-------*/}
-                                                            <td className="col-1 ">
-                                                            <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][balanceQuantity1]"} value={serviceLine.balQty1} />
-                                                               {getCommaSeperatedValue(getDecimalUpto(serviceLine.balQty1, 3))}</td>
+                    <TableCell>
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][advanceShipmentNoticeLineId]`}
+                        value={serviceLine.asnLineId}
+                        disabled={isEmpty(serviceLine.asnLineId)}
+                      />
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][purchaseOrderLineId]`}
+                        value={serviceLine.poLineId}
+                      />
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][lineItemNumber]`}
+                        value={serviceLine.poLineNumber}
+                      />
+                      {removeLeedingZeros(serviceLine.poLineNumber)}
+                    </TableCell>
 
-                                                            <td className="col-2 text-right">
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][rate]"} value={serviceLine.poRate} />
-                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][plant]"} value={serviceLine.plant} />
-                                                               {getCommaSeperatedValue(getDecimalUpto(serviceLine.poRate, 3))}</td>
+                    <TableCell>
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][code]`}
+                        value={serviceLine.materialCode}
+                      />
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][name]`}
+                        value={serviceLine.materialName}
+                      />
+                      {serviceLine.materialCode}-{serviceLine.materialName}
+                    </TableCell>
 
-                                                            <td className="col-1 text-right">
-                                                               <button className={"btn btn-sm btn-outline-primary mgt-10 "} onClick={this.onSelectConstCenter.bind(this, serviceLine)} type="button" data-toggle="modal" data-target="#updateRoleModal">
-                                                                  select
-                                                               </button>
-                                                            </td>
-                                                         </tr>
-                                                      )
-                                                   }
-                                                   )
-                                                }
-                                             </tbody>
-                                             <tfoot>
-                                                <tr>
-                                                   <td className="col-1 text-right">SSN Value: &nbsp;
-                                                   {getCommaSeperatedValue(this.state.asnDetails.basicAmount)}
-                                                   </td>
+                    <TableCell align="right">
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][poQuantity]`}
+                        value={serviceLine.poQty}
+                      />
+                      {getCommaSeperatedValue(getDecimalUpto(serviceLine.poQty, 3))}
+                    </TableCell>
 
-                                                </tr>
-                            
-                                             </tfoot>
+                    <TableCell>{serviceLine.uom}</TableCell>
 
-                                          </table>
+                    <TableCell>
+                      <input
+                        type="number"
+                        step=".01"
+                        onKeyDown={textRestrict}
+                        placeholder="0.000"
+                        className="form-control"
+                        name={`asnLineList[${el}][serviceLineList][${index}][deliveryQuantity]`}
+                        defaultValue={this.state.serviceLineArray[index].deliveryQuantity}
+                        onChange={(e) => {
+                          this.calculateBasicAmount(e, index, "serviceLineArray");
+                          this.calculateBalanceQuantity(e, index, "serviceLineArray");
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][balanceQuantity1]`}
+                        value={serviceLine.balQty1}
+                      />
+                      {getCommaSeperatedValue(getDecimalUpto(serviceLine.balQty1, 3))}
+                    </TableCell>
+
+                    <TableCell align="right">
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][rate]`}
+                        value={serviceLine.poRate}
+                      />
+                      <input
+                        type="hidden"
+                        name={`asnLineList[${el}][serviceLineList][${index}][poLine][plant]`}
+                        value={serviceLine.plant}
+                      />
+                      {getCommaSeperatedValue(getDecimalUpto(serviceLine.poRate, 3))}
+                    </TableCell>
+
+                    <TableCell align="right">
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => this.onSelectConstCenter(serviceLine)}
+                        type="button"
+                        data-toggle="modal"
+                        data-target="#updateRoleModal"
+                      >
+                        Select
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell align="right" colSpan={9}>
+                  SSN Value: {getCommaSeperatedValue(this.state.asnDetails.basicAmount)}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </Paper>
                                        </div>
                                     </div>
                                  </div>
@@ -2703,434 +2529,7 @@ async componentDidMount() {
                            </div>
 
                         }
-                        {/* <div className="col-sm-12 text-center mt-1 " style={asnListHidden}>
-                           <button className={window.location.href.endsWith("gateentry") ? "none" : "btn btn-primary"} type="button" onClick={() => {this.resetAsn(); this.props.backAction()}}><i className="fa fa-arrow-left" aria-hidden="true"></i></button>
-                           <> </>
-                           <a className={this.state.role === "VENADM" ? "btn btn-primary mr-1" : "none"} href={window.location.href}>Back To List</a>
-                           {this.state.asnDetails.status != "SSRJ" &&
-                              <button type="button" className={!((this.props.po.isServicePO) && (isEmpty(this.state.asnDetails.status) || this.state.asnDetails.status == "DR" || this.state.asnDetails.status == "SSIP" || this.props.SSNVersion == 2)) ? "btn btn-primary mr-1 inline-block" : "none"} onClick={this.showAsnDetails}>{this.state.asnDetails.status === "SSAP" ? "Create Invoice" : "Invoice Details"}</button>} */}
-                           {/* <button type="submit" className={(this.props.po.isServicePO ) && (isEmpty(this.state.asnDetails.status) || (this.state.asnDetails.status==="DR"))?"btn btn-success mr-1 inline-block":"none"}
-                        onClick={(e)=>{this.props.changeASNStatus(false);this.setState({loadASNDetails:true,loadASNLineList:true,saveServiceLines:true});commonSubmitFormValidation(e,this,"saveASN","/rest/saveASN")}}
-                        >Save</button> */}
-                       {/* <button type="button" className={this.state.asnDetails.status == "SSIP"? "btn btn-primary mr-1 inline-block" : "none"}
-                             onClick={this.handleSheet} >Edit & Submit</button> */}
-                        { /*  <button type="button" className={this.state.asnDetails.status == "SSIP" ? "btn btn-primary mr-1 inline-block" : "none"}
-                             onClick={this.onEdit} >Edit</button>
-
-                           <button type="button" className={this.state.canEdit ? "btn btn-primary mr-1 inline-block" : "none"}
-                             onClick={this.handleSheet} >Submit SSN</button>*/}
-
-                           {/* <button type="button" className={showBtn ? "btn btn-primary mr-1 inline-block" : "none"}
-                              onClick={this.handleSheet} >Save & Submit</button>
-
-                           {this.state.asnDetails.status === "SSIP" && this.state.role == 'SSNAPP' && this.props.SSNVersion == 2 &&
-                              <button type="button" className={"btn btn-primary mr-1 inline-block"}
-                                 onClick={this.onApprovalSecond} >Approve</button>
-                           }
-                           {this.state.asnDetails.status === "SSIP" && this.state.role == 'SSNAPP' && this.props.SSNVersion == 2 &&
-                              <button type="button" className={"btn btn-primary mr-1 inline-block"}
-                                 onClick={this.rejectPO} >Reject</button>
-                           }
-                           {
-                              (this.state.asnDetails.status === "SSIP" && (this.props.user.userName === this.state.po.requestedBy.empCode)) && this.props.SSNVersion == 1 && <button type="button" className={"btn btn-primary mr-1 inline-block"}
-                                 onClick={this.onApproval} >Approve</button>
-                           }
-                           <button type="button" className={(this.state.asnDetails.status === "SSIP" && (this.props.user.userName === this.state.po.requestedBy.empCode)) && this.props.SSNVersion == 1 ? "btn btn-primary mr-1 inline-block" : "none"}
-                              onClick={this.rejectPO} >Reject</button> */}
-
-                           {/* <button type="button" className={(this.state.asnDetails.status==="SSIP" && (this.props.user.userName===this.state.po.requestedBy.empCode))?"btn btn-primary mr-1 inline-block":"none"}
-                           onClick={(e)=>{this.props.changeASNStatus(true);this.props.changeLoaderState(true);commonSubmitWithParam(this.props,"rejectServiceSheet","/rest/rejectServiceSheet",this.state.asnDetails.asnId)}} >Reject</button> */}
-                           {/* {this.state.unload?<>
-                           <button type="button" className={this.state.unload?"btn btn-success mr-1":"none"}
-                           onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitFormNoValidation(e,this,"asnUnLoadResponse","/rest/asnUnload")}}>Save</button>
-                        </>:<></>
-                        } */}
-                           {/* {this.state.qc ? <>
-                              <button type="button" className={this.state.qc ? "btn btn-success mr-1" : "none"}
-                                 onClick={(e) => { this.props.changeASNStatus(true); commonSubmitFormNoValidation(e, this, "qcResponse", "/rest/qcPassed") }}>QC PASS</button>
-                           </> : <></>
-                           }
-                           {this.state.grn ? <>
-                              <button type="button" className={this.state.grn ? "btn btn-success mr-1" : "none"}
-                                 onClick={this.onSave}>Save</button>
-                           </> : <></>
-                           } */}
-                        {/* </div> */}
-
-                        {/* <div className="asnDetailsSec mt-2" style={asnShown}>
-
-                           <div className="" >
-                              <div className="row mt-1">
-                                 <div className="col-sm-11"></div>
-                                 <div className="col-sm-1">
-                                    <button type="button" className="btn btn-primary" style={{ width: '100%' }} onClick={this.onEdit}>Edit</button>
-                                 </div>
-                              </div>
-
-                              <div className="row">
-                                 <label className="col-sm-2" >{this.props.po.isServicePO ? "SSE No" : "ASN No"}</label>
-                                 <div className="col-sm-2" >
-                                    <>{this.props.po.isServicePO ?
-                                       <input type="text" className="form-control" value={this.state.asnDetails.serviceSheetNo}
-                                          readOnly={!this.state.canEdit} name="serviceSheetNo" onChange={(e) => commonHandleChange(e, this, "asnDetails.serviceSheetNo")} /> :
-                                       <input type="text" className="form-control" value={this.state.asnDetails.asnNumber}
-                                          readOnly={!this.state.canEdit} name="advanceShipmentNoticeNo" onChange={(e) => commonHandleChange(e, this, "asnDetails.asnNumber")} />}</>
-                                    <input type="hidden" className="form-control" value={this.state.asnDetails.freightCharges}
-                                       disabled={!this.state.asnDetails.invoiceApplicable} name="freightCharges" onChange={(e) => { commonHandleChange(e, this, "asnDetails.freightCharges") }} />
-                                    <input type="hidden" className="form-control" value={this.state.asnDetails.packingCharges}
-                                       disabled={!this.state.asnDetails.invoiceApplicable} name="packingCharges" onChange={(e) => { commonHandleChange(e, this, "asnDetails.packingCharges") }} />
-                                    <input type="hidden" className="form-control" value={this.state.asnDetails.loadingCharges}
-                                       disabled={!this.state.asnDetails.invoiceApplicable} name="loadingUnloadingCharges" onChange={(e) => { commonHandleChange(e, this, "asnDetails.loadingCharges") }} />
-                                    <input type="hidden" className="form-control" value={this.state.asnDetails.sgst}
-                                       disabled={!this.state.asnDetails.invoiceApplicable} name="sgst" onChange={(e) => { commonHandleChange(e, this, "asnDetails.sgst") }} />
-                                    <input type="hidden" className="form-control" value={this.state.asnDetails.cgst}
-                                       disabled={!this.state.asnDetails.invoiceApplicable} name="cgst" onChange={(e) => { commonHandleChange(e, this, "asnDetails.cgst") }} />
-                                    <input type="hidden" className="form-control" value={this.state.asnDetails.igst}
-                                       disabled={!this.state.asnDetails.invoiceApplicable} name="igst" onChange={(e) => { commonHandleChange(e, this, "asnDetails.igst") }} />
-                                    <input type="hidden" className="form-control" value={this.state.asnDetails.tcs} name="tcs" />
-
-                                 </div>
-
-                                 <div className="col-sm-8">
-                                    <div className={(isEmpty(this.state.asnDetails.status)
-                                       || this.state.asnDetails.status === 'DR') ? "invoiceDiv" : "none"}>
-                                       <label className="col-sm-6">
-                                          <div className="form-check">
-                                             <label className="form-check-label">
-                                                <input type="radio" className="form-check-input"
-                                                   name="invoiceApplicable"
-                                                   value={"Y"} checked={this.state.asnDetails.invoiceApplicable}
-                                                   onClick={(e) => { commonHandleChangeCheckBox(e, this, "asnDetails.invoiceApplicable") }} />
-                                                Against Invoice
-                                             </label>
-                                          </div>
-                                       </label>
-                                       <label className="col-sm-6">
-                                          <div className="form-check">
-                                             <label className="form-check-label">
-                                                <input type="radio" className="form-check-input"
-                                                   name="invoiceApplicable"
-                                                   value={"N"} checked={!this.state.asnDetails.invoiceApplicable}
-                                                   onClick={(e) => { commonHandleReverseChangeCheckBox(e, this, "asnDetails.invoiceApplicable"); this.setState({ flagForAttachmentResponce: true }) }} />
-                                                Against Delivery Note
-                                             </label>
-                                          </div>
-                                       </label>
-                                    </div>
-                                 </div>
-                              </div>
-
-                              <div className={this.state.asnDetails.invoiceApplicable ? "block" : "none"}>
-                                 <div className="row mt-1">
-                                    <label className="col-sm-2">Invoice No <span className="redspan">*</span></label>
-                                    <div className={"col-sm-2 " + (isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR")
-                                       || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR") || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="text" className="form-control"
-                                          disabled={!this.state.asnDetails.invoiceApplicable} value={this.state.asnDetails.invoiceNo}
-                                          name="invoiceNo" onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceNo") }} required />
-                                       <FieldFeedbacks for="invoiceNo">
-                                          <FieldFeedback when="*"></FieldFeedback>
-                                       </FieldFeedbacks>
-                                    </div>
-
-
-                                    <label className="col-sm-2" >Invoice Date <span className="redspan">*</span></label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR")
-                                       || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="date" className="form-control" name="invoiceDate" value={this.state.asnDetails.invoiceDate} required
-                                          disabled={!this.state.asnDetails.invoiceApplicable}
-                                          onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceDate", "asnFormDet") }} />
-                                       <FieldFeedbacks for="invoiceDate">
-                                          <FieldFeedback when="*"></FieldFeedback>
-                                       </FieldFeedbacks>
-                                    </div>
-                                    <label className="col-sm-1" >IRN</label>
-                                    <div className={"col-sm-3 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR")
-                                       || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="text" name="irn" className="form-control" value={this.state.asnDetails.irn}
-                                          disabled={!this.state.asnDetails.invoiceApplicable}
-                                          onChange={(e) => { commonHandleChange(e, this, "asnDetails.irn") }} />
-                                    </div>
-                                 </div>
-                                 <div className="row mt-1">
-                                    <label className="col-sm-2">Basic Amount</label>
-                                    <div className="col-sm-2 readonly" >
-                                       <input type="hidden" className="form-control" value={this.state.asnDetails.basicAmount}
-                                          disabled={!this.state.asnDetails.invoiceApplicable} name="basicAmount" />
-                                       <input type="text" className="form-control" value={getCommaSeperatedValue(this.state.asnDetails.basicAmount)}
-                                          disabled={!this.state.asnDetails.invoiceApplicable} />
-                                    </div>
-
-
-                                    <label className="col-sm-2">Total Invoice Amount  <span className="redspan">*</span></label>
-                                    <div className="col-sm-2 readonly" >
-                                       <input type="hidden" className="form-control" value={this.state.asnDetails.invoiceAmountByUser}
-                                          name="invoiceAmountByUser" />
-                                       <input type="number" required className="form-control" onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceAmountByUser") }} value={this.state.asnDetails.invoiceAmountByUser}
-                                       />
-                                       <FieldFeedbacks for="invoiceAmountByUser">
-                                          <FieldFeedback when="*"></FieldFeedback>
-                                       </FieldFeedbacks>
-                                    </div>
-
-                                    <label className="col-sm-2">Gross Amount</label>
-                                    <div className="col-sm-2 readonly" >
-                                       <input type="hidden" className="form-control" value={this.state.asnDetails.invoiceAmount}
-                                          disabled={!this.state.asnDetails.invoiceApplicable} name="invoiceAmount" />
-                                       <input type="text" className="form-control" value={getCommaSeperatedValue(this.state.asnDetails.invoiceAmount)}
-                                          disabled={!this.state.asnDetails.invoiceApplicable} />
-                                    </div>
-
-                                    <label className="col-sm-2">Round Off Amount</label>
-                                    <div className="col-sm-2 readonly" >
-                                       <input className="form-control" readOnly={!this.state.canEdit} value={this.state.asnDetails.roundOffAmount} name="roundOffAmount" />
-                                       {/* <span>{this.state.asnDetails.roundOffAmount}</span> 
-                                    </div>
-
-                                    <label className="col-sm-2">Round Off Value</label>
-                                    <div className="col-sm-2 readonly" >
-                                       <input readOnly={!this.state.canEdit} className="form-control" value={this.state.asnDetails.roundOffValue} name="roundOffValue" />
-                                       {/* <span>{this.state.asnDetails.roundOffValue}</span> 
-                                    </div>
-
-                                    <div className="col-sm-4">
-                                       <button type="button" data-toggle="modal" className="btn btn-primary" data-target="#GetConditionModal">Condition And Taxes</button>
-                                    </div>
-                                 </div>
-                                 <div className="row mt-1">
-                                    <label className="col-sm-2">Upload Invoice <span className="redspan">(max 2.5MB)*</span></label>
-                                    <div className="col-sm-3">
-                                       <div className="input-group">
-                                          <input type="hidden" disabled={(isEmpty(this.state.asnDetails.invoiceDoc.attachmentId)) || (this.state.asnDetails.invoiceApplicable ? false : true)} name="invoice[attachmentId]" value={this.state.asnDetails.invoiceDoc.attachmentId} />
-                                          <input type="hidden" name="invoice[fileName]" value={this.state.asnDetails.invoiceDoc.fileName} disabled={(isEmpty(this.state.asnDetails.invoiceDoc.attachmentId)) || (this.state.asnDetails.invoiceApplicable ? false : true)} />
-                                          <input type="file" onChange={(e) => { commonHandleFileUploadInv(e, this, "asnDetails.invoiceDoc") }} disabled={(this.state.asnDetails.invoiceApplicable ? false : true)}
-                                             className={"form-control "} name="invoiceAttach" required />
-                                          <FieldFeedbacks for="invoiceAttach">
-                                             <FieldFeedback when={(value) => isEmpty(value) && isEmpty(this.state.snDetails.invoiceDoc.attachmentId)}> Inovice File Mandatory</FieldFeedback>
-                                          </FieldFeedbacks>
-                                          <div className="input-group-append">
-                                             <button className="btn btn-danger clearFile" onClick={() => { this.clearInoviceAttachment() }} type="button">X</button>
-                                          </div>
-                                       </div>
-                                       <div disabled={this.state.asnDetails.invoiceApplicable ? false : true}><a href={API_BASE_URL + "/rest/download/" + this.state.asnDetails.invoiceDoc.attachmentId}>{this.state.asnDetails.invoiceDoc.fileName}</a></div>
-
-                                    </div>
-                                 </div>
-                              </div>
-                              <hr className="w-100" />
-
-                              <div className={this.state.asnDetails.invoiceApplicable ? "none" : "block"}>
-                                 <div className="row mt-1">
-
-                                    <label className="col-sm-2" >Delivery Note No</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR")
-                                       || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")}  >
-                                       <input type="text" className="form-control" value={this.state.asnDetails.deliveryNoteNo}
-                                          name="deliveryNoteNo" disabled={this.state.asnDetails.invoiceApplicable}
-                                          onChange={(e) => { commonHandleChange(e, this, "asnDetails.deliveryNoteNo") }} />
-                                    </div>
-
-                                    <label className="col-sm-2" >Delivery Note Date</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="date" className="form-control" disabled={this.state.asnDetails.invoiceApplicable}
-                                          value={this.state.asnDetails.deliveryNoteDate}
-                                          name="deliveryNoteDate" min={currentDate} onChange={(e) => { commonHandleChange(e, this, "asnDetails.deliveryNoteDate") }} />
-                                    </div>
-                                    <label className="col-sm-2">Upload  Delivery Note <span className="redspan">*</span></label>
-                                    <div className="col-sm-2" >
-                                       {/* <input type="file" className="form-control" value={this.state.asnDetails.uploadInvoiceFile}     
-                                    disabled={this.state.asnDetails.invoiceApplicable} name="" onChange={(e)=>{commonHandleChange(e,this,"asnDetails.")}} /> 
-                                       <input type="hidden" name="invoice[attachmentId]" value={this.state.asnDetails.deliveryNoteDoc.attachmentId} disabled={!this.state.asnDetails.invoiceApplicable ? false : true} />
-                                       <input type="hidden" name="invoice[fileName]" value={this.state.asnDetails.deliveryNoteDoc.fileName} disabled={!this.state.asnDetails.invoiceApplicable ? false : true} />
-                                       <input type="file" onChange={(e) => { commonHandleFileUploadInv(e, this, "asnDetails.deliveryNoteDoc") }}
-                                          className={"form-control "} name="deliveryNote" required disabled={!this.state.asnDetails.invoiceApplicable ? false : true} />
-
-                                       <div className="input-group-append">
-                                          <button className="btn btn-danger clearFile" onClick={() => { this.clearDeliveryNoteAttachment() }} type="button">X</button>
-                                       </div>
-
-                                       <div><a href={API_BASE_URL + "/rest/download/" + this.state.asnDetails.deliveryNoteDoc.attachmentId}>{this.state.asnDetails.deliveryNoteDoc.fileName}</a></div>
-                                       <FieldFeedbacks for="deliveryNote">
-                                          <FieldFeedback when={(value) => isEmpty(value) && isEmpty(this.state.snDetails.invoiceDoc.attachmentId)}> Inovice File Mandatory</FieldFeedback>
-                                       </FieldFeedbacks>
-                                    </div>
-
-                                 </div>
-                              </div>
-
-                              <div id="forAsnHideShow" style={{ display: displayDivForAsnLine }}>
-                                 <div className="row mt-1">
-
-                                    <label className="col-sm-2" >Transporter Name</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="text" className="form-control" value={this.state.asnDetails.transporterNo}
-                                          name="transporterNo" onChange={(e) => { commonHandleChange(e, this, "asnDetails.transporterNo") }} />
-                                    </div>
-                                    <label className="col-sm-2">LR No.</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="text" className="form-control" value={this.state.asnDetails.lrNumber}
-                                          name="lrNumber" onChange={(e) => { commonHandleChange(e, this, "asnDetails.lrNumber") }} />
-                                    </div>
-
-                                    <label className="col-sm-2">LR Date</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="date" className="form-control" value={this.state.asnDetails.lrDate}
-                                          name="lrDate" min={currentDate} onChange={(e) => { commonHandleChange(e, this, "asnDetails.lrDate") }} />
-                                    </div>
-                                 </div>
-                                 <div className="row mt-1">
-
-
-                                    <label className="col-sm-2">Vehicle No</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="text" className="form-control" value={this.state.asnDetails.vehicalNo}
-                                          name="vehicalNo" onChange={(e) => { commonHandleChange(e, this, "asnDetails.vehicalNo") }} />
-                                    </div>
-
-                                    <label className="col-sm-2">E-Way Bill No</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="text" className="form-control" value={this.state.asnDetails.eWayBillNo}
-                                          name="eWayBillNo" onChange={(e) => { commonHandleChange(e, this, "asnDetails.eWayBillNo") }} />
-                                    </div>
-                                    <label className="col-sm-2" >No of Packages</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="number" className="form-control" value={this.state.asnDetails.numberOfPackages}
-                                          name="numberOfPackages" onChange={(e) => { commonHandleChange(e, this, "asnDetails.numberOfPackages") }} />
-                                    </div>
-                                 </div>
-                                 <div className="row mt-1">
-                                    <label className="col-sm-2">Gross Weight</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="number" className="form-control" value={this.state.asnDetails.grossWeight}
-                                          name="grossWeight" onChange={(e) => { commonHandleChange(e, this, "asnDetails.grossWeight") }} />
-                                    </div>
-                                    <label className="col-sm-2" >Tare Weight</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <input type="number" className="form-control" value={this.state.asnDetails.tareWeight}
-                                          name="tareWeight" onChange={(e) => { commonHandleChange(e, this, "asnDetails.tareWeight") }} />
-                                    </div>
-
-                                 </div>
-                                 <div className="row mt-1">
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <div className="checkbox checkbox-primary">
-                                          <input id="COA" type="checkbox" value="Y" checked={this.state.asnDetails.isCOA}
-                                             name="isCOA" onChange={(e) => { commonHandleChangeCheckBox(e, this, "asnDetails.isCOA") }} />
-                                          <label for="COA">
-                                             &nbsp;&nbsp; COA
-                                          </label>
-                                       </div>
-                                    </div>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <div className="checkbox checkbox-primary">
-                                          <input type="checkbox" name="isPackingList" value="Y"
-                                             checked={this.state.asnDetails.isPackingList}
-                                             onChange={(e) => { commonHandleChangeCheckBox(e, this, "asnDetails.isPackingList") }} />
-                                          <label for="PackingList">
-                                             &nbsp;&nbsp;Packing List
-                                          </label>
-                                       </div>
-                                    </div>
-
-
-                                    <label className="col-sm-2">Type of Packing Bulk / Non Bulk</label>
-                                    <div className={"col-sm-2 " + ((isEmpty(this.state.asnDetails.status)
-                                       || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                       <select className="form-control" value={this.state.asnDetails.typeOfPackingBulk}
-                                          name="typeOfPackingBulk" onChange={(e) => { commonHandleChange(e, this, "asnDetails.typeOfPackingBulk") }}>
-                                          <option value="BULK">BULK</option>
-                                          <option value="NONBULK">NON BULK</option>
-                                       </select>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div className="row mt-1 ">
-                                 <label className="col-sm-2" >Remarks </label>
-                                 <div className={"col-sm-6 " + ((isEmpty(this.state.asnDetails.status)
-                                    || (this.state.asnDetails.status === "DR") || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR")) || !this.state.canEdit) ? "" : "readonly")} >
-                                    <textarea className="formcontrol" rows="3" value={this.state.asnDetails.remarks}
-                                       name="remarks" onChange={(e) => { commonHandleChange(e, this, "asnDetails.remarks") }} >
-                                    </textarea>
-                                 </div>
-                              </div>
-                           </div>
-                           <div className="col-sm-12 text-center mt-2 " >
-                              {/* <button type="submit" className={(isEmpty(this.state.asnDetails.status) 
-                           || this.state.asnDetails.status==="DR" || ((this.props.po.isServicePO) && (this.state.asnDetails.status==="SSAP" || this.state.asnDetails.status==="SSDR")))?"btn btn-success mr-1 inline-block":"none"}>Save</button> 
-
-                              <button type="button" className={(isEmpty(this.state.asnDetails.status)
-                                 || this.state.asnDetails.status === "DR") ? "btn btn-primary mr-1 inline-block" : "none"}
-                                 onClick={(e) => {
-                                    this.props.changeASNStatus(true); this.setState({ loadASNDetails: true, loadASNLineList: true });
-                                    commonSubmitFormValidation(e, this, "markASNInTransit", "/rest/markASNInTransit");
-                                 }} >Save & Submit</button>
-
-                              <button type="button" className={(this.state.editButtonForAsn) ? "btn btn-primary mr-1 inline-block" : "none"}
-                                 onClick={(e) => { this.editASN() }} >Edit ASN</button>
-
-                              <button type="button" className={((this.props.po.isServicePO) && (['SSAP', 'SSDR', "SESRJ"].includes(this.state.asnDetails.status)) || this.state.canEdit) ? "btn btn-primary mr-1 inline-block" : "none"}
-                                 onClick={(e) => { this.props.changeASNStatus(true); this.setState({ loadASNDetails: true, loadASNLineList: true, canEdit: false }); commonSubmitFormValidation(e, this, "markASNInTransit", "/rest/markASNInTransit") }} >Submit Invoice</button>
-
-                              <button type="button" className={(this.state.asnDetails.status === "SESIP" && (this.props.user.userName === this.state.po.requestedBy.empCode)) ? "btn btn-primary mr-1 inline-block" : "none"}
-                                 onClick={(e) => { this.props.changeASNStatus(true); this.props.changeLoaderState(true); commonSubmitWithParam(this.props, "approveServiceSheet", "/rest/approveServiceEntry", this.state.asnDetails.asnId) }} >Approve</button>
-
-                              <button type="button" className={(this.state.asnDetails.status === "SESIP" && (this.props.user.userName === this.state.po.requestedBy.empCode)) ? "btn btn-primary mr-1 inline-block" : "none"}
-                                 onClick={this.rejectPOSheet} >Reject</button>
-                              {/* <button type="button"className={(this.state.asnDetails.status==="SESIP" && (this.props.user.userName===this.state.po.requestedBy.empCode))?"btn btn-primary mr-1 inline-block":"none"}
-                        onClick={(e)=>{this.props.changeASNStatus(true);this.props.changeLoaderState(true);commonSubmitWithParam(this.props,"rejectServiceSheet","/rest/rejectServiceEntry",this.state.asnDetails.asnId)}} >Reject</button> 
-
-                              <button type="button" onClick={this.asnListHidden} className={(isEmpty(this.state.asnDetails.status)
-                                 || this.state.asnDetails.status === "DR" || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR"))) ? "btn btn-danger mr-1 inline-block" : "none"}>Cancel</button>
-
-                              <button type="button" onClick={this.asnListHidden} className={(isEmpty(this.state.asnDetails.status)
-                                 || this.state.asnDetails.status === "DR" || ((this.props.po.isServicePO) && (this.state.asnDetails.status === "SSAP" || this.state.asnDetails.status === "SSDR"))) ? "none" : "btn btn-danger mr-1 inline-block"}>BACK</button>
-                           </div>
-                        </div> */}
-                         {/* {(this.props.asnLineList).map((asnLine,index)=>
-                         (index==0?
-                        (asnLine.poLine==null?
-                        (asnLine.advanceshipmentnotice.doctyp =="STO"?
-                           (this.state.show?
-                           <div className="col-sm-12 text-center" >
-                        <button type="button" className={((this.state.asnDetails.status==="GATE_IN" && this.state.role==="STRADM")
-                         ? "btn btn-primary mx-1 my-2 inline-block":"none")} 
-                              onClick={this.handle105} >
-                              POST 101
-                     </button>
-                             </div>
-  :<div className="col-sm-12 text-center">
-                  <button type="button" className={"btn btn-warning mr-1" }onClick={this.onSaved}>Save </button></div>)
-                     :""):
-                     <div className={ asnLine.advanceshipmentnotice.doctyp!="STO" && asnLine.advanceshipmentnotice.doctyp!="Other" && (this.state.asnDetails.status=== "GATE_IN" &&  (this.state.role==="STRADM" || this.state.role==="SECADM") || this.state.asnDetails.status==="CANCELED")?"col-sm-12 text-center mt-2 ":"none"}>
-      <button type="submit" className={"btn btn-primary mr-1 "} id="report" onClick={this.handleClick}>POST 103</button> 
-    
-</div>):""))
-
-   }   */}
-
-
-                           {/* {(this.props.asnLineList).map((asnLine,index)=>
-                           (index==0?
-                           (asnLine.poLine!=null?
-                     <div className={((this.state.asnDetails.status==="103_Posted" || this.state.asnDetails.status==="CLOSED" || this.state.asnDetails.status==="GATE_OUT" && this.state.role==="STRADM")
-                                    ? "col-sm-12 text-center mt-2 ":"none")} >
-                              <button type="button" className={this.state.role==="STRADM"?"btn btn-primary mr-1":"none"} id="report" onClick={this.handle105}>POST 105</button>  
-                           </div>:""):""))} */}
+                       
 
                            {(this.props.asnLineList).map((asnLine,index)=>
                            (index==0?
@@ -3145,43 +2544,6 @@ async componentDidMount() {
                            </div>  :""):""))}  
 
 
-
-                           {/* {(this.state.asnLineArray).map((asnLine,index)=>
-                           
-                           (asnLine.poNumber!=""?
-                              (index==0?
-                           <div className={(((this.state.asnDetails.status==="GRN" || this.state.asnDetails.status==="CLOSED" || this.state.asnDetails.status==="103_Posted" && this.state.role==="SECADM") )
-                                    ? "col-sm-12 text-center mt-2 ":"none")}>
-                           <button type="button" 
-                          className={"btn btn-primary mr-1 "}
-                            onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitWithParam(this.props,"gateOutResponse","/rest/asnGateOut",this.state.asnDetails.asnId)}} >
-                                Gate Out
-                            </button>
-                            </div>:""):""))} 
-                            {(this.state.asnLineArray).map((asnLine,index)=>
-                           
-                           (asnLine.poNumber==""?
-                              (index==0?
-                           <div className={(((this.state.asnDetails.status==="GATE_IN" && asnLine.doctyp==="Other" && (this.state.role==="STRADM" || this.state.role==="SECADM") ))
-                                    ? "col-sm-12 text-center mt-2 ":"none")}>
-                           <button type="button" 
-                          className={"btn btn-primary mr-1 "}
-                            onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitWithParam(this.props,"gateOutResponse","/rest/asnGateOut",this.state.asnDetails.asnId)}} >
-                                Gate Out
-                            </button>
-                            </div>:""):""))}
-                            {(this.state.asnLineArray).map((asnLine,index)=>
-                           
-                           (asnLine.poNumber=="0"?
-                             (index==0?
-                           <div className={(((this.state.asnDetails.status==="GATE_IN_101" && this.state.role==="STRADM" && asnLine.doctyp==="STO") )
-                                    ? "col-sm-12 text-center mt-2 ":"none")}>
-                           <button type="button" 
-                          className={"btn btn-primary mr-1 "}
-                            onClick={(e)=>{this.props.changeASNStatus(true);commonSubmitWithParam(this.props,"gateOutResponse","/rest/asnGateOut",this.state.asnDetails.asnId)}} >
-                                Gate Out
-                            </button>
-                            </div>:""):""))}  */}
               
                      </div>
                      
@@ -3194,79 +2556,118 @@ async componentDidMount() {
             
                <div className={this.state.showHistory ? "row block" : "none"}>
 
-                     <div className="boxContent py-1 my-0">
+                    
                          <div className="row">
-                            {/* {(this.state.role!=="STRADM")?
-
-                              <div class={window.location.href.endsWith("gateentry") ? "col-sm-6" : "none"}>
-                        <label className="col-sm-2">PO No:</label>
-                                 <input type="number" id="POSearch"
-                                 value={this.state.po.purchaseOrderNumber}
-                                 onChange={(e) => {commonHandleChange(e,this,"po.purchaseOrderNumber");}}
-                                 className="col-sm-5" placeholder="Search PO.."/>
-                                 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-                                 <button className="btn btn-primary" type="button" id="POGateEntry" onClick={() => {this.searchPOData()}}>Search</button>
-                                 &nbsp;&nbsp;
-                                 <button className="btn btn-primary" type="button" onClick={() => {this.gateEntryASNReminder()}}>ASN Reminder</button>      
-                              </div>
-                              :""} */}
+                          
 
       <div className="col-sm-7">
-         <div class={window.location.href.endsWith("GateEntryForCommerical") ? "none" : "col-sm-2"}><button className="btn btn-primary" type="button" onClick={() => { this.resetAsn(); this.props.backAction() }}><i className="fa fa-arrow-left" aria-hidden="true"></i></button></div>
+         {/* <div class={window.location.href.endsWith("GateEntryForCommerical") ? "none" : "col-sm-2"}><Button variant="contained" color="primary" type="button" onClick={() => { this.resetAsn(); this.props.backAction() }}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button></div> */}
       </div>
-      <div className="col-sm-2"><button className="btn btn-success" style={{justifyContent: "center"}} onClick={this.exportReportToExcel}> <i className="fa fa-download" />&nbsp; Download Excel</button></div>
+      <div className="col-sm-5"></div>
 
-      <div className="col-sm-3">
-         <input type="text" id="SearchTableDataInputFour" className="form-control" onKeyUp={searchTableDataFour} placeholder="Search .." />
-      </div>
 <div className="col-sm-12 mt-2">
          <div>
-            <StickyHeader height={height_dy} className="table-responsive">
-               <table className="table table-bordered table-header-fixed" id="AsnListReport">
-                  <thead>
-                     <tr>
-                        <th>{this.props.po.isServicePO ? "Service Note No" : "ASN No"}</th>
-                        <th>PO No</th>
-                        {/*<th>Invoice Date </th>*/}
-                        <th>ASN Date</th>
-                        <th>Vendor</th>
-                        <th>Document No</th>
-                        <th style={{ display: this.state.displayDivForAsnHistoryTable }} >Document Type</th>
-                        {/* <th className="">Invoice Amount</th> */}
-                        {/* <th className=""> Packing Type </th> */}
-                        <th style={{ display: this.state.displayDivForAsnHistoryTable }}> Transporter Name </th>
-                        <th style={{ display: this.state.displayDivForAsnHistoryTable }}> Vehicle Number </th>
-                        <th>Status </th>
-                     </tr>
-                  </thead>
-                  <tbody id="DataTableBodyFour">
-                     {
-                        this.state.asnArray.map((asn, index) => {
-                                             return (
-                                                <tr onClick={(e) => { this.loadASNForEdit(asn) }}>
-                                                   <td>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</td>
-                                                   <td>{asn.po.purchaseOrderNumber!=""?asn.po.purchaseOrderNumber:asn.deliveryNoteNo}</td>
-                                                 {/*  <td>{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</td>*/}
-                                                   <td>{formatDateWithoutTimeWithMonthName(asn.created)}</td>
-                                                   <td>{asn.po.vendorName}</td>
-                                                   <td>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</td>
-                                                   <td style={{ display: this.state.displayDivForAsnHistoryTable }}>{asn.po.documentType}</td>
-                                                   {/* <td className="">{asn.invoiceAmount}</td> */}
-                                                   {/* <td className="">{asn.typeOfPackingBulk}</td> */}
-                                                   <td style={{ display: this.state.displayDivForAsnHistoryTable }}>{asn.transporterNo}</td>
-                                                   <td style={{ display: this.state.displayDivForAsnHistoryTable }}>{asn.vehicalNo}</td>
-                                                   <td>{asn.po.isServicePO ? this.state.serviceSheetStatusList[asn.status] : this.state.asnStatusList[asn.status]}</td>
-                                                </tr>
-                                             )
-                                          })
-                                       }
-                                    </tbody>
-                                 </table>
-                              </StickyHeader>
+          <Grid container spacing={2} alignItems="center" justify="flex-end">
+          <Grid item xs={9}>
+            <Button variant="contained" color="primary"  size="small" onClick={this.exportReportToExcel}> <i className="fa fa-download" />&nbsp; Download Excel</Button>
+            </Grid> 
+            <Grid item xs={3}>
+              <input
+                placeholder="Search"
+                value={searchQuery}
+                onChange={this.handleSearchChange}
+                style={{fontSize: "10px", float:"right" }}
+              />
+            </Grid>
+          </Grid>
+             <TableContainer className="mt-1">
+             <Table className="my-table" id="AsnListReport" style={{display:"none"}}>
+  <TableHead>
+    <TableRow>
+      <TableCell>{this.props.po.isServicePO ? "Service Note No" : "ASN No"}</TableCell>
+      <TableCell>PO No</TableCell>
+      {/* <TableCell>Invoice Date</TableCell> */}
+      <TableCell>ASN Date</TableCell>
+      <TableCell>Vendor</TableCell>
+      <TableCell>Document No</TableCell>
+      {this.state.displayDivForAsnHistoryTable && <TableCell>Document Type</TableCell>}
+      {/* <TableCell>Invoice Amount</TableCell> */}
+      {/* <TableCell>Packing Type</TableCell> */}
+      {this.state.displayDivForAsnHistoryTable && <TableCell>Transporter Name</TableCell>}
+      {this.state.displayDivForAsnHistoryTable && <TableCell>Vehicle Number</TableCell>}
+      <TableCell>Status</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+  {filteredData.map((asn, index) => (
+      <TableRow key={index} onClick={() => this.loadASNForEdit(asn)}>
+        <TableCell>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</TableCell>
+        <TableCell>{asn.po.purchaseOrderNumber !== "" ? asn.po.purchaseOrderNumber : asn.deliveryNoteNo}</TableCell>
+        {/* <TableCell>{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</TableCell> */}
+        <TableCell>{formatDateWithoutTimeWithMonthName(asn.created)}</TableCell>
+        <TableCell>{asn.po.vendorName}</TableCell>
+        <TableCell>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</TableCell>
+        {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.po.documentType}</TableCell>}
+        {/* <TableCell>{asn.invoiceAmount}</TableCell> */}
+        {/* <TableCell>{asn.typeOfPackingBulk}</TableCell> */}
+        {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.transporterNo}</TableCell>}
+        {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.vehicalNo}</TableCell>}
+        <TableCell>{this.props.po.isServicePO ? this.state.serviceSheetStatusList[asn.status] : this.state.asnStatusList[asn.status]}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+
+<Table className="my-table">
+  <TableHead>
+    <TableRow>
+      <TableCell>{this.props.po.isServicePO ? "Service Note No" : "ASN No"}</TableCell>
+      <TableCell>PO No</TableCell>
+      {/* <TableCell>Invoice Date</TableCell> */}
+      <TableCell>ASN Date</TableCell>
+      <TableCell>Vendor</TableCell>
+      <TableCell>Document No</TableCell>
+      {this.state.displayDivForAsnHistoryTable && <TableCell>Document Type</TableCell>}
+      {/* <TableCell>Invoice Amount</TableCell> */}
+      {/* <TableCell>Packing Type</TableCell> */}
+      {this.state.displayDivForAsnHistoryTable && <TableCell>Transporter Name</TableCell>}
+      {this.state.displayDivForAsnHistoryTable && <TableCell>Vehicle Number</TableCell>}
+      <TableCell>Status</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+  {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((asn, index) => (
+      <TableRow key={index} onClick={() => this.loadASNForEdit(asn)} >
+        <TableCell>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</TableCell>
+        <TableCell>{asn.po.purchaseOrderNumber !== "" ? asn.po.purchaseOrderNumber : asn.deliveryNoteNo}</TableCell>
+        {/* <TableCell>{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</TableCell> */}
+        <TableCell>{formatDateWithoutTimeWithMonthName(asn.created)}</TableCell>
+        <TableCell>{asn.po.vendorName}</TableCell>
+        <TableCell>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</TableCell>
+        {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.po.documentType}</TableCell>}
+        {/* <TableCell>{asn.invoiceAmount}</TableCell> */}
+        {/* <TableCell>{asn.typeOfPackingBulk}</TableCell> */}
+        {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.transporterNo}</TableCell>}
+        {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.vehicalNo}</TableCell>}
+        <TableCell>{this.props.po.isServicePO ? this.state.serviceSheetStatusList[asn.status] : this.state.asnStatusList[asn.status]}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+
+                              </TableContainer>
+                              <TablePagination
+                                            rowsPerPageOptions={[50, 100, 150]}
+                                            component="div"
+                                            count={filteredData.length}
+                                            rowsPerPage={rowsPerPage}
+                                            page={page}
+                                            onPageChange={this.handleChangePage}
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
+                                          />
                            </div>
                         </div>
                      </div>
-                  </div>
                </div>
                <div className="modal" id="GetConditionModal" >
                   <div className="modal-dialog modal-dialog-centered modal-lg">
@@ -3374,40 +2775,44 @@ async componentDidMount() {
                            <form>
                               <div className="row">
                                  <div className="col-sm-12">
-                                    <table className="table table-bordered">
-                                       <thead>
-                                          <tr >
-                                             <th>Document Type</th>
-                                             <th>PO No</th>
-                                             <th>PO Date</th>
-                                             <th>Vendor Code</th>
-                                             <th>Vendor Name</th>
-                                             <th>Income Terms </th>
-                                             <th>Purchase Group</th>
-                                             <th>Version No</th>
-                                             <th>Status</th>
-                                          </tr>
-                                       </thead>
-                                       <tbody>
-                                          {
-                                             this.state.poArray.map((po, index) =>
-
-                                                <tr onClick={() => { this.loadPO(index) }}>
-                                                   <td>{po.documentType}</td>
-                                                   <td>{po.purchaseOrderNumber}</td>
-                                                   <td>{po.poDate}</td>
-                                                   <td>{po.vendorCode}</td>
-                                                   <td>{po.vendorName}</td>
-                                                   <td>{po.incomeTerms}</td>
-                                                   <td>{po.purchaseGroup}</td>
-                                                   <td>{po.versionNumber}</td>
-                                                   <td>{po.status}</td>
-                                                </tr>
-                                             )
-                                          }
-
-                                       </tbody>
-                                    </table>
+                                 <Paper elevation={3} style={{ padding: "10px" }}>
+                                 <TableContainer>
+                                    <Table className="my-table">
+                                       <TableHead>
+                                       <TableRow>
+                                          <TableCell>Document Type</TableCell>
+                                          <TableCell>PO No</TableCell>
+                                          <TableCell>PO Date</TableCell>
+                                          <TableCell>Vendor Code</TableCell>
+                                          <TableCell>Vendor Name</TableCell>
+                                          <TableCell>Income Terms</TableCell>
+                                          <TableCell>Purchase Group</TableCell>
+                                          <TableCell>Version No</TableCell>
+                                          <TableCell>Status</TableCell>
+                                       </TableRow>
+                                       </TableHead>
+                                       <TableBody>
+                                       {this.state.poArray.map((po, index) => (
+                                          <TableRow
+                                             key={index}
+                                             onClick={() => this.loadPO(index)}
+                                             style={{ cursor: "pointer" }}
+                                          >
+                                             <TableCell>{po.documentType}</TableCell>
+                                             <TableCell>{po.purchaseOrderNumber}</TableCell>
+                                             <TableCell>{po.poDate}</TableCell>
+                                             <TableCell>{po.vendorCode}</TableCell>
+                                             <TableCell>{po.vendorName}</TableCell>
+                                             <TableCell>{po.incomeTerms}</TableCell>
+                                             <TableCell>{po.purchaseGroup}</TableCell>
+                                             <TableCell>{po.versionNumber}</TableCell>
+                                             <TableCell>{po.status}</TableCell>
+                                          </TableRow>
+                                       ))}
+                                       </TableBody>
+                                    </Table>
+                                 </TableContainer>
+                                 </Paper>
                                  </div>
                               </div>
                            </form>

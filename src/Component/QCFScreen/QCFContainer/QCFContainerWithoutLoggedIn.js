@@ -16,6 +16,7 @@ import {ROLE_GENERAL_MANAGER_ADMIN} from "../../../Constants/UrlConstants";
 import {ROLE_EXECUTIVE_MANAGER_ADMIN} from "../../../Constants/UrlConstants";
 import {ROLE_CHAIRMAN_MANAGER_ADMIN} from "../../../Constants/UrlConstants";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
+import { TableContainer } from "@material-ui/core";
 
 
 class QCFAnnexure extends Component{
@@ -808,7 +809,7 @@ toPdf(){
     return (
       <>
       <Loader isLoading={this.state.isLoading} />
-        <div className="card my-2">
+        <div className="card my-2 wizard-v1-content">
           <div className="lineItemDiv min-height-0px">
           {/* <div className="card my-2"> */}
           <div className="col-12 d-flex justify-content-between">
@@ -846,8 +847,8 @@ toPdf(){
               {/* <div class="table-proposed" > */}
               {/* <div class="w-100 justify-content-center table-proposed d-flex" > */}
                 <div class="justify-content-center table-proposed d-flex" >
-                  <StickyHeader height={height} className="table-responsive w-max-content">
-                    <table ref={ref => this._pdfPrint = ref} id="tableData" className="table table-bordered table-header-fixed table-qcf text-center">
+                  <TableContainer>
+                    <table ref={ref => this._pdfPrint = ref} id="tableData" className="my-table">
                       <thead>
                         <tr>
                           
@@ -970,7 +971,7 @@ toPdf(){
                       </tfoot>
                     
                     </table>
-                  </StickyHeader>
+                  </TableContainer>
 
                 </div>
                 <div className="left d-flex" >

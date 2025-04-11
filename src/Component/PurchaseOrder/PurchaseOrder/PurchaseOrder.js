@@ -13,8 +13,13 @@ import { removeLeedingZeros, getCommaSeperatedValue, getDecimalUpto } from "../.
 import swal from "sweetalert";
 import { API_BASE_URL } from "../../../Constants";
 import { isServicePO } from "../../../Util/AlkylUtil";
-import AdvanceShipmentNotice from "../../AdvanceShipmentNotice/AdvanceShipmentNotice/AdvanceShipmentNotice";
-import NewHeader from "../../NewHeader/NewHeader";
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, TablePagination, TextField,
+  Grid,Button,
+  Container,
+  IconButton
+} from "@material-ui/core";
 class PurchaseOrder extends Component {
   
   constructor (props) {
@@ -26,11 +31,15 @@ class PurchaseOrder extends Component {
       buttonText:"",
       ASN:"Create ASN",
       displayDivFlag:"block",
+      searchQuery: "",
+      page: 0,
+      rowsPerPage: 50,
       loadPODetails: false,
       loadPOLine:false,
       loadPOLineList:false,
       loadDocumentTyeList:false,
       loadPOLineConditions:false,
+      openModal:false,
       poLineArray:[],
       //nikhil code 25-07-2022
       partner: {
@@ -474,12 +483,34 @@ handleFilterClick = () => {
   this.props.onFilter &&  this.props.onFilter();
   this.setState({formDisplay: !this.state.formDisplay});
   this.setState({searchDisplay: !this.state.searchDisplay});
+  this.setState({openModal:false})
   }
 
   onSelectVendorRow = (partner) => {
     
     console.log('onSelectVendorRow',partner)
    };
+   handleSearchChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+  };
+
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
 render() {
   const {filter} = this.props;
   var displayService="none";
@@ -499,172 +530,219 @@ var frmhidden = {
           var searchHidden = {
             display: this.state.searchDisplay ? "block" : "none"
               } 
+              const {  poList, vendorCodeShown, vendorNameShown, newPoStatus, loadPODetails } = this.props;
+              const { searchQuery, page, rowsPerPage } = this.state;
+              const filteredData = poList.filter((entry) =>
+                Object.values(entry).some((val) =>
+                  val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
+                )
+              );
     return (
       <React.Fragment>
-      <div className="w-100">
-        <div style={ hidden} className="mt-70 boxContent">
-      
+      <div className="w-100" style={{marginTop:"80px"}}>
+        <div style={ hidden} >
+        {this.state.openModal && <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+        <div className="modal-backdrop"></div>  <div className="modal-dialog modal-lg">
+                                       <div className="modal-content">
       <FormWithConstraints>
+      <Grid container spacing={2} style={{paddingTop:"10px"}}>
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                label="Po No From"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={filter.poNoFrom}
+                onChange={(e) => this.handleFilterChange('poNoFrom', e)}
+                InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Po No To"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={filter.poNoTo}
+                onChange={(e) => this.handleFilterChange('poNoTo', e)}
+                InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Po Date From"
+                type="date"
+                variant="outlined"
+                size="small"
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={filter.poDateFrom}
+                onChange={(e) => this.handleFilterChange('poDateFrom', e)}
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Po Date To"
+                type="date"
+                variant="outlined"
+                size="small"
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={filter.poDateTo}
+                onChange={(e) => this.handleFilterChange('poDateTo', e)}
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
 
-      <div className="row">
-        <div className="col-sm-12">
-       
-        <div className="row mt-2">
-                      <label className="col-sm-2 mt-4">Po No</label>
-                      <div className="col-sm-4">
-                      <label>From </label>
-                        <input type="text" className="form-control"  value={filter.poNoFrom} onChange={this.handleFilterChange.bind(this,'poNoFrom')} />
-                      </div>
-                
-                      <div className="col-sm-4">
-                      <label>To </label>
-                        <input type="text" className="form-control"  value={filter.poNoTo} onChange={this.handleFilterChange.bind(this,'poNoTo')} />
-                      </div>
-
-            </div>
-            </div>
-
-        <div className="col-sm-12">
-
-            <div className="row mt-2">
-                      <label className="col-sm-2 mt-4">Po Date</label>
-                      <div className="col-sm-4">
-                        <label>From </label>
-                        <input type="date" className="form-control"  value={filter.poDateFrom} onChange={this.handleFilterChange.bind(this,'poDateFrom')} />
-                      </div>
-                
-                      <div className="col-sm-4">
-                        <label>To </label>
-                        <input type="date" className="form-control"  value={filter.poDateTo} onChange={this.handleFilterChange.bind(this,'poDateTo')} />
-                      </div>
-
-
-            </div>
-
-        </div>
-      </div>
-
-        <div className="row mt-4">
-        <label className="col-sm-2">Employee code </label>
-
-                      <div className="col-sm-4">
-                        <input type="text" className="form-control"  value={filter.empCode} onChange={this.handleFilterChange.bind(this,'empCode')} />
-                      </div>
-</div>
-         <div className="row mt-4">
-        <label className="col-sm-2">Vendor code </label>
-                      <div className="col-sm-4">
-                        <input type="text" className="form-control"  value={filter.vendorCode} onChange={this.handleFilterChange.bind(this,'vendorCode')} />
-                      </div>
-                        {/* nikhil code 25-07-2022*/}
-                      <div>
-                        <button  type="button" className={"btn btn-link"} data-toggle="modal" data-target="#searchCompanyModal" ><img src={alkylLogo} alt="" /></button>
-                      </div>
-                       {/* nikhil code 25-07-2022*/}
-                     <div className="col-sm-2">
-                          <button type="button" className={"btn btn-primary"} onClick={this.handleFilterClick.bind(this)}> Search </button>
-                      </div>
-
-
-        </div>
-         
-        <div className="row">
-
-        <div className="col-sm-6">
-
-        </div>
-
-        <div className="col-sm-6">
-
-        <div className="row mt-2">
-        <div className="col-sm-4"></div>
-           <div className="col-sm-8">
-            <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." />
-</div>
-    </div>
-
-        </div>
-
-      </div>
-      <div>
-           {/* <div className="col-sm-3">
-            <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." />
-            </div>*/}
-               <div className="col-sm-12 mt-2">
-                <div class="table-proposed">
-                <StickyHeader height={360} className="table-responsive width-adjustment">
-                     <table className="table table-bordered table-header-fixed">
-                       <thead>
-                         <tr>                          
-                           <th>PO No</th>
-                           {/* <th>Document Type</th> */}
-                           <th className="text-center">PO Date</th>
-                           <th className="text-center" style={{display:this.state.vendorCodeShown}}>Vendor Code</th>
-                           <th style={{display:this.state.vendorNameShown}}>Vendor Name</th>
-                           {/* <th>Plant</th> */}
-                           {/* <th>Inco Terms </th> */}
-                           <th>Requested By</th>
-                           {/* <th>Purchase Group</th> */}
-                           <th className="text-center">Version No</th>
-                           <th>Status</th>
-                         </tr>
-                       </thead>
-                       <tbody id="DataTableBody">
-                            {
-                              this.props.poList.map((po,index)=>
-                                <tr onClick={()=>{this.loadPODetails(index)}}>
-                                  <td>{po.purchaseOrderNumber}</td>
-                                  {/* <td>{po.documentType}</td> */}
-                                  <td className="text-center">{po.poDate}</td>
-                                  <td className="text-center" style={{display:this.state.vendorCodeShown}}>{po.vendorCode}</td>
-                                  <td style={{display:this.state.vendorNameShown}}>{po.vendorName}</td>
-                                  {/* <td>{po.plant}</td> */}
-                                  <td>{po.requestedBy.name}</td>
-                                  {/* <td>{po.incomeTerms}</td> */}
-                                  {/* <td>{po.purchaseGroup}</td> */}
-                                  <td className="text-center">{po.versionNumber}</td>
-                                  <td>{this.state.newPoStatus[po.status]}</td>
-                                </tr>
-                              )
-                            }
-
-                       </tbody>
-                     </table>
-                     </StickyHeader>
-                  </div>
-                    </div>
-                 </div>
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                label="Employee Code"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={filter.empCode}
+                onChange={(e) => this.handleFilterChange('empCode', e)}
+                InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Vendor Code"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={filter.vendorCode}
+                onChange={(e) => this.handleFilterChange('vendorCode', e)}
+                InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}
+              />
+            </Grid>
+            <Grid item xs={1}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<img src={alkylLogo} alt="Alkyl Logo" />}
+                data-toggle="modal" data-target="#searchCompanyModal" 
+              >
+              </Button>
+            </Grid>
+            <Grid item xs={12}style={{textAlign:"center"}}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleFilterClick}
+                size="small"
+              >
+                Search
+              </Button>
+                 <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+                 Cancel</Button>
+            </Grid>
+            
+          </Grid>
+        </Grid>
+      </Grid>
       </FormWithConstraints>   
+      </div>
+      </div>
+      </div>}
+           
+      <Grid container>
+            <Grid item sm={12} className="mb-1">   
+            
+        <input
+          placeholder="Search"
+          // variant="outlined"
+          // size="small"
+          style={{fontSize: "10px", float:"right" }}
+          value={searchQuery}
+          onChange={this.handleSearchChange}
+        /><IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+        </Grid>
+        </Grid>
+           <TableContainer >
+          <Table className="my-table" aria-label="po table">
+            <TableHead>
+              <TableRow>
+                <TableCell>PO No</TableCell>
+                <TableCell align="center">PO Date</TableCell>
+                {vendorCodeShown && <TableCell align="center">Vendor Code</TableCell>}
+                {vendorNameShown && <TableCell>Vendor Name</TableCell>}
+                <TableCell>Requested By</TableCell>
+                <TableCell align="center">Version No</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((po, index) => (
+                <TableRow key={index} onClick={()=>{this.loadPODetails(index)}}
+                >
+                  <TableCell>{po.purchaseOrderNumber}</TableCell>
+                  <TableCell align="center">{po.poDate}</TableCell>
+                  {vendorCodeShown && <TableCell align="center">{po.vendorCode}</TableCell>}
+                  {vendorNameShown && <TableCell>{po.vendorName}</TableCell>}
+                  <TableCell>{po.requestedBy.name}</TableCell>
+                  <TableCell align="center">{po.versionNumber}</TableCell>
+                  <TableCell>{newPoStatus[po.status]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+                      rowsPerPageOptions={[50, 100, 150]}
+                      component="div"
+                      count={filteredData.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={this.handleChangePage}
+                      onRowsPerPageChange={this.handleChangeRowsPerPage}
+                    />
+      
       </div> 
-                  <br/>
+                 
                   <div  style={ shown }>
-                    <div  className="boxContent mt-55">
+                    <Container style={{marginTop:"10px !important"}}>
+                      <Paper className="p-3">
                   <div className="row">
                       <div className="col-sm-12 text-right">
-                          <button className="btn btn-primary" type="button" onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden});}}><i className="fa fa-arrow-left" aria-hidden="true"></i></button>
-                          <a href={API_BASE_URL+"/rest/pdf"} className="btn btn-primary ml-2">Print PO</a>
+                          <Button variant="contained" color="primary" type="button" onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden});}}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
+                          <Button variant="contained" color="primary" href={API_BASE_URL+"/rest/pdf"} className="btn btn-primary ml-2">Print PO</Button>
                           {this.state.po.isServicePO?"":
-                          <button type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
+                          <Button variant="contained" color="primary" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
                           onClick={()=>{this.props.createASN(this.state.po,this.state.poLineArray,this.state.serviceArray,this.state.costCenterList,this.props.SSNVersion)}}
-                            // onClick={()=>{this.props.createASN(this.state.po,this.state.poLineArray,this.state.serviceArray,this.state.costCenterList,this.state.ssnFundList,this.props.SSNVersion)}}
+                          
                             >
-                            
-                             {/* {this.state.po.isServicePO?"Create Service Note":"Create ASN"} */}
                              {this.state.po.isServicePO?"":"Create ASN"}
-                          </button>}
-                          <button type="button" className={this.state.po.status==="ACPT"?"btn btn-primary ml-2 inline-block":"btn btn-success ml-2 none"} 
+                          </Button>}
+                          {this.state.po.status==="ACPT"&&<Button variant="contained" color="primary" type="button" className="ml-2"
                              onClick={()=>{this.getASNHistory()}}
                             >
                              {this.state.po.isServicePO?"Service History":"ASN History"}
-                          </button>
-                          <button type="button" className={(this.state.po.status==="REL" || this.state.po.status==="REJ")?"btn btn-success ml-2 inline-block":"btn btn-success ml-2 none"} 
+                          </Button>}
+                          
+                          {(this.state.po.status==="REL" || this.state.po.status==="REJ")&&<Button variant="contained"  className="ml-2" color="primary" type="button"  
                             onClick={()=>{this.setState({loadPODetails: true}); commonSubmitWithParam(this.props,"poAcceptance","/rest/acceptPO/",this.state.po.poId)}}>
                              Accept
-                          </button>
-                          <button type="button"  className={this.state.po.status==="REL"?"btn btn-danger ml-2 inline-block":" btn btn-danger ml-2 none"} 
+                          </Button>}
+                         {this.state.po.status==="REL"&& <Button variant="contained" color="primary"  className="ml-2" type="button"
                             onClick={()=>{this.rejectPO()}}>
                               Reject
-                          </button>
+                          </Button>}
                       </div>
                   </div>
                   <hr className="w-100"></hr>
@@ -697,11 +775,11 @@ var frmhidden = {
                         {this.state.newPoStatus[this.state.po.status]}
                       </span>  
                   </div> 
-                
-                  </div>
+                  </Paper>
+                  </Container>
 
-                 
-                  <div className="boxContent fixed-height py-1">
+                 <Container>
+                  <Paper className="fixed-height p-3">
           <div className={"lineItemDiv min-height-0px "+(displayService==="block"?"display_none":"")}>
            <div className="row">
            <div className="col-sm-9"></div>
@@ -710,41 +788,41 @@ var frmhidden = {
             </div> 
                <div className="col-sm-12 mt-2">
                   <StickyHeader height={150} className="table-responsive">
-                     <table className="table table-bordered table-header-fixed">
-                       <thead>
-                         <tr>                         
-                           <th> Line No </th>
-                           <th> Material Description </th>
-                           <th className="text-right"> PO Qty </th>
-                           <th> UOM </th>
-                           {/* <th className="width-120px">ASN Qty </th> */}
-                           {/* <th>Bal Qty</th> */}
-                           <th className="text-right"> Rate </th>
-                           <th>Currency</th> 
-                           {/* <th>Plant</th> */}
-                         </tr>
-                       </thead>
-                       <tbody id="DataTableBodyTwo">
+                     <Table className="my-table">
+                       <TableHead>
+                         <TableRow>                         
+                           <TableCell> Line No </TableCell>
+                           <TableCell> Material Description </TableCell>
+                           <TableCell className="text-right"> PO Qty </TableCell>
+                           <TableCell> UOM </TableCell>
+                           {/* <TableCell className="widTableCell-120px">ASN Qty </TableCell> */}
+                           {/* <TableCell>Bal Qty</TableCell> */}
+                           <TableCell className="text-right"> Rate </TableCell>
+                           <TableCell>Currency</TableCell> 
+                           {/* <TableCell>Plant</TableCell> */}
+                         </TableRow>
+                       </TableHead>
+                       <TableBody id="DataTableBodyTwo">
                             {
                               this.state.poLineArray.map((poLine)=>
-                                <tr onClick={()=>this.onClickPOLine(poLine)}>
+                                <TableRow onClick={()=>this.onClickPOLine(poLine)}>
                                   {/* onClick={()=>this.onClickPOLine(poLine)} */}
                                   {/* onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden}); commonSubmitWithParam(this.props,"getPOLines","/rest/getPOLines",poLine.poLineId)}} */}
-                                  <td>{removeLeedingZeros(poLine.lineItemNumber)}</td>
-                                  <td>{poLine.materialCode} - {poLine.material}</td>
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.poQuantity,3))}</td>
-                                  <td>{poLine.uom}</td>
-                                  {/* <td className="width-120px">{poLine.asnQuantity}</td> */}
-                                  {/* <td>{poLine.balanceQuantity}</td> */}
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.rate,2))}</td>
-                                  <td>{poLine.currency}</td>
+                                  <TableCell>{removeLeedingZeros(poLine.lineItemNumber)}</TableCell>
+                                  <TableCell>{poLine.materialCode} - {poLine.material}</TableCell>
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.poQuantity,3))}</TableCell>
+                                  <TableCell>{poLine.uom}</TableCell>
+                                  {/* <TableCell className="width-120px">{poLine.asnQuantity}</TableCell> */}
+                                  {/* <TableCell>{poLine.balanceQuantity}</TableCell> */}
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(poLine.rate,2))}</TableCell>
+                                  <TableCell>{poLine.currency}</TableCell>
                                   {/* <td>{poLine.plant}</td> */}
-                                </tr>
+                                </TableRow>
                               )
                      }
                     
-                  </tbody>
-               </table>
+                  </TableBody>
+               </Table>
             </StickyHeader>
          </div>
       </div>
@@ -758,44 +836,44 @@ var frmhidden = {
             </div>
                <div className="col-sm-12 mt-2"> 
                   <StickyHeader height={150} className="table-responsive">
-                     <table className="table table-bordered table-header-fixed">
-                       <thead>
-                         <tr>             
-                           <th> Po Line No.</th>            
-                           <th> Service No.</th>
-                           <th className="w-40per">Service Description po</th>
-                           <th className="text-right"> Required Qty </th>
-                           <th> UOM </th>
-                           {/* <th>Completed Qty </th>
-                           <th>Bal Qty</th> */}
-                           <th className="text-right"> Rate </th>
-                           <th>Currency</th> 
+                     <Table className="my-table">
+                       <TableHead>
+                         <TableRow>             
+                           <TableCell> Po Line No.</TableCell>            
+                           <TableCell> Service No.</TableCell>
+                           <TableCell className="w-40per">Service Description po</TableCell>
+                           <TableCell className="text-right"> Required Qty </TableCell>
+                           <TableCell> UOM </TableCell>
+                           {/* <TableCell>Completed Qty </TableCell>
+                           <TableCell>Bal Qty</TableCell> */}
+                           <TableCell className="text-right"> Rate </TableCell>
+                           <TableCell>Currency</TableCell> 
                            {/* <th>Plant</th> */}
-                         </tr>
-                       </thead>
-                       <tbody id="DataTableBodyTwo">
+                         </TableRow>
+                       </TableHead>
+                       <TableBody id="DataTableBodyTwo">
                             {
                               this.state.serviceArray.map((service,i)=>
                               
-                                <tr>
+                                <TableRow>
 
                                   {/* onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden}); commonSubmitWithParam(this.props,"getPOLines","/rest/getPOLines",poLine.poLineId)}} */}
-                                  <td>{removeLeedingZeros(service.parentPOlineNumber)}</td>
-                                  <td>{removeLeedingZeros(service.lineItemNumber)}</td>
-                                  <td>{service.materialCode}-{service.material}</td>
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.poQuantity,3))}</td>
-                                  <td>{service.uom}</td>
-                                  {/* <td>{service.asnQuantity}</td>
-                                  <td>{service.balanceQuantity}</td> */}
-                                  <td className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.rate,2))}</td>
-                                  <td>{service.currency}</td>
-                                  {/* <td>{poLine.plant}</td> */}
-                                </tr>
+                                  <TableCell>{removeLeedingZeros(service.parentPOlineNumber)}</TableCell>
+                                  <TableCell>{removeLeedingZeros(service.lineItemNumber)}</TableCell>
+                                  <TableCell>{service.materialCode}-{service.material}</TableCell>
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.poQuantity,3))}</TableCell>
+                                  <TableCell>{service.uom}</TableCell>
+                                  {/* <TableCell>{service.asnQuantity}</TableCell>
+                                  <TableCell>{service.balanceQuantity}</TableCell> */}
+                                  <TableCell className="text-right">{getCommaSeperatedValue(getDecimalUpto(service.rate,2))}</TableCell>
+                                  <TableCell>{service.currency}</TableCell>
+                                  {/* <TableCell>{poLine.plant}</TableCell> */}
+                                </TableRow>
                               )
                             }
                         
-                       </tbody>
-                     </table>
+                       </TableBody>
+                     </Table>
                   </StickyHeader>
                </div>
             </div>    
@@ -832,15 +910,7 @@ var frmhidden = {
         <span className="col-sm-2">
             {this.state.currentPOLine.plant}
         </span> 
-            
-        {/* <label className="col-sm-2">Delivery Schedule for Annual Orders</label>
-        <span className="col-sm-2">
-            {this.state.currentPOLine.deliveryScheduleAnnual}
-        </span> */}
-        {/* <label className="col-sm-2">Basic Price</label>
-        <span className="col-sm-2">
-            {this.state.currentPOLine.basicPrice}
-        </span> */}
+       
         </div>
         <div className="row mt-2">
           <label className="col-sm-2">Batch</label>
@@ -848,80 +918,19 @@ var frmhidden = {
               {this.state.currentPOLine.batch}
           </span>
         </div>
-        {/* <div className="row mt-2">  
-        <label className="col-sm-2">Overdeliv. Tol</label>
-        <span className="col-sm-2">
-            {this.state.currentPOLine.overDeliveryTol}
-        </span>
-        <label className="col-sm-2">Underdel. Tol</label>
-        <span className="col-sm-2">
-            {this.state.currentPOLine.underdeliveryTol}
-        </span>
-        </div> */}
+       
         </div>     
         </div>     
-        </FormWithConstraints>    
-                 {/* <h5>Conditions</h5>
-      <hr className="w-100"></hr>
-                 <FormWithConstraints>
-          <div className="row">  
-                {
-                  this.state.poLineConditionArray.map((poLineCondition)=>{
-                    return (
-                      <React.Fragment>
-                        <div className="col-sm-5 nopadding">
-                        <div className="row">
-                        <label className="col-sm-3 mt-2"> {poLineCondition.conditionName} </label>
-                        <div className="col-sm-6 mt-2">
-                        <input type="text" className="form-control" value={poLineCondition.conditionValue}  name="freightCondition"/>
-                        </div>
-                        </div>
-                        </div>
-                      </React.Fragment>
-                    )
-                  })
-                }
-                </div>               
-          </FormWithConstraints>
-          <br/> */}
-                  {/* <h4>Material Services</h4>
-      <hr className="w-100"></hr>
-                   <div className="row">
-                   <div className="col-sm-12">
-                     <table className="table table-bordered">
-                     <thead className="thead-light">
-                         <tr>
-                           <th>Item Code</th>
-                           <th>Material Description</th>
-                           <th>PO Quantity</th>
-                           <th>Rate</th>
-                           <th>Currency</th>
-                           <th>Delivered Qty</th>
-                           <th>Balance Qty</th>
-                         </tr>
-                       </thead>
-                       <tbody>
-                         <tr>
-                           <td>1234</td>
-                           <td>Chemical</td>
-                           <td>78</td>
-                           <td>9889</td>
-                           <td>RS</td>
-                           <td>667</td>
-                           <td>1234</td>
-                         </tr>
-                       </tbody>
-                     </table>
-                     </div>
-                 </div> */}
-                 </div>
+        </FormWithConstraints>   
+                 </Paper>
+                 </Container>
                  <br/>
                  <br/>
                  </div>
       </div>
         {/* informatiom modal  nikhil code 25-07-2022*/}
        <div className="modal searchcompanyViewModal" id="searchCompanyModal" >
-                      <div class="modal-dialog modal-dialog-centered ">
+                      <div class="modal-dialog ">
                       <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title">Search Vendor</h4>
@@ -965,38 +974,38 @@ var frmhidden = {
                           </div>
                           <div class="row">
                                 <div className="col-sm-12 mt-2">
-                                <table class="table table-bordered scrollTable">
-                                  <thead>
-                                    <tr>
-                                      <th>Vendor Code</th>
-                                      <th>Person Name </th>
-                                      <th>Mobile No</th>
-                                      <th>Mail ID</th>
-                                      <th>Company Name</th>
-                                      <th>Invited By</th>
-                                      <th>Department</th>
-                                      <th>Designation</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody id="DataTableBody">
+                                <Table class="my-table">
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell>Vendor Code</TableCell>
+                                      <TableCell>Person Name </TableCell>
+                                      <TableCell>Mobile No</TableCell>
+                                      <TableCell>Mail ID</TableCell>
+                                      <TableCell>Company Name</TableCell>
+                                      <TableCell>Invited By</TableCell>
+                                      <TableCell>Department</TableCell>
+                                      <TableCell>Designation</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody id="DataTableBody">
                                     {
                                       (this.state.companyList).map((vendor,index)=>
-                                        <tr onClick={(e)=>this.onSelectVendorRow("selectedVendor"+index,vendor.partner)} 
+                                        <TableRow onClick={(e)=>this.onSelectVendorRow("selectedVendor"+index,vendor.partner)} 
                                         className={this.state["selectedVendor"+index]} >
-                                          <td>{vendor.userName}</td>
-                                          <td> {vendor.userDetails.name} </td>
-                                          <td> {vendor.userDetails.mobileNo} </td>
-                                          <td> {vendor.email} </td>
-                                          <td> {vendor.name} </td>
-                                         {/* <td> {vendor.partner.name} </td>*/}
-                                          <td> {vendor.createdBy.name} </td>
-                                          <td> {vendor.createdBy.userDetails.userDept} </td>
-                                          <td> {vendor.createdBy.userDetails.userDesignation} </td>
-                                        </tr>
+                                          <TableCell>{vendor.userName}</TableCell>
+                                          <TableCell> {vendor.userDetails.name} </TableCell>
+                                          <TableCell> {vendor.userDetails.mobileNo} </TableCell>
+                                          <TableCell> {vendor.email} </TableCell>
+                                          <TableCell> {vendor.name} </TableCell>
+                                         {/* <TableCell> {vendor.partner.name} </TableCell>*/}
+                                          <TableCell> {vendor.createdBy.name} </TableCell>
+                                          <TableCell> {vendor.createdBy.userDetails.userDept} </TableCell>
+                                          <TableCell> {vendor.createdBy.userDetails.userDesignation} </TableCell>
+                                        </TableRow>
                                       )
                                     }
-                                </tbody>
-                                </table>
+                                </TableBody>
+                                </Table>
                                 <div className="clearfix"></div>
                               </div>
                               </div>

@@ -406,7 +406,7 @@ calculateTotalIGSTAmount = (child) => {
             </div>  */}
                <div className="col-sm-12 mt-2">
                <StickyHeader height={"80vh"} >
-                     <table className="table table-bordered table-header-fixed">
+                     <table className="my-table">
                        <thead>
                          <tr >                         
                          <th className="col-lg-12">Supplier Code</th>

@@ -108,7 +108,7 @@ class QCFReport extends Component{
                             <div className="col-sm-12 mt-2">
                                 <div class="table-proposed">
                                     <StickyHeader height={height} className="table-responsive w-max-content">
-                                        <table id="tableData" className="table table-bordered table-header-fixed table-qcf text-center">
+                                        <table id="tableData" className="my-table">
                                             <thead>
                                                 <tr>
                                                     <th>Vendor</th>

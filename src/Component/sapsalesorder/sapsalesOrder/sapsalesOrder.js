@@ -15,8 +15,8 @@ import swal from "sweetalert";
 import { API_BASE_URL } from "../../../Constants";
 import { isServicePO } from "../../../Util/AlkylUtil";
 import { submitForm, submitToURL,savetoServer } from "../../../Util/APIUtils";
-import { rest } from "lodash-es";
-import { Link } from "react-router-dom";
+import { TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Button, Grid, IconButton } from "@material-ui/core";
+
 
 class SapsalesOrder extends Component {
   
@@ -30,6 +30,10 @@ class SapsalesOrder extends Component {
       buttonText:"",
       ASN:"Create ASN",
       displayDivFlag:"block",
+      searchQuery: "",
+      page: 0,
+      rowsPerPage: 50,
+      openModal:false,
       loadPODetails: false,
       loadPOLine:false,
       loadPOLineList:false,
@@ -341,6 +345,7 @@ handleFilterChange = (key,event) => {
 }
 
 handleFilterClick = () => {
+  this.setState({openModal:false})
   if(this.props.filter.fdate!=""|| this.props.filter.tdate!=""){
   this.props.changeLoaderState(true);
   this.props.onFilter &&  this.props.onFilter()
@@ -361,7 +366,29 @@ onClickVehicleRegistration(index){
   //  <Link to="/vehicalRegistration"></Link>
 
 }
+handlePageChange = (event, newPage) => {
+  this.setState({ page: newPage });
+};
 
+handleRowsPerPageChange = (event) => {
+  this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+};
+
+handleChangeRowsPerPage = (event) => {
+  this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+};
+
+
+onCloseModal=()=>{
+  this.setState({
+    openModal:false
+  })
+}
+onOpenModal=()=>{
+  this.setState({
+    openModal:true
+  })
+}
 render() {
   const {filter} = this.props;
   var displayService="none"; 
@@ -378,159 +405,128 @@ render() {
   var hidden = {
     display: this.state.hidden ? "none" : "block"
       }
+      const { searchQuery, page, rowsPerPage } = this.state;
+      const searchInObject = (obj, searchTerm) => {
+        return Object.keys(obj).some((key) => {
+          const value = obj[key];
+          if (typeof value === 'object' && value !== null) {
+            return searchInObject(value, searchTerm);
+          }
+          if (value === null || value === undefined) {
+            return false;
+          }
+          return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+        });
+      };
+    
+      const filteredData = this.props.SapSalesOrderStatusList.filter((entry) => {
+        return searchInObject(entry, searchQuery);
+      });
     return (
-      <div className="w-100" id="togglesidebar">
-        <div style={ hidden} className="mt-70 boxContent">
-      {/* <h5>Purchase Order List</h5>
-      <hr className="w-100"></hr> */}
+      <div className="wizard-v1-content" style={{marginTop:"80px"}}>
+        <div style={ hidden} >
+        {this.state.openModal && <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+        <div className="modal-backdrop"></div> <div className="modal-dialog modal-sm">
+                                       <div className="modal-content">
       <FormWithConstraints>
-      <div className="row">
-        <div className="col-sm-12">
-       
-        <div className="row mt-2">
-                     
-            </div>
-            </div>
-
-        <div className="col-sm-12">
-
-            <div className="row mt-2">
-                      <label className="col-sm-2 mt-4">Sap Order Date<span className="redspan">*</span></label>
-                      <div className="col-sm-4">
-                        <label>From </label>
-                        <input type="date" required={true} className="form-control" name="fdate"   value={filter.fdate} onChange={this.handleFilterChange.bind(this,'fdate')} />
-                      </div>
-                
-                      <div className="col-sm-4">
-                        <label>To </label>
-                        <input type="date" required={true} className="form-control" name="tdate" value={filter.tdate} onChange={this.handleFilterChange.bind(this,'tdate')} />
-                      </div>
-
-
-            </div>
-
-        </div>
-      </div>
-
-        <div className="row mt-4">
-        <label className="col-sm-2 mt-4">Plant </label>
-                            <div className="col-sm-2">
-
-                              <input type="text" className="form-control" name="plant" value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
-                                
-                              />
-                            </div>
-          
-           
-                           
-        </div>
-
-
-        <div className="row mt-4">
-                      <div className="col-sm-3">
-                          <button type="button" className={"btn btn-primary"} onClick={this.handleFilterClick.bind(this)}> Search </button>
-                      </div>
-
-
-        </div>
-        <div className="row">
-        <div className="col-sm-8"></div>
-        <div className="col-sm-4">                          
-        <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Table Search .." /> 
-        </div>
-         </div>       
-        <div className="row">
-
-        <div className="col-sm-6">
-
-        </div>
-
-        <div className="col-sm-6">
-
-        <div className="row mt-2">
-        <div className="col-sm-4"></div>
-           <div className="col-sm-8">
-            {/* <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." /> */}
-            </div>
-        </div>
-
-        </div>
-
-        </div>
-
-      
-      <div>
-            {/* <div className="col-sm-3">
-            <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." />
-            </div> */}
-                <div className="col-sm-12 mt-2">
-                <div class="table-proposed">
-                <StickyHeader height={360} className="table-responsive width-adjustment">
-                     <table className="table table-bordered table-header-fixed">
-                       <thead>
-                         <tr>                          
-                           <th>Request No</th>
-                           <th className="text-center">Cust Blk</th>
-                           <th className="text-center" >Plant</th>
-                           <th >Sales Ord No </th>
-                           <th>Date</th>
-                           <th>Delivery Date</th>
-                           <th>Sold To Party- Sold To Party Name</th>
-                           {/* <th>Sold To Party Name </th> */}
-                           {/* <th>Material</th> */}
-                           <th>Material Desc</th>
-                           <th>Qty</th>
-                           <th>Vehicle Type</th>
-                           {/* <th>Balance Delivery Qty</th>
-                           <th>Basic Rate</th> */}
-                           <th>Inward Transporter</th>
-                           <th>Outward Transporter</th>
-                           <th>inco</th>
-                           <th>inco1</th>
-                           {/* <th className="text-center">Version No</th> */}
-                           {/* <th>Status</th>  */}
-                         </tr>
-                       </thead>
-                       <tbody id="DataTableBody">
-                            {
-                              !isEmpty(this.props.SapSalesOrderStatusList) ?  this.props.SapSalesOrderStatusList.map((po,index)=>
-                              
-                                
-                              <tr>
-                              {po.requestNo == null && po.custBlockStatus == "@08@"    ? <td> <button  onClick={()=>{this.loadPODetails(index)}} key={index}  type="button" class="btn btn-outline-primary"  >Create</button></td> :<td key={index}>{po.requestNo}</td>}
-                               {po.custBlockStatus == "@08@"? <td onClick={()=>{this.props.SapSalesOrderList(po)}} style={{height: "25px",width: "25px",backgroundColor: "green",borderRadius: "50%",display: "inline-block",margin: 18}} ></td> :<td style={{height: "25px",width: "25px",backgroundColor: "red",borderRadius: "50%",display: "inline-block",margin: 18}} ></td> }
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center">{po.plant}</td>
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center" >{po.saleOrdNo}</td>
-                               {/* <td >{moment(po.date).format("ll")}</td> */}
-                               {/* <td >{moment(po.date).format("ll")}</td> */}
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDateWithoutTime(po.date)}</td>
-                              
-                               {/* <td>{moment(po.deliveryDate).format("ll")}</td> */}
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDateWithoutTime(po.deliveryDate)}</td>
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.soldToParty+"-"+po.soldToPartyName}</td>
-                               {/* <td>{po.soldToPartyName}</td> */}
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.material+"-"+po.materialDesc}</td>
-                               {/* <td>{po.materialDesc}</td> */}
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.qty}</td>
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.vehicleType}</td>
-                               {/* <td>{po.balanceDeliveryQty}</td> */}
-                               {/* <td>{po.basicRate}</td> */}
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.inwardTransporter}</td>
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.outwardTransporter}</td>
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.inco}</td>
-                               <td onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.inco1}</td>
-                             
-                             </tr>
-                              )
-                            : ""}
-                        
-                       </tbody>
-                     </table>
-                     </StickyHeader>
+      <div className="row mb-3">
+                  <div className="col-md-12 mb-5">
+                    <TextField label="From Date" variant="outlined" size="small" type="date" fullWidth value={filter.fdate} onChange={(e) => this.handleFilterChange("fdate", e)} InputLabelProps={{ shrink: true }}    inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
                   </div>
-                    </div>
-                 </div>
+                  <div className="col-md-12 mb-5">
+                    <TextField label="To Date" variant="outlined" size="small" type="date" fullWidth value={filter.tdate} onChange={(e) => this.handleFilterChange("tdate", e)} InputLabelProps={{ shrink: true }}   inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
+                  </div>
+                  <div className="col-md-12 mb-5">
+                    <TextField label="Plant" variant="outlined" size="small" fullWidth value={filter.plant} onChange={(e) => this.handleFilterChange("plant", e)} InputLabelProps={{ shrink: true }}  
+                      inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
+                  </div>
+                  <div className="col-md-12 text-center mt-2">
+                    <Button variant="contained" size="small" color="primary" onClick={this.handleFilterClick}>Search</Button>
+                     <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+                     Cancel</Button>
+                    
+                  </div>
+                </div>
+                
       </FormWithConstraints>   
+      </div>
+      </div>
+      </div>}
+      <div>
+        <Grid container>
+                    <Grid item sm={12} className="mb-1">                       
+                <input
+                  placeholder="Search"
+                  // variant="outlined"
+                  // size="small"
+                  style={{fontSize: "10px", float:"right" }}
+                  value={searchQuery}
+                  onChange={this.handleSearchChange}
+                /><IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+                </Grid>
+                </Grid>
+                <TableContainer className="mt-1">
+              
+                     <Table className="my-table">
+                       <TableHead>
+                         <TableRow>                          
+                           <TableCell>Request No</TableCell>
+                           <TableCell className="text-center">Cust Blk</TableCell>
+                           <TableCell className="text-center" >Plant</TableCell>
+                           <TableCell >Sales Ord No </TableCell>
+                           <TableCell>Date</TableCell>
+                           <TableCell>Delivery Date</TableCell>
+                           <TableCell>Sold To Party- Sold To Party Name</TableCell>
+                           <TableCell>Material Desc</TableCell>
+                           <TableCell>Qty</TableCell>
+                           <TableCell>Vehicle Type</TableCell>
+                           <TableCell>Inward Transporter</TableCell>
+                           <TableCell>Outward Transporter</TableCell>
+                           <TableCell>inco</TableCell>
+                           <TableCell>inco1</TableCell>
+                         </TableRow>
+                       </TableHead>
+                       <TableBody id="DataTableBody">
+                            
+                              {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((po, index) => (
+                              
+                                
+                              <TableRow>
+                              {po.requestNo == null && po.custBlockStatus == "@08@"    ? <TableCell style={{textAlign:"center"}} > <Button size="small" variant="outlined" color="primary" onClick={()=>{this.loadPODetails(index)}} key={index}  type="button" >Create</Button></TableCell> :<TableCell key={index}>{po.requestNo}</TableCell>}
+                               {po.custBlockStatus == "@08@"? <TableCell style={{textAlign:"center"}} onClick={()=>{this.props.SapSalesOrderList(po)}} ><div style={{height: "15px",width: "15px",backgroundColor: "green",borderRadius: "50%",display: "inline-block",margin: 18}} ></div></TableCell> :<TableCell style={{textAlign:"center"}} ><div style={{height: "15px",width: "15px",backgroundColor: "red",borderRadius: "50%",display: "inline-block",margin: 18}} ></div></TableCell> }
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center">{po.plant}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center" >{po.saleOrdNo}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDateWithoutTime(po.date)}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDateWithoutTime(po.deliveryDate)}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.soldToParty+"-"+po.soldToPartyName}</TableCell>
+                             
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.material+"-"+po.materialDesc}</TableCell>
+                              
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.qty}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.vehicleType}</TableCell>
+                              
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.inwardTransporter}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.outwardTransporter}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.inco}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.inco1}</TableCell>
+                             
+                             </TableRow>
+                              ))
+                            }
+                        
+                       </TableBody>
+                     </Table>
+                     </TableContainer>
+                     <TablePagination
+                                         rowsPerPageOptions={[50, 100, 150]}
+                                         component="div"
+                                         count={filteredData.length}
+                                         rowsPerPage={rowsPerPage}
+                                         page={page}
+                                         onPageChange={this.handlePageChange}
+                                         onRowsPerPageChange={this.handleRowsPerPageChange}
+                                       />
+                  </div>
       </div> 
                  
        </div>

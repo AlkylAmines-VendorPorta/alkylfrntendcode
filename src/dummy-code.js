@@ -522,7 +522,7 @@ class QuotationByVendor extends Component{
                             <div className="col-sm-12 mt-2">
                                 <div>
                                     <StickyHeader height={360} className="table-responsive">
-                                        <table className="table table-bordered table-header-fixed">
+                                        <table className="my-table">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
@@ -769,8 +769,8 @@ class QuotationByVendor extends Component{
                     </div>
                 </div>
                 <div className="modal documentModal" id="documentModal" >
-                    <div className="modal-dialog modal-xl mt-100">
-                        <div className="modal-content">
+                <div className="modal-dialog mt-100" style={{width:"800px", maxWidth:"800px"}}>
+                <div className="modal-content" style={{width:"800px", maxWidth:"800px"}}>
                             <div className="modal-header">
                                 Other Documents
                   <button type="button" className={"close " + this.props.readonly} data-dismiss="modal">

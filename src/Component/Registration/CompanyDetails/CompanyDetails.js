@@ -14,6 +14,7 @@ import {
 import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
 import swal from 'sweetalert';
 import Loader from "../../FormElement/Loader/LoaderWithProps";
+import { Button } from "@material-ui/core";
 class CompanyDetails extends Component {
   
   constructor (props) { 
@@ -935,16 +936,16 @@ todaysDate=()=>{
               <br />
               <br />
               <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" className="btn btn-danger mr-1" onClick={()=>{this.setState({editPartnerFlag:false,});this.resetPropriterDetails()}}>Clear</button> 
-                  <button type="button" onClick={this.resetPropriterDetails} className="btn btn-primary">
+                  <Button size="small" variant="contained" color="primary" type="submit" className="btn btn-success mr-1">Save</Button>
+                  <Button size="small" variant="contained" color="secondary" type="button" className="btn btn-danger mr-1" onClick={()=>{this.setState({editPartnerFlag:false,});this.resetPropriterDetails()}}>Clear</Button> 
+                  <Button size="small" variant="contained" color="primary" type="button" onClick={this.resetPropriterDetails} className="btn btn-primary">
                     New &nbsp;<i className="fa fa-plus" aria-hidden="true"></i>
-                  </button>                 
+                  </Button>                 
               </div>
               </FormWithConstraints>
               <div className="row">
                 <div className="col-sm-12 mt-3">
-                  <table className="table table-bordered">
+                  <table className="my-table">
                     <thead>
                       <tr>
                         <th>Type </th>
@@ -1030,8 +1031,8 @@ todaysDate=()=>{
                 </div>
               </div>
               <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" className="btn btn-danger mr-1"  onClick={()=>{commonSubmitWithParam(this.props,"otherDetailsResponse","/rest/getOtherDetails",this.props.partner.partnerId); resetForm(this.otherForm)}}>Cancel</button>                  
+                  <Button size="small" variant="contained" color="primary" type="submit" className="mr-1">Save</Button>
+                  <Button size="small" variant="contained" color="secondary" type="button" className="mr-1"  onClick={()=>{commonSubmitWithParam(this.props,"otherDetailsResponse","/rest/getOtherDetails",this.props.partner.partnerId); resetForm(this.otherForm)}}>Cancel</Button>                  
               </div>
               </FormWithConstraints>
             </div>
@@ -1262,15 +1263,15 @@ todaysDate=()=>{
                 </div>
               </div>
               <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" className="btn btn-danger mr-1"onClick={()=>{
+                  <Button size="small" variant="contained" color="primary"type="submit" className="btn btn-success mr-1">Save</Button>
+                  <Button size="small" variant="contained" color="secondary" type="button" className="btn btn-danger mr-1"onClick={()=>{
                     this.setState({
                       loadFinancialAttachments:true,
                       loadFinancialYear:true
                     });
                     commonSubmitWithParam(this.props,"getFinancialDetails","/rest/getFinancialDetails",this.props.partner.partnerId);
                     resetForm(this.finaDetForm)
-                    }}>Cancel</button>                  
+                    }}>Cancel</Button>                  
               </div>
               </FormWithConstraints>
             </div>
@@ -1382,11 +1383,11 @@ todaysDate=()=>{
               <br/>
               
               <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" onClick={()=>{this.setState({editButtonFlag:false,countryFlag:false});this.resetaddressDetails()}} className="btn btn-danger mr-1">Clear</button>
-                  <button type="button" onClick={() => this.resetaddressDetails()} className="btn btn-primary">
+                  <Button size="small" variant="contained" color="primary" type="submit" className="btn btn-success mr-1">Save</Button>
+                  <Button size="small" variant="contained" color="secondary"type="button" onClick={()=>{this.setState({editButtonFlag:false,countryFlag:false});this.resetaddressDetails()}} className="btn btn-danger mr-1">Clear</Button>
+                  <Button size="small" variant="contained" color="primary" type="button" onClick={() => this.resetaddressDetails()} className="btn btn-primary">
                     New &nbsp;<i className="fa fa-plus" aria-hidden="true"></i>
-                  </button>
+                  </Button>
                  
                   {/* <button type="button" className={this.props.showSubmit?"btn btn-warning mr-1 ml-1 inline-block":"none"}
                   onClick={(e)=>swalPrompt(e,this,"submitConfirmation","","I declare that the information furnished above is correct to the best of my knowledge ?")}>Submit</button> */}
@@ -1394,7 +1395,7 @@ todaysDate=()=>{
               </FormWithConstraints>
               <div className="row">
                 <div className="col-sm-12 mt-3">
-                  <table className="table table-bordered">
+                  <table className="my-table">
                     <thead>
                       <tr>
                         <th>Name of Company</th>
@@ -1442,8 +1443,8 @@ todaysDate=()=>{
                 </div>
 
                 <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>     
-                  <button type="button" className={this.props.showSubmit?"btn btn-warning mr-1 ml-1 inline-block":"none"}
-                  onClick={(e)=>swalPrompt(e,this,"submitConfirmation","","I declare that the information furnished above is correct to the best of my knowledge ?")}>Submit</button>
+                  <Button size="small" variant="contained" color="primary" type="button" className={this.props.showSubmit?"mr-1 ml-1 inline-block":"none"}
+                  onClick={(e)=>swalPrompt(e,this,"submitConfirmation","","I declare that the information furnished above is correct to the best of my knowledge ?")}>Submit</Button>
               </div>
 
               </div>

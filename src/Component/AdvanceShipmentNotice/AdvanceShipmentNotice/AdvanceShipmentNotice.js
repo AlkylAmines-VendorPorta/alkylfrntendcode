@@ -1650,7 +1650,8 @@ getPurchaseOrderFromObj(po){
 
 
 
-                              {this.state.openStorageLocationModal && <div className="modal roleModal" id="locationModal show" style={{ display: 'block' }}>
+                              {this.state.openStorageLocationModal && <div className="customModal modal roleModal" id="locationModal show" style={{ display: 'block' }}>
+                              <div className="modal-backdrop"></div>
                                  <div className="modal-dialog modal-md mt-100">
                                     <div className="modal-content">
                                        <div className="modal-header">
@@ -1766,7 +1767,7 @@ getPurchaseOrderFromObj(po){
                               <div className="w-100 mt-2">
                                  <div className="col-sm-12">
                                     <div className="table-responsive mt-2">
-                                       <table className="table table-bordered">
+                                       <table className="my-table">
                                           <thead className="thead-light">
                                              <tr className="row m-0">
                                                 <th className="col-1">Line No.</th>
@@ -1910,7 +1911,8 @@ getPurchaseOrderFromObj(po){
                                     </div>
                                  }
 
-                                 {this.state.openModal && <div className="modal roleModal" id="updateRoleModal show" style={{ display: 'block' }}>
+                                 {this.state.openModal && <div className="customModal modal roleModal" id="updateRoleModal show" style={{ display: 'block' }}>
+                                 <div className="modal-backdrop"></div>
                                     <div className="modal-dialog modal-md mt-100">
                                        <div className="modal-content">
                                           <div className="modal-header">
@@ -2082,7 +2084,7 @@ getPurchaseOrderFromObj(po){
                                       
                                  <div className="col-sm-12 mt-2">
                                  { asn.advanceshipmentnotice!=null && index==0 ? 
-                                 <div className="row"> 
+                                 <div className="row text-center"> 
                                  {<label className="col-sm-1" >SSN No</label>}
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.serviceSheetNo===null?"":asn.advanceshipmentnotice.serviceSheetNo}</span>}
                                 {<label className="col-sm-1" >Created Date</label>}
@@ -2104,25 +2106,7 @@ getPurchaseOrderFromObj(po){
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(asn.advanceshipmentnotice.invoiceDate)}</span>} 
                                 {<label className="col-sm-1" >Posting Date</label> }
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.servicePostingDate!=null?formatDateWithoutTime(asn.advanceshipmentnotice.servicePostingDate):""}</span>} 
-
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                 {/*!['CLOSED', 'BOOKED', 'CANCELED'].includes(this.state.asnDetails.status) && <button className={"btn btn-primary"} type="button" onClick={e => this.onComfirmationOfCancelAsn(e)}>Cancel SSN</button>*/}
-                                 {/* {!['CLOSED', 'BOOKED', 'CANCELED'].includes(this.state.asnDetails.status) && <button className={"btn btn-primary"} type="button" style={{ display: this.state.cancelSsnButton }} onClick={e => this.onComfirmationOfCancelSsn(e)}>Cancel SSN</button>} */}
-                                 {this.state.asnDetails.status === "SSIP"?
+{this.state.asnDetails.status === "SSIP"?
                                   <button type="button" className={"btn btn-primary"}
                             style={{ display: this.state.cancelSsnButton }} onClick={e => this.onComfirmationOfCancelSsn(e)} >Cancel SSN</button>
                                  :""}
@@ -2136,7 +2120,7 @@ getPurchaseOrderFromObj(po){
                                  <div className="lineItemDiv mt-2">
                                     <div className="col-sm-12">
                                        <div className="table-responsive">
-                                          <table className="table table-bordered">
+                                          <table className="my-table">
                                              <thead className="thead-light">
                                                 <tr className="row m-0">
                                                    <th className="col-1">PO Line No.</th>
@@ -2703,7 +2687,7 @@ getPurchaseOrderFromObj(po){
 <div className="col-sm-12 mt-2">
          <div>
             <StickyHeader height={height_dy} className="table-responsive">
-               <table className="table table-bordered table-header-fixed">
+               <table className="my-table">
                   <thead>
                      <tr>
                         <th>{this.props.po.isServicePO ? "Service Note No" : "ASN No"}</th>
@@ -2856,7 +2840,7 @@ getPurchaseOrderFromObj(po){
                            <form>
                               <div className="row">
                                  <div className="col-sm-12">
-                                    <table className="table table-bordered">
+                                    <table className="my-table">
                                        <thead>
                                           <tr >
                                              <th>Document Type</th>

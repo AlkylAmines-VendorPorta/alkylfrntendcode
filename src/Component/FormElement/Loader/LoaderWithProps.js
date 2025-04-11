@@ -1,40 +1,32 @@
-import React, { Component } from "react";
-import Loader from 'react-loader-spinner';
+import React from "react";
+import { Backdrop, CircularProgress, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-class LoaderWithProps extends Component {
-    constructor(props){
-        super(props);
-        // state => {
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
-        // }
-    }
+const LoaderWithProps = ({ isLoading }) => {
+  const classes = useStyles();
 
-    render() {
-        var loadingState = this.props.isLoading ? 'display_block' : 'display_none';
-    
-        // alert(loadingState);
-
-        if (!this.props.isLoading) return null;
-        return (
-
-            <div >
-                <div className={loadingState}>
-                    <div className="loader-container" >
-                        <div className="loader">
-                            <Loader
-                            type="Ball-Triangle"
-                            color="#00BFFF"
-                            height="100"
-                            width="100"
-                        />
-                            <h4 className="text-center top10">Loading..</h4>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
+  return (
+    <Backdrop className={classes.backdrop} open={isLoading}>
+      <CircularProgress style={{ color: "#3f51b5" }} size={80} thickness={4} />
+      <Typography variant="h6" className={classes.text}>
+        Loading...
+      </Typography>
+    </Backdrop>
+  );
+};
 
 export default LoaderWithProps;

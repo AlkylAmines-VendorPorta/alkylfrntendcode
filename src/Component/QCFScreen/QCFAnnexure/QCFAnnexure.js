@@ -436,7 +436,7 @@ class QCFAnnexure extends Component{
                                 <div className="col-sm-12 text-center mt-2 ">
                                   <label style={{fontSize:"20px"}}>Group 1 List</label>
                                  </div>
-                    <table className="table table-bordered">
+                    <table className="my-table">
                       <thead class="thead-light">
                         <tr>
                           <th>Invite</th>
@@ -477,7 +477,7 @@ class QCFAnnexure extends Component{
                                 <div className="col-sm-12 text-center mt-2 ">
                                   <label style={{fontSize:"20px"}}>Group 2 List</label>
                                  </div>
-                    <table className="table table-bordered">
+                    <table className="my-table">
                       <thead class="thead-light">
                         <tr>
                           <th>Invite</th>

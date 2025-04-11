@@ -169,7 +169,7 @@ class STOGateEntryDashboard extends Component {
             <input type="text" id="SearchTableDataInputTwo" className="form-control" onKeyUp={searchTableDataTwo} placeholder="Search .." />
             </div> 
               <StickyHeader height={height_dy} className="table-responsive">
-                <table className="table table-bordered table-header-fixed">
+                <table className="my-table">
                   <thead>
                     <tr>
                      <th>PO No </th>

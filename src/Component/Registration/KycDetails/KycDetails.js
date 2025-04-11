@@ -8,6 +8,7 @@ import { commonHandleFileUpload, commonSetState, commonSubmitForm, commonHandleC
         commonHandleChangeCheckBox, validateForm,resetForm } from "../../../Util/ActionUtil";
 import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
 import Loader from "../../FormElement/Loader/LoaderWithProps";
+import { Button } from "@material-ui/core";
 class KycDetails extends Component {
   
   constructor (props) {
@@ -366,7 +367,7 @@ clearMSMEField=(formRef)=>{
     return (
       <>
       {/* <Loader isLoading={this.state.isLoading} /> */}
-      <div className="card">
+      <div className="card mt-3">
         <div className="card-header">KYC Details</div>
         <div className="card-body">
         <FormWithConstraints  ref={formWithConstraints => this.kycDetForm = formWithConstraints} 
@@ -397,7 +398,7 @@ clearMSMEField=(formRef)=>{
                 className={"form-control "+this.props.readonly} name="panAttch" required />
 
                 <div class="input-group-append">
-                  <button class="btn btn-danger clearFile" onClick={() => {this.setState({ panAttachment: "" })}} type="button">X</button>
+                  <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ panAttachment: "" })}} type="button">X</Button>
                 </div>
                 </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.panAttachment.attachmentId}>{this.state.panAttachment.fileName}</a></div>
@@ -455,7 +456,7 @@ clearMSMEField=(formRef)=>{
               onChange={(e)=>{commonHandleFileUpload(e,this,"gstAttachment", "kycDetForm")}} 
                 className={"form-control "+this.props.readonly} name="gstAttch"/>
                 <div class="input-group-append">
-                    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstAttachment: "" });document.getElementsByName("gstAttch")[0].value=null}} type="button">X</button>
+                    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstAttachment: "" });document.getElementsByName("gstAttch")[0].value=null}} type="button">X</Button>
                   </div>
                   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.gstAttachment.attachmentId}>{this.state.gstAttachment.fileName}</a></div>
@@ -473,9 +474,9 @@ clearMSMEField=(formRef)=>{
          <span>Attach last 3 filed GSTR1 & 3B details</span>
          </div>
           :""}
-          {/* <table className="table table-bordered" style={{display:this.state.isGstApplicable?"":"none"}}> */}
+          {/* <table className="my-table" style={{display:this.state.isGstApplicable?"":"none"}}> */}
           {this.state.isGstApplicable==="Y"?
-          <table className="table table-bordered">
+          <table className="my-table">
           
             <tr>
             <td className="width_100px">GSTR1</td>
@@ -485,7 +486,7 @@ clearMSMEField=(formRef)=>{
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"gstrAttachment1")}} 
 className={"form-control "+this.props.readonly} />
  <div class="input-group-append">
-    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstrAttachment1: "" })}} type="button">X</button>
+    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstrAttachment1: "" })}} type="button">X</Button>
   </div>
   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.gstrAttachment1.attachmentId}>{this.state.gstrAttachment1.fileName}</a></div>
@@ -496,7 +497,7 @@ className={"form-control "+this.props.readonly} />
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"gstrAttachment2")}} 
 className={"form-control "+this.props.readonly} />
  <div class="input-group-append">
-    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstrAttachment2: "" })}} type="button">X</button>
+    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstrAttachment2: "" })}} type="button">X</Button>
   </div>
   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.gstrAttachment2.attachmentId}>{this.state.gstrAttachment2.fileName}</a></div>
@@ -507,7 +508,7 @@ className={"form-control "+this.props.readonly} />
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"gstrAttachment3")}} 
 className={"form-control "+this.props.readonly} />
 <div class="input-group-append">
-    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstrAttachment3: "" })}} type="button">X</button>
+    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ gstrAttachment3: "" })}} type="button">X</Button>
   </div>
   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.gstrAttachment3.attachmentId}>{this.state.gstrAttachment3.fileName}</a></div>
@@ -517,9 +518,9 @@ className={"form-control "+this.props.readonly} />
            :""} 
           
           <br />
-          {/* <table className="table table-bordered" style={{display:this.state.isGstApplicable?"":"none"}}> */}
+          {/* <table className="my-table" style={{display:this.state.isGstApplicable?"":"none"}}> */}
           {this.state.isGstApplicable==="Y"?
-          <table className="table table-bordered">
+          <table className="my-table">
             <tr>
             <td className="width_100px">3B</td>
             <td>         
@@ -528,7 +529,7 @@ className={"form-control "+this.props.readonly} />
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"threebAttachment1")}} 
 className={"form-control "+this.props.readonly} />
 <div class="input-group-append">
-    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ threebAttachment1: "" })}} type="button">X</button>
+    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ threebAttachment1: "" })}} type="button">X</Button>
   </div>
   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.threebAttachment1.attachmentId}>{this.state.threebAttachment1.fileName}</a></div>
@@ -539,7 +540,7 @@ className={"form-control "+this.props.readonly} />
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"threebAttachment2")}} 
 className={"form-control "+this.props.readonly} />
 <div class="input-group-append">
-    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ threebAttachment2: "" })}} type="button">X</button>
+    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ threebAttachment2: "" })}} type="button">X</Button>
   </div>
   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.threebAttachment2.attachmentId}>{this.state.threebAttachment2.fileName}</a></div>
@@ -549,7 +550,7 @@ className={"form-control "+this.props.readonly} />
               <input type="hidden" disabled={isEmpty(this.state.threebAttachment3.attachmentId)} name="threeB3[attachmentId]" value={this.state.threebAttachment3.attachmentId} />
               <input type="file" className="form-control" onChange={(e)=>{commonHandleFileUpload(e,this,"threebAttachment3")}}  />
               <div class="input-group-append">
-    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ threebAttachment3: "" })}} type="button">X</button>
+    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ threebAttachment3: "" })}} type="button">X</Button>
   </div>
   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.threebAttachment3.attachmentId}>{this.state.threebAttachment3.fileName}</a></div>
@@ -574,7 +575,7 @@ className={"form-control "+this.props.readonly} />
               <input type="file" name="checkvalidation" onChange={(e)=>{commonHandleFileUpload(e,this,"cancelCqCopyAttachment", "kycDetForm")}} required 
               className={"form-control "+this.props.readonly} />
               <div class="input-group-append">
-                  <button class="btn btn-danger clearFile" onClick={() => {this.setState({ cancelCqCopyAttachment:{ attachmentId:"",fileName:"" }});document.getElementsByName("checkvalidation")[0].value=null}} type="button">X</button>
+                  <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ cancelCqCopyAttachment:{ attachmentId:"",fileName:"" }});document.getElementsByName("checkvalidation")[0].value=null}} type="button">X</Button>
                 </div>
                 </div>
               <FieldFeedbacks for="checkvalidation">
@@ -590,18 +591,7 @@ className={"form-control "+this.props.readonly} />
             </div>
             </div>
             <br/>
-            <div className="row">
 
-            {/* <div className="col-md-6 col-sm-6"> */}
-            {/* <label className="col-sm-12"> */}
-              {/* <div className=""> */}
-                {/* <label className="form-check-label">
-                 
-                  Are you MSME Registered? &nbsp;
-                 <input type="checkbox" name="isMSME" className="form-check-input ml-4" disabled={this.props.disabled} 
-                  value={"Y"} checked={this.state.isMSME} 
-                  onChange={(e)=>{commonHandleChangeCheckBox(e,this,"isMSME","kycDetForm");this.clearMSMEField(this.kycDetForm)}}/>
-                </label> */}
                 <label className="col-sm-12">
                 <label>
                  
@@ -648,7 +638,7 @@ className={"form-control "+this.props.readonly} />
              <input type="file" id="msmeCertiid" name="msmeCert" disabled={!this.state.isMSME} onChange={(e)=>{commonHandleFileUpload(e,this,"msmeAttachment","kycDetForm"); }}
               className={"form-control "+this.props.readonly} />
               <div class="input-group-append">
-                  <button class="btn btn-danger clearFile" onClick={() => {this.setState({ msmeAttachment: "" });document.getElementsByName("msmeCert")[0].value=null;}} type="button">X</button>
+                  <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ msmeAttachment: "" });document.getElementsByName("msmeCert")[0].value=null;}} type="button">X</Button>
                 </div>
               </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.msmeAttachment.attachmentId}>{this.state.msmeAttachment.fileName}</a></div>
@@ -705,7 +695,7 @@ className={"form-control "+this.props.readonly} />
                   </div>
               {/* </div> */}
           {/* </div> */}
-          </div>
+          
         
           {/* <div className="row">
             <label className="col-sm-2">
@@ -725,7 +715,7 @@ className={"form-control "+this.props.readonly} />
               <input type="file" id="msmeCertiid" name="msmeCert" disabled={!this.state.isMSME}  onChange={(e)=>{commonHandleFileUpload(e,this,"msmeAttachment","kycDetForm")}} 
               className={"form-control "+this.props.readonly} />
               <div class="input-group-append">
-                  <button class="btn btn-danger clearFile" onClick={() => {this.setState({ msmeAttachment: "" });document.getElementsByName("msmeCert")[0].value=null}} type="button">X</button>
+                  <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ msmeAttachment: "" });document.getElementsByName("msmeCert")[0].value=null}} type="button">X</Button>
                 </div>
               </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.msmeAttachment.attachmentId}>{this.state.msmeAttachment.fileName}</a></div>
@@ -752,7 +742,6 @@ className={"form-control "+this.props.readonly} />
           </div>
            */}
               <hr/>
-              <br />
           <div className="row">
             <label className="col-sm-3">
               <div className="">
@@ -773,7 +762,7 @@ className={"form-control "+this.props.readonly} />
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"ldcAttachment")}} 
 className={"form-control "+this.props.readonly} />
  <div class="input-group-append">
-    <button class="btn btn-danger clearFile" onClick={() => {this.setState({ ldcAttachment: "" })}} type="button">X</button>
+    <Button class="btn btn-danger clearFile" onClick={() => {this.setState({ ldcAttachment: "" })}} type="button">X</Button>
   </div>
   </div>
               <div><a href={API_BASE_URL+"/rest/download/"+this.state.ldcAttachment.attachmentId}>{this.state.ldcAttachment.fileName}</a></div>
@@ -787,7 +776,6 @@ className={"form-control "}
           </div>
             {/* } */}
           </div>
-          <br />
           {/* {this.state.isLDC && */}
            <div className="row" style={{display:this.state.isLDC ? 'flex':'none'}}>
             <label className="col-sm-2">Valid To</label>
@@ -805,7 +793,6 @@ className={"form-control "} readOnly={this.props.readOnly}
           </div>
           {/* } */}
           <hr/>
-          <br />
           <div className="row">
             <label className="col-sm-2">Is your organization Related Party?</label>
             <div className="col-sm-3">
@@ -831,7 +818,7 @@ className={"form-control "} readOnly={this.props.readOnly}
               <input type="file" onChange={(e)=>{commonHandleFileUpload(e,this,"otherDocumentsList."+i+"")}} 
                 className={"form-control "+this.props.readonly} />
                 <div class="input-group-append">
-                    <button class="btn btn-danger clearFile" onClick={() => {}} type="button">X</button>
+                    <Button class="btn btn-danger clearFile" onClick={() => {}} type="button">X</Button>
                 </div>
                 </div>
               <div><a href={"/rest/download/"+this.state.otherDocumentsList[i].attachmentId}>{this.state.otherDocumentsList[i].fileName}</a></div>
@@ -842,17 +829,17 @@ className={"form-control "} readOnly={this.props.readOnly}
             className={"form-control "} readOnly={this.props.readOnly} name={"otherDocuments["+i+"][description]"} value={this.state.otherDocumentsList[i].text} 
             onChange={(e)=>{commonHandleChange(e,this,"otherDocumentsList."+i+".text")}}/>              
             </div>
-            <div className="col-sm-3"><button className="btn btn-danger" onClick={() => {i===0?this.addOtherDocument():this.removeOtherDocument(""+i+"")}} type="button">
+            <div className="col-sm-3"><Button size="small" variant="contained" color="secondary"onClick={() => {i===0?this.addOtherDocument():this.removeOtherDocument(""+i+"")}} type="button">
                  <i class={"fa "+(i===0?"fa-plus":"fa-minus")} aria-hidden="true"></i>
-               </button>  
+               </Button>  
              </div>
              </>
           ))}
           </div>
           {/* } */}
           <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>
-                  <button type="submit" className="btn btn-success mr-1">Save</button>
-                  <button type="button" className="btn btn-danger mr-1" onClick={()=>{ this.resetKycDetailsForm(this.kycDetForm)}}>Cancel</button>                  
+                  <Button size="small" variant="contained" color="primary" type="submit" className="mr-1">Save</Button>
+                  <Button type="button" size="small" variant="contained" color="secondary" className="mr-1" onClick={()=>{ this.resetKycDetailsForm(this.kycDetForm)}}>Cancel</Button>                  
             </div>
           </FormWithConstraints>
         </div>

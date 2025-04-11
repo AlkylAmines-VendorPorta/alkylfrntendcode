@@ -134,7 +134,7 @@ class QCFSummary extends Component {
                             <div className="col-sm-12 mt-2">
                                 <div class="table-proposed">
                                     <StickyHeader height={420} className="table-responsive w-max-content">
-                                        <table id="tableData" className="table table-bordered table-header-fixed table-qcf qcf-summary text-center">
+                                        <table id="tableData" className="my-table table-qcf qcf-summary text-center">
                                             <thead>
                                                 <tr>
                                                     

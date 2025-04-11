@@ -28,7 +28,7 @@ class PRList extends Component {
           </div>
           <div className="col-12">
             <StickyHeader height={450} className="table-responsive mt-2">
-              <table className="table table-bordered table-header-fixed">
+              <table className="my-table">
                 <thead>
                   <tr>
                     <th>PR No</th>

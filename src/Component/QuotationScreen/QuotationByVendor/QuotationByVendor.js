@@ -30,6 +30,7 @@ import { getUserDto, checkIsNaN,getDecimalUpto,FixWithoutRounding,removeLeedingZ
 import {countBy, sumBy, max,sum} from 'lodash-es';
 import { ROLE_APPROVER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_PURCHASE_MANAGER_ADMIN,ROLE_BUYER_ADMIN, ROLE_NEGOTIATOR_ADMIN } from "../../../Constants/UrlConstants";
 import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
+import { TableContainer } from "@material-ui/core";
 
 
 const  chargesTypes = [
@@ -965,6 +966,7 @@ class QuotationByVendor extends Component{
             // grossAmt: 1 + taxAmt + otherCharges,
             grossAmt: basicAmt + taxAmt + otherCharges + totalTaxesOnOtherCharges - discountAmt,
             taxAmt:taxAmt+totalTaxesOnOtherCharges,
+            totalFreightChargeAmt,totalPackingChargeAmt,totalOtherChargeAmt
             // [type]:value
         }
         updateState(this,{qbvArray});
@@ -1495,9 +1497,9 @@ class QuotationByVendor extends Component{
                         <div className="row px-4 py-1">
                             <div className="col-sm-12 mt-2">
                                 <div>
-                                    <StickyHeader height={360} className="table-responsive">
+                                    <TableContainer>
                                     {/* <table className="table table-bordered table-header-fixed"> */}
-                                        <table className="quotatiiontable table-bordered table-header-fixed">
+                                        <table className="my-table">
                                             <thead>
                                                 <tr>
                                                 <th>Serial No</th>
@@ -1892,7 +1894,8 @@ class QuotationByVendor extends Component{
                                                                         </div>
                                                                         </React.Fragment>
                                                                         }
-                                                                        <input name={"quotations["+i+"][totalFreightCharge]"} value={qbvLine.totalFreightCharge} type="hidden" />
+                                                                        {/* <input name={"quotations["+i+"][totalFreightCharge]"} value={qbvLine.totalFreightCharge} type="hidden" /> */}
+                                                                        <input name={"quotations["+i+"][totalFreightCharge]"} value={qbvLine.totalFreightChargeAmt} type="hidden" />
                                                                         <input name={"quotations["+i+"][totalPackingFwdChargeAmt]"} value={qbvLine.totalPackingFwdChargeAmt} type="hidden" />
                                                                         <input name={"quotations["+i+"][otherChargesAmt]"} value={qbvLine.otherChargesAmt} type="hidden" />
                                                                         <input name={"quotations["+i+"][netRate]"} value={qbvLine.netRate ? qbvLine.netRate:qbvLine.basicAmount} type="hidden" />
@@ -1933,7 +1936,7 @@ class QuotationByVendor extends Component{
                                                 )}
                                             </tbody>
                                         </table>
-                                    </StickyHeader>
+                                    </TableContainer>
                                 </div>
                             </div>
                         </div>
@@ -1971,6 +1974,9 @@ class QuotationByVendor extends Component{
                             <input name={"bidder[headerFreightType]"} value={this.state.qbvArray.totalFreightChargeType} type="hidden" />
                             <input name={"bidder[headerPKFWDType]"} value={this.state.qbvArray.totalPackingChargeType} type="hidden" />
                             <input name={"bidder[headerOtherType]"} value={this.state.qbvArray.totalOtherChargeType} type="hidden" />
+                            <input name={"bidder[totalFreightChargeAmt]"} value={this.state.qbvArray.totalFreightChargeAmt} type="hidden" />
+                            <input name={"bidder[totalPackingChargeAmt]"} value={this.state.qbvArray.totalPackingChargeAmt} type="hidden" />
+                            <input name={"bidder[totalOtherChargeAmt]"} value={this.state.qbvArray.totalOtherChargeAmt} type="hidden" />
 
 
                             { this.state.qbvArray.otherChargeType == 'header_level' ? 
@@ -2125,7 +2131,8 @@ class QuotationByVendor extends Component{
                                     <label className="mr-1 label_12px">Total Other Charges</label>
 
                                     {/* <h6>{(Math.round(this.state.qbvArray.otherCharges*100)/100).toLocaleString('en',{minimumFractionDigits:2})}</h6> */}
-                                    <h6>{(Math.round(this.state.qbvArray.otherCharges*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})}</h6>
+                                    <div><span>{(Math.round(this.state.qbvArray.otherCharges*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})}</span></div>
+                                    
 
                                     {/* {
                                         this.state.qbvArray.otherChargeType == 'header_level' ? 

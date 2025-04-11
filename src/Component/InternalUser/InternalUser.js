@@ -15,7 +15,17 @@ import Loader from "../FormElement/Loader/LoaderWithProps";
 import serialize from "form-serialize";
 //import { defaultTheme } from 'react-select';
 import { isArray } from "lodash-es";
-//const { colors } = defaultTheme;
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, TablePagination, TextField,
+  Grid,
+  Container,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Button
+} from "@material-ui/core";
 
 const selectStyles = {
   control: provided => ({ ...provided, minWidth: 240, margin: 8 }),
@@ -26,6 +36,9 @@ class InternalUser extends Component {
     super(props)
     this.state = {
       isLoading:false,
+      searchQuery: "",
+      page: 0,
+      rowsPerPage: 50,
       internalUserDetails: {
         role: "",
         plant: "",
@@ -418,7 +431,17 @@ class InternalUser extends Component {
   handleInternalUser = (e) => {
     commonSubmitForm(e, this, "saveInternalUserDetailsResponse",this.state.updateFlag?"/rest/updateInternalUser":"/rest/saveIternalUser","internalUserForm");
   }
+  handleSearchChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+  };
 
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
   render() {
     var shown = {
       display: this.state.shown ? "block" : "none"
@@ -426,61 +449,82 @@ class InternalUser extends Component {
     var hidden = {
       display: this.state.hidden ? "none" : "block"
     };
+    const { searchQuery, page, rowsPerPage,internalUsersList } = this.state;
+     // Filter the data based on the search query
+  const filteredData = internalUsersList.filter((entry) => {
+    return Object.values(entry).some((val) => {
+      if (val && typeof val === 'object') {
+        // If the value is an object (e.g., userDetails), recursively check its properties
+        return Object.values(val).some((nestedVal) => 
+          nestedVal && nestedVal.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+      return val && val.toString().toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  });
   const { isOpen, value } = this.state;
     return (
       <React.Fragment>
         <Loader isLoading={this.state.isLoading} />
         <UserDashboardHeader />
-        <div className="w-100" id="togglesidebar">
-          <div className="mt-100 boxContent" >
-            <div className="row" style={hidden}>
-            <div className="col-sm-9"></div>
-            <div className="col-sm-3"> 
-            <input type="text" id="SearchTableDataInputInternalUser" className="form-control" onKeyUp={searchTableDataInternalUser} placeholder="Search .." />
-            </div>
-              <div className="col-sm-12 mt-2 text-right">
-                <button onClick={this.showUserDetails} className="btn btn-primary">New User</button>
-              </div>
-              <div className="col-sm-12 mt-2">
-                <table className="table table-bordered">
-                  <thead className="thead-light">
-                    <tr >
-                      <th>Role</th>
-                      <th>Plant</th>
-                      <th>Designation</th>
-                      <th>Department</th>
-                      <th>Email Id</th>
-                      <th>Employee Code</th>
-                      <th>Name</th>
-                    </tr>
-                  </thead>
-                  <tbody id="DataTableBodyInternalUser">
-                    {
-                    
-                      this.state.internalUsersList.map((internalUser, index) =>
+        <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
+            <div style={hidden}>
+          <Grid container spacing={2} >
+          <Grid item xs={9}>
+              <Button variant="contained" size="small" color="primary" onClick={this.showUserDetails} className="btn btn-primary">New User</Button>
+            </Grid>
+            <Grid item xs={3}>
+              <input
+                placeholder="Search"
+                value={searchQuery}
+                style={{fontSize: "10px", float:"right" }}
+                onChange={this.handleSearchChange}
+              />
+            </Grid>
+          </Grid>
+            <TableContainer className="mt-1">
+                <Table className="my-table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Role</TableCell>
+                      <TableCell>Plant</TableCell>
+                      <TableCell>Designation</TableCell>
+                      <TableCell>Department</TableCell>
+                      <TableCell>Email Id</TableCell>
+                      <TableCell>Employee Code</TableCell>
+                      <TableCell>Name</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody id="DataTableBodyInternalUser">
+                  {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((internalUser, index) => (
                       
-                        <tr onClick={(e)=>{this.loadUser(internalUser,index)}}>
-                          <td>{internalUser.role.name}</td>
-                          <td>{internalUser.user.userDetails!=null?this.state.plantMap[internalUser.user.userDetails.plant]:""}</td>
-                          <td>{internalUser.user.userDetails!=null?internalUser.user.userDetails.userDesignation:""}</td>
-                          <td>{internalUser.user.userDetails!=null?internalUser.user.userDetails.department:""}</td>
-                          {/* <td>{this.state.plantMap[internalUser.user.userDetails.plant]}</td>
-                          <td>{internalUser.user.userDetails.userDesignation}</td>
-                          <td>{internalUser.user.userDetails.department}</td> */}
-                          <td>{internalUser.user.email}</td>
-                          <td>{internalUser.user.userName}</td>
-                          {/* <td>{internalUser.user.userDetails.name}</td> */}
-                          <td>{internalUser.user.userDetails!=null?internalUser.user.userDetails.name:""}</td>
-                        </tr>
+                        <TableRow onClick={(e)=>{this.loadUser(internalUser,index)}} >
+                          <TableCell>{internalUser.role.name}</TableCell>
+                          <TableCell>{internalUser.user.userDetails!=null?this.state.plantMap[internalUser.user.userDetails.plant]:""}</TableCell>
+                          <TableCell>{internalUser.user.userDetails!=null?internalUser.user.userDetails.userDesignation:""}</TableCell>
+                          <TableCell>{internalUser.user.userDetails!=null?internalUser.user.userDetails.department:""}</TableCell>
+                          <TableCell>{internalUser.user.email}</TableCell>
+                          <TableCell>{internalUser.user.userName}</TableCell>
+                          <TableCell>{internalUser.user.userDetails!=null?internalUser.user.userDetails.name:""}</TableCell>
+                        </TableRow>)
                       )
                     }
 
-                  </tbody>
-                </table>
-              </div>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+              rowsPerPageOptions={[50, 100, 150]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
             </div>
             <div className="row" style={shown}>
-              <form>
+              <form className="card wizard-v1-content">
                 <FormWithConstraints ref={formWithConstraints => this.internalUserForm = formWithConstraints}
                 onSubmit={this.handleInternalUser}>
                   <input type="hidden" disabled={this.state.updateFlag?false:true} name="user[userId]" value={this.state.userId}/>
@@ -728,13 +772,13 @@ class InternalUser extends Component {
 
                     </div>
 
-                    <div className="col-sm-12 text-center">
-                      <button type="submit" className="btn btn-success">Save</button>
-                      <button type="button" className="btn btn-danger ml-2" onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden});}}>Cancel</button>
+                    <div className="col-sm-12 text-center mb-2">
+                      <Button variant="contained" color="primary" type="submit" className="btn btn-success">Save</Button>
+                      <Button variant="contained" color="secondary" type="button" className="btn btn-danger ml-2" onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden});}}>Cancel</Button>
                     </div>
                   </div>
-                  <div className="modal roleModal" id="roleModal" >
-            <div className="modal-dialog modal-md mt-100">
+                  <div className="modal roleModal customModal" id="roleModal" >
+                  <div className="modal-backdrop"></div><div className="modal-dialog modal-md mt-100">
               <div className="modal-content">
                 <div className="modal-header">
                   Select Roles
@@ -821,8 +865,8 @@ class InternalUser extends Component {
 
                 {/* Update Role Modal */}
                 <FormWithConstraints>
-                <div className="modal roleModal" id="updateRoleModal" >
-                  <div className="modal-dialog modal-md mt-100">
+                <div className="modal roleModal customModal" id="updateRoleModal" >
+                <div className="modal-backdrop"></div><div className="modal-dialog modal-md mt-100">
                     <div className="modal-content">
                       <div className="modal-header">
                         Select Roles
@@ -938,81 +982,14 @@ class InternalUser extends Component {
 
                 </FormWithConstraints>
               </form>
-            </div>
-          </div>
-        </div>
+            </div>            
+            </div>  
       </React.Fragment>
     );
   }
 }
 
 // styled components
-
-const Menu = props => {
-  const shadow = 'hsla(218, 50%, 10%, 0.1)';
-  return (
-    <div
-      css={{
-        backgroundColor: 'white',
-        borderRadius: 4,
-        boxShadow: `0 0 0 1px ${shadow}, 0 4px 11px ${shadow}`,
-        marginTop: 8,
-        position: 'absolute',
-        zIndex: 2,
-      }}
-      {...props}
-    />
-  );
-};
-const Blanket = props => (
-  <div
-    css={{
-      bottom: 0,
-      left: 0,
-      top: 0,
-      right: 0,
-      position: 'fixed',
-      zIndex: 1,
-    }}
-    {...props}
-  />
-);
-const Dropdown = ({ children, isOpen, target, onClose }) => (
-  <div css={{ position: 'relative' }}>
-    {target}
-    {isOpen ? <Menu>{children}</Menu> : null}
-    {isOpen ? <Blanket onClick={onClose} /> : null}
-  </div>
-);
-const Svg = p => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    focusable="false"
-    role="presentation"
-    {...p}
-  />
-);
-const DropdownIndicator = () => (
-  <div css={{ height: 24, width: 32 }}>
-    <Svg>
-      <path
-        d="M16.436 15.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM10.5 16a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z"
-        fill="currentColor"
-        fillRule="evenodd"
-      />
-    </Svg>
-  </div>
-);
-const ChevronDown = () => (
-  <Svg style={{ marginRight: -6 }}>
-    <path
-      d="M8.292 10.293a1.009 1.009 0 0 0 0 1.419l2.939 2.965c.218.215.5.322.779.322s.556-.107.769-.322l2.93-2.955a1.01 1.01 0 0 0 0-1.419.987.987 0 0 0-1.406 0l-2.298 2.317-2.307-2.327a.99.99 0 0 0-1.406 0z"
-      fill="currentColor"
-      fillRule="evenodd"
-    />
-  </Svg>)
 
 const mapStateToProps = (state) => {
   return state.internalUserInfo;

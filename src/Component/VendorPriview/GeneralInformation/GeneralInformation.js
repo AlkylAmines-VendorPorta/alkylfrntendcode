@@ -11,6 +11,7 @@ import {
 import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
 import { saveUserFormApi } from "../../../Util/APIUtils";
 import swal from 'sweetalert';
+import { Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 
 class GeneralInformation extends Component {
 
@@ -633,9 +634,9 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
           
           {/* <div id="collapseOne" class="collapse show" data-parent="#accordion">
             <div class="card-body"> */}
-             <div className="card">
+             <div className="card" >
             <div className="card-header">Company Details</div>
-            <div className="card-body">
+            <div className="card-body" style={{paddingLeft:"10px"}}>
             <FormWithConstraints ref={formWithConstraints => this.comDetForm = formWithConstraints} 
            onSubmit={(e)=>{this.setState({loadCompanyDetails:true});commonSubmitForm(e,this,"saveCompanyDetailResp","/rest/saveCompanyDetails","comDetForm")}} noValidate > 
               {/* <form onSubmit={(e)=>{commonSubmitForm(e,this.props,"saveCompanyDetailResp","/rest/saveCompanyDetails")}}> */}
@@ -671,8 +672,7 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                    </FieldFeedbacks>
                   </div>
                 </div>
-                <br />
-                <div className="row">
+                <div className="row mt-2">
                   <label className="col-sm-2">Vendor Name <span className="redspan">*</span></label>
                   <div className="col-sm-3">
                     <input type="text" className={"form-control "} required
@@ -707,7 +707,13 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
             <div className="card-body"> */}
               {/* <form onSubmit={(e)=>{commonSubmitForm(e,this.props,"saveAddressDetailsResp","/rest/saveCompanyAddress")}} > */}
               
-              <FormWithConstraints ref={formWithConstraints => this.addrDetForm = formWithConstraints} 
+              
+              <div className="card">
+              <div className="card-header">Address Details</div>
+              <div className="card-body" style={{paddingLeft:"10px"}}>
+              <div className="row">
+                <div className="col-sm-12 mt-1">
+                <FormWithConstraints ref={formWithConstraints => this.addrDetForm = formWithConstraints} 
                 onSubmit={(e)=>{this.setState({loadAddressDetails:true,editButtonFlag:false,newButtonFlag:false}); commonSubmitForm(e,this,"saveAddressDetailsResp","/rest/saveCompanyAddress","addrDetForm");}} noValidate >
                 <input type="hidden" name="partner[bPartnerId]" value={this.getPartnerId()}/>
                 <input type="hidden" name="partnerCompanyAddressId" value={this.state.addressDetails.partnerCompanyAddressId}/>
@@ -724,8 +730,8 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                       />
                       Is Primary Account
                     </label>
-                  </div><br/>
-              <div className="row">
+                  </div>
+              <div className="row mt-2">
                 <label className="col-sm-2">Address Line 1</label>
                 <div className="col-sm-3">
                   <input type="text" value={this.state.addressDetails.address1} name="location[address1]"
@@ -737,16 +743,14 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                   onChange={(event)=>{commonHandleChange(event,this,"addressDetails.address2")}}  className={"form-control"} />
                 </div>
               </div>
-              <br />
-              <div className="row">
+              <div className="row mt-2">
                 <label className="col-sm-2">Address Line 3</label>
                 <div className="col-sm-3">
                   <input type="text" value={this.state.addressDetails.address3} name="location[address3]"
                   onChange={(event)=>{commonHandleChange(event,this,"addressDetails.address3")}}  className={"form-control "}/>
                 </div>
               </div>
-              <br />
-              <div className="row">
+              <div className="row mt-2">
                 <label className="col-sm-2">Country <span className="redspan">*</span></label>
                 <div className="col-sm-3">
                     <select className={" form-control "} name="location[country][countryId]" required
@@ -776,8 +780,7 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                    </FieldFeedbacks>
                 </div>
               </div>
-              <br />
-              <div className="row">
+              <div className="row mt-2">
                 <label className="col-sm-2">District <span className="redspan">*</span></label>
                 <div className="col-sm-3">
                 <select className={"form-control "} disabled={this.state.countryFlag} name="location[district][districtId]" required
@@ -804,7 +807,7 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                 </div>
                 
               </div>
-               <div className={"col-sm-12 text-center "}>
+               <div className={"col-sm-12 text-center mt-2"}>
                   <button type="submit" className="btn btn-success mr-1">Save</button>
                   <button type="button" onClick={()=>{this.resetaddressDetails();this.setState({editButtonFlag:false})}} className="btn btn-danger mr-1">Clear</button>
                   <button type="button" onClick={this.resetaddressDetails} className={this.state.newButtonFlag?"btn btn-primary not-allowed":"btn btn-primary"} disabled={this.state.newButtonFlag} >
@@ -812,55 +815,46 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                   </button>
               </div>
               </FormWithConstraints>
-              <div className="card">
-              <div className="card-header">Address Details</div>
-              <div className="card-body">
-              <div className="row">
-                <div className="col-sm-12 mt-3">
-                  <table className="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Address </th>
-                        <th>Country</th>
-                        <th>Primary Address</th>
-                        <th>Postal Code</th>
-                        <th>State</th>
-                        <th>District</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <Table className="my-table mt-3" >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Address </TableCell>
+                        <TableCell>Country</TableCell>
+                        <TableCell>Primary Address</TableCell>
+                        <TableCell>Postal Code</TableCell>
+                        <TableCell>State</TableCell>
+                        <TableCell>District</TableCell>
+                        <TableCell>Edit</TableCell>
+                        <TableCell>Delete</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
                       {this.state.addressArray.map((addr,index)=>
-                        <tr className={this.state["selectedAddress"+index]}>                        
-                        <td>{ addr.address1 + ", " + addr.address2 + ", " + addr.address3}</td>
-                        <td>{ addr.countryName }</td>
-                        <td>{addr.isPrimaryAccount?"YES":"NO"}</td>
-                        <td>{ addr.postalCode } </td>
-                        <td>{ addr.stateName }</td>
-                        <td>{ addr.districtName}</td>
-                        <td>
+                        <TableRow className={this.state["selectedAddress"+index]}>                        
+                        <TableCell>{ addr.address1 + ", " + addr.address2 + ", " + addr.address3}</TableCell>
+                        <TableCell>{ addr.countryName }</TableCell>
+                        <TableCell>{addr.isPrimaryAccount?"YES":"NO"}</TableCell>
+                        <TableCell>{ addr.postalCode } </TableCell>
+                        <TableCell>{ addr.stateName }</TableCell>
+                        <TableCell>{ addr.districtName}</TableCell>
+                        <TableCell>
                            <button className={this.state.editButtonFlag?"btn btn-info not-allowed":"btn btn-info"} type="button" disabled={this.state.editButtonFlag?true:false} onClick={()=>{this.loadAddressForEdit(index)}} >
                             <i
                               className={"fa fa-pencil-square-o "}
                               aria-hidden="true"
-                            ></i>
-                            <i
-                              className={"fa fa-eye "}
-                              aria-hidden="true"
-                            ></i>
+                            ></i>                           
                           </button>
-                        </td>
-                        <td >
+                        </TableCell>
+                        <TableCell>
                           <button className="btn btn-danger" type="button" onClick={()=>{this.swalWithPromptDeleteforCompanyAddress(addr.partnerCompanyAddressId);}}> 
                             <i className="fa fa-trash" aria-hidden="true"></i>
                           </button>
-                        </td>
-                      </tr>  
+                        </TableCell>
+                      </TableRow>  
                       )}
                       
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                   <div className="clearfix"></div>
                 </div>
                </div> 
@@ -884,7 +878,13 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
             <div className="card-body"> */}
             {/* <form onSubmit={(e)=> {commonSubmitForm(e,this.props,"saveContactDetailsResp","/rest/saveCompanyContactDetails")}}> */}
             
-            <FormWithConstraints ref={formWithConstraints => this.contDetForm = formWithConstraints} 
+            
+              <div className="card">
+              <div className="card-header">Contact Details</div>
+              <div className="card-body" style={{paddingLeft:"10px"}}>
+              <div className="row">
+              <div className="col-sm-12 mt-2">
+              <FormWithConstraints ref={formWithConstraints => this.contDetForm = formWithConstraints} 
             onSubmit={(e)=>{this.setState({loadCompanyContactDetails:true,newButtonFlag:false,editButtonFlag:false});commonSubmitForm(e,this,"saveContactDetailsResp","/rest/saveCompanyContactDetails","contDetForm")}} noValidate > 
               <input type="hidden" name="partner[bPartnerId]" value={this.getPartnerId()} />
               <input type="hidden" name="userDetailsId" value={this.state.contactDetails.userDetailsId} />
@@ -909,8 +909,7 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                 </FieldFeedbacks>
                 </div>
               </div>
-              <br />
-              <div className="row">
+              <div className="row mt-2">
                 <label className="col-sm-2">Designation  <span className="redspan">*</span></label>
                 <div className="col-sm-3">
                   <input type="text" value={this.state.contactDetails.designation} name="userDesignation" required
@@ -928,8 +927,7 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                 </FieldFeedbacks>
                 </div>
               </div>
-              <br />
-              <div className="row">
+              <div className="row mt-2">
                 <label className="col-sm-2">Mobile No  <span className="redspan">*</span></label>
                 <div className="col-sm-3">
                   <input type="text" value={this.state.contactDetails.mobileNo} name="mobileNo" required
@@ -949,8 +947,7 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                 </FieldFeedbacks>
                 </div>
               </div>
-              <br />
-              <div className="row">
+              <div className="row mt-2">
                 {/* <label className="col-sm-2">Fax No</label>
                 <div className="col-sm-3">
                   <input type="text" value={this.state.contactDetails.faxNo} name="fax1"
@@ -980,10 +977,8 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                       Receive Enquiry
                     </label>
                     &nbsp;
-                    <input type="radio" id="receiveEnquiry" checked />
+                    <input  type="radio" id="receiveEnquiry" checked />
                   </div>
-                  <br />
-                  <br />
                   <div className="form-check">
                     <label className="form-check-label">
                       <input
@@ -998,8 +993,6 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                     &nbsp;
                     <input type="radio" id="receiveEnquiry" checked />
                   </div>
-                  <br />
-                  <br />
                   <div className="form-check">
                     <label className="form-check-label">
                       <input
@@ -1016,7 +1009,7 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                   </div>
                 </div>
               </div>
-               <div className={"col-sm-12 text-center "}>
+               <div className={"col-sm-12 text-center mt-2"}>
                   <button type="submit" className="btn btn-success mr-1">Save</button>
                   <button type="button" onClick={()=>{this.resetContactDetails();this.setState({editButtonFlag:false})}} className="btn btn-danger mr-1" >Clear</button>
                   <button type="button" onClick={this.resetContactDetails} className={this.state.newButtonFlag?"btn btn-primary not-allowed":"btn btn-primary"} disabled={this.state.newButtonFlag}>
@@ -1024,42 +1017,38 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                   </button>
               </div>
               </FormWithConstraints>
-              <div className="card">
-              <div className="card-header">Contact Details</div>
-              <div className="card-body">
-              <div className="row">
-              <div className="col-sm-12 mt-4">
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Salutation</th>
-                      <th>Person Name</th>
-                      <th>Designation</th>
-                      <th>Department</th>
-                      <th>Mobile No</th>
-                      <th>Telephone No</th>
-                      <th>status</th>
-                      {/* <th>Fax No</th> */}
-                      <th>Mail ID</th>
-                      <th>Edit</th>
-                      <th>Delete</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+
+                <Table className="my-table mt-2">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Salutation</TableCell>
+                      <TableCell>Person Name</TableCell>
+                      <TableCell>Designation</TableCell>
+                      <TableCell>Department</TableCell>
+                      <TableCell>Mobile No</TableCell>
+                      <TableCell>Telephone No</TableCell>
+                      <TableCell>status</TableCell>
+                      {/* <TableCell>Fax No</TableCell> */}
+                      <TableCell>Mail ID</TableCell>
+                      <TableCell>Edit</TableCell>
+                      <TableCell>Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
                       {this.state.contactDetailsArray.map((contact,index)=>
-                        <tr  className={this.state["selectedContact"+index]}>                        
-                        <td>{contact.title}</td>
-                        <td>{contact.personName }</td>
-                        <td>{contact.designation}</td>
-                        <td>{contact.department} </td>
-                        <td>{contact.mobileNo}</td>
-                        <td>{contact.telephoneNo}</td>
-                        <td>{contact.isReceiveEnquiry?<input type="radio" id="receiveEnquiry" checked />:<input type="radio" id="myRadio" disabled="disabled"/>} &nbsp;
+                        <TableRow  className={this.state["selectedContact"+index]}>                        
+                        <TableCell>{contact.title}</TableCell>
+                        <TableCell>{contact.personName }</TableCell>
+                        <TableCell>{contact.designation}</TableCell>
+                        <TableCell>{contact.department} </TableCell>
+                        <TableCell>{contact.mobileNo}</TableCell>
+                        <TableCell>{contact.telephoneNo}</TableCell>
+                        <TableCell>{contact.isReceiveEnquiry?<input type="radio" id="receiveEnquiry" checked />:<input type="radio" id="myRadio" disabled="disabled"/>} &nbsp;
                          {contact.isReceivePO?<input type="radio" id="receiveEnquiry" checked />:<input type="radio" id="myRadio" disabled="disabled" />} &nbsp;
                             {contact.isReceiveACInfo?<input type="radio" id="receiveEnquiry"  checked />:<input type="radio" id="myRadio" disabled="disabled"/>}
-                        </td>
-                        <td>{contact.email}</td>                        
-                        <td>
+                        </TableCell>
+                        <TableCell>{contact.email}</TableCell>                        
+                        <TableCell>
                           <button className={this.state.editButtonFlag?"btn btn-info not-allowed":"btn btn-info"} type="button" disabled={this.state.editButtonFlag?true:false} onClick={()=>{this.loadContactForEdit(index)}}>
                             <i
                               className={"fa fa-pencil-square-o "}
@@ -1070,18 +1059,17 @@ swalWithPromptDeleteforContactDetails=(deletevalue)=>{
                               aria-hidden="true"
                             ></i>
                           </button>
-                        </td>
-                        <td>
+                        </TableCell>
+                        <TableCell>
                           <button className="btn btn-danger" type="button" onClick={()=>{this.swalWithPromptDeleteforContactDetails(contact.userDetailsId)}}> 
                             <i className="fa fa-trash" aria-hidden="true"></i>
                           </button>
-                        </td>
-                      </tr>  
+                        </TableCell>
+                      </TableRow>  
                       )}
                       
-                    </tbody>
-                </table>
-                <div className="clearfix"></div>
+                    </TableBody>
+                </Table>
                 </div>
               </div> 
             </div>

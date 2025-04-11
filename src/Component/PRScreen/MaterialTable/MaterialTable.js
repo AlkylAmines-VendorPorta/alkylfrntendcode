@@ -81,7 +81,7 @@ class MaterialTable extends Component {
                     <div className="col-sm-12 mt-2">
                         <div>
                             <StickyHeader height={430} className="table-responsive">
-                                <table className="table table-bordered table-header-fixed">
+                                <table className="my-table">
                                     <thead>
                                         <tr>
                                             <th>Chk</th>

@@ -862,11 +862,11 @@ class STOASN extends Component {
                     </div>
                     {this.state.openStorageLocationModal && (
                       <div
-                        className="modal roleModal"
+                        className="modal roleModal customModal"
                         id="locationModal show"
                         style={{ display: "block" }}
                       >
-                        <div className="modal-dialog modal-md mt-100">
+                       <div className="modal-backdrop"></div> <div className="modal-dialog modal-md mt-100">
                           <div className="modal-content">
                             <div className="modal-header">
                               Select storage location
@@ -1029,7 +1029,7 @@ class STOASN extends Component {
                     <div className="w-100 mt-2">
                       <div className="col-sm-12">
                         <div className="table-responsive mt-2">
-                          <table className="table table-bordered">
+                          <table className="my-table">
                             <thead className="thead-light">
                               <tr>
                                 <th className="col-1">Line No.</th>

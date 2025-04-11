@@ -29,6 +29,7 @@ import { formatDateWithoutTime } from "../../Util/DateUtil";
 import { FormWithConstraints } from 'react-form-with-constraints';
 import { ROLE_APPROVER_ADMIN, ROLE_REQUISTIONER_ADMIN, ROLE_PURCHASE_MANAGER_ADMIN, ROLE_BUYER_ADMIN, ROLE_PARTNER_ADMIN } from "../../Constants/UrlConstants";
 import Loader from "../FormElement/Loader/LoaderWithProps";
+import { Button } from "@material-ui/core";
 
 class materialGetInDetail extends Component {
   constructor(props) {
@@ -132,7 +133,9 @@ class materialGetInDetail extends Component {
   // updateStatusRemark = (url,remark) => {
   //   commonSubmitWithParam(this.props,"updateStatus","/rest/"+url,this.state.gateEntryDto.gateEntryId, remark);
   // }
-
+  handleRedirect = () => {
+    window.location.reload();
+   };
   updateStatusRemark=(e, url)=>{
     this.props.changeLoaderState(true);
     this.setState({url:url})
@@ -184,7 +187,7 @@ UNSAFE_componentWillReceiveProps=props=>{
   console.log("props unsafe",props);
 
   // if(!isEmpty(props.gateEntryLineDto) && !isEmpty(props.gateEntryLineDto[0])){
-  if(!isEmpty(props.gateEntryList) && !isEmpty(props.gateEntryList[0])){
+  if(!isEmpty(props.gateEntryLineDto) && !isEmpty(props.gateEntryLineDto[0])){
     // debugger
     // let gateEntryDto = props.gateEntryList[0].gateEntry;
     // debugger
@@ -200,7 +203,7 @@ UNSAFE_componentWillReceiveProps=props=>{
     gateEntryDto.materialGateInList = props.gateEntryLineDto;
     this.setState({gateEntryDto:gateEntryDto});
 
-    let dn = props.gateEntryLineDto[0].materialGateIn.docNo;
+    let dn = props.gateEntryLineDto&&props.gateEntryLineDto[0].materialGateIn.docNo;
     // console.log("props undsafee -->>",props);
     let gid = props.gateEntryLineDto[0].materialGateIn.gateInId;
     this.setState({...gateEntryDto.docNo=dn});
@@ -218,7 +221,7 @@ UNSAFE_componentWillReceiveProps=props=>{
 
     return (
       <>
-        <div className="container-fluid mt-100 w-100" id="togglesidebar">
+        <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
           <FormWithConstraints ref={formWithConstraints => this.prForm = formWithConstraints}>
             <div>
               <div className="card my-2">
@@ -301,7 +304,7 @@ UNSAFE_componentWillReceiveProps=props=>{
                     </span>
                   </div>
 
-                  <div className="col-6 col-md-2 col-lg-2">
+                  <div className="col-6 col-md-2 col-lg-2 mb-2">
                     <label className="mr-4 label_12px">Doc Type</label>
                     <select className="form-control" 
                       value={gateEntryDto.docType}
@@ -342,7 +345,7 @@ UNSAFE_componentWillReceiveProps=props=>{
                     <div className="col-sm-12 mt-2">
                       <div>
                         <StickyHeader height={250} className="table-responsive">
-                          <table className="table table-bordered table-header-fixed">
+                          <table className="my-table">
                             <thead>
                               <tr>
                                 {/* <th>#</th> */}
@@ -524,43 +527,25 @@ UNSAFE_componentWillReceiveProps=props=>{
                     </div>
                   </div>
                 </div>
-              </div>
-              <hr className="my-1" />
-              <div className="row px-4 py-0" >
+                <div className="row px-4 py-0 mb-2" >
                 <div className="col-12">
                   <div className="d-flex justify-content-center">
                      {/* {isEmpty(gateEntryDto.status) || ["MATERIAL GATE IN"].includes(gateEntryDto.status) ? */}
                   {["CANCELED"].includes(gateEntryDto.status)?"": isEmpty(gateEntryDto.status) || ["MATERIAL GATE IN"].includes(gateEntryDto.status) ?
                       <button type="button" onClick={this.handleSubmit} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Security Check</button>
                        :null} 
+                        
                     {isEmpty(gateEntryDto.status) || ["Material Checked"].includes(gateEntryDto.status) ?
                        
                      <button type="button" onClick={this.handleClose} className="btn btn-sm btn-outline-danger mr-2">&nbsp;Close</button>
                     :null
                     }
-                    {/* {"CREATED"===gateEntryDto.status &&<>
-                      <button type="button" onClick={()=>this.updateStatus("hodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;HOD Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"hodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;HOD Reject</button></>}
-                    {"NRGP"===gateEntryDto.docType && "FH APPROVED"===gateEntryDto.status &&<>
-                      <button type="button" onClick={()=>this.updateStatus("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM REJ</button></>}
-
-                      {"RGP"===gateEntryDto.docType && "HOD APPROVED"===gateEntryDto.status &&<>
-                      <button type="button" onClick={()=>this.updateStatus("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;COMM REJ</button></>}
-
-                      {"HOD APPROVED"===gateEntryDto.status && "NRGP"===gateEntryDto.docType &&<>
-                      <button type="button" onClick={()=>this.updateStatus("functionalApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Functional Head Approval</button>
-                      <button type="button" onClick={(e)=>this.updateStatusRemark(e,"functionalReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Functional Head REJ</button></>}
-
-
-                    {"COMMERCIAL APPROVED"===gateEntryDto.status && "NRGP"===gateEntryDto.docType &&
-                      <button type="button" onClick={()=>this.updateStatus("nrgpClosed")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</button>}
-                    {"COMMERCIAL APPROVED"===gateEntryDto.status && "RGP"===gateEntryDto.docType &&
-                    <button type="button" onClick={()=>this.updateStatus("rgpGateout")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</button>} */}
-                  </div>
+                    <Button variant="contained" size="small" className="" color="primary" type="button" onClick={this.handleRedirect}>Back</Button> 
+                   </div>
                 </div>
               </div>
+              </div>
+              
             </div>
           </FormWithConstraints>
         </div>

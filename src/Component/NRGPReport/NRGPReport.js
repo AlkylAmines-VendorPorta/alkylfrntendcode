@@ -1,33 +1,50 @@
 import React, { Component } from "react";
 import UserDashboardHeader from "../Header/UserDashboardHeader";
 import { connect } from 'react-redux';
-import { isEmptyDeep, isEmpty } from "../../Util/validationUtil";
+import { isEmpty } from "../../Util/validationUtil";
 import { submitToURL } from "../../Util/APIUtils";
 import * as actionCreators from "./Action";
-import StickyHeader from "react-sticky-table-thead";
 import {
-  commonSubmitForm, commonHandleChange, commonSubmitFormNoValidation,
+  commonSubmitForm, commonHandleChange,
   commonSubmitWithParam
 } from "../../Util/ActionUtil";
-import { searchTableData, searchTableDataTwo } from "../../Util/DataTable";
-import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import { getIFSCDetails } from "../../Util/APIUtils";
-import Loader from "../FormElement/Loader/LoaderWithProps";
-import { useState } from "react"
-import axios from 'axios';
-import { formatDateWithoutTime,formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
-import { formatTime } from "../../Util/DateUtil";
-import { getCommaSeperatedValue, getDecimalUpto } from "../../Util/CommonUtil";
+import { FormWithConstraints } from 'react-form-with-constraints';
+import { formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
 import TableToExcel from "@linways/table-to-excel";
 
+// Material-UI Components
+import {
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  CircularProgress,
+  Container,
+  Grid,
+  InputLabel,
+  FormControl,
+  TablePagination,
+  TableContainer,
+  IconButton,
+} from "@material-ui/core";
+import Loader from "../FormElement/Loader/Loader";
 
 class NRGPReport extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
       isLoading: false,
       getASNReportlist: [],
+      search: "",
+        page: 0,
+        rowsPerPage: 50,
+        openModal:false,
       partner: {
         partnerId: "",
         email: "",
@@ -166,7 +183,7 @@ class NRGPReport extends Component {
   }
 
   handleSubmit = (e) => {
-    this.setState({ loadasnDetails: true });
+    this.setState({ loadasnDetails: true, openModal:false });
     commonSubmitForm(e, this, "gateEntryResponse", "/getASNReport")
   }
 
@@ -181,236 +198,288 @@ class NRGPReport extends Component {
        name:"RGP_Report.xlsx"
     });
   }
+  // Handle pagination page change
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
+  };
 
-//  handleSearchClick = () => {
-//    
-//    if(this.state.asndetails.asnNoFrom !="" || this.state.asndetails.poNoFrom !="" || this.state.asndetails.asnDateFrom != ""){
-//    //  this.changeLoaderState(false);
-//    // commonSubmitForm(e, this, "asnResponse", "/rest/getASNReport", "reports")
-//     // return false;
-//     this.isLoading.hidden=true;
-//
-//    }else{
-//      
-//      window.alert('Please Enter One of Above Value')
-//      this.changeLoaderState=false;
-//      return false;
-//    }
-//  }
+  // Handle rows per page change
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
+  };
 
-
-
+  // // Handle form submission
+  // handleSubmit = (e) => {
+  //   this.setState({ loadasnDetails: true ,openModal:false});
+  //   commonSubmitForm(e, this, "gateEntryResponse", "/getASNReport")
+  // }
+  onCloseModal=()=>{
+    this.setState({
+      openModal:false
+    })
+  }
+  onOpenModal=()=>{
+    this.setState({
+      openModal:true
+    })
+  }
+  onValueChange = ({ target }) => {
+    console.log(target.value,"target.value")
+    this.setState({ search: target.value, page: 0 }); // Reset page to 0 when searching
+  };
   render() {
-    const {filterGateEntryDocList} = this.props;
-    const { filter } = this.props;
-    var displayService="none";
-    var shown = {
-      display: this.state.shown ? "block" : "none"
-    };
-    var hidden = {
-      display: this.state.hidden ? "none" : "block"
+    const {
+      plantDropDownList,
+      statusDropDownList,
+      gateEntryListDto,
+      isLoading,
+      page,
+      rowsPerPage,
+      search,
+    } = this.state;
+    const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
         }
-    var frmhidden = {
-          display: this.state.formDisplay ? "none" : "block"
-            }  
-            var searchHidden = {
-              display: this.state.searchDisplay ? "block" : "none"
-                }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+  
+    const filteredData = this.props.gateEntryListDto.filter((entry) => {
+      return searchInObject(entry, search);
+    });
     return (
       <>
-
-<React.Fragment>
-        <Loader isLoading={this.state.isLoading} />
-        {<UserDashboardHeader />}
-        <div className="w-100" id="togglesidebar">
-          <div className="mt-70 boxContent">
+        <React.Fragment>
+          <UserDashboardHeader />
+          <Loader isLoading={isLoading} />
+          <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
+          {this.state.openModal && 
+              <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
+              <div className="modal-backdrop"></div>  <div className="modal-dialog modal-lg">
+                  <div className="modal-content">
             <FormWithConstraints ref={formWithConstraints => this.printreports = formWithConstraints}
-              onSubmit={(e) => {
-                
-               // this.setState({ asndetails: { test: "" } });
+              onSubmit={(e) => {                
                  this.changeLoaderState(true);
-                
+                 this.setState({openModal:false, isLoading:true})
                 commonSubmitForm(e, this, "gateEntryResponse", "/rest/getGateEntryByFilter", "printreports")
-               // this.handleSearchClick(true)
-              // this.changeLoaderState(true);
-                
-              }} noValidate
+               }} noValidate
             >
-              
-              {/* <input type="hidden" name='asndetails[userId]'
-              value={this.state.partner.partnerId} 
-              /> */}
+                <Grid container spacing={3}>
+                  {/* REQ No From */}
+                  <Grid item xs={12} sm={6} md={6}>
+                    <TextField
+                      fullWidth
+                      label="REQ No From"
+                      name="reqNoFrom"
+                      value={gateEntryListDto.reqNoFrom}
+                      onChange={(event) => {
+                        if (event.target.value.length < 60) {
+                          commonHandleChange(event, this, "gateEntryListDto.reqNoFrom", "printreports");
+                        }
+                      }}
+                       variant="outlined" size="small"
+                       InputLabelProps={{ shrink: true }}  
+                       inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                    />
+                  </Grid>
 
+                  {/* REQ No To */}
+                  <Grid item xs={12} sm={6} md={6}>
+                    <TextField
+                      fullWidth
+                      label="REQ No To"
+                      name="reqNoTo"
+                      value={gateEntryListDto.reqNoTo}
+                      onChange={(event) => {
+                        if (event.target.value.length < 60) {
+                          commonHandleChange(event, this, "gateEntryListDto.reqNoTo", "printreports");
+                        }
+                      }}
+                      variant="outlined" size="small"
+                       InputLabelProps={{ shrink: true }}  
+                       inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                    />
+                  </Grid>
 
+                  {/* Plant Dropdown */}
+                  <Grid item xs={12} sm={6} md={6}>
+                    <FormControl  fullWidth size="small" variant="outlined">
+                      <InputLabel shrink>Plant</InputLabel>
+                      <Select
+                        name="plant"
+                        variant="outlined"
+                        value={gateEntryListDto.plant}
+                        onChange={(event) => {
+                          commonHandleChange(event, this, "gateEntryListDto.plant", "printreports");
+                        }}
+                        sx={{ fontSize: 12, height: "15px",  } }
+                      >
+                        <MenuItem value="">Select</MenuItem>
+                        {plantDropDownList.map((item) => (
+                          <MenuItem key={item.value} value={item.value}>
+                            {item.display}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
-<div className="col-sm-12">
-              <div className="row mt-2">
-                <label className="col-sm-2 mt-4">REQ No</label>
-                <div className="col-sm-2">
-                  <input type="text" className={"form-control"} name="reqNoFrom" value={this.state.gateEntryListDto.reqNoFrom} onChange={(event) => {
-                      if (event.target.value.length < 60) {
-                        commonHandleChange(event, this, "gateEntryListDto.reqNoFrom", "printreports")
-                      }
-                    }} />
+                  {/* Status Dropdown */}
+                  <Grid item xs={12} sm={6} md={6}>
+                    <FormControl  fullWidth size="small" variant="outlined">
+                      <InputLabel shrink>Status</InputLabel>
+                      <Select
+                        name="status"
+                        variant="outlined"
+                        value={gateEntryListDto.status}
+                        onChange={(event) => {
+                          commonHandleChange(event, this, "gateEntryListDto.status", "printreports");
+                        }}
+                        sx={{ fontSize: 12, height: "15px",  } }
+                      >
+                        <MenuItem value="">Select</MenuItem>
+                        {statusDropDownList.map((item) => (
+                          <MenuItem key={item.value} value={item.value}>
+                            {item.display}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
-                </div>
-                <label>To </label>
-                <div className="col-sm-2">
-                  <input type="text" className="form-control" name="reqNoTo" value={this.state.gateEntryListDto.reqNoTo} onChange={(event) => {
-                    if (event.target.value.length < 60) {
-                      commonHandleChange(event, this, "gateEntryListDto.reqNoTo", "printreports")
-                    }
+                  {/* Search Button */}
+                  <Grid item xs={12} style={{ textAlign: "center" }}>
+                    <Button type="submit" size="small" variant="contained" color="primary" disabled={isLoading}>
+                      Search
+                    </Button>
+                     <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
+                     Cancel</Button>
+                  </Grid>
+                </Grid>
+              </FormWithConstraints>
+</div>
+</div>
+</div>}
+<Grid container spacing={2} alignItems="center" justify="flex-end">
+              <Grid item xs={9} style={{textAlign:"left"}}>
+                <Button variant="contained" size="small" color="primary" onClick={this.exportReportToExcel}>
+                  Download Excel
+                </Button>
+              </Grid>
+              <Grid item xs={3}>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={search}
+                  onChange={this.onValueChange}
+                  style={{ fontSize: "10px", float:"right" }}
+                />
+                <IconButton size="small" style={{float:"right", marginRight:"10px"}} onClick={(this.onOpenModal)} color="primary"><i class="fa fa-filter"></i></IconButton>
+              </Grid>
+            </Grid>
+<TableContainer className="mt-1">
+                  <Table className="my-table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Req No</TableCell>
+                        <TableCell>Req Date</TableCell>
+                        <TableCell>Return By</TableCell>
+                        <TableCell>Requestioner Name</TableCell>
+                        <TableCell>Vehicle No</TableCell>
+                        <TableCell>Vendor Name</TableCell>
+                        <TableCell>Doc Type</TableCell>
+                        <TableCell>Plant</TableCell>
+                        <TableCell>Material Details</TableCell>
+                        <TableCell>UOM</TableCell>
+                        <TableCell>Quantity</TableCell>
+                        <TableCell>Purpose</TableCell>
+                        <TableCell>Status</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredData
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((gaterntryline) => (
+                          <TableRow key={gaterntryline.gateEntry.reqNo}>
+                            <TableCell>{gaterntryline.gateEntry.reqNo}</TableCell>
+                            <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.created)}</TableCell>
+                            <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.returnBy)}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.createdBy?.userDetails?.name || ""}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.vehicleNo}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.vendorName}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.docType}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.plant}</TableCell>
+                            <TableCell>{gaterntryline.materialCode}</TableCell>
+                            <TableCell>{gaterntryline.uom}</TableCell>
+                            <TableCell>{gaterntryline.materialQty}</TableCell>
+                            <TableCell>{gaterntryline.purpose}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.status}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
 
+                  {/* Pagination */}
+                  <TablePagination
+                    rowsPerPageOptions={[50, 100, 150]}
+                    component="div"
+                    count={filteredData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={this.handleChangePage}
+                    onRowsPerPageChange={this.handleChangeRowsPerPage}
+                  />
 
-                  }} />
-                </div></div>
-                {/* <div className="row mt-2">
-                <label className="col-sm-2 mt-4">Doc Type</label>
-              <div className="col-sm-2">
-              <select className="form-control"
-              name="docType"
-              value={this.state.gateEntryListDto.docType}
-              // disabled={gateEntryDto.reqNo}
-              onChange={(event) => {
-                commonHandleChange(event, this, "gateEntryListDto.docType", "printreports")
-            }}
-              >
-                <option value="">Select</option>
-                      <option value="NRGP">NRGP</option>
-                      <option value="RGP">RGP</option>
-              </select>
-            </div>
-            </div> */}
-            <div className="row mt-2">
-            <label className="col-sm-2 mt-4">Plant </label>
-                  <div className="col-sm-2" >
-                    <select className="form-control" name="plant" 
-                      //value={gateEntryDto.plant}
-                     // disabled={gateEntryDto.reqNo}
-                     onChange={(event) => {
-                      commonHandleChange(event, this, "gateEntryListDto.plant", "printreports")
-                  }}
-                    >
-                      <option value="">Select</option>
-                      {(this.state.plantDropDownList).map(item =>
-
-                        <option value={item.value}>{item.display}</option>
-                      )}
-
-                    </select>
-                  </div>
-            <label> Status </label>
-                  <div className="col-sm-2" >
-                    <select className="form-control" name="status" 
-                      //value={gateEntryDto.plant}
-                     // disabled={gateEntryDto.reqNo}
-                     onChange={(event) => {
-                      commonHandleChange(event, this, "gateEntryListDto.status", "printreports")
-                  }}
-                    >
-                      <option value="">Select</option>
-                      {(this.state.statusDropDownList).map(item =>
-
-                        <option value={item.value}>{item.display}</option>
-                      )}
-
-                    </select>
-                  </div>
-                </div>
-                
-            </div>
-              <div className="col-sm-12">
-
-                <div className="row mt-2">
-
-                  <div className="col-sm-12">
-
-                    <div className="row mt-2">
-
-                      <div className="row">
-
-                        <div className="col-sm-12 text-center">
-                          <button type="submit" className={"btn btn-primary"}>
-                            Search
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* <div className="col-sm-3"><button className="btn btn-info blueButton" 
-                 onClick={() => {commonSubmitWithParam(this.props, "getasnreports", "/rest/getASNReport")}} 
-  
-                 type="button">Search</button></div>  */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-            </FormWithConstraints>
-          </div>
-
-
-          <div className="row px-4 py-2">
-            <div className="mt-2 boxContent">
-              <div class="table-proposed">
-                <StickyHeader height={"65vh"} >
-                  <table className="table table-bordered table-header-fixed" id="RGPLineReport">
-                    <thead>
-                      <tr>
-
-                        <th>Req No</th>
-                        <th>Req Date</th>
-                        <th>Return By</th>
-                        {/* <th>Department Name</th> */}
-                        <th>Requestioner Name</th>
-                        <th>Vehicle No</th>
-                        <th>Vendor Name</th>
-                        {/* <th>Vendor Address</th> */}                       
-                        <th>Doc Type</th>
-                        <th>Plant</th>
-                        <th>Material Details</th>
-                        <th>UOM</th>
-                        <th>Quantity</th>
-                        <th>Purpose</th>
-                        <th>Status</th>
-                        
-                      </tr>
-                    </thead>
-                    <tbody id="DataTableBody">
+              {/* Download Excel Button */}
+              <div style={{display:"none"}}>
+              <Table id="RGPLineReport" className="my-table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Req No</TableCell>
+                        <TableCell>Req Date</TableCell>
+                        <TableCell>Return By</TableCell>
+                        <TableCell>Requestioner Name</TableCell>
+                        <TableCell>Vehicle No</TableCell>
+                        <TableCell>Vendor Name</TableCell>
+                        <TableCell>Doc Type</TableCell>
+                        <TableCell>Plant</TableCell>
+                        <TableCell>Material Details</TableCell>
+                        <TableCell>UOM</TableCell>
+                        <TableCell>Quantity</TableCell>
+                        <TableCell>Purpose</TableCell>
+                        <TableCell>Status</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
                       {this.props.gateEntryListDto.map((gaterntryline) => (
-                        <tr>
-                          <td>{gaterntryline.gateEntry.reqNo}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.created)}</td>
-                          <td>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.returnBy)}</td>
-                          {/* <td></td> */}
-                          <td>{gaterntryline.gateEntry.createdBy!=null?gaterntryline.gateEntry.createdBy.userDetails.name:""}</td>
-                          <td>{gaterntryline.gateEntry.vehicleNo}</td>
-                          <td>{gaterntryline.gateEntry.vendorName}</td>
-                          {/* <td>{ge.vendorAddress}</td> */}
-                          
-                          <td>{gaterntryline.gateEntry.docType}</td>
-                          <td>{gaterntryline.gateEntry.plant}</td>
-                          <td>{gaterntryline.materialCode}</td>
-                          <td>{gaterntryline.uom}</td>
-                          <td>{gaterntryline.materialQty}</td>
-                          <td>{gaterntryline.purpose}</td>
-                          <td>{gaterntryline.gateEntry.status}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </StickyHeader>
+                          <TableRow key={gaterntryline.gateEntry.reqNo}>
+                            <TableCell>{gaterntryline.gateEntry.reqNo}</TableCell>
+                            <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.created)}</TableCell>
+                            <TableCell>{formatDateWithoutTimeNewDate1(gaterntryline.gateEntry.returnBy)}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.createdBy?.userDetails?.name || ""}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.vehicleNo}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.vendorName}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.docType}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.plant}</TableCell>
+                            <TableCell>{gaterntryline.materialCode}</TableCell>
+                            <TableCell>{gaterntryline.uom}</TableCell>
+                            <TableCell>{gaterntryline.materialQty}</TableCell>
+                            <TableCell>{gaterntryline.purpose}</TableCell>
+                            <TableCell>{gaterntryline.gateEntry.status}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
               </div>
-              <div className="row">
-                        <div className="col-sm-12 text-center">
-                                   <button className="btn btn-success" style={{justifyContent: "center"}} onClick={this.exportReportToExcel}> <i className="fa fa-download" />&nbsp; Download Excel</button>
-                                 
-                                                </div></div>
+            </TableContainer>
             </div>
-          </div>
-
-        </div>
-        
-        { }</React.Fragment>
+        </React.Fragment>
       </>
     );
   }
@@ -419,4 +488,5 @@ class NRGPReport extends Component {
 const mapStateToProps = (state) => {
   return state.nrgpReport;
 };
+
 export default connect(mapStateToProps, actionCreators)(NRGPReport);

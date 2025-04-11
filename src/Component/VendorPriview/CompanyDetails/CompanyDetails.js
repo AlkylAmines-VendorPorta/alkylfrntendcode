@@ -805,7 +805,7 @@ submitConfirmation = () =>{
         {/* <Loader isLoading={this.state.isLoading}/> */}
         <div className="card">
         <div className="card-header">Directors / Partners / Proprietors details</div>
-        <div className="card-body">
+        <div className="card-body" style={{paddingLeft:"10px"}}>
         <FormWithConstraints ref={formWithConstraints => this.dercForm = formWithConstraints} 
            onSubmit={(e)=>{this.setState({loadDirectorDetails:true,editButtonFlag:false});commonSubmitForm(e,this,"saveDirectorDetailsResponse","/rest/saveDirectorDetails","dercForm")}} noValidate > 
             {/* <form onSubmit={(e)=> {commonSubmitForm(e,this.props,"saveDirectorDetailsResponse","/rest/saveDirectorDetails")}}> */}
@@ -832,9 +832,8 @@ submitConfirmation = () =>{
                   className={"form-control "} readOnly={this.props.readonly}/>
                 </div>
                 </div>
-                  <br/>
             
-            <div className="row">
+            <div className="row mt-2">
                 <label className="col-sm-2">Directors Identification No</label>
                 <div className="col-sm-3">
                   <input type="text" className={"form-control "} readOnly={this.props.readonly} name="directorUID" 
@@ -855,8 +854,7 @@ submitConfirmation = () =>{
 
                 </div>
                 </div>
-              <br />
-              <div className="row">
+              <div className="row mt-2">
                 <label className="col-sm-2">Qualification</label>
                 <div className="col-sm-3">
                     <input type="text" name="qualification" className={"form-control "} readOnly={this.props.readonly} value={this.state.directorDetails.qualification} 
@@ -870,8 +868,6 @@ submitConfirmation = () =>{
                   onChange={(e)=>{commonHandleChange(e,this,"directorDetails.experience")}} />
                 </div>
               </div>
-              <br />
-              <br />
               <div className={"col-sm-12 text-center mt-2 " + this.props.displayDiv}>
                   <button type="submit" className="btn btn-success mr-1">Save</button>
                   <button type="button" className="btn btn-danger mr-1" onClick={()=>{this.setState({editButtonFlag:false});this.resetPropriterDetails()}}>Clear</button> 
@@ -882,8 +878,8 @@ submitConfirmation = () =>{
               </FormWithConstraints>
              
               <div className="row">
-                <div className="col-sm-12 mt-3">
-                  <table className="table table-bordered">
+                <div className="col-sm-12 mt-2">
+                  <table className="my-table">
                     <thead>
                       <tr>
                         <th>Type </th>
@@ -932,7 +928,7 @@ submitConfirmation = () =>{
                 </div>
                 <div className="card">
                 <div className="card-header">Other Details</div>
-                <div className="card-body">    
+                <div className="card-body" style={{paddingLeft:"10px"}}>    
         <div className="mt-1">  
          
           {/* <div id="collapseTwo2" className="collapse" data-parent="#accordion2">
@@ -1318,7 +1314,7 @@ submitConfirmation = () =>{
               </FormWithConstraints>
               <div className="row">
                 <div className="col-sm-12 mt-3">
-                  <table className="table table-bordered">
+                  <table className="my-table">
                     <thead>
                       <tr>
                         <th>Name of Company</th>

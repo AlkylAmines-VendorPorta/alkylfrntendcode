@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import { isEmpty } from "lodash-es";
 import { getUser1Dto, getUserDetailsDto, getJsonIgnorePartnerDto, getPartnerDto,getUser } from "../../../Util/CommonUtil";
 import PRUserInvitation from "./PRUserInvitation/PRUserInvitation";
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@material-ui/core";
 class VendorSelection extends Component {
     constructor(props) {
         super(props);
@@ -343,14 +344,15 @@ class VendorSelection extends Component {
        });
         return (
             <>
-                <div className="card my-2">
+            <div style={{width:"100%", height:"5px"}}></div>
+                <div className="card my-2 wizard-v1-content" style={{marginTop:"10px"}}>
                     <div className="lineItemDiv min-height-0px">
                         <div className="row px-4 py-2">
                             <div className="col-12">
                                 <div class="d-flex">
-                                    <button className="btn btn-sm btn-outline-info mr-2" type="button" onClick={()=>{this.props.loadPREnquiry(false)}}><i className="fa fa-arrow-left" aria-hidden="true"></i></button>
-                                    <button type="button" className="btn btn-sm btn-outline-primary mr-2" data-toggle="modal" data-target="#searchModal" onClick={() => this.openResultantModal()} ><i className="fa fa-search" />&nbsp;Search Vendor</button>
-                                    <button type="button" className="btn btn-sm btn-outline-secondary mr-2" data-toggle="modal" data-target="#addNewModal"><i className="fa fa-user" />&nbsp;Invite External Vendor</button>
+                                    <Button color="primary" variant="contained" size="small" type="button" onClick={()=>{this.props.loadPREnquiry(false)}}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
+                                    <Button color="primary" variant="contained" size="small" className="ml-2" type="button" data-toggle="modal" data-target="#searchModal" onClick={() => this.openResultantModal()} ><i className="fa fa-search" />&nbsp;Search Vendor</Button>
+                                    <Button color="primary" variant="contained" size="small" className="ml-2" type="button"  data-toggle="modal" data-target="#addNewModal"><i className="fa fa-user" />&nbsp;Invite External Vendor</Button>
 
     {this.props.prlistadd? null : 
     <>
@@ -412,43 +414,41 @@ class VendorSelection extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="card my-2">
+                <div className="card my-2 wizard-v1-content" >
                     <div className="lineItemDiv min-height-0px">
                         <div className="row px-4 py-1">
                             <div className="col-sm-12 mt-2">
-                                <div>
-                                    <StickyHeader height={350} className="table-responsive">
-                                        <table className="table table-bordered table-header-fixed">
-                                            <thead>
-                                                <tr>
-                                                    <th className="w-40per"> Vendor Code & Name / Email ID </th>
-                                                    <th className="text-right w-10per"> District </th>
-                                                    <th className="w-10per">State</th>
-                                                    <th> Mail Required </th>
-                                                    <th> Action </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                    <TableContainer>
+                                        <Table className="my-table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell className="w-40per"> Vendor Code & Name / Email ID </TableCell>
+                                                    <TableCell className="text-right w-10per"> District </TableCell>
+                                                    <TableCell className="w-10per">State</TableCell>
+                                                    <TableCell> Mail Required </TableCell>
+                                                    <TableCell> Action </TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
                                                 {uniqueEmployees.map((el, i) =>
-                                                    <tr key={i}>
+                                                    <TableRow key={i}>
                                                         {this.getHiddenFields(el, i)}
-                                                        <td>{" (" + el.empCode + " & " + el.vendorname + ")" + " " + el.email}</td>
-                                                        <td className="text-right"> {el.districtname} </td>
-                                                        <td>{el.regionname}</td>
-                                                       {/* <td>{" (" + el.empCode + " & " + el.name + ")" + " " + el.email}</td>
-                                                        <td className="text-right"> {el.district.name} </td>
-                                                <td>{el.state.name}</td>*/}
+                                                        <TableCell>{" (" + el.empCode + " & " + el.vendorname + ")" + " " + el.email}</TableCell>
+                                                        <TableCell className="text-right"> {el.districtname} </TableCell>
+                                                        <TableCell>{el.regionname}</TableCell>
+                                                       {/* <TableCell>{" (" + el.empCode + " & " + el.name + ")" + " " + el.email}</TableCell>
+                                                        <td className="text-right"> {el.district.name} </TableCell>
+                                                <TableCell>{el.state.name}</TableCell>*/}
 
-                                                        <td><input type="checkbox" defaultChecked={true}
+                                                        <TableCell><input type="checkbox" defaultChecked={true}
                                                             onChange={(e) => this.handleIsMailSent(e, i)}
-                                                        /></td>
-                                                        <td className="w-10per"> <button type="button" onClick={() => this.removeVendor(i)} className="btn btn-sm btn-outline-danger mr-2"><i className="fa fa-times" /></button> </td>
-                                                    </tr>
+                                                        /></TableCell>
+                                                        <TableCell className="w-10per"> <button type="button" onClick={() => this.removeVendor(i)} className="btn btn-sm btn-outline-danger mr-2"><i className="fa fa-times" /></button> </TableCell>
+                                                    </TableRow>
                                                 )}
-                                            </tbody>
-                                        </table>
-                                    </StickyHeader>
-                                </div>
+                                            </TableBody>
+                                        </Table>
+                                        </TableContainer>
                             </div>
                         </div>
                     </div>
@@ -487,8 +487,8 @@ class VendorSelection extends Component {
                                     <button type="button" className={"close " + this.props.readonly} data-dismiss="modal" onClick={() => this.searchVendorModalClose()}>&times;</button>
                                 </div>
                                 <div className="modal-body">
-                                    <div class="row mt-1 px-4 py-1">
-                                        <div className="col-8 col-sm-3 col-lg-3">
+                                    <div class="row px-4 py-1">
+                                        <div className="col-8 col-sm-8 col-lg-8">
                                             <div class="form-group">
                                                 <label>Enter vendor code/name/Email ID</label>
                                                 <input
@@ -503,7 +503,7 @@ class VendorSelection extends Component {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-4 col-sm-2 col-lg-2">
+                                        <div className="col-4 col-sm-4 col-lg-4">
                                             <button type="button" style={{ marginTop: "22px" }} className="btn btn-sm btn-outline-primary mr-2" onClick={() => this.searchVendor()}><i className="fa fa-search" />&nbsp;Search Vendor</button>
                                         </div>
                                     </div>
@@ -511,42 +511,34 @@ class VendorSelection extends Component {
                                         <hr />
                                         <div class="row mt-1 px-4 py-1">
                                             <div className="col-12">
-                                                <div>
-                                                    <StickyHeader height={200} className="table-responsive">
-                                                        <table className="table table-bordered table-header-fixed">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th className="w-2per">Ch</th>
-                                                                    <th className="w-25per"> Vendor Code & Name </th>
-                                                                    <th className="w-15per">Email ID</th>
-                                                                    <th className="text-right w-10per"> District </th>
-                                                                    <th className="w-10per">State</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
+                                                
+                                                        <Table className="my-table">
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell className="w-2per">Ch</TableCell>
+                                                                    <TableCell className="w-25per"> Vendor Code & Name </TableCell>
+                                                                    <TableCell className="w-15per">Email ID</TableCell>
+                                                                    <TableCell className="text-right w-10per"> District </TableCell>
+                                                                    <TableCell className="w-10per">State</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
                                                             {/* {this.state.searchedUserList.map((el, i) => */}
                                                                 {this.state.searchedUserList.sort((a, b) => a.vendorname > b.vendorname ? 1:-1).map((el, i) =>
-                                                                    <tr key={i}>
-                                                                        <th>
+                                                                    <TableRow key={i}>
+                                                                        <TableCell>
                                                                             <input type="checkbox"
                                                                                 onChange={(e) => this.addVendor(e, i)}
                                                                             />
-                                                                        </th>
-                                                                        <td>{el.empCode+ " - " + el.vendorname}</td>
-                                                                        <td>{el.email}</td>
-                                                                        <td>{el.districtname}</td>
-                                                                        <td>{el.regionname}</td>
-                                                                    
-                                                                      {/* <td> {el.empCode + " - " + el.name} </td>
-                                                                       <td>{el.email}</td>
-                                                                        <td className="text-right"> {el.district.name} </td>
-                                                                <td>{el.state.name}</td>*/}
-                                                                    </tr>
+                                                                        </TableCell>
+                                                                        <TableCell>{el.empCode+ " - " + el.vendorname}</TableCell>
+                                                                        <TableCell>{el.email}</TableCell>
+                                                                        <TableCell>{el.districtname}</TableCell>
+                                                                        <TableCell>{el.regionname}</TableCell>
+                                                                    </TableRow>
                                                                 )}
-                                                            </tbody>
-                                                        </table>
-                                                    </StickyHeader>
-                                                </div>
+                                                            </TableBody>
+                                                        </Table>
                                                 <hr />
                                                 <button type="button" className="btn btn-sm btn-outline-primary mr-2" data-dismiss="modal" onClick={() => this.setState({ loadResultantTable: false, searchedUserList:[], searchVendorNameOrEmail:"" })}><i className="fa fa-plus" />&nbsp;Add</button>
                                             </div>

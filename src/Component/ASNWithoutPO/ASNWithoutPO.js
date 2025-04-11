@@ -708,7 +708,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
           <UserDashboardHeader />
           <div
             id="forAsnHideShow"
-            className={this.state.showHistory ? "none" : "row mt-2 block"}
+            className={this.state.showHistory ? "none" : "block"}
           >
             <FormWithConstraints
               ref={(formWithConstraints) =>
@@ -716,7 +716,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
               }
               onSubmit={this.onSubmit}
             >
-              <div className="card mt-100" style={{ padding: " 10px" }}>
+              <div className="card mt-2" style={{ padding: " 10px" }}>
                 <div className="row mt-1"></div>
                 <div className="col-sm-12 text-center mt-2 ">
                   <label style={{ fontSize: "20px", color: "black" }}>
@@ -990,7 +990,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                 </div>
               </div>
 
-              <div className="boxContent " style={{ display: "none" }}>
+              <div className="wizard-v1-content " style={{ display: "none" }}>
 
               <div className="row">
                            {/* <label className="col-sm-1" >PO Number</label> */}
@@ -1044,7 +1044,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                         <label className="col-sm-2" >{this.state.po.status}</label>
                      </div>   */}
               </div>
-              <div className={"boxContent"}>
+              <div className={"wizard-v1-content"}>
                 <div style={{ display: displayAsnLine }}>
                   <div className="row">
                     <div className="col-sm-3">
@@ -1053,10 +1053,10 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                     </div>
                     {this.state.openStorageLocationModal && (
                       <div
-                        className="modal roleModal"
+                        className="customModal modal roleModal"
                         id="locationModal show"
                         style={{ display: "block" }}
-                      >
+                      ><div className="modal-backdrop"></div>
                         <div className="modal-dialog modal-md mt-100">
                           <div className="modal-content">
                             <div className="modal-header">
@@ -1220,7 +1220,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                     <div className="w-100 mt-2">
                       <div className="col-sm-12">
                         <div className="table-responsive mt-2">
-                          <table className="table table-bordered">
+                          <table className="my-table">
                             <thead className="thead-light">
                               <tr>
                                 <th className="col-1">Line No.</th>

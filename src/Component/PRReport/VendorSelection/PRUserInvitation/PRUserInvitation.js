@@ -190,7 +190,7 @@ class PRUserInvitation extends Component {
                           </div>
                           </div>
                                 <div className="col-sm-12 mt-2">
-                                <table class="table table-bordered scrollTable">
+                                <table class="my-table">
                                   <thead>
                                     <tr>
                                       <th>Person Name </th>
