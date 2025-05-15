@@ -817,10 +817,12 @@ onOpenModal=()=>{
                      <div className="col-sm-12 mt-5">
                     
               <FormControl fullWidth size="small" variant="outlined">
-                      <InputLabel shrink>Plant</InputLabel>
+                      <InputLabel shrink>Purchase Group</InputLabel>
                       <Select
-                        value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
-                        label="Plant"
+                       value={filter.purchaseGroupFrom}
+                       onChange={this.handleFilterChange.bind(this, 'purchaseGroupFrom')}
+                       
+                        label="Purchase Group"
                         sx={{ fontSize: 12, height: "15px" }}
                       >
                         <MenuItem value="">Select</MenuItem>
@@ -834,11 +836,10 @@ onOpenModal=()=>{
               </div>
               <div className="col-sm-12 mt-5">
               <FormControl fullWidth size="small" variant="outlined">
-                      <InputLabel shrink>Purchase Group From</InputLabel>
+                      <InputLabel shrink>Plant</InputLabel>
                       <Select
-                        value={filter.purchaseGroupFrom}
-                        onChange={this.handleFilterChange.bind(this, 'purchaseGroupFrom')}
-                        label="Purchase Group From"
+                         value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
+                        label="Plant"
                         sx={{ fontSize: 12, height: "15px" }}
                       >
                         <MenuItem value="">Select</MenuItem>

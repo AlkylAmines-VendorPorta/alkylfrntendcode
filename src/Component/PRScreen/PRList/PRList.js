@@ -165,7 +165,6 @@ else
   componentWillReceiveProps(nextProps){
     let list = groupBy(nextProps.prList, 'prNumber');
     this.setState({prList: list})
-
     if(this.state.loadGetDocuments && !isEmpty(nextProps.documents)){
       this.props.changeLoaderState(false);
       this.setGetDocuments(nextProps); 
@@ -229,7 +228,7 @@ else
 
   handleFilterClick = () => {
     this.props.onFilter &&  this.props.onFilter()
-    this.setState({openModal:false})
+    this.setState({openModal:false, openModalNew:false})
   }
 
   clearFields = () => {
@@ -999,7 +998,7 @@ render() {
       <th></th>
       <th>PR Date</th>
       <th>Line No.</th>
-      <th>Status</th>
+      <th>Status000</th>
       <th>Material Code & Description</th>
       <th>Req. Qty.</th>
       <th>UOM</th>

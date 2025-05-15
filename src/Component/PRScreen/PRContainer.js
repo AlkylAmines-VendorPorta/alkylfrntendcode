@@ -324,13 +324,14 @@ class PRContainer extends Component {
       prList:[]
     });
 
-    {this.props.role==="PMADM" || this.props.role==="BUADM"?
-    //commonSubmitWithObjectParams(this.props,"getPR",'/rest/getPRLineByFilter',params)
-    commonSubmitWithObjectParams2(this.props,"getPR",'/rest/getPRLineByFilter',params,this)
+    {(this.props.role==="PMADM") || (this.props.role==="BUADM")?
+    commonSubmitWithObjectParams(this.props,"getPR",'/rest/getPRLineByFilter',params)
+  // commonSubmitWithObjectParams2(this.props,"getPR",'/rest/getPRLineByFilter',params,this)
     
 :
-    //commonSubmitWithObjectParams(this.props,"getPR",'/rest/getPRByFilter',params);
-    commonSubmitWithObjectParams2(this.props,"getPR",'/rest/getPRByFilter',params,this);
+  //commonSubmitWithObjectParams(this.props,"getPR",'/rest/getPRByFilter',params);
+    commonSubmitWithObjectParams(this.props,"getPR",'/rest/getPRByFilter',params)
+   // commonSubmitWithObjectParams2(this.props,"getPR",'/rest/getPRByFilter',params,this);
   }
   
   }
