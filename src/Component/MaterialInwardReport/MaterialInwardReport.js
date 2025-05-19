@@ -206,16 +206,32 @@ class MaterialInwardReport extends Component {
       isLoading: action
     });
   }
-
+  clearFields=()=>{
+    this.setState({
+  
+      materialgateEntryLineListDto: {
+          reqNoFrom: "",
+          reqNoTo: "",
+          docType: "",
+          plant: "",
+          status: "",
+          reqDateFrom: "",
+          reqDateTo: "",
+          
+        }
+    })
+  }
   handleSubmit = (e) => {
     this.setState({ loadasnDetails: true });
-    commonSubmitForm(e, this, "gateEntryResponse", "/getASNReport")
+    commonSubmitForm(e, this, "gateEntryResponse", "/getASNReport");
+    this.clearFields();
   }
-
+  
   handleFilterClick = () => {
     this.props.onFilter && this.props.onFilter();
     this.setState({ formDisplay: !this.state.formDisplay });
     this.setState({ searchDisplay: !this.state.searchDisplay });
+    this.clearFields();
   }
 
   exportReportToExcel() {
@@ -284,7 +300,7 @@ class MaterialInwardReport extends Component {
            this.setState({openModal:false})
          //  commonSubmitForm(e, this, "gateEntryResponse", "/rest/getRGPReportByFilter", "printreports")
           commonSubmitForm(e, this, "gateEntryResponse", "/rest/getGateEntryMaterialByFilter", "printreports")
-         // this.handleSearchClick(true)
+         this.clearFields();
         // this.changeLoaderState(true);
           
         }} noValidate
@@ -368,6 +384,8 @@ class MaterialInwardReport extends Component {
                           </Button>
                            <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
                            Cancel</Button>
+                           <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+
                         </div>
             </div>
              

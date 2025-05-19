@@ -12,7 +12,7 @@ import {
   commonSubmitWithParam
 } from "../../../Util/ActionUtil";
 import { submitForm } from "../../../Util/APIUtils";
-import { formatDateWithoutTimeWithMonthName, disablePastDate} from "../../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2, disablePastDate} from "../../../Util/DateUtil";
 import * as actionCreators from "../PRList/Action/Action";
 import { connect } from "react-redux";
 import { API_BASE_URL } from "../../../Constants";
@@ -266,25 +266,15 @@ if(this.state.checked===true){
 
   }
 }
-
+clearFields = () => {
+  this.props.onClearFilter(); // Calls parent's clearFilter
+}
 handleFilterClick = () => {
   this.setState({ openModal:false})
   this.props.onFilter &&  this.props.onFilter()
+  this.clearFields();
 }
 
-
-clearFields = () => {
-  document.getElementById("PRNOFROM").value = "";
-   document.getElementById("PRNOTO").value = "";
-   document.getElementById("PRDATEFROM").value = "";
-   document.getElementById("PRDATETO").value = "";
-   document.getElementById("status1").value = "";
-   document.getElementById("buyer").value = "";
-   document.getElementById("plant").value = "";
-
-
-
-}
 
 toggleChecked = (e) => {
   let {checked} = e.target;
@@ -404,7 +394,7 @@ onOpenModal=()=>{
           <div className="col-6 col-md-2 col-lg-2">
             <label className="mr-4 label_12px">PR No. & Date</label>
             <span className="display_block">
-              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeWithMonthName(this.state.selectedItem.pr?.date)}
+              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeNewDate2(this.state.selectedItem.pr?.date)}
             </span>
           </div>
           <div className="col-12 col-md-4 col-lg-4">
@@ -621,10 +611,10 @@ onOpenModal=()=>{
                                     value={prLine.prLineId}
                                     disabled={isEmpty(prLine.prLineId)}
                                   />
-                                 {formatDateWithoutTimeWithMonthName(prLine.deliverDate)}
+                                 {formatDateWithoutTimeNewDate2(prLine.deliverDate)}
                                 </td>
                                 {/*<td>
-                                  {formatDateWithoutTimeWithMonthName(prLine.requiredDate)}
+                                  {formatDateWithoutTimeNewDate2(prLine.requiredDate)}
                                 </td>*/}
                                  {/* <td>{!isEmptyDeep(prLine.desiredVendor) ? `${prLine.desiredVendor.name ? `${prLine.desiredVendor.name} - `:''}${prLine.desiredVendor.userName ? prLine.desiredVendor.userName:''}`:'-'}</td> */}
                                  <td>{prLine.desireVendorCode}</td>
@@ -725,9 +715,7 @@ onOpenModal=()=>{
             
             }
 
-{this.validateSelectVendor()?
-            <button type="button" onClick={this.props.loadVendorSelection} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-user"/>&nbsp;Select Vendors for new enquiry</button>
-            :null}
+
           </div>
 
           <div className="col-sm-3">
@@ -769,7 +757,7 @@ onOpenModal=()=>{
               
               <tr>
               <td>{data.bidder?.enquiry?.enquiryId}</td>
-              <td>{formatDateWithoutTimeWithMonthName(data.bidder?.enquiry?.bidEndDate)}</td>
+              <td>{formatDateWithoutTimeNewDate2(data.bidder?.enquiry?.bidEndDate)}</td>
               <td>{data.partner?.name}/{data.partner?.vendorSapCode}</td>
               <td>{data.bidder?.enquiry?.code}</td>
               </tr>
@@ -856,6 +844,7 @@ onOpenModal=()=>{
                       <Button type="button" size="small" color="primary" variant="contained" onClick={this.handleFilterClick.bind(this)}> Search </Button> 
                       <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
                       Cancel</Button>
+                      <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
                       </div>
                       </div>
       
@@ -869,6 +858,9 @@ onOpenModal=()=>{
             <Grid container>
             <Grid item sm={12} className="">   
             <Button type="button" size="small" color="primary" variant="contained" onClick={()=>{this.props.loadVendorSelection(); this.props.prlistadd(true)}} className=""><i className="fa fa-user"/>&nbsp; Add Vendor to existing enquiry</Button>
+            {this.validateSelectVendor()?
+            <button type="button" onClick={this.props.loadVendorSelection} className="btn btn-sm btn-outline-primary ml-1"><i className="fa fa-user"/>&nbsp;Select Vendors for new enquiry</button>
+            :null}
         <input
           placeholder="Search"
           // variant="outlined"
@@ -900,7 +892,7 @@ onOpenModal=()=>{
                           <TableCell> Val. Price </TableCell>
                           <TableCell> Plant </TableCell>
                           <TableCell> Delivery Date </TableCell>
-                          <TableCell> Desire Vendor </TableCell>
+                          {/* <TableCell> Desire Vendor </TableCell> */}
                           <TableCell> Material group </TableCell>
                           <TableCell> Buyer </TableCell>
                           <TableCell> Tracking No </TableCell>
@@ -934,9 +926,9 @@ onOpenModal=()=>{
                                     <button type="button" onClick={this.viewInquiry.bind(this,item)} data-toggle="modal" className="btn btn-light myname" data-target="#viewInquiry" data-backdrop="static" data-keyboard="false">Enquiry</button>
 
                                     </TableCell>
-                                    <TableCell>{item.pr.releasedDate!=null?formatDateWithoutTimeWithMonthName(item.pr.releasedDate):""}</TableCell>
+                                    <TableCell>{item.pr.releasedDate!=null?formatDateWithoutTimeNewDate2(item.pr.releasedDate):""}</TableCell>
                                     <TableCell>{(item.pr.docType)}</TableCell>
-                                    <TableCell>{formatDateWithoutTimeWithMonthName(item.pr.date)}</TableCell>
+                                    <TableCell>{formatDateWithoutTimeNewDate2(item.pr.date)}</TableCell>
                                     <TableCell style={{minWidth:"15px"}}>{removeLeedingZeros(item.prLineNumber)}</TableCell>
                                     <TableCell>{`${item.materialCode} - ${item.materialDesc}`}</TableCell>
                                     <TableCell style={{minWidth:"30px"}}><input
@@ -966,7 +958,7 @@ onOpenModal=()=>{
                                         style={{width:"100px"}}
                                       />
                                     </TableCell>
-                                    <TableCell>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</TableCell>
+                                    {/* <TableCell>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</TableCell> */}
                                     <TableCell>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</TableCell>
                                     <TableCell>
                                     <>

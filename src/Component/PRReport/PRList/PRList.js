@@ -5,7 +5,7 @@ import { isEmptyDeep,isEmpty } from "../../../Util/validationUtil";
 import {groupBy,includes} from 'lodash-es';
 import { FormWithConstraints } from 'react-form-with-constraints';
 import { ROLE_BUYER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN } from "../../../Constants/UrlConstants";
-import { formatDateWithoutTimeWithMonthName,formatDateWithoutTime,formatTime } from "../../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2,formatDateWithoutTime,formatTime } from "../../../Util/DateUtil";
 import { API_BASE_URL } from "../../../Constants";
 import {
   commonHandleChangeCheckBox,
@@ -195,7 +195,9 @@ class PRList extends Component {
    }})
  
   }
-
+  clearFields = () => {
+    this.props.onClearFilter(); // Calls parent's clearFilter
+  }
   toggleChecked = (e) => {
     let {checked} = e.target;
     const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
@@ -211,21 +213,11 @@ class PRList extends Component {
   handleFilterClick = () => {
     this.props.onFilter &&  this.props.onFilter()
     this.setState({openModal:false})
+    this.clearFields();
   }
 
   
-  clearFields = () => {
-    document.getElementById("PRNOFROM").value = "";
-     document.getElementById("PRNOTO").value = "";
-     document.getElementById("PRDATEFROM").value = "";
-     document.getElementById("PRDATETO").value = "";
-     document.getElementById("status1").value = "";
-     document.getElementById("buyer").value = "";
-     document.getElementById("plant").value = "";
-
-
-
-  }
+ 
 
   onCloseModal=()=>{
     this.setState({
@@ -249,10 +241,10 @@ class PRList extends Component {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
   render() {
-    const {filterBuyerList,filterPlantList,filterPRStatusList} = this.props;
+    const {filterBuyerList,filterPlantList,filterPRStatusList,filter} = this.props;
     console.log("PRLIST REN PROPS",this.props);
     const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
-    let filter = {};
+    //let filter = {};
     if(this.props.role == ROLE_BUYER_ADMIN) return null;
     const { page, rowsPerPage, search } = this.state;
 
@@ -347,7 +339,7 @@ class PRList extends Component {
           <div className="col-6 col-md-2 col-lg-2">
             <label className="mr-4 label_12px">PR No. & Date</label>
             <span className="display_block">
-              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeWithMonthName(this.state.selectedItem.date)}
+              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeNewDate2(this.state.selectedItem.date)}
             </span>
           </div>
           <div className="col-12 col-md-4 col-lg-4">
@@ -558,10 +550,10 @@ class PRList extends Component {
                                    value={prLine.prLineId}
                                    disabled={isEmpty(prLine.prLineId)}
                                  />
-                                {formatDateWithoutTimeWithMonthName(prLine.deliverDate)}
+                                {formatDateWithoutTimeNewDate2(prLine.deliverDate)}
                                </td>
                                {/*<td>
-                                 {formatDateWithoutTimeWithMonthName(prLine.requiredDate)}
+                                 {formatDateWithoutTimeNewDate2(prLine.requiredDate)}
                                </td>*/}
                                 {/* <td>{!isEmptyDeep(prLine.desiredVendor) ? `${prLine.desiredVendor.name ? `${prLine.desiredVendor.name} - `:''}${prLine.desiredVendor.userName ? prLine.desiredVendor.userName:''}`:'-'}</td> */}
                                 <td>{prLine.desireVendorCode}</td>
@@ -655,7 +647,7 @@ class PRList extends Component {
   </div>
 </div>
        
-        <div className="row px-4 py-2" id="togglesidebar">
+        <div  id="togglesidebar">
     { [ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN].includes(this.props.role) &&
         <>
         {this.state.openModal && <div className="customModal modal roleModal" id="updateRoleModal show" style={{ display: 'block' }}>
@@ -683,7 +675,7 @@ class PRList extends Component {
                    />
                  </Grid>
                  <Grid item xs={6}>
-                    <TextField label="Pr Release Date From" 
+                    <TextField label="Pr Release Date From"  
                       variant="outlined" size="small" 
                       fullWidth  
                       type="date"
@@ -750,7 +742,7 @@ class PRList extends Component {
             <Grid item xs={12} className="mt-2" style={{textAlign:"center"}}>
           <Button type="button" color="primary" variant="contained" size="small" onClick={this.handleFilterClick.bind(this)}> Search </Button> 
           <Button type="button" color="secondary" className="ml-1" variant="contained" size="small" onClick={this.onCloseModal.bind(this)}> Cancel </Button>
-          <Button type="button" color="primary" className="ml-1" variant="contained" size="small" onClick={this.clearFields.bind(this)}> Clear </Button>
+          <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear</Button>
          
        </Grid>
      </div>
@@ -759,7 +751,6 @@ class PRList extends Component {
         </>
         }
           <div className="col-12">
-            <StickyHeader height={450} className="table-responsive mt-2">
               {this.props.purchaseManager ?
               <>
               <FormWithConstraints ref={formWithConstraints => this.prFormPurchase = formWithConstraints} onSubmit={this.onSubmit}>
@@ -815,7 +806,7 @@ class PRList extends Component {
                                 return (
                                   <tr>
                                     <td colSpan="3"></td>
-                                    <td >{formatDateWithoutTimeWithMonthName(item.pr.date)}</td>
+                                    <td >{formatDateWithoutTimeNewDate2(item.pr.date)}</td>
                                     <td>{item.prLineNumber}</td>
                                     <td>{this.props.prStatusList[item.status]}</td>
                                     <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
@@ -961,7 +952,7 @@ class PRList extends Component {
               </>
               }
              
-            </StickyHeader>
+           
           </div>
         </div>
       </>

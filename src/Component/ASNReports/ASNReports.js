@@ -177,7 +177,30 @@ class ASNReports extends Component {
 
   }
 
-
+  clearFields=()=>{
+  this.setState({
+    asndetails: {
+      poNoFrom: "",
+      poNoTo: "",
+      asnNoFrom: "",
+      asnNoTo: "",
+      asnDateFrom: "",
+      asnDateTo: "",
+      isPONoFilter: "",
+      isAsnNoFilter: "",
+      isAsnDateFilter: "",
+      vendorCode:"",
+      vendorCodeTo:"",
+      status:'',
+      requestedBy:"",
+      plant:"",
+      itemCodeFrom:"",
+      itemCodeTo:"",
+      gateInDateFrom:"",
+      gateInDateTo:""
+    },
+  })
+}
   changeLoaderState = (action) => {
     this.setState({
       isLoading: action
@@ -283,6 +306,7 @@ exportReportToExcel() {
 
                   //    commonSubmitForm(e, this, "asnResponse", "/rest/getASNReport", "reports")
               commonSubmitForm(e, this, "asnLineResponse", "/rest/getASNLineReport", "reports");
+              this.clearFields();
                   // this.handleSearchClick(true)
                   // this.changeLoaderState(true);
 
@@ -435,6 +459,8 @@ exportReportToExcel() {
            <Button type="submit" size="small" variant="contained" onClick={this.handleSearchClick.bind(this)} color="primary"> Search</Button>
             <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
             Cancel</Button>
+            <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+
           </Grid>
           </Grid> 
 

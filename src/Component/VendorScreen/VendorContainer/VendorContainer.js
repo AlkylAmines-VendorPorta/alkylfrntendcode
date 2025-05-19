@@ -7,7 +7,7 @@ import VendorDashboardHeader from "../../Header/VendorDashboardHeader";
 import VendorBody from "../VendorBody/VendorBody";
 import { connect } from "react-redux";
 import { getUserDto } from "../../../Util/CommonUtil";
-import {formatDateWithoutTimeWithMonthName} from "../../../Util/DateUtil";
+import {formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 class VendorContainer extends Component {
   constructor(props) {
@@ -115,7 +115,7 @@ class VendorContainer extends Component {
       buyer: getUserDto(pr.buyer),
       approvedBy: getUserDto(pr.approvedBy),
       createdBy: getUserDto(pr.createdBy),
-      date:formatDateWithoutTimeWithMonthName(pr.date),
+      date:formatDateWithoutTimeNewDate2(pr.date),
       approver: this.setApprover(pr)
     }
   }

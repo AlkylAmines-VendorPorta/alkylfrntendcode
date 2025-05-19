@@ -7,7 +7,7 @@ import SapsalesOrderRightPane from "./sapsalesOrderRightPane";
 import UserDashboardHeader from "../Header/UserDashboardHeader";
 import VendorDashboardHeader from "../Header/VendorDashboardHeader";
 import { commonSubmitWithParam,commonSubmitWithObjectParams } from "../../Util/ActionUtil";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName} from "../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../Util/DateUtil";
 import { removeLeedingZeros } from "../../Util/CommonUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
@@ -70,6 +70,15 @@ class SapSalesOrderCont extends Component {
         plant:""
       }
     };
+}
+clearFilter = () => {
+  this.setState({
+    filter:{
+      fdate:"",
+      tdate:"",
+      plant:""
+    }
+  })
 }
 changeLoaderState = (action) =>{
   this.setState({
@@ -228,7 +237,8 @@ onFilter = () => {
     if(!isEmpty(filter[item])) params = {...params,[item]: filter[item]}
     return item;
   });
-  this.onFetch(params)
+  this.onFetch(params);
+  this.clearFilter();
 }
 
 onFetch = (params) => {
@@ -262,7 +272,8 @@ render() {
           <SapsalesOrderRightPane filter={this.state.filter} onFilterChange={this.onFilterChange} onFilter={this.onFilter} SapSalesOrderStatusList={this.state.poArray} 
           updatePO={this.updatePO} changeLoaderState={this.changeLoaderState} purchaseOrder={this.state.purchaseOrder} 
           role={this.state.role} poStatus={this.state.purchaseOrderStatusList}
-          user={this.state.user}/>
+          user={this.state.user}
+          onClearFilter={this.clearFilter}/>
       {/* </div>
       </div> */}
       </>

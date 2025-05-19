@@ -9,7 +9,7 @@ import { searchTableData, searchTableDataTwo} from "../../../Util/DataTable";
 import * as actionCreators from "../Action";
 import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
 import StickyHeader from "react-sticky-table-thead";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate} from "../../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate} from "../../../Util/DateUtil";
 import { removeLeedingZeros, getCommaSeperatedValue, getDecimalUpto } from "../../../Util/CommonUtil";
 import swal from "sweetalert";
 import { API_BASE_URL } from "../../../Constants";
@@ -115,7 +115,9 @@ class SapsalesOrder extends Component {
 }
 
 
-
+clearFields = () => {
+  this.props.onClearFilter(); // Calls parent's clearFilter
+}
 
 
 getPOLineConditionFromObj = (pOLineConditionObj) =>{
@@ -162,7 +164,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId : po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -354,7 +356,7 @@ handleFilterClick = () => {
 
       return false;
   }
-  // this.props.changeLoaderState(false)
+  this.clearFields();
 }
 
 
@@ -431,20 +433,33 @@ render() {
       <FormWithConstraints>
       <div className="row mb-3">
                   <div className="col-md-12 mb-5">
-                    <TextField label="From Date" variant="outlined" size="small" type="date" fullWidth value={filter.fdate} onChange={(e) => this.handleFilterChange("fdate", e)} InputLabelProps={{ shrink: true }}    inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
+                    <TextField label="From Date" variant="outlined" 
+                    size="small" type="date" 
+                    fullWidth value={filter.fdate} 
+                    onChange={(e) => this.handleFilterChange("fdate", e)} 
+                    InputLabelProps={{ shrink: true }}    
+                    inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
                   </div>
                   <div className="col-md-12 mb-5">
-                    <TextField label="To Date" variant="outlined" size="small" type="date" fullWidth value={filter.tdate} onChange={(e) => this.handleFilterChange("tdate", e)} InputLabelProps={{ shrink: true }}   inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
+                    <TextField label="To Date" variant="outlined" size="small"
+                     type="date" fullWidth 
+                     value={filter.tdate} 
+                     onChange={(e) => this.handleFilterChange("tdate", e)} 
+                     InputLabelProps={{ shrink: true }}   
+                     inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
                   </div>
                   <div className="col-md-12 mb-5">
-                    <TextField label="Plant" variant="outlined" size="small" fullWidth value={filter.plant} onChange={(e) => this.handleFilterChange("plant", e)} InputLabelProps={{ shrink: true }}  
+                    <TextField label="Plant" variant="outlined" size="small"
+                     fullWidth value={filter.plant} 
+                     onChange={(e) => this.handleFilterChange("plant", e)} 
+                     InputLabelProps={{ shrink: true }}  
                       inputProps={{ style: { fontSize: 12, height: "15px",  } }}/>
                   </div>
                   <div className="col-md-12 text-center mt-2">
                     <Button variant="contained" size="small" color="primary" onClick={this.handleFilterClick}>Search</Button>
                      <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
                      Cancel</Button>
-                    
+                     <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
                   </div>
                 </div>
                 
@@ -493,7 +508,7 @@ render() {
                                 
                               <TableRow>
                               {po.requestNo == null && po.custBlockStatus == "@08@"    ? <TableCell style={{textAlign:"center"}} > <Button size="small" variant="outlined" color="primary" onClick={()=>{this.loadPODetails(index)}} key={index}  type="button" >Create</Button></TableCell> :<TableCell key={index}>{po.requestNo}</TableCell>}
-                               {po.custBlockStatus == "@08@"? <TableCell style={{textAlign:"center"}} onClick={()=>{this.props.SapSalesOrderList(po)}} ><div style={{height: "15px",width: "15px",backgroundColor: "green",borderRadius: "50%",display: "inline-block",margin: 18}} ></div></TableCell> :<TableCell style={{textAlign:"center"}} ><div style={{height: "15px",width: "15px",backgroundColor: "red",borderRadius: "50%",display: "inline-block",margin: 18}} ></div></TableCell> }
+                               {po.custBlockStatus == "@08@"? <TableCell style={{textAlign:"center"}} onClick={()=>{this.props.SapSalesOrderList(po)}} ><div style={{height: "15px",width: "15px",backgroundColor: "green",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> :<TableCell style={{textAlign:"center"}} ><div style={{height: "15px",width: "15px",backgroundColor: "red",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> }
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center">{po.plant}</TableCell>
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center" >{po.saleOrdNo}</TableCell>
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDateWithoutTime(po.date)}</TableCell>

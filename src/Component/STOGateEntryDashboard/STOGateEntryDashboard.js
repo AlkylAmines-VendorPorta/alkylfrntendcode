@@ -12,7 +12,7 @@ import {
 import {submitToSAPURL,saveServer, savetoServer} from "../../Util/APIUtils";
 import ReportVechicalSTO from "../ReportVechicalSTO/ReportVechicalSTO";
 import UserDashboardHeader from "../../Component/Header/UserDashboardHeader";
-import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName ,formatDateWithoutTimeNewDate} from "../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeNewDate2 ,formatDateWithoutTimeNewDate} from "../../Util/DateUtil";
 import { searchTableData, searchTableDataTwo} from "./../../Util/DataTable";
 const height_dy = window.innerHeight - 135;
 class STOGateEntryDashboard extends Component {

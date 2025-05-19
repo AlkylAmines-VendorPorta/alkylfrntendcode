@@ -7,7 +7,7 @@ import PurchaseOrderRightPane from "./PurchaseOrderRightPane";
 import UserDashboardHeader from "../Header/UserDashboardHeader";
 import VendorDashboardHeader from "../Header/VendorDashboardHeader";
 import { commonSubmitWithParam,commonSubmitWithObjectParams } from "../../Util/ActionUtil";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName} from "../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../Util/DateUtil";
 import { removeLeedingZeros } from "../../Util/CommonUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
@@ -52,7 +52,12 @@ class PurchaseOrderCont extends Component {
       loadRole: false,
       loadUser: false,
       filter:{
-
+        poNoFrom:"",
+        poNoTo:"",
+        poDateFrom:"",
+        poDateTo:"",
+        empCode:"",
+        vendorCode:"",        
       }
     };
 }
@@ -78,7 +83,18 @@ updatePO = (index,po) =>{
     poArray:poArr
   })
 }
-
+clearFilter = () => {
+  this.setState({
+    filter:{
+      poNoFrom:"",
+      poNoTo:"",
+      poDateFrom:"",
+      poDateTo:"",
+      empCode:"",
+      vendorCode:"",        
+    }
+  })
+}
 getPurchaseOrderFromObj(po){
   let att; 
   if(!isEmpty(po.poAtt)){
@@ -108,7 +124,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId : po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -125,6 +141,7 @@ getPurchaseOrderFromObj(po){
 
 componentDidMount(){
   // this.fetchedData()
+  debugger
 }
 
 fetchedData = (apiUrl = url) => {
@@ -195,7 +212,12 @@ componentWillReceiveProps(props){
 }
 
 onFilterChange = (key,value) => {
-  this.setState(prevState => ({filter:{...prevState.filter,[key]:value}}));
+  this.setState(prevState => ({
+    filter: {
+      ...prevState.filter,
+      [key]: value
+    }
+  }));
 }
 
 onFilter = () => {
@@ -206,7 +228,8 @@ onFilter = () => {
     if(!isEmpty(filter[item])) params = {...params,[item]: filter[item]}
     return item;
   });
-  this.onFetch(params)
+  this.onFetch(params);
+  this.clearFilter();
 }
 
 onFetch = (params) => {
@@ -228,10 +251,16 @@ render() {
       {/* <div className="page-content">
       <div className="wizard-v1-content"> */}
           {/* <PurchaseOrderLeftPane changePO={this.liClick} poList={this.state.poArray}/> */}
-          <PurchaseOrderRightPane filter={this.state.filter} onFilterChange={this.onFilterChange} onFilter={this.onFilter} poList={this.state.poArray} 
-          updatePO={this.updatePO} changeLoaderState={this.changeLoaderState} purchaseOrder={this.state.purchaseOrder} 
-          role={this.state.role} poStatus={this.state.purchaseOrderStatusList}
-          user={this.state.user}/>
+          <PurchaseOrderRightPane filter={this.state.filter} 
+          onFilterChange={this.onFilterChange} onFilter={this.onFilter} 
+          poList={this.state.poArray} 
+          updatePO={this.updatePO} 
+          changeLoaderState={this.changeLoaderState} 
+          purchaseOrder={this.state.purchaseOrder} 
+          role={this.state.role} 
+          poStatus={this.state.purchaseOrderStatusList}
+          user={this.state.user}
+          onClearFilter={this.clearFilter}/>
       {/* </div>
       </div> */}
       </>

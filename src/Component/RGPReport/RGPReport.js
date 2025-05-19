@@ -171,9 +171,23 @@ class RGPReport extends Component {
   }
 
   
-
+clearFields=()=>{
+  this.setState({
+    materialgateEntryLineListDto: {
+      reqNoFrom: "",
+      reqNoTo: "",
+      docType: "",
+      plant: "",
+      status: "",
+      reqDateFrom: "",
+      reqDateTo: "",
+      
+    },
+  })
+}
   handleFilterChange = (key, event) => {
     this.props.onFilterChange && this.props.onFilterChange(key, event.target.value);
+    this.clearFields();
   }
 
   changeLoaderState = (action) => {
@@ -215,6 +229,7 @@ class RGPReport extends Component {
     commonSubmitForm(e, this, "gateEntryResponse", "/rest/getRGPReportByFilter", "printreports")
       .then(() => this.setState({ isLoading: false }))
       .catch(() => this.setState({ isLoading: false }));
+      this.clearFields();
   };
   changeLoaderState = (action) => {
     this.setState({
@@ -405,6 +420,10 @@ class RGPReport extends Component {
                           <Button type="submit" size="small" variant="contained" color="primary" >
                             Search
                           </Button>
+                          <Button type="button" size="small" variant="contained" color="secondary" className="ml-1" onClick={this.onCloseModal.bind(this)}> Cancel </Button>
+
+                          <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+
                         </Grid>
                       </Grid>
                     </FormWithConstraints>

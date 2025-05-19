@@ -8,7 +8,7 @@ import {
   commonSubmitWithParam
 } from "../../../Util/ActionUtil";
 import { getUserDto } from "../../../Util/CommonUtil";
-import {formatDateWithoutTimeWithMonthName} from "../../../Util/DateUtil";
+import {formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
 import {isEmpty, isEmptyDeep} from "../../../Util/validationUtil";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 class QCFContainer extends Component {
@@ -92,10 +92,10 @@ class QCFContainer extends Component {
       buyer: getUserDto(pr.buyer),
       approvedBy: getUserDto(pr.approvedBy),
       createdBy: pr.createdBy,
-      date:formatDateWithoutTimeWithMonthName(pr.date),
+      date:formatDateWithoutTimeNewDate2(pr.date),
       approver: this.setApprover(pr),
       qcfNo:pr.qcfNo,
-      bidEndDate: formatDateWithoutTimeWithMonthName(pr.bidEndDate),
+      bidEndDate: formatDateWithoutTimeNewDate2(pr.bidEndDate),
       enquiryId: pr.enquiryId,
       enquiryStatus:pr.firstLevelApprovalStatus,
       code: pr.code,

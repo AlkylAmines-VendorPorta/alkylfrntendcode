@@ -29,7 +29,7 @@ import {searchTableDataThree, searchTableDataFour, searchTableData, searchTableD
 import * as actionCreators from "./Action";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -407,7 +407,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId: po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -419,7 +419,7 @@ getPurchaseOrderFromObj(po){
     requestedBy: reqBy,
 
     isServicePO:isServicePO(po.pstyp),
-    prDate:formatDateWithoutTimeWithMonthName(po.prDate),
+    prDate:formatDateWithoutTimeNewDate2(po.prDate),
     userID:po.userID
  }
 } else {
@@ -523,12 +523,12 @@ getASNFromObj(asnObj) {
       serviceSheetNo: asnObj.serviceSheetNo,
       po: this.getPurchaseOrderFromObj(asnObj.po),
       invoiceNo: asnObj.invoiceNo,
-      invoiceDate: formatDateWithoutTimeWithMonthName(asnObj.invoiceDate),
-      created:formatDateWithoutTimeWithMonthName(asnObj.created),
+      invoiceDate: formatDateWithoutTimeNewDate2(asnObj.invoiceDate),
+      created:formatDateWithoutTimeNewDate2(asnObj.created),
       invoiceAmount: asnObj.invoiceAmount,
       mismatchAmount: asnObj.mismatchAmount,
       deliveryNoteNo: asnObj.deliveryNoteNo,
-      deliveryNoteDate: formatDateWithoutTimeWithMonthName(asnObj.deliveryNoteDate),
+      deliveryNoteDate: formatDateWithoutTimeNewDate2(asnObj.deliveryNoteDate),
       lrDate: formatDateWithoutTime(asnObj.lrDate),
       lrNumber: asnObj.lrNumber,
       transporterNo: asnObj.transporterNo,
@@ -565,9 +565,9 @@ getASNFromObj(asnObj) {
       roundOffAmount: asnObj.roundOffAmount,
       roundOffValue: asnObj.roundOffValue,
       serviceLocation: asnObj.serviceLocation,
-      servicePostingDate: formatDateWithoutTimeWithMonthName(asnObj.servicePostingDate),
-      serviceFromDate: formatDateWithoutTimeWithMonthName(asnObj.serviceFromDate),
-      serviceToDate: formatDateWithoutTimeWithMonthName(asnObj.serviceToDate),
+      servicePostingDate: formatDateWithoutTimeNewDate2(asnObj.servicePostingDate),
+      serviceFromDate: formatDateWithoutTimeNewDate2(asnObj.serviceFromDate),
+      serviceToDate: formatDateWithoutTimeNewDate2(asnObj.serviceToDate),
    };
 }
 

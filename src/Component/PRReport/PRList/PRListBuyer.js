@@ -12,7 +12,7 @@ import {
   commonSubmitWithParam
 } from "../../../Util/ActionUtil";
 import { submitForm } from "../../../Util/APIUtils";
-import { formatDateWithoutTimeWithMonthName } from "../../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
 import * as actionCreators from "../PRList/Action/Action";
 import { connect } from "react-redux";
 import { API_BASE_URL } from "../../../Constants";
@@ -285,7 +285,7 @@ validateSelectVendor =()=>{
           <div className="col-6 col-md-2 col-lg-2">
             <label className="mr-4 label_12px">PR No. & Date</label>
             <span className="display_block">
-              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeWithMonthName(this.state.selectedItem.pr?.date)}
+              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeNewDate2(this.state.selectedItem.pr?.date)}
             </span>
           </div>
           <div className="col-12 col-md-4 col-lg-4">
@@ -497,10 +497,10 @@ validateSelectVendor =()=>{
                                     value={prLine.prLineId}
                                     disabled={isEmpty(prLine.prLineId)}
                                   />
-                                 {formatDateWithoutTimeWithMonthName(prLine.deliverDate)}
+                                 {formatDateWithoutTimeNewDate2(prLine.deliverDate)}
                                 </td>
                                 {/*<td>
-                                  {formatDateWithoutTimeWithMonthName(prLine.requiredDate)}
+                                  {formatDateWithoutTimeNewDate2(prLine.requiredDate)}
                                 </td>*/}
                                  {/* <td>{!isEmptyDeep(prLine.desiredVendor) ? `${prLine.desiredVendor.name ? `${prLine.desiredVendor.name} - `:''}${prLine.desiredVendor.userName ? prLine.desiredVendor.userName:''}`:'-'}</td> */}
                                  <td>{prLine.desireVendorCode}</td>
@@ -667,7 +667,7 @@ validateSelectVendor =()=>{
                                     <td>
                                     <button type="button" onClick={this.handleSelect.bind(this,item)} data-toggle="modal" className="btn btn-light" data-target="#viewPrDetail" data-backdrop="static" data-keyboard="false">View PR</button>
                                     </td>
-                                    <td >{formatDateWithoutTimeWithMonthName(item.pr.date)}</td>
+                                    <td >{formatDateWithoutTimeNewDate2(item.pr.date)}</td>
                                     <td>{item.prLineNumber}</td>
                                     <td>{this.props.prStatusList[item.status]}</td>
                                     <td>{`${item.materialCode} - ${item.materialDesc}`}</td>

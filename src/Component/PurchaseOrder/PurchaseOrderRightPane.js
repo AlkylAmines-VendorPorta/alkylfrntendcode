@@ -178,7 +178,8 @@ render() {
         
          <PurchaseOrder filter={this.props.filter} onFilterChange={this.handleFilterChange} onFilter={this.handleFilterClick} poList={this.props.poList} user={this.props.user} 
                updatePO={this.props.updatePO} changeLoaderState={this.props.changeLoaderState} createASN={this.postPODetailsToASN} goASNHistory={this.goASNHistory} role={this.state.role}
-           showASNHistory = {this.postASNListDetails}  newPoStatus={this.state.poStatus}/> 
+           showASNHistory = {this.postASNListDetails}  newPoStatus={this.state.poStatus} 
+           onClearFilter={this.props.onClearFilter}/> 
         </div>
 
            <div className={((this.state.showCreateASN) || (this.state.showASNHistory))?"block mt-100":"none"}>

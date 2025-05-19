@@ -9,7 +9,7 @@ import { searchTableData, searchTableDataTwo} from "../../../Util/DataTable";
 import * as actionCreators from "./Action";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 import StickyHeader from "react-sticky-table-thead";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName} from "../../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
 import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import swal from "sweetalert";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -138,7 +138,7 @@ getPOLineFromObj(poLineObj){
     poLineId: poLineObj.purchaseOrderLineId,
     lineItemNumber: poLineObj.lineItemNumber,
     currency: poLineObj.currency,
-    deliveryDate: formatDateWithoutTimeWithMonthName(poLineObj.deliveryDate),
+    deliveryDate: formatDateWithoutTimeNewDate2(poLineObj.deliveryDate),
     plant:poLineObj.plant,
     deliveryStatus:poLineObj.deliveryStatus,
     controlCode:poLineObj.controlCode,
@@ -164,7 +164,7 @@ getServiceFromObj(service){
     poLineId : service.purchaseOrderLineId,
     lineItemNumber: service.lineItemNumber,
     currency: service.currency,
-    deliveryDate: formatDateWithoutTimeWithMonthName(service.deliveryDate),
+    deliveryDate: formatDateWithoutTimeNewDate2(service.deliveryDate),
     plant:service.plant,
     deliveryStatus:service.deliveryStatus,
     controlCode:service.controlCode,
@@ -229,7 +229,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId: po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -242,7 +242,7 @@ getPurchaseOrderFromObj(po){
     pstyp:po.pstyp,
     isServicePO:isServicePO(po.pstyp),
     poTypeMsg:po.poTypeMsg,
-    prDate: formatDateWithoutTimeWithMonthName(po.prDate),
+    prDate: formatDateWithoutTimeNewDate2(po.prDate),
     userID:po.userID
  }
 }
@@ -826,7 +826,7 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
                                 <TableRow onClick={()=>{this.handleFilterClick(index)}}>
                                   <TableCell>{po.purchaseOrderNumber}</TableCell>
                                   {/* <TableCell>{po.documentType}</TableCell> */}
-                                  <TableCell className="text-center">{formatDateWithoutTimeWithMonthName(po.poDate)}</TableCell>
+                                  <TableCell className="text-center">{formatDateWithoutTimeNewDate2(po.poDate)}</TableCell>
                                   <TableCell className="text-center" style={{display:this.state.vendorCodeShown}}>{po.vendorCode}</TableCell>
                                   <TableCell style={{display:this.state.vendorNameShown}}>{po.vendorName}</TableCell>
                                   {/* <TableCell>{po.plant}</TableCell> */}
@@ -872,7 +872,7 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
                               this.state.gateentryAsnList.map((asn,index)=>
                                 <TableRow>
                                   <TableCell>{asn.advanceShipmentNoticeNo!=null?asn.advanceShipmentNoticeNo:asn.serviceSheetNo}</TableCell>
-                                  <TableCell>{formatDateWithoutTimeWithMonthName(asn.created)}</TableCell>       
+                                  <TableCell>{formatDateWithoutTimeNewDate2(asn.created)}</TableCell>       
                                   <TableCell>{asn.invoiceNo}</TableCell> 
                                   <TableCell>{asn.invoiceDate==null?"":formatDateWithoutTime(asn.invoiceDate)}</TableCell>
                                   <TableCell>{asn.status}</TableCell>

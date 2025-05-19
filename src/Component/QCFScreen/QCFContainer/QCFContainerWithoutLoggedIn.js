@@ -827,7 +827,7 @@ toPdf(){
                             <small class="col-6 col-sm-2 col-lg-2 px-0">FORM/PUR/V/04</small>
                             <small class="col-6 col-sm-10 col-lg-10 px-0">ISSUE NO:</small>
                             <small class="col-6 col-sm-2 col-lg-2 px-0"> 03 Date: 01.01.2022</small>
-                            {/* <small class="col-6 col-sm-2 col-lg-2 px-0"> {formatDateWithoutTimeWithMonthName(this.props.pr.date)}</small> */}
+                            {/* <small class="col-6 col-sm-2 col-lg-2 px-0"> {formatDateWithoutTimeNewDate2(this.props.pr.date)}</small> */}
                             <small class="col-6 col-sm-10 col-lg-10 px-0">REV NO:</small>
                             <small class="col-6 col-sm-2 col-lg-2 px-0">00 Date: 01.01.2022</small>
                             {/* <small class="col-6 col-sm-2 col-lg-2 px-0">00 DT 01.01.2017</small> */}

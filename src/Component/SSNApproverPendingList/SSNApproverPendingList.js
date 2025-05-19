@@ -13,7 +13,7 @@ import {
  import { searchTableDataThree, searchTableDataFour } from "../../Util/DataTable";
 import AdvanceShipmentNotice from "../AdvanceShipmentNotice/AdvanceShipmentNotice/AdvanceShipmentNotice";
 
-import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName } from "../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from "../../Util/DateUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../Util/CommonUtil";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Grid, Container } from '@material-ui/core';
@@ -217,12 +217,12 @@ showASNHistory = () =>{
        serviceSheetNo: asnlineObj.advanceshipmentnotice.serviceSheetNo,
        po: asnlineObj.advanceshipmentnotice.po,
        invoiceNo: asnlineObj.advanceshipmentnotice.invoiceNo,
-       invoiceDate: formatDateWithoutTimeWithMonthName(asnlineObj.advanceshipmentnotice.invoiceDate),
-       created:formatDateWithoutTimeWithMonthName(asnlineObj.advanceshipmentnotice.created),
+       invoiceDate: formatDateWithoutTimeNewDate2(asnlineObj.advanceshipmentnotice.invoiceDate),
+       created:formatDateWithoutTimeNewDate2(asnlineObj.advanceshipmentnotice.created),
        invoiceAmount: asnlineObj.advanceshipmentnotice.invoiceAmount,
        mismatchAmount: asnlineObj.advanceshipmentnotice.mismatchAmount,
        deliveryNoteNo: asnlineObj.advanceshipmentnotice.deliveryNoteNo,
-       deliveryNoteDate: formatDateWithoutTimeWithMonthName(asnlineObj.advanceshipmentnotice.deliveryNoteDate),
+       deliveryNoteDate: formatDateWithoutTimeNewDate2(asnlineObj.advanceshipmentnotice.deliveryNoteDate),
        lrDate: formatDateWithoutTime(asnlineObj.advanceshipmentnotice.lrDate),
        lrNumber: asnlineObj.advanceshipmentnotice.lrNumber,
        transporterNo: asnlineObj.advanceshipmentnotice.transporterNo,
@@ -297,7 +297,7 @@ showASNHistory = () =>{
  return {
    poId: po.purchaseOrderId,
    purchaseOrderNumber: po.purchaseOrderNumber,
-   poDate: formatDateWithoutTimeWithMonthName(po.date),
+   poDate: formatDateWithoutTimeNewDate2(po.date),
    vendorCode: removeLeedingZeros(po.vendorCode),
    vendorName: po.vendorName,
    incomeTerms: po.incomeTerms,

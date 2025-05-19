@@ -666,11 +666,14 @@ class PRBody extends Component {
               //prStatusList={this.props.prStatusList}
               priorityList={this.props.priorityList}
               changeLoaderState={this.props.changeLoaderState} groupByLists={this.props.groupByLists}
-              filter={this.props.filter} onFilterChange={this.props.onFilterChange} onFilter={this.props.onFilter} 
+              filter={this.props.filter}
+              onFilterChange={this.props.onFilterChange} 
+              onFilter={this.props.onFilter} 
               filterBuyerList={this.props.filterBuyerList}
               filterPlantList={this.props.filterPlantList}
               filterPRStatusList={this.props.filterPRStatusList}
               filterPurhaseGroupList={this.props.filterPurhaseGroupList}
+              onClearFilter={this.props.onClearFilter}
               />
             </div>
 
@@ -1531,6 +1534,7 @@ class PRBody extends Component {
               filterPlantList={this.props.filterPlantList}
               filterPRStatusList={this.props.filterPRStatusList}
               filterPurhaseGroupList={this.props.filterPurhaseGroupList}
+              onClearFilter={this.props.onClearFilter}
               />
             {/* } */}
             </div>

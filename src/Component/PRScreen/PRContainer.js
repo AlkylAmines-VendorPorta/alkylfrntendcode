@@ -7,7 +7,7 @@ import VendorDashboardHeader from "../Header/VendorDashboardHeader";
 import PRBody from "./PRBody/PRBody";
 import { connect } from "react-redux";
 import { getUserDto } from "../../Util/CommonUtil";
-import {formatDateWithoutTimeWithMonthName,formatDateToISOS,formatDateWithoutTime} from "../../Util/DateUtil";
+import {formatDateWithoutTimeNewDate2,formatDateToISOS,formatDateWithoutTime} from "../../Util/DateUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import {groupBy} from 'lodash-es';
 import { ROLE_PURCHASE_MANAGER_ADMIN,ROLE_BUYER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN } from "../../Constants/UrlConstants";
@@ -33,7 +33,17 @@ class PRContainer extends Component {
       technicalList:[],
       priorityList:[],
       readonly:"readonly",
-      filter:{},
+      filter: {
+        prDateFrom: '',
+        prDateTo: '',
+        prNoFrom: '',
+        prNoTo: '',
+        status: '',
+        buyerCode: '',
+        plant: '',
+        purchaseGroupFrom: '',
+        purchaseGroupTo: ''
+      },
       filterBuyerList:[],
       filterPlantList:[],
       filterPRStatusList:[],
@@ -61,8 +71,10 @@ class PRContainer extends Component {
     if(this.state.loadPRList && !isEmpty(props.prList)){
       this.changeLoaderState(false);
       this.setPRList(props);
+      this.setState({isLoading:true})
     }else{
       this.changeLoaderState(false);
+      this.setState({isLoading:false})
     }
 
     if(this.state.loadPRStatus && !isEmpty(props.prStatusList)){
@@ -161,7 +173,7 @@ class PRContainer extends Component {
       buyer: getUserDto(pr.buyer),
       approvedBy: getUserDto(pr.approvedBy),
       createdBy: getUserDto(pr.createdBy),
-      date:formatDateWithoutTimeWithMonthName(pr.date),
+      date:formatDateWithoutTimeNewDate2(pr.date),
       approver: this.setApprover(pr),
       pstyp:pr.pstyp,
       remarks: pr.remarks || '',
@@ -301,27 +313,49 @@ class PRContainer extends Component {
   }
 
   onFilterChange = (key,value) => {
-    this.setState(prevState => ({filter:{...prevState.filter,[key]:value}}));
+    this.setState(prevState => ({
+      filter: {
+        ...prevState.filter,
+        [key]: value
+      }
+    }));
   }
   
-  onFilter = () => {
-    const {filter} = this.state;
-    let params = {}
+  onFilter = () => {   
+    const { filter } = this.state;
+    let params = {};
     let arr = ['prDateFrom','prDateTo','prNoFrom','prNoTo','status','buyerCode','plant','purchaseGroupFrom','purchaseGroupTo'];
-    !isEmpty(arr) && arr.map((item) => {
-      if(!isEmpty(filter[item])) params = {...params,[item]: filter[item]}
-      return item;
-    });
-    this.onFetch(params)
-  }
 
+    arr.forEach(item => {
+      if (filter[item]) params[item] = filter[item];
+    });
+    
+
+    this.onFetch(params); // API call or similar
+  }
+  clearFilter = () => {
+    this.setState({
+      filter: {
+        prDateFrom: '',
+        prDateTo: '',
+        prNoFrom: '',
+        prNoTo: '',
+        status: '',
+        buyerCode: '',
+        plant: '',
+        purchaseGroupFrom: '',
+        purchaseGroupTo: ''
+      }
+    });
+  };
   onFetch = (params) => {
     this.setState({
       loadPRList: true,
       loadRole: true,
       loadPartner: true,
       loadUser : true,
-      prList:[]
+      prList:[],
+      isLoading:true
     });
 
     {(this.props.role==="PMADM") || (this.props.role==="BUADM")?
@@ -352,11 +386,14 @@ class PRContainer extends Component {
           technicalApproverList={this.state.technicalList}
           readonly={this.state.readonly}
           changeLoaderState={this.changeLoaderState}
-          filter={this.state.filter} onFilterChange={this.onFilterChange} onFilter={this.onFilter} 
+          filter={this.state.filter} 
+          onFilterChange={this.onFilterChange} 
+          onFilter={this.onFilter} 
           filterBuyerList={this.state.filterBuyerList}
           filterPlantList={this.state.filterPlantList}
           filterPRStatusList={this.state.filterPRStatusList}
           filterPurhaseGroupList={this.state.filterPurhaseGroupList}
+          onClearFilter={this.clearFilter}
         />
       </>
     );

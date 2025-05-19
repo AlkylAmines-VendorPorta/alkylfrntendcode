@@ -350,13 +350,14 @@ class VendorSelection extends Component {
                         <div className="row px-4 py-2">
                             <div className="col-12">
                                 <div class="d-flex">
-                                    <Button color="primary" variant="contained" size="small" type="button" onClick={()=>{this.props.loadPREnquiry(false)}}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
-                                    <Button color="primary" variant="contained" size="small" className="ml-2" type="button" data-toggle="modal" data-target="#searchModal" onClick={() => this.openResultantModal()} ><i className="fa fa-search" />&nbsp;Search Vendor</Button>
-                                    <Button color="primary" variant="contained" size="small" className="ml-2" type="button"  data-toggle="modal" data-target="#addNewModal"><i className="fa fa-user" />&nbsp;Invite External Vendor</Button>
+                                    
+                                    <Button color="primary" style={{height:"35px"}} variant="contained" size="small" type="button" onClick={()=>{this.props.loadPREnquiry(false)}}><i className="fa fa-arrow-left" aria-hidden="true"></i></Button>
+                                    <Button color="primary" style={{height:"35px"}} variant="contained" size="small" className="ml-2" type="button" data-toggle="modal" data-target="#searchModal" onClick={() => this.openResultantModal()} ><i className="fa fa-search" />&nbsp;Search Vendor</Button>
+                                    <Button color="primary" style={{height:"35px"}} variant="contained" size="small" className="ml-2" type="button"  data-toggle="modal" data-target="#addNewModal"><i className="fa fa-user" />&nbsp;Invite External Vendor</Button>
 
     {this.props.prlistadd? null : 
     <>
-      <div className="col-1">
+      <div className="col-2">
       <span>Bid end date</span>
   </div>
   <div className="col-2">
@@ -484,7 +485,7 @@ class VendorSelection extends Component {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     Search Vendor
-                                    <button type="button" className={"close " + this.props.readonly} data-dismiss="modal" onClick={() => this.searchVendorModalClose()}>&times;</button>
+                                    <Button size="small" variant="contained" type="button" className={"close " + this.props.readonly} data-dismiss="modal" onClick={() => this.searchVendorModalClose()}>&times;</Button>
                                 </div>
                                 <div className="modal-body">
                                     <div class="row px-4 py-1">
@@ -504,7 +505,7 @@ class VendorSelection extends Component {
                                             </div>
                                         </div>
                                         <div className="col-4 col-sm-4 col-lg-4">
-                                            <button type="button" style={{ marginTop: "22px" }} className="btn btn-sm btn-outline-primary mr-2" onClick={() => this.searchVendor()}><i className="fa fa-search" />&nbsp;Search Vendor</button>
+                                        <Button size="small" variant="contained" type="button" style={{ marginTop: "22px" }} className="btn btn-sm btn-outline-primary mr-2" onClick={() => this.searchVendor()}><i className="fa fa-search" />&nbsp;Search Vendor</Button>
                                         </div>
                                     </div>
                                     <section className={displayResultantTable}>
@@ -553,7 +554,7 @@ class VendorSelection extends Component {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     Invite External Vendor
-                                    <button type="button" className={"close " + this.props.readonly} data-dismiss="modal">&times;</button>
+                                    <Button size="small" variant="contained" type="button" className={"close " + this.props.readonly} data-dismiss="modal">&times;</Button>
                                 </div>
 
 

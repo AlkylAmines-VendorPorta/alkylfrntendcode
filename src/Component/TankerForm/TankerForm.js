@@ -10,7 +10,7 @@ import {
   commonSubmitForm, commonHandleChange, commonSubmitFormNoValidation,
   commonSubmitWithParam
 } from "../../Util/ActionUtil";
-import { formatDateWithoutTimeWithMonthName, formatDateWithoutTime } from "../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2, formatDateWithoutTime } from "../../Util/DateUtil";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import { removeLeedingZeros } from "../../Util/CommonUtil";
@@ -185,7 +185,7 @@ getPurchaseOrderFromObj(po){
      return {
         poId : po.purchaseOrderId,
         purchaseOrderNumber: po.purchaseOrderNumber,
-        poDate: formatDateWithoutTimeWithMonthName(po.date),
+        poDate: formatDateWithoutTimeNewDate2(po.date),
         vendorCode: removeLeedingZeros(po.vendorCode),
         vendorName: po.vendorName,
         incomeTerms: po.incomeTerms,
@@ -851,7 +851,7 @@ else{
                                 <td>Gate Entry No. :</td>
                                 <td></td>
                                 <td>Gate In Date. :</td>
-                                <td>{formatDateWithoutTimeWithMonthName(this.props.purchaseOrderList.gateInDate)}</td>
+                                <td>{formatDateWithoutTimeNewDate2(this.props.purchaseOrderList.gateInDate)}</td>
                                 <td>Time :</td>
                                 <td></td>
                               </tr>
@@ -861,7 +861,7 @@ else{
                                 <td>Inv. / Dc No. :</td>
                                 <td>{this.props.purchaseOrderList.invoiceNo}</td>
                                 <td>Inv/Dc Dt.</td>
-                                <td>{formatDateWithoutTimeWithMonthName(this.props.purchaseOrderList.invoiceDate)}</td>
+                                <td>{formatDateWithoutTimeNewDate2(this.props.purchaseOrderList.invoiceDate)}</td>
                               </tr>
                               <tr>
                                 <td>Material Name :</td>

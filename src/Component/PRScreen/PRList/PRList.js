@@ -5,14 +5,14 @@ import { isEmptyDeep,isEmpty } from "../../../Util/validationUtil";
 import {groupBy,includes} from 'lodash-es';
 import { FormWithConstraints } from 'react-form-with-constraints';
 import { ROLE_BUYER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN } from "../../../Constants/UrlConstants";
-import { formatDateWithoutTimeWithMonthName, disablePastDate,formatDateWithoutTimeNewDate2,formatDateWithoutTime,formatTime } from "../../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2, disablePastDate,formatDateWithoutTime,formatTime } from "../../../Util/DateUtil";
 import { API_BASE_URL } from "../../../Constants";
 import {
   commonHandleChangeCheckBox,
   showAlertAndReload,showAlert,
   commonSubmitWithParam
 } from "../../../Util/ActionUtil";
-import { submitForm } from "../../../Util/APIUtils";
+import { isLoading, submitForm } from "../../../Util/APIUtils";
 import { connect } from "react-redux";
 import * as actionCreators from "../PRList/Action/Action";
 import { getUserDto, getFileAttachmentDto,getDecimalUpto,removeLeedingZeros } from "../../../Util/CommonUtil";
@@ -39,6 +39,7 @@ import {
   Checkbox,
   ListItemText
 } from "@material-ui/core";
+import LoaderWithProps from "../../FormElement/Loader/LoaderWithProps";
 class PRList extends Component {
   constructor(props) {
     super(props);
@@ -62,7 +63,8 @@ class PRList extends Component {
       prList:[],
       checked:false,
       loadGetDocuments:false,
-      getDocuments:[]
+      getDocuments:[],
+      isLoading:false
     };
   }
 
@@ -165,6 +167,9 @@ else
   componentWillReceiveProps(nextProps){
     let list = groupBy(nextProps.prList, 'prNumber');
     this.setState({prList: list})
+    if(!isEmpty(nextProps.prList)){
+      this.setState({isLoading:false})
+    }
     if(this.state.loadGetDocuments && !isEmpty(nextProps.documents)){
       this.props.changeLoaderState(false);
       this.setGetDocuments(nextProps); 
@@ -221,28 +226,21 @@ else
     if(checked) checkedItems = Object.keys(groupByList);
     this.setState({checked,checkedItems})
   }
-
+  clearFields = () => {
+    this.props.onClearFilter(); // Calls parent's clearFilter
+    this.setState({selectedItemsPr: []})
+  }
   handleFilterChange = (key,event) => {
     this.props.onFilterChange && this.props.onFilterChange(key,event.target.value);
   }
 
   handleFilterClick = () => {
-    this.props.onFilter &&  this.props.onFilter()
     this.setState({openModal:false, openModalNew:false})
+    this.props.onFilter &&  this.props.onFilter()
+    this.clearFields();
   }
 
-  clearFields = () => {
-    document.getElementById("PRNOFROM").value = "";
-     document.getElementById("PRNOTO").value = "";
-     document.getElementById("PRDATEFROM").value = "";
-     document.getElementById("PRDATETO").value = "";
-     document.getElementById("status1").value = "";
-     document.getElementById("buyer").value = "";
-     document.getElementById("plant").value = "";
-
-
-
-  }
+ 
   handleSearchChange = (event) => {
     this.setState({ search: event.target.value });
     
@@ -284,9 +282,9 @@ else
 
 render() {
     const { page, rowsPerPage, search , selectedItemsPr} = this.state;
-    const {filterBuyerList,filterPlantList,filterPRStatusList,filterPurhaseGroupList} = this.props;
+    const {filterBuyerList,filterPlantList,filterPRStatusList,filterPurhaseGroupList,filter} = this.props;
     const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
-    let filter = {};
+    
     if(this.props.role == ROLE_BUYER_ADMIN) return null;
     const searchInObject = (obj, searchTerm) => {
       return Object.keys(obj).some((key) => {
@@ -307,7 +305,7 @@ render() {
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
     return (
       <>
-
+<LoaderWithProps isLoading={this.state.isLoading} />
 <div className="modal" id="viewPrDetail" >
 
 
@@ -380,7 +378,7 @@ render() {
           <div className="col-6 col-md-2 col-lg-2">
             <label className="mr-4 label_12px">PR No. & Date</label>
             <span className="display_block">
-              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeWithMonthName(this.state.selectedItem.date)}
+              {this.state.selectedItem.prNumber + " - "+ formatDateWithoutTimeNewDate2(this.state.selectedItem.date)}
             </span>
           </div>
           <div className="col-12 col-md-4 col-lg-4">
@@ -592,10 +590,10 @@ render() {
                                    value={prLine.prLineId}
                                    disabled={isEmpty(prLine.prLineId)}
                                  />
-                                {formatDateWithoutTimeWithMonthName(prLine.deliverDate)}
+                                {formatDateWithoutTimeNewDate2(prLine.deliverDate)}
                                </td>
                                {/*<td>
-                                 {formatDateWithoutTimeWithMonthName(prLine.requiredDate)}
+                                 {formatDateWithoutTimeNewDate2(prLine.requiredDate)}
                                </td>*/}
                                 {/* <td>{!isEmptyDeep(prLine.desiredVendor) ? `${prLine.desiredVendor.name ? `${prLine.desiredVendor.name} - `:''}${prLine.desiredVendor.userName ? prLine.desiredVendor.userName:''}`:'-'}</td> */}
                                 <td>{prLine.desireVendorCode}</td>
@@ -956,6 +954,7 @@ render() {
            <div className="col-sm-12 text-center mt-4">
            <Button type="button" color="primary" variant="contained" size="small" onClick={this.handleFilterClick.bind(this)}> Search </Button>
            <Button type="button" color="secondary" className="ml-1" variant="contained" size="small" onClick={this.onCloseModaNew}> Cancel </Button>
+           <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
    
         </div>
 
@@ -998,14 +997,14 @@ render() {
       <th></th>
       <th>PR Date</th>
       <th>Line No.</th>
-      <th>Status000</th>
+      {/* <th>Status</th> */}
       <th>Material Code & Description</th>
       <th>Req. Qty.</th>
       <th>UOM</th>
       <th>Val. Price</th>
       <th>Plant</th>
       <th>Delivery Date</th>
-      <th>Desire Vendor</th>
+      {/* <th>Desire Vendor</th> */}
       <th>Material Group</th>
       <th>Buyer</th>
       <th>Tracking No</th>
@@ -1051,7 +1050,7 @@ render() {
                 <td style={{minWidth: "20px"}}>
                   {removeLeedingZeros(item.prLineNumber)}
                 </td>
-                <td>{this.props.prStatusList[item.status]}</td>
+                {/* <td>{this.props.prStatusList[item.status]}</td> */}
                 <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
                 <td style={{minWidth: "5px"}}>{item.reqQty}</td>
                 <td style={{minWidth: "26px"}}>{item.uom}</td>
@@ -1064,18 +1063,20 @@ render() {
                     type="date" 
                     min={disablePastDate()}
                     max="9999-12-31"
-                    className={"form-control"}
+                    className={"form-control"}   
+                    pattern="\d{2}-\d{2}-\d{4}"             
                     value={item.deliverDate}
                     onChange={(event) => {
                       this.commonHandleChange(event, "deliverDate", key, index);
                     }}
                   />
+                  
                 </td>
-                <td>
+                {/* <td>
                   {!isEmptyDeep(item.desiredVendor) 
                     ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - ` : ''}${item.desiredVendor.userName ? item.desiredVendor.userName : ''}`
                     : '-'}
-                </td>
+                </td> */}
                 <td>
                   {`${item.matGrp ? `${item.matGrp} - ` : ''}${item.matGrpDesc ? item.matGrpDesc : ''}`}
                 </td>
@@ -1167,7 +1168,7 @@ render() {
                       <tr onClick={() => this.props.loadPRDetails(i)}>
                       <td>{pr.prNumber}</td>
                       <td>{pr.docType}</td>
-                      <td>{pr.date}</td>
+                      <td>{formatDateWithoutTimeNewDate2(pr.date)}</td>
                       <td>{pr.releasedBy!=null?pr.releasedBy.empCode:""}</td>
                       <td>{pr.releasedBy!=null?pr.releasedBy.name:""}</td>
                       {/* <td>{pr.requestedBy.empCode}</td>

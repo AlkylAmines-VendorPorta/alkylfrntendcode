@@ -132,7 +132,28 @@ class ASNReportsWithoutPO extends Component {
 
   }
 
-
+  clearFields=()=>{
+  this.setState({
+    asndetails: {
+      poNoFrom: "",
+      poNoTo: "",
+      asnNoFrom: "",
+      asnNoTo: "",
+      asnDateFrom: "",
+      asnDateTo: "",
+      isPONoFilter: "",
+      isAsnNoFilter: "",
+      isAsnDateFilter: "",
+      vendorCode:"",
+      vendorCodeTo:"",
+      status:'',
+      requestedBy:"",
+      plant:"",
+      itemCodeFrom:"",
+      itemCodeTo:""
+    },
+  })
+ }
   changeLoaderState = (action) => {
     this.setState({
       isLoading: action
@@ -233,7 +254,7 @@ exportReportToExcel() {
                   this.changeLoaderState(true);
                   this.setState({openModal:false})
                  commonSubmitForm(e, this, "asnLineResponseWithoupo", "/rest/getASNLineReportWithoutPO", "reports");
-                 
+                 this.clearFields();
                 }} noValidate
               >
                <Grid container spacing={2}>
@@ -307,6 +328,8 @@ exportReportToExcel() {
             <Button size="small" type="submit" variant="contained" onClick={this.handleSearchClick.bind(this)} color="primary">Search</Button>
             <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
             Cancel</Button>
+            <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+
           </Grid>
           </Grid> 
 

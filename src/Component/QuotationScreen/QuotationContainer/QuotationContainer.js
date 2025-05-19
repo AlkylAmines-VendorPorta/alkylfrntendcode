@@ -7,7 +7,7 @@ import VendorDashboardHeader from "../../Header/VendorDashboardHeader";
 import QuotationBody from "../QuotationBody/QuotationBody";
 import { connect } from "react-redux";
 import { getUserDto } from "../../../Util/CommonUtil";
-import {formatDateWithoutTimeWithMonthName} from "../../../Util/DateUtil";
+import {formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 class QuotationContainer extends Component {
   constructor(props) {
@@ -106,7 +106,7 @@ class QuotationContainer extends Component {
       createdBy: getUserDto(pr)
     }
     if(bidder.enquiry){
-      prDto = {...prDto,bidEndDate:formatDateWithoutTimeWithMonthName(bidder.enquiry.bidEndDate),enquiryId: bidder.enquiry.enquiryId}
+      prDto = {...prDto,bidEndDate:formatDateWithoutTimeNewDate2(bidder.enquiry.bidEndDate),enquiryId: bidder.enquiry.enquiryId}
     }
     return {...prDto,...bidder}
   }
@@ -116,7 +116,7 @@ class QuotationContainer extends Component {
       ...pr,
       enquiryId: pr.enquiryId,
       code: pr.code,
-      created: formatDateWithoutTimeWithMonthName(pr.created)
+      created: formatDateWithoutTimeNewDate2(pr.created)
     }
   }
 
@@ -133,7 +133,7 @@ class QuotationContainer extends Component {
       buyer: getUserDto(pr.buyer),
       approvedBy: getUserDto(pr.approvedBy),
       createdBy: getUserDto(pr.createdBy),
-      date: formatDateWithoutTimeWithMonthName(pr.date),
+      date: formatDateWithoutTimeNewDate2(pr.date),
       approver: this.setApprover(pr)
     }
   }

@@ -138,7 +138,21 @@ class OutwardReport extends Component {
     }
   }
 
-
+  clearFields=()=>{
+    this.setState({
+      outwardDetails: {
+        salesOrderNoFrom: "",
+        salesOrderNoTo: "",
+        requestNoFrom: "",
+        requestNoTo: "",
+        plant: "",
+        requestDateFrom: "",
+        requestDateTo: "",
+        status: "",
+        freightScope: ""
+      },
+    })
+}
   handleFilterClick = () => {
     this.props.onFilter && this.props.onFilter();
     this.setState({ formDisplay: !this.state.formDisplay });
@@ -252,7 +266,7 @@ class OutwardReport extends Component {
                   this.changeLoaderState(true);
                   this.setState({openModal:false})
                   commonSubmitForm(e, this, "outwardResponse", "/rest/getOutwardReport", "reports")
-                  // this.handleSearchClick(true)
+                  this.clearFields();
                   // this.changeLoaderState(true);
 
                 }} noValidate
@@ -428,6 +442,8 @@ class OutwardReport extends Component {
         </Button>
          <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
          Cancel</Button>
+         <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+
       </Grid>
     </Grid>
   </Grid>

@@ -15,7 +15,7 @@ import * as actionCreators from "./Action";
 import { connect } from 'react-redux';
 import { isEmpty } from "../../Util/validationUtil";
 import { FormWithConstraints } from 'react-form-with-constraints';
-import { formatDateWithoutTime ,formatDateWithoutTimeNewDate,formatDateWithoutTimeWithMonthName} from "../../Util/DateUtil"
+import { formatDateWithoutTime ,formatDateWithoutTimeNewDate,formatDateWithoutTimeNewDate2} from "../../Util/DateUtil"
 import STOVehicleRegistration from "../STOVehicleRegistration/STOVehicleRegistration";
 import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "./../../Util/CommonUtil";
 const delay = ms => new Promise(
@@ -172,7 +172,7 @@ class ReportVechicalSTO extends React.Component {
     poLineId: poLineObj.purchaseOrderLineId,
     lineItemNumber: poLineObj.lineItemNumber,
     currency: poLineObj.currency,
-    deliveryDate: formatDateWithoutTimeWithMonthName(poLineObj.deliveryDate),
+    deliveryDate: formatDateWithoutTimeNewDate2(poLineObj.deliveryDate),
     plant:poLineObj.plant,
     deliveryStatus:poLineObj.deliveryStatus,
     controlCode:poLineObj.controlCode,
