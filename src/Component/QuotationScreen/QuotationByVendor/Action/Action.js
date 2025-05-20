@@ -62,6 +62,25 @@ export function approveQuotation(response) {
   }
 }
 
+export function saprfqStatus(response) {
+
+  if(!isEmpty(response)){
+    if(response.success){
+      showAlertAndReload(!response.success,response.message,"");
+      return {
+        type: "RFQ_CREATION",
+        payload:  response
+      }
+    }else{
+      showAlert(!response.success,response.message);
+      return {
+        type: "",
+        payload:  ""
+      } 
+    }
+  } 
+}
+
 export function rejectQuotation(response) {
   // console.log('response',response)
   if(!isEmpty(response) && !isEmpty(response.objectMap)
