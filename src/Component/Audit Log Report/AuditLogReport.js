@@ -10,7 +10,7 @@ import {
 import {searchTableDataTwo } from "../../Util/DataTable";
 import { FormWithConstraints } from 'react-form-with-constraints';
 import Loader from "../FormElement/Loader/LoaderWithProps";
-import { formatDateWithoutTime} from "../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../Util/DateUtil";
 
 import TableToExcel from "@linways/table-to-excel";
 class AuditLogReport extends Component {
@@ -29,8 +29,6 @@ class AuditLogReport extends Component {
           uniqueCode: "",
           periodFrom:"",
           periodTo:""
-           
-            
         },
         
       }
@@ -115,6 +113,15 @@ class AuditLogReport extends Component {
           openModal:true
         })
       }
+      clearFields=()=>{
+        this.setState({
+          auditreportdetails: {
+            uniqueCode: "",
+            periodFrom:"",
+            periodTo:""
+          },
+        })
+      }
       render() {
         const { auditreportlist, searchQuery, page, rowsPerPage, isLoading } = this.state;
 
@@ -141,7 +148,11 @@ class AuditLogReport extends Component {
                       onSubmit={(e) => {
       
                      this.changeLoaderState(true);
-                     this.setState({openModal:false})
+                     this.setState({openModal:false,auditreportdetails: {
+                      uniqueCode: "",
+                      periodFrom:"",
+                      periodTo:""
+                    },})
       
                    commonSubmitForm(e, this, "auditResponse", "/rest/getLogReport", "reports");
                  
@@ -177,6 +188,7 @@ class AuditLogReport extends Component {
                               Search</Button>
                               <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
                               Cancel</Button>
+                              <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
                         </div>
                        
                           </div>
@@ -226,8 +238,8 @@ class AuditLogReport extends Component {
                       <TableCell>{audit.updatedByName}</TableCell>
                       <TableCell>{formatDateWithoutTime(audit.updatedDateTime)}</TableCell>
                       <TableCell>{audit.updatedColumn}</TableCell>
-                      <TableCell>{audit.oldValue}</TableCell>
-                      <TableCell>{audit.newValue}</TableCell>
+                      <TableCell>{formatDateWithoutTimeNewDate2(audit.oldValue)}</TableCell>
+                      <TableCell>{formatDateWithoutTimeNewDate2(audit.newValue)}</TableCell>
                       <TableCell>{audit.uniqueKey}</TableCell>
                       <TableCell>{audit.tableName}</TableCell>
                     </TableRow>

@@ -7,7 +7,7 @@ import CreateASNGateEntryRightPane from "./CreateASNGateEntryRightPane";
 import UserDashboardHeader from "../Header/UserDashboardHeader";
 import VendorDashboardHeader from "../Header/VendorDashboardHeader";
 import { commonSubmitWithParam,commonSubmitWithObjectParams } from "../../Util/ActionUtil";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName} from "../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../Util/DateUtil";
 import { removeLeedingZeros } from "../../Util/CommonUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
@@ -108,7 +108,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId : po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -123,7 +123,7 @@ getPurchaseOrderFromObj(po){
     outboundDeliveryNo:po.outboundDeliveryNo,
     doctyp:po.doctyp,
     poTypeMsg:po.poTypeMsg,
-    prDate: formatDateWithoutTimeWithMonthName(po.prDate),
+    prDate: formatDateWithoutTimeNewDate2(po.prDate),
     userID:po.userID
   }
 }

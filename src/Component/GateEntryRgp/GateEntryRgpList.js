@@ -6,7 +6,7 @@ import {
   Grid
 } from "@material-ui/core";
 import Loader from "../FormElement/Loader/LoaderWithProps";
-import formatDateWithoutTimeWithMonthName from "../../Util/DateUtil";
+import formatDateWithoutTimeNewDate2 from "../../Util/DateUtil";
 import * as actionCreators from "./Action/Action";
 import { isLoading } from "../../Util/APIUtils";
 
@@ -99,7 +99,7 @@ class GateEntryRgpList extends Component {
                   <TableRow key={i} onClick={() => this.props.loadDetail(item)} 
                   >
                     <TableCell>{item.reqNo}</TableCell>
-                    <TableCell>{formatDateWithoutTimeWithMonthName(item.created)}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate2(item.created)}</TableCell>
                     <TableCell>{item.plant}</TableCell>
                     <TableCell>{item.status}</TableCell>
                     <TableCell>{item.docType}</TableCell>

@@ -9,7 +9,7 @@ import {commonSubmitWithParam,commonHandleChange, commonSubmitFormNoValidation,c
   commonHandleFileUploadInv,swalWithTextBox} from "./../../Util/ActionUtil";
   import { isEmpty } from './../../Util/validationUtil';
   import StickyHeader from "react-sticky-table-thead";
-  import { formatDateWithoutTime,formatDateWithoutTimeWithMonthName } from "./../../Util/DateUtil";
+  import { formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "./../../Util/DateUtil";
   import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
   import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "./../../Util/CommonUtil";
@@ -388,7 +388,7 @@ class VendorDashboardMainBody extends Component{
             poLineId : service.purchaseOrderLineId,
             lineItemNumber: service.lineItemNumber,
             currency: service.currency,
-            deliveryDate: formatDateWithoutTimeWithMonthName(service.deliveryDate),
+            deliveryDate: formatDateWithoutTimeNewDate2(service.deliveryDate),
             plant:service.plant,
             deliveryStatus:service.deliveryStatus,
             controlCode:service.controlCode,
@@ -506,7 +506,7 @@ loadpoList(index){
         return {
           poId: po.purchaseOrderId,
           purchaseOrderNumber: po.purchaseOrderNumber,
-          poDate: formatDateWithoutTimeWithMonthName(po.date),
+          poDate: formatDateWithoutTimeNewDate2(po.date),
           vendorCode: removeLeedingZeros(po.vendorCode),
           vendorName: po.vendorName,
           incomeTerms: po.incomeTerms,
@@ -526,7 +526,7 @@ loadpoList(index){
           poLineId: poLineObj.purchaseOrderLineId,
           lineItemNumber: poLineObj.lineItemNumber,
           currency: poLineObj.currency,
-          deliveryDate: formatDateWithoutTimeWithMonthName(poLineObj.deliveryDate),
+          deliveryDate: formatDateWithoutTimeNewDate2(poLineObj.deliveryDate),
           plant:poLineObj.plant,
           deliveryStatus:poLineObj.deliveryStatus,
           controlCode:poLineObj.controlCode,
@@ -648,7 +648,7 @@ var frmhidden = {
                   <div className="row mt-2">
                       <label className="col-sm-1">PO Date</label>
                       <span className="col-sm-2">
-                      {formatDateWithoutTimeWithMonthName(this.state.po.date)}
+                      {formatDateWithoutTimeNewDate2(this.state.po.date)}
                       </span>   
                       
                       <label className="col-sm-1">Status</label>

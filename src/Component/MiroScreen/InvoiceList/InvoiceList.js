@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {commonSubmitWithParam} from "../../../Util/ActionUtil";
 import { removeLeedingZeros } from "../../../Util/CommonUtil";
-import { formatDateWithoutTimeWithMonthName, formatDateWithoutTime } from "../../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2, formatDateWithoutTime } from "../../../Util/DateUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
 import { isEmpty } from "../../../Util/validationUtil";
 import { searchTableDataThree, searchTableDataFour} from "../../../Util/DataTable";
@@ -99,7 +99,7 @@ class InvoiceList extends Component {
            return {
               poId : po.purchaseOrderId,
               purchaseOrderNumber: po.purchaseOrderNumber,
-              poDate: formatDateWithoutTimeWithMonthName(po.date),
+              poDate: formatDateWithoutTimeNewDate2(po.date),
               vendorCode: removeLeedingZeros(po.vendorCode),
               vendorName: po.vendorName,
               incomeTerms: po.incomeTerms,
@@ -239,8 +239,8 @@ class InvoiceList extends Component {
                                  <tr onClick={(e)=>{this.props.loadASNDetails(asn)}}>
                                     <td className="width-100px">{asn.po.isServicePO?asn.serviceSheetNo:asn.asnNumber}</td>
                                     <td className="width-100px">{asn.po.purchaseOrderNumber}</td>
-                                    { /* <td className="width-100px">{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable?asn.invoiceDate:asn.deliveryNoteDate)}</td>*/}
-                                    <td className="width-100px">{formatDateWithoutTimeWithMonthName(asn.invoiceDate)}</td>
+                                    { /* <td className="width-100px">{formatDateWithoutTimeNewDate2(asn.invoiceApplicable?asn.invoiceDate:asn.deliveryNoteDate)}</td>*/}
+                                    <td className="width-100px">{formatDateWithoutTimeNewDate2(asn.invoiceDate)}</td>
                                     <td  className="width-120px" style={{display:this.state.vendorNameShown}}>{asn.po.vendorName}</td>
                                     
                                     <td className="width-210px">{asn.isServicePO?asn.deliveryNoteNo:asn.invoiceNo}</td>

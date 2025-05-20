@@ -20,7 +20,7 @@ import { useState } from "react"
 import axios from 'axios';
 import { formatTime } from "../../../Util/DateUtil";
 import { searchTableDataThree, searchTableDataFour } from "../../../Util/DataTable";
-import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -477,7 +477,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId: po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -591,12 +591,12 @@ getPurchaseOrderFromObj(po){
          serviceSheetNo: asnObj.serviceSheetNo,
          po: this.getPurchaseOrderFromObj(asnObj.po),
          invoiceNo: asnObj.invoiceNo,
-         invoiceDate: formatDateWithoutTimeWithMonthName(asnObj.invoiceDate),
-         created:formatDateWithoutTimeWithMonthName(asnObj.created),
+         invoiceDate: formatDateWithoutTimeNewDate2(asnObj.invoiceDate),
+         created:formatDateWithoutTimeNewDate2(asnObj.created),
          invoiceAmount: asnObj.invoiceAmount,
          mismatchAmount: asnObj.mismatchAmount,
          deliveryNoteNo: asnObj.deliveryNoteNo,
-         deliveryNoteDate: formatDateWithoutTimeWithMonthName(asnObj.deliveryNoteDate),
+         deliveryNoteDate: formatDateWithoutTimeNewDate2(asnObj.deliveryNoteDate),
          lrDate: formatDateWithoutTime(asnObj.lrDate),
          lrNumber: asnObj.lrNumber,
          transporterNo: asnObj.transporterNo,
@@ -2603,8 +2603,8 @@ async componentDidMount() {
       <TableRow key={index} onClick={() => this.loadASNForEdit(asn)}>
         <TableCell>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</TableCell>
         <TableCell>{asn.po.purchaseOrderNumber !== "" ? asn.po.purchaseOrderNumber : asn.deliveryNoteNo}</TableCell>
-        {/* <TableCell>{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</TableCell> */}
-        <TableCell>{formatDateWithoutTimeWithMonthName(asn.created)}</TableCell>
+        {/* <TableCell>{formatDateWithoutTimeNewDate2(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</TableCell> */}
+        <TableCell>{formatDateWithoutTimeNewDate2(asn.created)}</TableCell>
         <TableCell>{asn.po.vendorName}</TableCell>
         <TableCell>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</TableCell>
         {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.po.documentType}</TableCell>}
@@ -2640,8 +2640,8 @@ async componentDidMount() {
       <TableRow key={index} onClick={() => this.loadASNForEdit(asn)} >
         <TableCell>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</TableCell>
         <TableCell>{asn.po.purchaseOrderNumber !== "" ? asn.po.purchaseOrderNumber : asn.deliveryNoteNo}</TableCell>
-        {/* <TableCell>{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</TableCell> */}
-        <TableCell>{formatDateWithoutTimeWithMonthName(asn.created)}</TableCell>
+        {/* <TableCell>{formatDateWithoutTimeNewDate2(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</TableCell> */}
+        <TableCell>{formatDateWithoutTimeNewDate2(asn.created)}</TableCell>
         <TableCell>{asn.po.vendorName}</TableCell>
         <TableCell>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</TableCell>
         {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.po.documentType}</TableCell>}

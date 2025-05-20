@@ -9,7 +9,7 @@ import { searchTableData, searchTableDataTwo} from "../../../Util/DataTable";
 import * as actionCreators from "./Action";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 import StickyHeader from "react-sticky-table-thead";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName} from "../../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
 import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import swal from "sweetalert";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -227,7 +227,7 @@ var frmhidden = {
                       }>
                       <td>{pr.prNumber}</td>
                       <td>{pr.docType}</td>
-                      <td>{formatDateWithoutTimeWithMonthName(pr.date)}</td> */}
+                      <td>{formatDateWithoutTimeNewDate2(pr.date)}</td> */}
                       {/* <td>{pr.requestedBy.empCode}</td>
                       <td>{pr.requestedBy.name}</td> */}
                       {/* <td></td> */}
@@ -238,7 +238,7 @@ var frmhidden = {
 
                   
                       {/* <td></td>
-                      <td>{formatDateWithoutTimeWithMonthName(pr.date)}</td>
+                      <td>{formatDateWithoutTimeNewDate2(pr.date)}</td>
                       <td></td>
                       <td></td>
                       <td></td>

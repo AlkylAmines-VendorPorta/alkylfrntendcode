@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import { isEmpty } from "lodash-es";
 import { getUserDto, getUserDetailsDto, getJsonIgnorePartnerDto, getPartnerDto } from "../../../Util/CommonUtil";
 import PRUserInvitation from "./PRUserInvitation/PRUserInvitation";
+import { Button } from "@material-ui/core";
 class VendorSelection extends Component {
     constructor(props) {
         super(props);
@@ -372,7 +373,7 @@ class VendorSelection extends Component {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     Search Vendor
-                                    <button type="button" className={"close " + this.props.readonly} data-dismiss="modal" onClick={() => this.searchVendorModalClose()}>&times;</button>
+                                    <Button size="small" variant="contained" type="button" className={"close " + this.props.readonly} data-dismiss="modal" onClick={() => this.searchVendorModalClose()}>&times;</Button>
                                 </div>
                                 <div className="modal-body">
                                     <div class="row mt-1 px-4 py-1">
@@ -396,7 +397,7 @@ class VendorSelection extends Component {
                                             </div>
                                         </div>
                                         <div className="col-4 col-sm-2 col-lg-2">
-                                            <button type="button" style={{ marginTop: "22px" }} className="btn btn-sm btn-outline-primary mr-2" onClick={() => this.searchVendor()}><i className="fa fa-search" />&nbsp;Search Vendor</button>
+                                        <Button size="small" variant="contained" type="button" style={{ marginTop: "22px" }} className="btn btn-sm btn-outline-primary mr-2" onClick={() => this.searchVendor()}><i className="fa fa-search" />&nbsp;Search Vendor</Button>
                                         </div>
                                     </div>
                                     <section className={displayResultantTable}>
@@ -447,7 +448,7 @@ class VendorSelection extends Component {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     Invite External Vendor
-                                    <button type="button" className={"close " + this.props.readonly} data-dismiss="modal">&times;</button>
+                                    <Button size="small" variant="contained" type="button" className={"close " + this.props.readonly} data-dismiss="modal">&times;</Button>
                                 </div>
 
 

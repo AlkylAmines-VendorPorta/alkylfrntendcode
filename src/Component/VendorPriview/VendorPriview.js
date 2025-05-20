@@ -9,7 +9,7 @@ import IMSDetails from '../VendorPriview/IMSDetails/IMSDetails';
 import VendorApprovalMatrix from '../VendorApproval/VendorApprovalMatrix/VendorApprovalMatrix';
 import { submitToURL } from "../../Util/APIUtils";
 import { isEmpty } from "lodash-es";
-import { formatDateWithoutTimeWithMonthName } from "../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2 } from "../../Util/DateUtil";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead,
   TableRow, TablePagination, Paper, TextField, Grid,
@@ -103,7 +103,7 @@ class VendorPriview extends Component {
               {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
                   <TableRow key={index} hover>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{formatDateWithoutTimeWithMonthName(item.created)}</TableCell>
+                    <TableCell>{formatDateWithoutTimeNewDate2(item.created)}</TableCell>
                     <TableCell>{item.module}</TableCell>
                     <TableCell>{item.fieldName}</TableCell>
                     <TableCell>{item.oldValue}</TableCell>

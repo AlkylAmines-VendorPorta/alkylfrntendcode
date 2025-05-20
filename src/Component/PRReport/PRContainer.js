@@ -7,7 +7,7 @@ import VendorDashboardHeader from "../Header/VendorDashboardHeader";
 import PRBody from "./PRBody/PRBody";
 import { connect } from "react-redux";
 import { getUserDto } from "../../Util/CommonUtil";
-import {formatDateWithoutTimeWithMonthName,formatDateToISOS,formatDateWithoutTime} from "../../Util/DateUtil";
+import {formatDateWithoutTimeNewDate2,formatDateToISOS,formatDateWithoutTime} from "../../Util/DateUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import {groupBy} from 'lodash-es';
 import { ROLE_PURCHASE_MANAGER_ADMIN,ROLE_BUYER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN } from "../../Constants/UrlConstants";
@@ -33,7 +33,17 @@ class PRContainer extends Component {
       technicalList:[],
       priorityList:[],
       readonly:"readonly",
-      filter:{},
+      filter: {
+        prDateFrom: '',
+        prDateTo: '',
+        prNoFrom: '',
+        prNoTo: '',
+        status: '',
+        buyerCode: '',
+        plant: '',
+        purchaseGroupFrom: '',
+        purchaseGroupTo: ''
+      },
       filterBuyerList:[],
       filterPlantList:[],
       filterPRStatusList:[]
@@ -157,7 +167,7 @@ class PRContainer extends Component {
       buyer: getUserDto(pr.buyer),
       approvedBy: getUserDto(pr.approvedBy),
       createdBy: getUserDto(pr.createdBy),
-      date:formatDateWithoutTimeWithMonthName(pr.date),
+      date:formatDateWithoutTimeNewDate2(pr.date),
       approver: this.setApprover(pr),
       pstyp:pr.pstyp,
       remarks: pr.remarks || '',
@@ -309,10 +319,25 @@ class PRContainer extends Component {
       if(!isEmpty(filter[item])) params = {...params,[item]: filter[item]}
       return item;
     });
-    this.onFetch(params)
+    this.onFetch(params);
+    this.clearFilter();
     
   }
-
+  clearFilter = () => {
+    this.setState({
+      filter: {
+        prDateFrom: '',
+        prDateTo: '',
+        prNoFrom: '',
+        prNoTo: '',
+        status: '',
+        buyerCode: '',
+        plant: '',
+        purchaseGroupFrom: '',
+        purchaseGroupTo: ''
+      }
+    });
+  };
   onFetch = (params) => {
     this.setState({
       loadPRList: true,
@@ -348,6 +373,7 @@ class PRContainer extends Component {
           filterBuyerList={this.state.filterBuyerList}
           filterPlantList={this.state.filterPlantList}
           filterPRStatusList={this.state.filterPRStatusList}
+          onClearFilter={this.clearFilter}
         />
       </>
     );

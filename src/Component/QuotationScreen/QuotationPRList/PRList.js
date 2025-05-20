@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { searchTableData} from "../../../Util/DataTable";
 import StickyHeader from "react-sticky-table-thead";
-import { formatDateWithoutTimeWithMonthName } from "../../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
 import { TableContainer, TablePagination } from "@material-ui/core";
 class PRList extends Component {
   constructor(props) {
@@ -95,7 +95,7 @@ class PRList extends Component {
                        <td>{pr.enquiryId}</td>
                        <td>{pr.saprfqno}</td>
                        <td>{pr.enquiry.code}</td>
-                       <td>{formatDateWithoutTimeWithMonthName(pr.created)}</td>
+                       <td>{formatDateWithoutTimeNewDate2(pr.created)}</td>
                        <td>{pr.bidEndDate}</td>
                       <td>{pr.enquiry.createdBy.userName+"-"+pr.enquiry.createdBy.name}</td>
                       <td>{pr.partner.vendorSapCode+"-"+pr.partner.name}</td>

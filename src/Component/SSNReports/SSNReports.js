@@ -107,7 +107,25 @@ class SSNReports extends Component {
     }
 
   }
-
+  clearFields=()=>{
+  this.setState({
+    ssndetails: {
+      poNoFrom: "",
+      poNoTo: "",
+      ssnNoFrom: "",
+      ssnNoTo: "",
+      ssnDateFrom: "",
+      ssnDateTo: "",
+      isPONoFilter: "",
+      isSsnNoFilter: "",
+      isSsnDateFilter: "",
+      vendorCode:"",
+      status:'',
+     requestedBy:"",
+     plant:""
+    },
+  })
+}
   exportReportToExcel() {
     TableToExcel.convert(document.getElementById("ssnLineReport"),{
        name:"SSNLineReport.xlsx"
@@ -200,7 +218,8 @@ class SSNReports extends Component {
                 onSubmit={(e) => {
                   this.changeLoaderState(true);
                   this.setState({openModal:false})
-                 commonSubmitForm(e, this, "ssnResponse", "/rest/getSSNLineReport", "reports")
+                 commonSubmitForm(e, this, "ssnResponse", "/rest/getSSNLineReport", "reports");
+                 this.clearFields();
                 }} noValidate
               >
                 <div className="col-sm-12">
@@ -338,6 +357,8 @@ class SSNReports extends Component {
                                    <Button type="submit" size="small" variant="contained" onClick={this.handleSearchClick.bind(this)} color="primary"> Search</Button>
                                     <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
                                     Cancel</Button>
+                                    <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+
                                   </Grid>
                       </div>
                     </div>

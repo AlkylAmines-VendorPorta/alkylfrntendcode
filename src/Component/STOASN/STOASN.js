@@ -51,7 +51,7 @@ import {
 } from "../../Util/DataTable";
 import {
   formatDateWithoutTime,
-  formatDateWithoutTimeWithMonthName,
+  formatDateWithoutTimeNewDate2,
 } from "../../Util/DateUtil";
 import { is } from "@babel/types";
 import {
@@ -341,12 +341,12 @@ class STOASN extends Component {
       asnNumber: asnObj.advanceShipmentNoticeNo,
       serviceSheetNo: asnObj.serviceSheetNo,
       invoiceNo: asnObj.invoiceNo,
-      invoiceDate: formatDateWithoutTimeWithMonthName(asnObj.invoiceDate),
-      created: formatDateWithoutTimeWithMonthName(asnObj.created),
+      invoiceDate: formatDateWithoutTimeNewDate2(asnObj.invoiceDate),
+      created: formatDateWithoutTimeNewDate2(asnObj.created),
       invoiceAmount: asnObj.invoiceAmount,
       mismatchAmount: asnObj.mismatchAmount,
       deliveryNoteNo: asnObj.deliveryNoteNo,
-      deliveryNoteDate: formatDateWithoutTimeWithMonthName(
+      deliveryNoteDate: formatDateWithoutTimeNewDate2(
         asnObj.deliveryNoteDate
       ),
       lrDate: formatDateWithoutTime(asnObj.lrDate),

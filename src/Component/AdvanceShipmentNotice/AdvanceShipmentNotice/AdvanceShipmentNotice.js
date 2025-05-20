@@ -24,7 +24,7 @@ import {
 import { searchTableDataThree, searchTableDataFour } from "../../../Util/DataTable";
 import * as actionCreators from "./Action";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName } from "../../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict,checkIsNaN } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -280,7 +280,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId: po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -386,13 +386,13 @@ getPurchaseOrderFromObj(po){
          serviceSheetNo: asnObj.serviceSheetNo,
          po: this.getPurchaseOrderFromObj(asnObj.po),
          invoiceNo: asnObj.invoiceNo,
-         // invoiceDate: formatDateWithoutTimeWithMonthName(asnObj.invoiceDate),
+         // invoiceDate: formatDateWithoutTimeNewDate2(asnObj.invoiceDate),
          invoiceDate: formatDateWithoutTime(asnObj.invoiceDate),
-         created:formatDateWithoutTimeWithMonthName(asnObj.created),
+         created:formatDateWithoutTimeNewDate2(asnObj.created),
          invoiceAmount: asnObj.invoiceAmount,
          mismatchAmount: asnObj.mismatchAmount,
          deliveryNoteNo: asnObj.deliveryNoteNo,
-         deliveryNoteDate: formatDateWithoutTimeWithMonthName(asnObj.deliveryNoteDate),
+         deliveryNoteDate: formatDateWithoutTimeNewDate2(asnObj.deliveryNoteDate),
          lrDate: formatDateWithoutTime(asnObj.lrDate),
          lrNumber: asnObj.lrNumber,
          transporterNo: asnObj.transporterNo,
@@ -2712,8 +2712,8 @@ getPurchaseOrderFromObj(po){
                                                 <tr onClick={(e) => { this.loadASNForEdit(asn) }}>
                                                    <td>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</td>
                                                    <td>{asn.po.purchaseOrderNumber}</td>
-                                                 {/*  <td>{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</td>*/}
-                                                   <td>{formatDateWithoutTimeWithMonthName(asn.created)}</td>
+                                                 {/*  <td>{formatDateWithoutTimeNewDate2(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</td>*/}
+                                                   <td>{formatDateWithoutTimeNewDate2(asn.created)}</td>
                                                    <td>{asn.po.vendorName}</td>
                                                    <td>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</td>
                                                    <td style={{ display: this.state.displayDivForAsnHistoryTable }}>{asn.po.documentType}</td>

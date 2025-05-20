@@ -7,7 +7,7 @@ import * as actionCreators from "./Action";
 import UserDashboardHeader from "../Header/UserDashboardHeader";
 import VendorDashboardHeader from "../Header/VendorDashboardHeader";
 import { commonSubmitWithParam,commonSubmitWithObjectParams } from "../../Util/ActionUtil";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName,formatDateToISOS} from "../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateToISOS} from "../../Util/DateUtil";
 import { removeLeedingZeros } from "../../Util/CommonUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
@@ -78,7 +78,7 @@ getObject(pr){
     buyer: getUserDto(pr.buyer),
     approvedBy: getUserDto(pr.approvedBy),
     createdBy: getUserDto(pr.createdBy),
-    date:formatDateWithoutTimeWithMonthName(pr.date),
+    date:formatDateWithoutTimeNewDate2(pr.date),
     approver: this.setApprover(pr),
     pstyp:pr.pstyp,
     remarks: pr.remarks || '',

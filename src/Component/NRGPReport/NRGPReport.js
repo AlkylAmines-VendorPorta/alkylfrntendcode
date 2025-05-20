@@ -186,11 +186,23 @@ class NRGPReport extends Component {
     this.setState({ loadasnDetails: true, openModal:false });
     commonSubmitForm(e, this, "gateEntryResponse", "/getASNReport")
   }
+  clearFields=()=>{
+    this.setState({
+      gateEntryListDto: {
+      reqNoFrom: "",
+      reqNoTo: "",
+      docType: "",
+      plant: "",
+      status: ""
+      
+    },})
+  }
 
   handleFilterClick = () => {
     this.props.onFilter && this.props.onFilter();
     this.setState({ formDisplay: !this.state.formDisplay });
     this.setState({ searchDisplay: !this.state.searchDisplay });
+    this.clearFields();
   }
 
   exportReportToExcel() {
@@ -268,6 +280,7 @@ class NRGPReport extends Component {
                  this.changeLoaderState(true);
                  this.setState({openModal:false, isLoading:true})
                 commonSubmitForm(e, this, "gateEntryResponse", "/rest/getGateEntryByFilter", "printreports")
+                this.clearFields();
                }} noValidate
             >
                 <Grid container spacing={3}>
@@ -360,6 +373,8 @@ class NRGPReport extends Component {
                     </Button>
                      <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
                      Cancel</Button>
+                     <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
+
                   </Grid>
                 </Grid>
               </FormWithConstraints>

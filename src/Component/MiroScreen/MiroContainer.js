@@ -7,7 +7,7 @@ import { commonSubmitWithParam } from "../../Util/ActionUtil";
 import { isEmpty } from "../../Util/validationUtil";
 import * as actionCreators from "./Action";
 import {connect} from 'react-redux';
-import { formatDateWithoutTimeWithMonthName } from "../../Util/DateUtil";
+import { formatDateWithoutTimeNewDate2 } from "../../Util/DateUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import { removeLeedingZeros } from "../../Util/CommonUtil";
 import Loader from "../FormElement/Loader/LoaderWithProps";
@@ -184,12 +184,12 @@ class MiroContainer extends Component {
        asnNumber : asnObj.advanceShipmentNoticeNo,
        po : this.getPurchaseOrderFromObj(asnObj.po),
        invoiceNo : asnObj.invoiceNo,
-       invoiceDate : formatDateWithoutTimeWithMonthName(asnObj.invoiceDate),
+       invoiceDate : formatDateWithoutTimeNewDate2(asnObj.invoiceDate),
        invoiceAmount : asnObj.invoiceAmount,
        mismatchAmount : asnObj.mismatchAmount,
        deliveryNoteNo : asnObj.deliveryNoteNo,
-       deliveryNoteDate : formatDateWithoutTimeWithMonthName(asnObj.deliveryNoteDate),
-       lrDate : formatDateWithoutTimeWithMonthName(asnObj.lrDate),
+       deliveryNoteDate : formatDateWithoutTimeNewDate2(asnObj.deliveryNoteDate),
+       lrDate : formatDateWithoutTimeNewDate2(asnObj.lrDate),
        lrNumber : asnObj.lrNumber,
        transporterNo : asnObj.transporterNo,
        vehicalNo : asnObj.vehicalNo,
@@ -396,7 +396,7 @@ CheckInvoiceFromObjForDelivery=(obj)=>{
      return {
         poId : po.purchaseOrderId,
         purchaseOrderNumber: po.purchaseOrderNumber,
-        poDate: formatDateWithoutTimeWithMonthName(po.date),
+        poDate: formatDateWithoutTimeNewDate2(po.date),
         vendorCode: removeLeedingZeros(po.vendorCode),
         vendorName: po.vendorName,
         incomeTerms: po.incomeTerms,

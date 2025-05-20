@@ -8,7 +8,7 @@ import { searchTableData, searchTableDataTwo} from "../../../Util/DataTable";
 import * as actionCreators from "../../PurchaseOrder/PurchaseOrder/Action";
 import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
 import StickyHeader from "react-sticky-table-thead";
-import {formatDateWithoutTime, formatDateWithoutTimeWithMonthName} from "../../../Util/DateUtil";
+import {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
 import { removeLeedingZeros, getCommaSeperatedValue, getDecimalUpto } from "../../../Util/CommonUtil";
 import swal from "sweetalert";
 import { API_BASE_URL } from "../../../Constants";
@@ -128,7 +128,7 @@ getPOLineFromObj(poLineObj){
     poLineId : poLineObj.purchaseOrderLineId,
     lineItemNumber: poLineObj.lineItemNumber,
     currency: poLineObj.currency,
-    deliveryDate: formatDateWithoutTimeWithMonthName(poLineObj.deliveryDate),
+    deliveryDate: formatDateWithoutTimeNewDate2(poLineObj.deliveryDate),
     plant:poLineObj.plant,
     deliveryStatus:poLineObj.deliveryStatus,
     controlCode:poLineObj.controlCode,
@@ -154,7 +154,7 @@ getServiceFromObj(service){
     poLineId : service.purchaseOrderLineId,
     lineItemNumber: service.lineItemNumber,
     currency: service.currency,
-    deliveryDate: formatDateWithoutTimeWithMonthName(service.deliveryDate),
+    deliveryDate: formatDateWithoutTimeNewDate2(service.deliveryDate),
     plant:service.plant,
     deliveryStatus:service.deliveryStatus,
     controlCode:service.controlCode,
@@ -220,7 +220,7 @@ getPurchaseOrderFromObj(po){
   return {
     poId : po.purchaseOrderId,
     purchaseOrderNumber: po.purchaseOrderNumber,
-    poDate: formatDateWithoutTimeWithMonthName(po.date),
+    poDate: formatDateWithoutTimeNewDate2(po.date),
     vendorCode: removeLeedingZeros(po.vendorCode),
     vendorName: po.vendorName,
     incomeTerms: po.incomeTerms,
@@ -232,7 +232,7 @@ getPurchaseOrderFromObj(po){
     requestedBy: reqBy,
     pstyp:po.pstyp,
     isServicePO:isServicePO(po.pstyp),
-    prDate:formatDateWithoutTimeWithMonthName(po.prDate),
+    prDate:formatDateWithoutTimeNewDate2(po.prDate),
   }
 }
 
@@ -478,14 +478,17 @@ loadPODetails(index){
 handleFilterChange = (key,event) => {
   this.props.onFilterChange && this.props.onFilterChange(key,event.target.value);
 }
-
+clearFields = () => {
+  this.props.onClearFilter(); // Calls parent's clearFilter
+}
 handleFilterClick = () => {
   this.props.onFilter &&  this.props.onFilter();
   this.setState({formDisplay: !this.state.formDisplay});
   this.setState({searchDisplay: !this.state.searchDisplay});
   this.setState({openModal:false})
+  this.clearFields();
   }
-
+ 
   onSelectVendorRow = (partner) => {
     
     console.log('onSelectVendorRow',partner)
@@ -651,6 +654,7 @@ var frmhidden = {
               </Button>
                  <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>
                  Cancel</Button>
+                 <Button type="button" size="small" variant="contained" color="primary" className="ml-1" onClick={this.clearFields.bind(this)}> Clear </Button>
             </Grid>
             
           </Grid>

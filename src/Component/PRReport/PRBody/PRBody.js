@@ -584,7 +584,7 @@ class PRBody extends Component {
            />
           <div
             className={
-              "card " +
+              " " +
               (this.state.prMainContainer == true
                 ? "display_block"
                 : "display_none")
@@ -594,7 +594,7 @@ class PRBody extends Component {
               <>
                <div
             className={
-              "card " +
+              " " +
               (this.props.role !== ROLE_BUYER_ADMIN
                 ? "display_block"
                 : "display_none")
@@ -619,6 +619,7 @@ class PRBody extends Component {
               filterBuyerList={this.props.filterBuyerList}
               filterPlantList={this.props.filterPlantList}
               filterPRStatusList={this.props.filterPRStatusList}
+              onClearFilter={this.props.onClearFilter}
               />
             </div>
      

@@ -6,7 +6,7 @@ import * as actionCreators from "./Action/Action";
 import { commonSubmitWithParam,commonSubmitWithObjectParams } from "../../Util/ActionUtil"; 
 
 import { isEmpty } from "lodash";
-import { formatDateWithoutTime,formatDateWithoutTimeWithMonthName } from "./../../Util/DateUtil";
+import { formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "./../../Util/DateUtil";
 import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "./../../Util/CommonUtil";
 
 import { isServicePO } from "../../Util/AlkylUtil";
@@ -108,7 +108,7 @@ class VendorDashboardCont extends Component {
       return {
         poId : po.purchaseOrderId,
         purchaseOrderNumber: po.purchaseOrderNumber,
-        poDate: formatDateWithoutTimeWithMonthName(po.date),
+        poDate: formatDateWithoutTimeNewDate2(po.date),
         vendorCode: removeLeedingZeros(po.vendorCode),
         vendorName: po.vendorName,
         incomeTerms: po.incomeTerms,
