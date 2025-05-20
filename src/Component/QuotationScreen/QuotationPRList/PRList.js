@@ -93,7 +93,7 @@ class PRList extends Component {
                      return (
                       <tr onClick={() => this.props.loadPRDetails(i)} key={i}>
                        <td>{pr.enquiryId}</td>
-                       <td>{pr.enquiry.enqNo}</td>
+                       <td>{pr.saprfqno}</td>
                        <td>{pr.enquiry.code}</td>
                        <td>{formatDateWithoutTimeNewDate2(pr.created)}</td>
                        <td>{pr.bidEndDate}</td>

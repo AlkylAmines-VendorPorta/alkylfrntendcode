@@ -274,7 +274,9 @@ setOptionProposedReason=(props)=>{
     for(var i=0;i<this.state.i;i++)
     {
      // columns.push(<><th colSpan="2"> {this.state.bidderList[i].partner.bPartnerId}<span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
-      columns.push(<><th colSpan="2"> <span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
+     //columns.push(<><th colSpan="2"> <span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
+
+     columns.push(<><th colSpan="2"> {"RFQ NO: "+ this.state.bidderList[i].saprfqno}<span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
     }
     return columns;
   }
@@ -1204,6 +1206,8 @@ generateQCF=()=>{
   commonSubmitWithParam(this.props,"generateQCF","/rest/generateQCF",this.props.pr.prId ? this.props.pr.prId:this.props.pr.enquiryId);
 }
 
+
+
 toPdf(){
   {this.props.enquiryDetails.isMailsentFinalApproval!="Y"?
   //this.generateQCFPDF()
@@ -1800,7 +1804,14 @@ toPdf(){
                     } */}
                     {/* <button type="button" className={"btn btn-sm btn-outline-info mr-2 "} onClick={() => this.compareVendorData()}><i className="fa fa-refresh" />&nbsp; Calculate</button> */}
                         {/* <button type="button" className={"btn btn-sm btn-outline-info mr-2 " + dataNotCompare} onClick={() => this.compareVendorData()}><i className="fa fa-refresh" />&nbsp; Calculate</button> */}
-                    {isEmpty(this.props.pr.qcfNo) && this.props.showQCFbtn===true?
+                    {/* {isEmpty(this.props.pr.qcfNo)*/}
+
+                    {/* {isEmpty(this.props.pr.qcfNo) && this.props.showRFQbtn===true && this.props.role!=ROLE_PURCHASE_MANAGER_ADMIN?
+                        <td className="w-10per"> <button type="button" onClick={this.generateRFQfromSAP} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" /> Generate RFQ</button> </td>:""
+                      } */}
+
+                    {/* {isEmpty(this.props.pr.qcfNo) && this.props.showQCFbtn===true? */}
+                    {isEmpty(this.props.pr.qcfNo) && this.props.showQCFbtn===true && this.props.role!=ROLE_PURCHASE_MANAGER_ADMIN?
                         <td className="w-10per"> <button type="button" onClick={this.generateQCF} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" /> Generate QCF</button> </td>
                       //:
 

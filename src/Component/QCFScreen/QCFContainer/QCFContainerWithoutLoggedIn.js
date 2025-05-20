@@ -326,7 +326,8 @@ getgroup1FromApproverList = (group) =>{
     for(var i=0;i<this.state.i;i++)
     {
       // columns.push(<><th colSpan="2"> {this.state.bidderList[i].partner.bPartnerId}<span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
-      columns.push(<><th colSpan="2"><span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
+      // columns.push(<><th colSpan="2"><span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
+      columns.push(<><th colSpan="2"> {"RFQ NO: "+ this.state.bidderList[i].saprfqno}<span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
     }
     return columns;
   }

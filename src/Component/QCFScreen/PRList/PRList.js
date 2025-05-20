@@ -83,7 +83,7 @@ class PRList extends Component {
                 <TableHead>
                   <TableRow>
                     <TableCell>Enquiry No</TableCell>
-                    <TableCell>RFQ No</TableCell>
+                    {/* <TableCell>RFQ No</TableCell> */}
                     <TableCell>QCF No</TableCell>
                     <TableCell>Enquiry End Date</TableCell>
                     <TableCell>Buyer Name/Code</TableCell>
@@ -94,7 +94,7 @@ class PRList extends Component {
                   {this.props.prList.map((pr, i) =>
                     <TableRow>
                       <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.enquiryId}</TableCell>
-                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.rfqNo!=null?pr.rfqNo:""}</TableCell>
+                      {/* <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.rfqNo!=null?pr.rfqNo:""}</TableCell> */}
                       <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.qcfNo!=null?pr.qcfNo:""}</TableCell>
                       <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.bidEndDate}</TableCell>
                       <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.createdBy?.userName+"-"+pr.createdBy?.name}</TableCell>

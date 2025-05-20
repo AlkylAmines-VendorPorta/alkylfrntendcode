@@ -24,6 +24,7 @@ class QCFBody extends Component {
         super(props);
         this.state = {
             showQCFbtn:false,
+            showRFQbtn:false,
             loadPrList:false,
             loadQcfInfo:false,
             qcfEdit: false,
@@ -84,24 +85,52 @@ class QCFBody extends Component {
         })
     }
 
+    // async componentDidUpdate(){
+    //     this.showhideQCFGenerateBtn(this.props.priceBidList)
+    // }
+
     componentWillReceiveProps(props){
         if((!isEmpty(props.priceBidList)) || (!isEmpty(props.annexureDto)))
         {
             this.props.changeLoaderState(false);
             this.showhideQCFGenerateBtn(props.priceBidList)
+          //this.showhideRFQGenerateBtn(props.priceBidList)
         } 
     }
 
+    // showhideQCFGenerateBtn=(priceBidList)=>{
+    //     let priceBidArray=[];
+    //     priceBidList.forEach((priceBid)=>{
+    //        let status=priceBid.itemBid.bidder.status;
+    //        if(!priceBidArray.includes(status)) {
+    //         priceBidArray.push(status);
+    //        }
+    //     })
+
+    //     if(priceBidArray.includes("SBMT") || priceBidArray.includes("DR") || priceBidArray.includes("RJCT")){
+    //         this.setState({
+    //           showQCFbtn:false
+    //         })
+    //       }else{
+    //         this.setState({
+    //           showQCFbtn:true
+    //         })
+    //       }
+    //   }
+
     showhideQCFGenerateBtn=(priceBidList)=>{
-        let priceBidArray=[];
-        priceBidList.forEach((priceBid)=>{
-           let status=priceBid.itemBid.bidder.status;
-           if(!priceBidArray.includes(status)) {
-            priceBidArray.push(status);
-           }
+        let bidderArray=[];
+       // let showQCFbtn=this.state.showQCFbtn
+        priceBidList.forEach((pricebid)=>{
+            let setsaprfqno=pricebid.itemBid.bidder.saprfqno;
+            if(setsaprfqno===null){
+                bidderArray.push(false)
+            }else{
+                bidderArray.push(true)
+            }
         })
 
-        if(priceBidArray.includes("SBMT") || priceBidArray.includes("DR") || priceBidArray.includes("RJCT")){
+        if(bidderArray.includes(false)){
             this.setState({
               showQCFbtn:false
             })
@@ -110,8 +139,38 @@ class QCFBody extends Component {
               showQCFbtn:true
             })
           }
-       
+        //   return showQCFbtn;
       }
+
+
+    //   showhideRFQGenerateBtn=(priceBidList)=>{
+    //     let priceBidArray=[];
+    //     let bidderArray=[];
+    //     priceBidList.forEach((priceBid)=>{
+    //        let status=priceBid.itemBid.bidder.status;
+    //        let setsaprfqno=priceBid.itemBid.bidder.saprfqno;
+    //        if(!priceBidArray.includes(status)) {
+    //         priceBidArray.push(status);
+    //        }
+
+          
+    //        if(setsaprfqno===null){
+    //            bidderArray.push(false)
+    //        }else{
+    //            bidderArray.push(true)
+    //        }
+    //     })
+
+    //     if((priceBidArray.includes("SBMT") || priceBidArray.includes("DR") || priceBidArray.includes("RJCT")) || bidderArray.includes(true)){
+    //         this.setState({
+    //           showRFQbtn:false
+    //         })
+    //       }else{
+    //         this.setState({
+    //           showRFQbtn:true
+    //         })
+    //       }
+    //   }
 
    loadQCFDetails=(i)=>{
         let pr=this.props.prList[i];
@@ -233,6 +292,7 @@ class QCFBody extends Component {
                             enquiryDetails={this.props.annexureDto.enquiry}
                            loadApproverList={this.props.loadApproverList}
                            showQCFbtn={this.state.showQCFbtn}
+                           //showRFQbtn={this.state.showRFQbtn}
                         />
                     </div>
                     <div className={

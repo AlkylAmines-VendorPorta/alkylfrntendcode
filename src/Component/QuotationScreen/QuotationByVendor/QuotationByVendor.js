@@ -99,6 +99,7 @@ class QuotationByVendor extends Component{
             headerchargesTypes:headerchargesTypes,
             chargesType:chargesTypes,
             qbvArray:{
+                saprfqNo:"",
                 prNo:"",
                 prDate:"",
                 bidderId:"",
@@ -303,6 +304,7 @@ class QuotationByVendor extends Component{
             isTC:qbvArray.true,
             accept:false,
             status:qbvArray.status,
+            saprfqNo:qbvArray.saprfqno,
             negotiatorPaymentTerms:qbvArray.negotiatorPaymentTerms,
             incoTerms:qbvArray.incoTerms,
             validityDateFrom: qbvArray.validityDateFrom===""?new Date():formatDateWithoutTime(qbvArray.validityDateFrom),
@@ -1117,7 +1119,10 @@ class QuotationByVendor extends Component{
         this.props.changeLoaderState(true);
     }
 
-
+    generateRFQfromSAP=()=>{
+        let enquiryId=this.state.negoBidderId;
+        commonSubmitWithParam(this.props,"saprfqStatus","/rest/generateRFQfromSAP",enquiryId);
+      }
 
     handleRejectQuotation = (event) =>{
         let enquiryId=this.state.negoBidderId;
@@ -2193,7 +2198,7 @@ class QuotationByVendor extends Component{
                                          name={"bidder[paymentTerms]"} />
                             </div>
                             <div className="col-6 col-md-3 col-lg-3">
-                            <label className="mr-4 label_12px">Inco Terms</label>
+                            <label className="mr-4 label_12px">Inco Terms<span className="redspan">*</span></label>
                            
                             <div >
                                      <select class="form-control" name="bidder[incoTerms]" onChange={(event)=>{commonHandleChange(event,this,"qbvArray.incoTerms", "quotationForm")}} value={this.state.qbvArray.incoTerms} >
@@ -2206,7 +2211,7 @@ class QuotationByVendor extends Component{
                               
                                 </select>
                                 <br/>
-                                <label className="mr-4 label_12px">Inco Description</label>
+                                <label className="mr-4 label_12px">Inco Description <span className="redspan">*</span></label>
                                 <input
                     class="form-control"
                     name="bidder[vendorIncoDescription]"
@@ -2292,7 +2297,10 @@ class QuotationByVendor extends Component{
                                         </>
                                             :""}
 
-                                {this.state.qbvArray.status!="DR" && this.state.qbvArray.status==="APPR" && this.state.qbvArray.enquiry?.isMailsentFinalApproval!="Y" && this.state.qbvArray.enquiry?.firstLevelApprovalStatus!="REJECTED"?
+                                            {this.state.qbvArray.status==="APPR" && this.state.qbvArray.saprfqNo===null?
+                                             <button type="button" onClick={this.generateRFQfromSAP} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" /> Generate RFQ</button>:""}
+
+                                {this.state.qbvArray.status!="DR" && this.state.qbvArray.status==="APPR" && this.state.qbvArray.enquiry?.isMailsentFinalApproval!="Y" && this.state.qbvArray.enquiry?.firstLevelApprovalStatus!="REJECTED" && this.state.qbvArray.saprfqNo!=null?
                                         <>
                                             {/* <button type="button" onClick={(e) =>{this.handleApproveQuotation(e)}} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button> */}
                                             <button type="button"  onClick={(e) =>{commonSubmitFormNoValidation(e,this,"approveQuotation","/rest/approveQuotation")}} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" />&nbsp;Edit & Submit</button>

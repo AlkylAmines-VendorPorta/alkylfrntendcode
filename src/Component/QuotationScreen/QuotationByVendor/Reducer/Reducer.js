@@ -24,6 +24,12 @@ const quotationByVendorReducer = (state= defaultState,action)=>{
             ...state,
             quotationRejectStatus:action.payload.success
         };
+    }else if(action.type==="CREATION"){
+        return{
+            ...state,
+            rfqStatus:action.payload.success
+
+        }
     }else if(action.type==="SUBMIT_QUOTATION"){
         return{
             ...state,
