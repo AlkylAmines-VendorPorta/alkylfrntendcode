@@ -9,7 +9,7 @@ import { searchTableData, searchTableDataTwo} from "../../../Util/DataTable";
 import * as actionCreators from "./Action";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 import StickyHeader from "react-sticky-table-thead";
-import {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
+import formatDate, {formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../../Util/DateUtil";
 import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import swal from "sweetalert";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -874,7 +874,7 @@ this.state.doctype=="STO"?<STOASN doctype={this.state.doctype}/>
                                   <TableCell>{asn.advanceShipmentNoticeNo!=null?asn.advanceShipmentNoticeNo:asn.serviceSheetNo}</TableCell>
                                   <TableCell>{formatDateWithoutTimeNewDate2(asn.created)}</TableCell>       
                                   <TableCell>{asn.invoiceNo}</TableCell> 
-                                  <TableCell>{asn.invoiceDate==null?"":formatDateWithoutTime(asn.invoiceDate)}</TableCell>
+                                  <TableCell>{asn.invoiceDate==null?"":formatDate(asn.invoiceDate)}</TableCell>
                                   <TableCell>{asn.status}</TableCell>
 
 

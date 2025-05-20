@@ -23,7 +23,7 @@ import {saveQuotation,downloadexcelApi,request,uploadFile, submitForm} from "../
 
 import StickyHeader from "react-sticky-table-thead";
 import { isEmpty } from "../../../Util/validationUtil";
-import { formatDateWithoutTime,disablePastDate } from "../../../Util/DateUtil";
+import formatDate, { formatDateWithoutTime,disablePastDate } from "../../../Util/DateUtil";
 import * as actionCreators from "./Action/Action";
 import { connect } from "react-redux";
 import { getUserDto, checkIsNaN,getDecimalUpto,FixWithoutRounding,removeLeedingZeros } from "../../../Util/CommonUtil";
@@ -1354,7 +1354,7 @@ class QuotationByVendor extends Component{
                             <div className="col-6 col-md-2 col-lg-2">
                                 <label className="mr-4 label_12px">Enq End Date</label>
                                 <span className="display_block">
-                                    {formatDateWithoutTime(this.state.qbvArray.enquiry?.bidEndDate)}
+                                    {formatDate(this.state.qbvArray.enquiry?.bidEndDate)}
                                 </span>
                             </div>
                             <div className="col-6 col-md-2 col-lg-2">
@@ -2330,7 +2330,7 @@ class QuotationByVendor extends Component{
                                     :   
 
                                     // this.state.qbvArray.status==="DR" || this.state.qbvArray.status!="SBMT" && this.state.qbvArray.status!="APPR" && today<=this.state.qbvArray.enquiry?.bidEndDate?
-                                    this.state.qbvArray.status==="DR" || this.state.qbvArray.status==="SBMT" || this.state.qbvArray.status==="RJCT" && this.state.qbvArray.status!="APPR" && today<=formatDateWithoutTime(this.state.qbvArray.enquiry?.bidEndDate)?
+                                    this.state.qbvArray.status==="DR" || this.state.qbvArray.status==="SBMT" || this.state.qbvArray.status==="RJCT" && this.state.qbvArray.status!="APPR" && today<=formatDate(this.state.qbvArray.enquiry?.bidEndDate)?
                                 // this.state.qbvArray.status==="DR" || this.state.qbvArray.status==="SBMT" || this.state.qbvArray.status==="RJCT" && this.state.qbvArray.status!="APPR" && today<=this.state.qbvArray.enquiry?.bidEndDate?
                                         <>
                                         <button  className={"btn btn-sm btn-outline-primary mr-2 "+ this.props.readonly} type="button" data-toggle="modal" data-target="#PRdocumentModal"><i className="fa fa-file" />&nbsp;PR Documents</button>

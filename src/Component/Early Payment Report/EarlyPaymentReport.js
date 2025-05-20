@@ -191,14 +191,14 @@ class EarlyPaymentReport extends Component {
                           <tr>
                             <td>{payment.vendorCode}</td>
                             <td>{payment.vendorName}</td>
-                            <td>{formatDateWithoutTime(payment.created)}</td>
+                            <td>{formatDate(payment.created)}</td>
                             <td>{payment.approvedBy!=null?payment.approvedBy.name:""}</td>
-                            <td>{payment.approvedDate!=null?formatDateWithoutTime(payment.approvedDate):""}</td>
+                            <td>{payment.approvedDate!=null?formatDate(payment.approvedDate):""}</td>
                             <td>{payment.documentNumber}</td>
                             <td>{payment.reference}</td>
-                            <td>{payment.invoiceDate!=null?formatDateWithoutTime(payment.invoiceDate):""}</td>
-                            <td>{payment.actualPaymentDate!=null?formatDateWithoutTime(payment.actualPaymentDate):""}</td>
-                            <td>{payment.nextPaymentDate!=null?formatDateWithoutTime(payment.nextPaymentDate):""}</td>
+                            <td>{payment.invoiceDate!=null?formatDate(payment.invoiceDate):""}</td>
+                            <td>{payment.actualPaymentDate!=null?formatDate(payment.actualPaymentDate):""}</td>
+                            <td>{payment.nextPaymentDate!=null?formatDate(payment.nextPaymentDate):""}</td>
                             <td>{payment.interestAmount}</td>
                             <td>{payment.grossAmount}</td>
                             <td>{payment.status}</td>

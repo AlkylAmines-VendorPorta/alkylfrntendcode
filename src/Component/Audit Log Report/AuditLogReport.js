@@ -10,7 +10,7 @@ import {
 import {searchTableDataTwo } from "../../Util/DataTable";
 import { FormWithConstraints } from 'react-form-with-constraints';
 import Loader from "../FormElement/Loader/LoaderWithProps";
-import { formatDateWithoutTime, formatDateWithoutTimeNewDate2} from "../../Util/DateUtil";
+import formatDate, { formatDateWithoutTimeNewDate2} from "../../Util/DateUtil";
 
 import TableToExcel from "@linways/table-to-excel";
 class AuditLogReport extends Component {
@@ -234,9 +234,9 @@ class AuditLogReport extends Component {
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((audit, index) => (
                     <TableRow key={index}>
                       <TableCell>{audit.createdByName}</TableCell>
-                      <TableCell>{formatDateWithoutTime(audit.createdDateTime)}</TableCell>
+                      <TableCell>{formatDate(audit.createdDateTime)}</TableCell>
                       <TableCell>{audit.updatedByName}</TableCell>
-                      <TableCell>{formatDateWithoutTime(audit.updatedDateTime)}</TableCell>
+                      <TableCell>{formatDate(audit.updatedDateTime)}</TableCell>
                       <TableCell>{audit.updatedColumn}</TableCell>
                       <TableCell>{formatDateWithoutTimeNewDate2(audit.oldValue)}</TableCell>
                       <TableCell>{formatDateWithoutTimeNewDate2(audit.newValue)}</TableCell>
@@ -275,9 +275,9 @@ class AuditLogReport extends Component {
           {auditreportlist.map((audit, index) => (
                     <TableRow key={index}>
                       <TableCell>{audit.createdByName}</TableCell>
-                      <TableCell>{formatDateWithoutTime(audit.createdDateTime)}</TableCell>
+                      <TableCell>{formatDate(audit.createdDateTime)}</TableCell>
                       <TableCell>{audit.updatedByName}</TableCell>
-                      <TableCell>{formatDateWithoutTime(audit.updatedDateTime)}</TableCell>
+                      <TableCell>{formatDate(audit.updatedDateTime)}</TableCell>
                       <TableCell>{audit.updatedColumn}</TableCell>
                       <TableCell>{audit.oldValue}</TableCell>
                       <TableCell>{audit.newValue}</TableCell>

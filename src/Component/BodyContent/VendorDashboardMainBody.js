@@ -9,7 +9,7 @@ import {commonSubmitWithParam,commonHandleChange, commonSubmitFormNoValidation,c
   commonHandleFileUploadInv,swalWithTextBox} from "./../../Util/ActionUtil";
   import { isEmpty } from './../../Util/validationUtil';
   import StickyHeader from "react-sticky-table-thead";
-  import { formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "./../../Util/DateUtil";
+  import formatDate, { formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "./../../Util/DateUtil";
   import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
   import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "./../../Util/CommonUtil";
@@ -860,7 +860,7 @@ var frmhidden = {
                         //  onClick={()=>{this.loadPODetails(index)}}
                           >
                             <td>{po.purchaseOrderNumber}</td>
-                            <td>{formatDateWithoutTime(po.date)}</td>
+                            <td>{formatDate(po.date)}</td>
                             <td>{po.documentType}</td>
                             <td>{po.vendorCode}</td>
                             <td>{po.vendorName}</td>

@@ -15,7 +15,7 @@ import { getIFSCDetails } from "../../Util/APIUtils";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import { useState } from "react"
 import axios from 'axios';
-import { formatDateWithoutTime } from "./../../Util/DateUtil";
+import formatDate from "./../../Util/DateUtil";
 import { formatTime } from "./../../Util/DateUtil";
 import { getCommaSeperatedValue, getDecimalUpto } from "./../../Util/CommonUtil";
 import { isNull } from "lodash-es";
@@ -410,18 +410,18 @@ class SSNReports extends Component {
                       {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((ssnlist, index) => (
                           <TableRow >
                             <TableCell>{ssnlist.advanceshipmentnotice.serviceSheetNo}</TableCell>
-                            <TableCell>{formatDateWithoutTime(ssnlist.advanceshipmentnotice.created)}</TableCell>
+                            <TableCell>{formatDate(ssnlist.advanceshipmentnotice.created)}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.createdBy===null?"":(ssnlist.advanceshipmentnotice.createdBy.userDetails===null?"":ssnlist.advanceshipmentnotice.createdBy.userDetails.name)}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.po.purchaseOrderNumber}</TableCell>
-                            <TableCell>{formatDateWithoutTime(ssnlist.advanceshipmentnotice.po.created)}</TableCell>
-                            <TableCell>{ssnlist.advanceshipmentnotice.servicePostingDate!=null?formatDateWithoutTime(ssnlist.advanceshipmentnotice.servicePostingDate):""}</TableCell>
+                            <TableCell>{formatDate(ssnlist.advanceshipmentnotice.po.created)}</TableCell>
+                            <TableCell>{ssnlist.advanceshipmentnotice.servicePostingDate!=null?formatDate(ssnlist.advanceshipmentnotice.servicePostingDate):""}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.ssnApprovedBy===null?"":(ssnlist.advanceshipmentnotice.ssnApprovedBy.userDetails===null?"":ssnlist.advanceshipmentnotice.ssnApprovedBy.userDetails.name)}</TableCell>
-                           <TableCell>{ssnlist.advanceshipmentnotice.ssnApprovedDate!=null?formatDateWithoutTime(ssnlist.advanceshipmentnotice.ssnApprovedDate):""}</TableCell>
+                           <TableCell>{ssnlist.advanceshipmentnotice.ssnApprovedDate!=null?formatDate(ssnlist.advanceshipmentnotice.ssnApprovedDate):""}</TableCell>
                             <TableCell>{ssnlist.poLine.lineItemNumber}</TableCell>
                             <TableCell>{ssnlist.poLine.code+"-"+ssnlist.poLine.name}</TableCell>
                             <TableCell>{ssnlist.deliveryQuantity}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.invoiceNo===null?"":ssnlist.advanceshipmentnotice.invoiceNo}</TableCell>
-                            <TableCell>{ssnlist.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(ssnlist.advanceshipmentnotice.invoiceDate)}</TableCell>
+                            <TableCell>{ssnlist.advanceshipmentnotice.invoiceDate===null?"":formatDate(ssnlist.advanceshipmentnotice.invoiceDate)}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.status}</TableCell>
                           </TableRow>
                         ))}
@@ -462,18 +462,18 @@ class SSNReports extends Component {
                       {this.props.ssnLinereportlist.map((ssnlist, index) => (
                           <TableRow >
                             <TableCell>{ssnlist.advanceshipmentnotice.serviceSheetNo}</TableCell>
-                            <TableCell>{formatDateWithoutTime(ssnlist.advanceshipmentnotice.created)}</TableCell>
+                            <TableCell>{formatDate(ssnlist.advanceshipmentnotice.created)}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.createdBy===null?"":(ssnlist.advanceshipmentnotice.createdBy.userDetails===null?"":ssnlist.advanceshipmentnotice.createdBy.userDetails.name)}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.po.purchaseOrderNumber}</TableCell>
-                            <TableCell>{formatDateWithoutTime(ssnlist.advanceshipmentnotice.po.created)}</TableCell>
-                            <TableCell>{ssnlist.advanceshipmentnotice.servicePostingDate!=null?formatDateWithoutTime(ssnlist.advanceshipmentnotice.servicePostingDate):""}</TableCell>
+                            <TableCell>{formatDate(ssnlist.advanceshipmentnotice.po.created)}</TableCell>
+                            <TableCell>{ssnlist.advanceshipmentnotice.servicePostingDate!=null?formatDate(ssnlist.advanceshipmentnotice.servicePostingDate):""}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.ssnApprovedBy===null?"":(ssnlist.advanceshipmentnotice.ssnApprovedBy.userDetails===null?"":ssnlist.advanceshipmentnotice.ssnApprovedBy.userDetails.name)}</TableCell>
-                           <TableCell>{ssnlist.advanceshipmentnotice.ssnApprovedDate!=null?formatDateWithoutTime(ssnlist.advanceshipmentnotice.ssnApprovedDate):""}</TableCell>
+                           <TableCell>{ssnlist.advanceshipmentnotice.ssnApprovedDate!=null?formatDate(ssnlist.advanceshipmentnotice.ssnApprovedDate):""}</TableCell>
                             <TableCell>{ssnlist.poLine.lineItemNumber}</TableCell>
                             <TableCell>{ssnlist.poLine.code+"-"+ssnlist.poLine.name}</TableCell>
                             <TableCell>{ssnlist.deliveryQuantity}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.invoiceNo===null?"":ssnlist.advanceshipmentnotice.invoiceNo}</TableCell>
-                            <TableCell>{ssnlist.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(ssnlist.advanceshipmentnotice.invoiceDate)}</TableCell>
+                            <TableCell>{ssnlist.advanceshipmentnotice.invoiceDate===null?"":formatDate(ssnlist.advanceshipmentnotice.invoiceDate)}</TableCell>
                             <TableCell>{ssnlist.advanceshipmentnotice.status}</TableCell>
                           </TableRow>
                         ))}

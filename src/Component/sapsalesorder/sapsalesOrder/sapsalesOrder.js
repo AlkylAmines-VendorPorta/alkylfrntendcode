@@ -9,7 +9,7 @@ import { searchTableData, searchTableDataTwo} from "../../../Util/DataTable";
 import * as actionCreators from "../Action";
 import { FormWithConstraints,  FieldFeedbacks,   FieldFeedback } from 'react-form-with-constraints';
 import StickyHeader from "react-sticky-table-thead";
-import {formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate} from "../../../Util/DateUtil";
+import formatDate, {formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate} from "../../../Util/DateUtil";
 import { removeLeedingZeros, getCommaSeperatedValue, getDecimalUpto } from "../../../Util/CommonUtil";
 import swal from "sweetalert";
 import { API_BASE_URL } from "../../../Constants";
@@ -511,8 +511,8 @@ render() {
                                {po.custBlockStatus == "@08@"? <TableCell style={{textAlign:"center"}} onClick={()=>{this.props.SapSalesOrderList(po)}} ><div style={{height: "15px",width: "15px",backgroundColor: "green",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> :<TableCell style={{textAlign:"center"}} ><div style={{height: "15px",width: "15px",backgroundColor: "red",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> }
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center">{po.plant}</TableCell>
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center" >{po.saleOrdNo}</TableCell>
-                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDateWithoutTime(po.date)}</TableCell>
-                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDateWithoutTime(po.deliveryDate)}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDate(po.date)}</TableCell>
+                               <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDate(po.deliveryDate)}</TableCell>
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.soldToParty+"-"+po.soldToPartyName}</TableCell>
                              
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}}>{po.material+"-"+po.materialDesc}</TableCell>

@@ -9,7 +9,7 @@ import {commonSubmitWithParam,commonHandleChange, commonSubmitFormNoValidation,c
   commonHandleFileUploadInv,swalWithTextBox,updateState,showAlertAndReload,showAlert} from "./../../Util/ActionUtil";
   import { isEmpty,isEmptyDeep } from './../../Util/validationUtil';
   import StickyHeader from "react-sticky-table-thead";
-  import { formatDateWithoutTime } from "./../../Util/DateUtil";
+  import formatDate, { formatDateWithoutTime } from "./../../Util/DateUtil";
   import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
   import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "./../../Util/CommonUtil";
@@ -406,7 +406,7 @@ class AdvancePayment extends Component {
                                  
                                   <td>{payment.documentNumber}</td>
                                   <td>{payment.reference}</td>
-                                 <td>{payment.invoiceDate!=null?formatDateWithoutTime(payment.invoiceDate):""}</td>
+                                 <td>{payment.invoiceDate!=null?formatDate(payment.invoiceDate):""}</td>
                                   <td>{(payment.amountInLC).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                                   
                                   <td>{payment.invoiceDate!=null?payment.actualPaymentDate:""}</td>
@@ -491,9 +491,9 @@ class AdvancePayment extends Component {
                             <td>{pay.documentNumber}</td>
                             <td>{pay.reference}</td>
                             <td>{(pay.amountInLC).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                            <td>{pay.invoiceDate!=null || pay.invoiceDate!="" ?formatDateWithoutTime(pay.invoiceDate):""}</td>
-                            <td>{pay.actualPaymentDate!=null?formatDateWithoutTime(pay.actualPaymentDate):""}</td>
-                            <td>{pay.nextPaymentDate!=null?formatDateWithoutTime(pay.nextPaymentDate):""}</td>
+                            <td>{pay.invoiceDate!=null || pay.invoiceDate!="" ?formatDate(pay.invoiceDate):""}</td>
+                            <td>{pay.actualPaymentDate!=null?formatDate(pay.actualPaymentDate):""}</td>
+                            <td>{pay.nextPaymentDate!=null?formatDate(pay.nextPaymentDate):""}</td>
                             {/* <td>{pay.interestRate}</td> */}
                             {/* <td>{(pay.interestAmount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td> */}
                             <td>{(pay.grossAmount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>

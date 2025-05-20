@@ -16,7 +16,7 @@ import { getIFSCDetails, } from "../../Util/APIUtils";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import { useState } from "react"
 import axios from 'axios';
-import { formatDateWithoutTime,formatTime} from "./../../Util/DateUtil";
+import formatDate, { formatTime} from "./../../Util/DateUtil";
 //import { formatTime } from "./../../Util/DateUtil";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict} from "./../../Util/CommonUtil";
 import { isNull } from "lodash-es";
@@ -24,7 +24,6 @@ import NewHeader from "../NewHeader/NewHeader";
 import { API_BASE_URL } from "./../../Constants";
 import TableToExcel from "@linways/table-to-excel";
 import moment from "moment";
-import formatDate from '../../Util/DateUtil';
 import {
   Table,
   TableBody,
@@ -529,9 +528,9 @@ exportReportToExcel() {
                         {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((asnLine, index) => (
                           <TableRow key={index+1}>
                             <TableCell>{asnLine.advanceshipmentnotice.advanceShipmentNoticeNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.created)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDate(asnLine.advanceshipmentnotice.created)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.po.purchaseOrderNumber}</TableCell>
-                            <TableCell>{formatDateWithoutTime(asnLine.advanceshipmentnotice.po.created)}</TableCell>
+                            <TableCell>{formatDate(asnLine.advanceshipmentnotice.po.created)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.status}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.po.vendorName}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.vehicalNo}</TableCell>
@@ -543,24 +542,24 @@ exportReportToExcel() {
                             <TableCell>{asnLine.poLine.uom}</TableCell>
                             <TableCell>{asnLine.poLine.rate}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.invoiceNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDate(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
                                                     
                             <TableCell>{asnLine.advanceshipmentnotice.createdBy===null?"":(asnLine.advanceshipmentnotice.createdBy.userDetails===null?"":asnLine.advanceshipmentnotice.createdBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedBy===null?"":(asnLine.advanceshipmentnotice.reportedBy.userDetails===null?"":asnLine.advanceshipmentnotice.reportedBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDate(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateinBy==null?"":(asnLine.advanceshipmentnotice.gateinBy.userDetails===null?"":asnLine.advanceshipmentnotice.gateinBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateinPostedby==null?"":(asnLine.advanceshipmentnotice.gateinPostedby.userDetails===null?"":asnLine.advanceshipmentnotice.gateinPostedby.userDetails.name)}</TableCell>
-                            <TableCell> {asnLine.advanceshipmentnotice.date_103===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.date_103)}</TableCell>  
+                            <TableCell> {asnLine.advanceshipmentnotice.date_103===null?"":formatDate(asnLine.advanceshipmentnotice.date_103)}</TableCell>  
                              <TableCell>{asnLine.advanceshipmentnotice.date_103===null?"":formatTime(asnLine.advanceshipmentnotice.date_103)}</TableCell>                          
                             <TableCell>{asnLine.advanceshipmentnotice.sap103Id===null?"":asnLine.advanceshipmentnotice.sap103Id}</TableCell>
                             {/* <TableCell>{asnLine.advanceshipmentnotice.grnPostedby==null?"":(asnLine.advanceshipmentnotice.grnPostedby.userDetails===null?"":asnLine.advanceshipmentnotice.grnPostedby.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.grnDate)}</TableCell> 
+                            <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatDate(asnLine.advanceshipmentnotice.grnDate)}</TableCell> 
                             <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatTime(asnLine.advanceshipmentnotice.grnDate)}</TableCell>                           */}
                             <TableCell>{asnLine.advanceshipmentnotice.grnId===null?"":asnLine.advanceshipmentnotice.grnId}</TableCell>
-                            {/* <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
+                            {/* <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.closedBy==null?"":(asnLine.advanceshipmentnotice.closedBy.userDetails===null?"":asnLine.advanceshipmentnotice.closedBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":
@@ -625,9 +624,9 @@ exportReportToExcel() {
                           {this.state.asnLinereportlist.map((asnLine, index) => (
                           <TableRow key={index+1}>
                             <TableCell>{asnLine.advanceshipmentnotice.advanceShipmentNoticeNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.created)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDate(asnLine.advanceshipmentnotice.created)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.po.purchaseOrderNumber}</TableCell>
-                            <TableCell>{formatDateWithoutTime(asnLine.advanceshipmentnotice.po.created)}</TableCell>
+                            <TableCell>{formatDate(asnLine.advanceshipmentnotice.po.created)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.status}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.po.vendorName}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.vehicalNo}</TableCell>
@@ -639,24 +638,24 @@ exportReportToExcel() {
                             <TableCell>{asnLine.poLine.uom}</TableCell>
                             <TableCell>{asnLine.poLine.rate}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.invoiceNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDate(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
                                                     
                             <TableCell>{asnLine.advanceshipmentnotice.createdBy===null?"":(asnLine.advanceshipmentnotice.createdBy.userDetails===null?"":asnLine.advanceshipmentnotice.createdBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedBy===null?"":(asnLine.advanceshipmentnotice.reportedBy.userDetails===null?"":asnLine.advanceshipmentnotice.reportedBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDate(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateinBy==null?"":(asnLine.advanceshipmentnotice.gateinBy.userDetails===null?"":asnLine.advanceshipmentnotice.gateinBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateinPostedby==null?"":(asnLine.advanceshipmentnotice.gateinPostedby.userDetails===null?"":asnLine.advanceshipmentnotice.gateinPostedby.userDetails.name)}</TableCell>
-                            <TableCell> {asnLine.advanceshipmentnotice.date_103===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.date_103)}</TableCell>  
+                            <TableCell> {asnLine.advanceshipmentnotice.date_103===null?"":formatDate(asnLine.advanceshipmentnotice.date_103)}</TableCell>  
                              <TableCell>{asnLine.advanceshipmentnotice.date_103===null?"":formatTime(asnLine.advanceshipmentnotice.date_103)}</TableCell>                          
                             <TableCell>{asnLine.advanceshipmentnotice.sap103Id===null?"":asnLine.advanceshipmentnotice.sap103Id}</TableCell>
                             {/* <TableCell>{asnLine.advanceshipmentnotice.grnPostedby==null?"":(asnLine.advanceshipmentnotice.grnPostedby.userDetails===null?"":asnLine.advanceshipmentnotice.grnPostedby.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.grnDate)}</TableCell> 
+                            <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatDate(asnLine.advanceshipmentnotice.grnDate)}</TableCell> 
                             <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatTime(asnLine.advanceshipmentnotice.grnDate)}</TableCell>                           */}
                             <TableCell>{asnLine.advanceshipmentnotice.grnId===null?"":asnLine.advanceshipmentnotice.grnId}</TableCell>
-                            {/* <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
+                            {/* <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.closedBy==null?"":(asnLine.advanceshipmentnotice.closedBy.userDetails===null?"":asnLine.advanceshipmentnotice.closedBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":

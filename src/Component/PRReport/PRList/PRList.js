@@ -5,7 +5,7 @@ import { isEmptyDeep,isEmpty } from "../../../Util/validationUtil";
 import {groupBy,includes} from 'lodash-es';
 import { FormWithConstraints } from 'react-form-with-constraints';
 import { ROLE_BUYER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN } from "../../../Constants/UrlConstants";
-import { formatDateWithoutTimeNewDate2,formatDateWithoutTime,formatTime } from "../../../Util/DateUtil";
+import formatDate, { formatDateWithoutTimeNewDate2,formatDateWithoutTime,formatTime } from "../../../Util/DateUtil";
 import { API_BASE_URL } from "../../../Constants";
 import {
   commonHandleChangeCheckBox,
@@ -927,12 +927,12 @@ class PRList extends Component {
                       <TableCell>{pr.approvedBy!=null?pr.approvedBy.name:""}</TableCell>
                       <TableCell>{pr.tcApprover.name}</TableCell>
                       <TableCell>{this.props.prStatusList[pr.status]}</TableCell>
-                      <TableCell>{pr.releasedDate!=null?formatDateWithoutTime(pr.releasedDate):""}</TableCell>
+                      <TableCell>{pr.releasedDate!=null?formatDate(pr.releasedDate):""}</TableCell>
                       <TableCell>{pr.releasedDate!=null?formatTime(pr.releasedDate):""}</TableCell>
-                      <TableCell>{pr.approvedDate!=null?formatDateWithoutTime(pr.approvedDate):""}</TableCell>
+                      <TableCell>{pr.approvedDate!=null?formatDate(pr.approvedDate):""}</TableCell>
                       <TableCell>{pr.approvedDate!=null?formatTime(pr.approvedDate):""}</TableCell>
                       <TableCell>{pr.pmapprovedBy!=null?pr.pmapprovedBy.name:""}</TableCell>
-                      <TableCell>{pr.pmapprovedDate!=null?formatDateWithoutTime(pr.pmapprovedDate):""}</TableCell>
+                      <TableCell>{pr.pmapprovedDate!=null?formatDate(pr.pmapprovedDate):""}</TableCell>
                       <TableCell>{pr.pmapprovedDate!=null?formatTime(pr.pmapprovedDate):""}</TableCell>
                     </TableRow>
                     )  

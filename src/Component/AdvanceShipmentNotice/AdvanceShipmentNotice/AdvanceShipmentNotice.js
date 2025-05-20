@@ -24,7 +24,7 @@ import {
 import { searchTableDataThree, searchTableDataFour } from "../../../Util/DataTable";
 import * as actionCreators from "./Action";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
+import formatDate, { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict,checkIsNaN } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -1619,7 +1619,7 @@ getPurchaseOrderFromObj(po){
                               {/* //  <input type="hidden" value={this.state.po.purchaseOrderId} name="po[purchaseOrderId]" /> */}
                            {/* }  */}
                            <input type="hidden" value={this.state.po.documentType} name="po[documentType]" />
-                           <input type="hidden" value={formatDateWithoutTime(this.state.po.poDate)} name="po[date]" />
+                           <input type="hidden" value={formatDate(this.state.po.poDate)} name="po[date]" />
 
                            <label className="col-sm-2" >Vendor</label>
                            <label className="col-sm-2" >{this.state.po.vendorName}</label>
@@ -2088,7 +2088,7 @@ getPurchaseOrderFromObj(po){
                                  {<label className="col-sm-1" >SSN No</label>}
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.serviceSheetNo===null?"":asn.advanceshipmentnotice.serviceSheetNo}</span>}
                                 {<label className="col-sm-1" >Created Date</label>}
-                                {<span className="col-sm-2"> {formatDateWithoutTime(asn.advanceshipmentnotice.created ==null?"":asn.advanceshipmentnotice.created)}</span>}
+                                {<span className="col-sm-2"> {formatDate(asn.advanceshipmentnotice.created ==null?"":asn.advanceshipmentnotice.created)}</span>}
                                 {<label className="col-sm-1" >Created By</label> }
                                 {<span className="col-sm-5"> {asn.createdBy.userDetails.name==null?"":asn.createdBy.userDetails.name}</span>} 
                                 {<label className="col-sm-1" >Po No</label>}
@@ -2097,15 +2097,15 @@ getPurchaseOrderFromObj(po){
                                  {<span className="col-sm-2"> {asn.advanceshipmentnotice.po.vendorName==null?"":asn.advanceshipmentnotice.po.vendorName}</span>}
 
                                  {<label className="col-sm-2" >Service From-To Date</label> }
-                                {<span className="col-sm-4"> {(asn.advanceshipmentnotice.serviceFromDate===null?"": '(' + formatDateWithoutTime(asn.advanceshipmentnotice.serviceFromDate) +')') + (asn.advanceshipmentnotice.serviceToDate!=null?  "-" +'('+formatDateWithoutTime(asn.advanceshipmentnotice.serviceToDate)+')':"" )}</span>} 
+                                {<span className="col-sm-4"> {(asn.advanceshipmentnotice.serviceFromDate===null?"": '(' + formatDate(asn.advanceshipmentnotice.serviceFromDate) +')') + (asn.advanceshipmentnotice.serviceToDate!=null?  "-" +'('+formatDate(asn.advanceshipmentnotice.serviceToDate)+')':"" )}</span>} 
                                 {<label className="col-sm-1" >Location</label> }
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.serviceLocation}</span>}
                                 {<label className="col-sm-1" >Invoice No</label> }
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceNo===null?"":asn.advanceshipmentnotice.invoiceNo}</span>}  
                                 {<label className="col-sm-1" >Invoice Date</label> }
-                                {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(asn.advanceshipmentnotice.invoiceDate)}</span>} 
+                                {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceDate===null?"":formatDate(asn.advanceshipmentnotice.invoiceDate)}</span>} 
                                 {<label className="col-sm-1" >Posting Date</label> }
-                                {<span className="col-sm-2"> {asn.advanceshipmentnotice.servicePostingDate!=null?formatDateWithoutTime(asn.advanceshipmentnotice.servicePostingDate):""}</span>} 
+                                {<span className="col-sm-2"> {asn.advanceshipmentnotice.servicePostingDate!=null?formatDate(asn.advanceshipmentnotice.servicePostingDate):""}</span>} 
 {this.state.asnDetails.status === "SSIP"?
                                   <button type="button" className={"btn btn-primary"}
                             style={{ display: this.state.cancelSsnButton }} onClick={e => this.onComfirmationOfCancelSsn(e)} >Cancel SSN</button>

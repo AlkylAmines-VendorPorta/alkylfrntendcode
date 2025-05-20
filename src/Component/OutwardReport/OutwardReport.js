@@ -15,7 +15,7 @@ import { getIFSCDetails } from "../../Util/APIUtils";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import { useState } from "react"
 import axios from 'axios';
-import { dateFormat, formatDateWithoutTime } from "./../../Util/DateUtil";
+import { formatDate1 } from "./../../Util/DateUtil";
 import { formatTime } from "./../../Util/DateUtil";
 import { getCommaSeperatedValue, getDecimalUpto } from "./../../Util/CommonUtil";
 import { isNull } from "lodash-es";
@@ -500,19 +500,19 @@ class OutwardReport extends Component {
                           
                             <TableCell>{this.getStatusFullForm(asn)}</TableCell>
                             <TableCell>{asn.createdBy===null?"":(asn.createdBy.userDetails.name)}</TableCell>
-                            <TableCell>{formatDateWithoutTime(asn.created)}</TableCell>
+                            <TableCell>{formatDate(asn.created)}</TableCell>
                             <TableCell>{formatTime(asn.created)}</TableCell>
                             <TableCell>{asn.reportedby===null?"":(asn.reportedby.userDetails.name)}</TableCell>
-                            <TableCell>{asn.reporteddate===null?"":formatDateWithoutTime(asn.reporteddate)}</TableCell>
+                            <TableCell>{asn.reporteddate===null?"":formatDate(asn.reporteddate)}</TableCell>
                             <TableCell>{asn.reporteddate===null?"":formatTime(asn.reporteddate)}</TableCell>
                             <TableCell>{asn.gateInby==null?"":(asn.gateInby.userDetails.name)}</TableCell>
-                            <TableCell>{asn.gateIndate===null?"":formatDateWithoutTime(asn.gateIndate)}</TableCell>
+                            <TableCell>{asn.gateIndate===null?"":formatDate(asn.gateIndate)}</TableCell>
                             <TableCell>{asn.gateIndate===null?"":formatTime(asn.gateIndate)}</TableCell>
                             <TableCell>{asn.gateOutby==null?"":(asn.gateOutby.userDetails.name)}</TableCell>
-                            <TableCell>{asn.gateOutdate===null?"":formatDateWithoutTime(asn.gateOutdate)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":formatDate(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":formatTime(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":
-                            this.getinoutTimeDifference(dateFormat(asn.gateIndate),dateFormat(asn.gateOutdate))}</TableCell>
+                            this.getinoutTimeDifference(formatDate1(asn.gateIndate),formatDate1(asn.gateOutdate))}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -561,19 +561,19 @@ class OutwardReport extends Component {
                           
                             <TableCell>{this.getStatusFullForm(asn)}</TableCell>
                             <TableCell>{asn.createdBy===null?"":(asn.createdBy.userDetails.name)}</TableCell>
-                            <TableCell>{formatDateWithoutTime(asn.created)}</TableCell>
+                            <TableCell>{formatDate(asn.created)}</TableCell>
                             <TableCell>{formatTime(asn.created)}</TableCell>
                             <TableCell>{asn.reportedby===null?"":(asn.reportedby.userDetails.name)}</TableCell>
-                            <TableCell>{asn.reporteddate===null?"":formatDateWithoutTime(asn.reporteddate)}</TableCell>
+                            <TableCell>{asn.reporteddate===null?"":formatDate(asn.reporteddate)}</TableCell>
                             <TableCell>{asn.reporteddate===null?"":formatTime(asn.reporteddate)}</TableCell>
                             <TableCell>{asn.gateInby==null?"":(asn.gateInby.userDetails.name)}</TableCell>
-                            <TableCell>{asn.gateIndate===null?"":formatDateWithoutTime(asn.gateIndate)}</TableCell>
+                            <TableCell>{asn.gateIndate===null?"":formatDate(asn.gateIndate)}</TableCell>
                             <TableCell>{asn.gateIndate===null?"":formatTime(asn.gateIndate)}</TableCell>
                             <TableCell>{asn.gateOutby==null?"":(asn.gateOutby.userDetails.name)}</TableCell>
-                            <TableCell>{asn.gateOutdate===null?"":formatDateWithoutTime(asn.gateOutdate)}</TableCell>
+                            <TableCell>{asn.gateOutdate===null?"":formatDate(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":formatTime(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":
-                            this.getinoutTimeDifference(dateFormat(asn.gateIndate),dateFormat(asn.gateOutdate))}</TableCell>
+                            this.getinoutTimeDifference(formatDate1(asn.gateIndate),formatDate1(asn.gateOutdate))}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

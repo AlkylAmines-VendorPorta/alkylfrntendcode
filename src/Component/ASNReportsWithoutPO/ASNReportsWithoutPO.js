@@ -16,7 +16,7 @@ import { getIFSCDetails, } from "../../Util/APIUtils";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import { useState } from "react"
 import axios from 'axios';
-import { formatDateWithoutTime,formatTime} from "../../Util/DateUtil";
+import { formatTime} from "../../Util/DateUtil";
 // import { formatTime } from "./../../Util/DateUtil";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict} from "../../Util/CommonUtil";
 import { isNull } from "lodash-es";
@@ -389,7 +389,7 @@ exportReportToExcel() {
                         {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((asnLine, index) => (
                           <TableRow key={index+1}>
                             <TableCell>{asnLine.advanceshipmentnotice.advanceShipmentNoticeNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.created)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDate(asnLine.advanceshipmentnotice.created)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.status}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.vehicalNo}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.lrNumber}</TableCell>
@@ -400,15 +400,15 @@ exportReportToExcel() {
                             <TableCell>{asnLine.uom}</TableCell>
                             <TableCell>{asnLine.rate}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.invoiceNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDate(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.createdBy===null?"":(asnLine.advanceshipmentnotice.createdBy.userDetails===null?"":asnLine.advanceshipmentnotice.createdBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedBy===null?"":(asnLine.advanceshipmentnotice.reportedBy.userDetails===null?"":asnLine.advanceshipmentnotice.reportedBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDate(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateinBy==null?"":(asnLine.advanceshipmentnotice.gateinBy.userDetails===null?"":asnLine.advanceshipmentnotice.gateinBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.closedBy==null?"":(asnLine.advanceshipmentnotice.closedBy.userDetails===null?"":asnLine.advanceshipmentnotice.closedBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":
@@ -462,7 +462,7 @@ exportReportToExcel() {
                       {this.state.asnLinereportlistWithoutPO.map((asnLine, index) => (
                           <TableRow key={index+1}>
                             <TableCell>{asnLine.advanceshipmentnotice.advanceShipmentNoticeNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.created)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.created===null?"":formatDate(asnLine.advanceshipmentnotice.created)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.status}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.vehicalNo}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.lrNumber}</TableCell>
@@ -473,15 +473,15 @@ exportReportToExcel() {
                             <TableCell>{asnLine.uom}</TableCell>
                             <TableCell>{asnLine.rate}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.invoiceNo}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.invoiceDate===null?"":formatDate(asnLine.advanceshipmentnotice.invoiceDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.createdBy===null?"":(asnLine.advanceshipmentnotice.createdBy.userDetails===null?"":asnLine.advanceshipmentnotice.createdBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedBy===null?"":(asnLine.advanceshipmentnotice.reportedBy.userDetails===null?"":asnLine.advanceshipmentnotice.reportedBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatDate(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.reportedDate===null?"":formatTime(asnLine.advanceshipmentnotice.reportedDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateinBy==null?"":(asnLine.advanceshipmentnotice.gateinBy.userDetails===null?"":asnLine.advanceshipmentnotice.gateinBy.userDetails.name)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateInDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateInDate)}</TableCell>
-                            <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDateWithoutTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.closedBy==null?"":(asnLine.advanceshipmentnotice.closedBy.userDetails===null?"":asnLine.advanceshipmentnotice.closedBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":

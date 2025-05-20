@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import StickyHeader from "react-sticky-table-thead";
-import { formatDateWithoutTime } from "../../../Util/DateUtil";
+import formatDate, { formatDateWithoutTime } from "../../../Util/DateUtil";
 // import { getItemBidDto, getPrLineDto } from "../../../Util/CommonUtil";
 class MaterialTableView extends Component {
     constructor(props) {
@@ -75,7 +75,7 @@ class MaterialTableView extends Component {
                                                 <td>{el.prLine.uom}</td>
                                                 <td className="text-right">{el.prLine.price}</td>
                                                 <td>{el.prLine.plant}</td>
-                                                <td>{formatDateWithoutTime(el.prLine.deliverDate)}</td>
+                                                <td>{formatDate(el.prLine.deliverDate)}</td>
                                                 {/*<td>{formatDateWithoutTime(el.prLine.requiredDate)}</td>*/}
                                             </tr>
                                         )}

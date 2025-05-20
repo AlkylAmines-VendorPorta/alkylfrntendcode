@@ -17,9 +17,9 @@
 
 //export const API_BASE_URL = 'https://localhost/eat'
 
-export const API_BASE_URL = 'http://172.16.1.8:8443/eat'
+//export const API_BASE_URL = 'http://172.16.1.8:8443/eat'
 
-//export const API_BASE_URL = 'https://portal.alkylamines.com/eat';
+export const API_BASE_URL = 'https://portal.alkylamines.com/eat';
 
 
 // QCF ACCEPT URL

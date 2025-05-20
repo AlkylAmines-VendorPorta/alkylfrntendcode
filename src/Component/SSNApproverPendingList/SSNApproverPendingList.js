@@ -13,7 +13,7 @@ import {
  import { searchTableDataThree, searchTableDataFour } from "../../Util/DataTable";
 import AdvanceShipmentNotice from "../AdvanceShipmentNotice/AdvanceShipmentNotice/AdvanceShipmentNotice";
 
-import { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from "../../Util/DateUtil";
+import formatDate, { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from "../../Util/DateUtil";
 import { isServicePO } from "../../Util/AlkylUtil";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../Util/CommonUtil";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Grid, Container } from '@material-ui/core';
@@ -485,7 +485,7 @@ handleChangeRowsPerPage = (event) => {
                             <TableRow key={index} onClick={() => this.loadASNForEdit(sslist)}>
                               <TableCell>{sslist.serviceSheetNo}</TableCell>
                               <TableCell>{sslist.po.purchaseOrderNumber}</TableCell>
-                              <TableCell>{formatDateWithoutTime(sslist.created)}</TableCell>
+                              <TableCell>{formatDate(sslist.created)}</TableCell>
                               <TableCell>{sslist.po.vendorName}</TableCell>
                               <TableCell>{sslist.invoiceNo != null ? sslist.invoiceNo : sslist.deliveryNoteNo}</TableCell>
                               <TableCell>{this.state.serviceSheetStatusList[sslist.status]}</TableCell>

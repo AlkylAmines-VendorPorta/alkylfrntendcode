@@ -3,7 +3,7 @@ import { searchTableData } from "../../../Util/DataTable";
 import StickyHeader from "react-sticky-table-thead";
 import { isEmpty } from "../../../Util/validationUtil";
 import { connect } from "react-redux";
-import { formatDateWithoutTime } from "../../../Util/DateUtil";
+import formatDate, { formatDateWithoutTime } from "../../../Util/DateUtil";
 // import { getUserDto, getUserDetailsDto, getPartnerDto, getBidDto } from "../../../Util/CommonUtil";
 import {
   // commonSubmitFormNoValidationWithData,
@@ -361,10 +361,10 @@ class VendorList extends Component {
                     
                       <tr >
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.enquiry.enquiryId}</td>
-                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDateWithoutTime(el.enquiry.created)}</td>
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDate(el.enquiry.created)}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.partner.vendorSapCode + "-" + el.partner.name}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.enquiry.createdBy.userName + " - " + el.enquiry.createdBy.name}</td>
-                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDateWithoutTime(el.enquiry.bidEndDate)}</td>
+                        <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDate(el.enquiry.bidEndDate)}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.status}</td>
                         <td className="w-10per"><Button size="small" variant="contained"
                          color="primary" 

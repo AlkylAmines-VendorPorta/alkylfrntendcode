@@ -10,7 +10,7 @@ import {commonSubmitWithParam,commonHandleChange, commonSubmitFormNoValidation,c
   commonHandleFileUploadInv,swalWithTextBox,updateState,showAlertAndReload,showAlert} from "./../../Util/ActionUtil";
   import { isEmpty,isEmptyDeep } from './../../Util/validationUtil';
   import StickyHeader from "react-sticky-table-thead";
-  import { formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "./../../Util/DateUtil";
+  import formatDate, { formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "./../../Util/DateUtil";
   import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
   import { removeLeedingZeros,getCommaSeperatedValue, getDecimalUpto,addZeroes,textRestrict } from "./../../Util/CommonUtil";
@@ -480,9 +480,9 @@ calculateTotalIGSTAmount = (child) => {
                                <td id={"collapse" + i} class="collapse in p-1">{payment.documentNumber}</td>
                                <td id={"collapse" + i} class="collapse in p-1">{payment.reference}</td>
                                <td id={"collapse" + i} class="collapse in p-1">{(payment.amountInLC).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.invoiceDate!=null?formatDateWithoutTime(payment.invoiceDate):""}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.actualPaymentDate!=null?formatDateWithoutTime(payment.actualPaymentDate):""}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.nextPaymentDate!=null?formatDateWithoutTime(payment.nextPaymentDate):""}</td>
+                               <td id={"collapse" + i} class="collapse in p-1">{payment.invoiceDate!=null?formatDate(payment.invoiceDate):""}</td>
+                               <td id={"collapse" + i} class="collapse in p-1">{payment.actualPaymentDate!=null?formatDate(payment.actualPaymentDate):""}</td>
+                               <td id={"collapse" + i} class="collapse in p-1">{payment.nextPaymentDate!=null?formatDate(payment.nextPaymentDate):""}</td>
                                <td id={"collapse" + i} class="collapse in p-1">{payment.gapinDays}</td>
                                <td id={"collapse" + i} class="collapse in p-1">{payment.interestRate}</td>
                            
