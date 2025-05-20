@@ -15,8 +15,8 @@ import { getIFSCDetails } from "../../Util/APIUtils";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import { useState } from "react"
 import axios from 'axios';
-import { formatDateWithoutTime } from "./../../Util/DateUtil";
-import { formatTime,formatDate1 } from "./../../Util/DateUtil";
+import { dateFormat, formatDateWithoutTime } from "./../../Util/DateUtil";
+import { formatTime } from "./../../Util/DateUtil";
 import { getCommaSeperatedValue, getDecimalUpto } from "./../../Util/CommonUtil";
 import { isNull } from "lodash-es";
 import NewHeader from "../NewHeader/NewHeader";
@@ -512,7 +512,7 @@ class OutwardReport extends Component {
                             <TableCell>{asn.gateOutdate===null?"":formatDateWithoutTime(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":formatTime(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":
-                            this.getinoutTimeDifference(formatDate1(asn.gateIndate),formatDate1(asn.gateOutdate))}</TableCell>
+                            this.getinoutTimeDifference(dateFormat(asn.gateIndate),dateFormat(asn.gateOutdate))}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -573,7 +573,7 @@ class OutwardReport extends Component {
                             <TableCell>{asn.gateOutdate===null?"":formatDateWithoutTime(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":formatTime(asn.gateOutdate)}</TableCell>
                             <TableCell>{asn.gateOutdate===null?"":
-                            this.getinoutTimeDifference(formatDate1(asn.gateIndate),formatDate1(asn.gateOutdate))}</TableCell>
+                            this.getinoutTimeDifference(dateFormat(asn.gateIndate),dateFormat(asn.gateOutdate))}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

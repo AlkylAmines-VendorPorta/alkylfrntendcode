@@ -14,52 +14,69 @@ month[10] = "Nov";
 month[11] = "Dec";
 
 
-export default function formatDate(inputDate){
-    const date = new Date(inputDate);
+export default function formatDate(longDate){
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        dt = new Date();
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
+    var hh = dt.getHours();
+    var mm = dt.getMinutes();
 
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
-}
+    //    var HH= dt.getHours();
+    //    var mm= dt.getMinutes();
+    //    var ss= dt.getSeconds();
 
-export function formatDateWithoutTime(inputDate){
-    const date = new Date(inputDate);
-
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
-}
-export function formatDateWithoutTimeNewDate(inputDate){
-    const date = new Date(inputDate);
-
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
+    return getDoubleDigit(yyyy) + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) + ' '+getDoubleDigit(hh) + ':' + getDoubleDigit(mm);
 
 }
+export function formatDateWithoutTime(longDate){
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        dt = new Date();
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
 
-export function formatDateWithoutTimeWithMonthName(inputDate){
-    const date = new Date(inputDate);
+    return getDoubleDigit(yyyy)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) ;
+    //return getDoubleDigit(dd)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(yyyy) ;
+}
+export function formatDateWithoutTimeNewDate(longDate){
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        return null
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
 
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
+    return getDoubleDigit(yyyy)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) ;
+
+}
+
+export function formatDateWithoutTimeWithMonthName(longDate){
+    
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        dt = new Date();
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth();
+    var yyyy = dt.getFullYear();
+
+    return  getDoubleDigit(dd) + '-' + month[MM] + '-' + getDoubleDigit(yyyy);
+  //return  getDoubleDigit(yyyy) + '-' + month[MM] + '-' + getDoubleDigit(dd) ;
 
 }
 
@@ -105,67 +122,79 @@ export function formatTime(longDate){
 
 }
 
-export function disablePastDate(inputDate) {
-    const date = new Date(inputDate);
-
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
+export function disablePastDate() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    const yyyy = today.getFullYear();
+    return yyyy + "-" + mm + "-" + dd;
   };
 
-  export function formatDateWithoutTimeNewDate1(inputDate){
-    const date = new Date(inputDate);
+  export function formatDateWithoutTimeNewDate1(longDate){
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        return null
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
 
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
+    // return getDoubleDigit(yyyy)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) ;
+    return   getDoubleDigit(dd) + '-' + getDoubleDigit(MM) + '-' +getDoubleDigit(yyyy) ;
     
 }
 
 
-export function formatDateWithoutTimeNewDate2(inputDate){
-    // var dt;
-    // if (null !== longDate && undefined !== longDate && "" !== longDate) {
-    //     dt = new Date(longDate);
-    // } else {
-    //     return null
-    // }
-    // var dd = dt.getDate();
-    // var MM = dt.getMonth() + 1;
-    // var yyyy = dt.getFullYear();
+export function formatDateWithoutTimeNewDate2(longDate){
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        return null
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
 
-    // // return getDoubleDigit(yyyy)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) ;
-    // return   getDoubleDigit(dd) + '/' + getDoubleDigit(MM) + '/' +getDoubleDigit(yyyy) ;
-    const date = new Date(inputDate);
-
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
+    // return getDoubleDigit(yyyy)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) ;
+    return   getDoubleDigit(dd) + '/' + getDoubleDigit(MM) + '/' +getDoubleDigit(yyyy) ;
     
 }
 
 
-export function formatDate1(inputDate){
-    const date = new Date(inputDate);
+export function formatDate1(longDate){
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        dt = new Date();
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
+    var hh = dt.getHours();
+    var mm = dt.getMinutes();
+    var ss= dt.getSeconds();
 
-    if (isNaN(date)) return ""; // Handle invalid date
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = String(date.getFullYear()); // Get last 2 digits
-  
-    return `${day}/${month}/${year}`;
+    //    var HH= dt.getHours();
+    //    var mm= dt.getMinutes();
+    //    var ss= dt.getSeconds();
 
+    return getDoubleDigit(yyyy) + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) + ' '+getDoubleDigit(hh) + ':' + getDoubleDigit(mm)+ ':' + getDoubleDigit(ss);
+
+}
+export function dateFormat(longDate) {
+   var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        dt = new Date();
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
+
+    return getDoubleDigit(dd)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(yyyy) ;
 }
