@@ -1168,7 +1168,7 @@ render() {
                       <tr onClick={() => this.props.loadPRDetails(i)}>
                       <td>{pr.prNumber}</td>
                       <td>{pr.docType}</td>
-                      <td>{formatDateWithoutTimeNewDate2(pr.date)}</td>
+                      <td>{pr.date}</td>
                       <td>{pr.releasedBy!=null?pr.releasedBy.empCode:""}</td>
                       <td>{pr.releasedBy!=null?pr.releasedBy.name:""}</td>
                       {/* <td>{pr.requestedBy.empCode}</td>
