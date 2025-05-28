@@ -41,7 +41,7 @@ class PRContainer extends Component {
         status: '',
         buyerCode: '',
         plant: '',
-        purchaseGroupFrom: '',
+        multiplePurchaseGroup: '',
         purchaseGroupTo: ''
       },
       filterBuyerList:[],
@@ -324,7 +324,7 @@ class PRContainer extends Component {
   onFilter = () => {   
     const { filter } = this.state;
     let params = {};
-    let arr = ['prDateFrom','prDateTo','prNoFrom','prNoTo','status','buyerCode','plant','purchaseGroupFrom','purchaseGroupTo'];
+    let arr = ['prDateFrom','prDateTo','prNoFrom','prNoTo','status','buyerCode','plant','purchaseGroupFrom','purchaseGroupTo','multiplePurchaseGroup'];
 
     arr.forEach(item => {
       if (filter[item]) params[item] = filter[item];
@@ -344,7 +344,8 @@ class PRContainer extends Component {
         buyerCode: '',
         plant: '',
         purchaseGroupFrom: '',
-        purchaseGroupTo: ''
+        purchaseGroupTo: '',
+        multiplePurchaseGroup:''
       }
     });
   };

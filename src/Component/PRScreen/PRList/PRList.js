@@ -250,11 +250,11 @@ else
   };
   handleChange = (key,event) => {
     const selectedValues = event.target.value; // The selected values (array of item.value)
-    const selectedValuesStr = selectedValues.join(", ");
+    
     this.setState({
       selectedItemsPr: event.target.value,  // Update selected items
     });
-    this.props.onFilterChange && this.props.onFilterChange(key, selectedValuesStr);
+    this.props.onFilterChange && this.props.onFilterChange(key, selectedValues);
   };
   handleRowsPerPageChange = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
@@ -892,7 +892,7 @@ render() {
                   multiple
                   value={this.state.selectedItemsPr}
                  // onChange={this.handleChange}
-                  onChange={this.handleChange.bind(this,'purchaseGroupFrom')}
+                  onChange={this.handleChange.bind(this,'multiplePurchaseGroup')}
                   sx={{ fontSize: 12, height: "15px" }}
                   renderValue={(selected) => {
                     // Display both item.display and item.value as selected items

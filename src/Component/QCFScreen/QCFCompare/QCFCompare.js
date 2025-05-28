@@ -1812,7 +1812,7 @@ toPdf(){
 
                     {/* {isEmpty(this.props.pr.qcfNo) && this.props.showQCFbtn===true? */}
                     {isEmpty(this.props.pr.qcfNo) && this.props.showQCFbtn===true && this.props.role!=ROLE_PURCHASE_MANAGER_ADMIN?
-                        <td className="w-10per"> <button type="button" onClick={this.generateQCF} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" /> Generate QCF</button> </td>
+                         <button type="button" onClick={this.generateQCF} className="btn btn-sm btn-outline-primary mr-2 mt-2"><i className="fa fa-check" /> Generate QCF</button> 
                       //:
 
                       //  this.props.role===ROLE_PURCHASE_MANAGER_ADMIN?
