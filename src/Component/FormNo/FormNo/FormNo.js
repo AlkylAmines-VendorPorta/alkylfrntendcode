@@ -29,7 +29,7 @@ import {searchTableDataThree, searchTableDataFour, searchTableData, searchTableD
 import * as actionCreators from "./Action";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import { formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate, formatDateWithoutTimeNewDate3 } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -1722,6 +1722,8 @@ async componentDidMount() {
     if (this.props.SSNVersion == 2) {
        showBtn = showBtn && this.state.role != 'VENADM';
     }
+    console.log(this.state.po.poDate,this.state.po.prDate,"this.state.po.poDate");
+    
     return (
       <>
 
@@ -2032,8 +2034,8 @@ async componentDidMount() {
                            <label className="col-sm-2" >{this.state.po.purchaseOrderNumber}</label>
                            <input type="hidden" value={this.state.po.poId} name="po[purchaseOrderId]" />
                            <input type="hidden" value={this.state.po.documentType} name="po[documentType]" />
-                           <input type="hidden" value={formatDateWithoutTimeNewDate(this.state.po.poDate)} name="po[date]"/> 
-                           <input type="hidden" value={formatDateWithoutTimeNewDate(this.state.po.prDate)} name="po[prDate]"/> 
+                           <input type="hidden" value={formatDateWithoutTimeNewDate3(this.state.po.poDate)} name="po[date]"/> 
+                           <input type="hidden" value={formatDateWithoutTimeNewDate3(this.state.po.prDate)} name="po[prDate]"/> 
                            <input type="hidden" value={this.state.po.userID} name="po[userID]" />
 
                            <label className="col-sm-2" >Vendor</label>
