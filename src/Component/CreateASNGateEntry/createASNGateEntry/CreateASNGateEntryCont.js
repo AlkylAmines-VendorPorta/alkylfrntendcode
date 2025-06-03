@@ -165,7 +165,8 @@ getServiceFromObj(service){
     lineItemNumber: service.lineItemNumber,
     currency: service.currency,
     deliveryDate: formatDateWithoutTimeNewDate2(service.deliveryDate),
-    plant:service.plant,
+    //plant:service.plant,
+    plant:service.parentPOLine.plant,
     deliveryStatus:service.deliveryStatus,
     controlCode:service.controlCode,
     trackingNmber:service.trackingNmber,
@@ -184,7 +185,9 @@ getServiceFromObj(service){
     parentPOlineNumber:service.parentPOLine.lineItemNumber,
     grnQuantity: service.grnQuantity,
     contractPo:service.purchaseOrder.contractPo,
-    balanceLimit:service.purchaseOrder.balanceLimit
+    balanceLimit:service.purchaseOrder.balanceLimit,
+    orderNo:service.orderNo,
+    poNo:service.purchaseOrder.purchaseOrderNumber
   }
 }
 

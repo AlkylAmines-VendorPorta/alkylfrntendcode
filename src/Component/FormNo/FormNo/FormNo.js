@@ -29,7 +29,7 @@ import {searchTableDataThree, searchTableDataFour, searchTableData, searchTableD
 import * as actionCreators from "./Action";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import { formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
+import formatDate,{ formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -44,6 +44,10 @@ import { formatTime } from "../../../Util/DateUtil";
 import UserDashboardHeader from "../../../Component/Header/UserDashboardHeader";
 import {getReferenceListDataApi, submitToSAPURL,savetoServer} from "../../../Util/APIUtils"
 import { submitToURL } from "../../../Util/APIUtils";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+
+
 
 const SwalNew = require('sweetalert2')
 const height_dy = window.innerHeight - 135;
@@ -57,6 +61,7 @@ class FormNo extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      costCenterList:[],
       isLoading: false,
       STOASNFetchDetails:{
          asnNumber:"",
@@ -606,7 +611,8 @@ getServiceLineFromService(service) {
       contractPo: service.contractPo,
       balanceLimit: service.balanceLimit,
       parentLineNumber : service.parentPOlineNumber,
-      orderNo:service.orderNo
+      orderNo:service.orderNo,
+      poNo:service.poNo
 
    };
 }
@@ -679,6 +685,7 @@ getServiceLineFromObj(asnLineObj) {
    let uom = "";
    let balQty = "";
    let plant = "";
+   let poNumber="";
    let parentLineNumber = "";
    let parentLineId = "";
    if (!isEmpty(asnLineObj)) {
@@ -697,6 +704,7 @@ getServiceLineFromObj(asnLineObj) {
          balQty1 = asnLineObj.poLine.balanceQuantity1;
          balQty = asnLineObj.poLine.balanceQuantity;
          plant = asnLineObj.poLine.plant;
+         poNumber = asnLineObj.poLine.purchaseOrder.purchaseOrderNumber
          parentLineId = asnLineObj.poLine.parentPOLine.purchaseOrderLineId;
          parentLineNumber = asnLineObj.poLine.parentPOLine.lineItemNumber
       }
@@ -718,6 +726,7 @@ getServiceLineFromObj(asnLineObj) {
          uom: uom,
          balQty: balQty,
          plant: plant,
+         poNumber:poNumber,
          storageLocation: asnLineObj.storageLocation,
          parentLineId: parentLineId,
          parentLineNumber: parentLineNumber,
@@ -803,6 +812,15 @@ async componentWillReceiveProps(props) {
       })
       
     }
+
+    if(!isEmpty(props.costCenterList) ){
+      this.setState({
+         costCenterList: props.costCenterList
+      })
+      
+    }
+
+
     if (!isEmpty(props.serviceSheetStatusList) && this.state.loadserviceSheetStatusList) {
       this.setState({
          loadserviceSheetStatusList: false,
@@ -1485,9 +1503,10 @@ async componentDidMount() {
             const { selectedAsnListItem } = this.state;
             let asnLineCostCenter = !isEmpty(selectedAsnListItem.asnLineCostCenter) ? selectedAsnListItem.asnLineCostCenter : [];
             asnLineCostCenter[index] = {
-               ...asnLineCostCenter[index], [name]: target.value
+              //...asnLineCostCenter[index], [name]: target.value
+              ...asnLineCostCenter[index], [name]: target.value?target.value:target.innerText!=undefined?target.innerText:""
             }
-            this.setState({ selectedAsnListItem: { ...selectedAsnListItem, asnLineCostCenter } })
+            this.setState({ selectedAsnListItem: { ...selectedAsnListItem, asnLineCostCenter }})
          }
 
          onStorageLocationChange = (index, name, { target }) => {
@@ -1598,6 +1617,8 @@ async componentDidMount() {
          if (isEmpty(item.deliveryQuantity)) return alert('please enter qty')
          item = { ...item, asnLineCostCenter: !isEmptyDeep(item.asnLineCostCenter) ? item.asnLineCostCenter : [{ quantity: 0, costCenter: '' }] }
          this.setState({ selectedAsnListItem: item, openModal: true })
+         //commonSubmitWithParam(this.props, "getCostcenterFromSAP", "/rest/getCostCenterfromSAP", item.orderNo, item.poLineNumber, item.plant);
+         commonSubmitWithParam(this.props, "getCostcenterFromSAP", "/rest/getCostCenterfromSAP", item.poNo, item.poLineNumber, item.plant);
       }
 
       onSelectLocationCostCenter = (item) => {
@@ -1682,7 +1703,25 @@ async componentDidMount() {
       document.getElementById(showBtn1).style.cssText="display:none"; 
    
     }
+    setCostcenter(){
+      let newCostcenterlist=[]
+      //{(Object.entries(this.state.costCenterList)).map(item =>
+      {(this.state.costCenterList).map(item =>
+         newCostcenterlist.push(this.getItem(item))
+          
+       )}
+        
+       return newCostcenterlist;
+    }
 
+    getItem(item) {
+      return {
+         value:item.value +"-"+ item.description,
+         // value:item[0],
+        // description:item.description
+         
+      }
+   }
     showDiv() {
       var x = document.getElementById("welcomeDiv");
       if (x.style.display === "none") {
@@ -2238,13 +2277,16 @@ async componentDidMount() {
 
                                        <td className="col-1"> <input type="hidden" name={"asnLineList[" + index + "][deliveryQuantity]"} value={asnLine.poQty} />
                                                                {asnLine.poQty}</td>
-                                                     : <td className="col-1">
-                                                     <input type="text" onKeyDown={textRestrict} placeholder="0.000"
+                                                     : 
+                                                     <td className="col-1">
+                                                     <input type="text" 
+                                                   //onKeyDown={textRestrict}
+                                                     placeholder="0.000"
                                                            className={"form-control " + ((this.state.asnDetails.status === 'DR' || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
                                                            name={"asnLineList[" + index + "][deliveryQuantity]"}
                                                            defaultValue={(this.props.po.isServicePO) ?
                                                               1 :this.state.asnLineArray[index].deliveryQuantity}
-                                                           onChange={(e) => {
+                                                           onChange={(e) => {textRestrict(e);
                                                               (this.props.po.isServicePO)
                                                               ? e.preventDefault() : this.calculateBasicAmount(e, index, "asnLineArray")
                                                            }} />
@@ -2391,16 +2433,27 @@ async componentDidMount() {
                                                 <label>Action</label>
                                              </div>
                                           </div>
-                        <div className="row mt-1 px-4 py-1 max-h-500px">
+                        <div className="row mt-1 px-4 py-1 max-h-1000px">
                            {!isEmpty(this.state.selectedAsnListItem) && !isEmpty(this.state.selectedAsnListItem.asnLineCostCenter) && this.state.selectedAsnListItem.asnLineCostCenter.map((item, index) => {
                               return (<div className="row" key={index}>
                                  <div className="col-5">
                                     <input type="text" className="form-control" placeholder="Enter quantity" value={item.quantity} onChange={this.onCostChange.bind(this, index, 'quantity')} onKeyDown={this.controlSubmit} />
                                  </div>
    
-                                 <div className="col-5">
+                  <div className="w-full flex flex-wrap">
+
+                  <Autocomplete
+                   disablePortal
+                   options={this.setCostcenter()} 
+                   getOptionLabel={(option) => typeof option === "string" ? option : option.value}
+                   onChange={this.onCostChange.bind(this, index, 'costCenter')}
+                   value={item.costCenter}
+                   style={{ width: '150px' }}
+                   onKeyDown={this.controlSubmit}
+                  renderInput={(params) => <TextField value={item.costCenter} {...params}   />}
+                />
    
-                                    <select className="form-control"
+                                   {/* <select className="form-control"
                                        value={item.costCenter}
                                        onChange={this.onCostChange.bind(this, index, 'costCenter')}
                                     >
@@ -2409,7 +2462,7 @@ async componentDidMount() {
                                          //<option value={item.value}>{item.value}-{item.display}</option>
                                          <option value={item.value}>{item.value}</option>
                                        )}
-                                    </select>
+                                    </select> */}
                                  </div>
                      
                      <div className="col-2">
@@ -2579,12 +2632,13 @@ async componentDidMount() {
                                               <div className="col-sm-2 mt-20 ">
                                                  <input type="text" className="form-control" name="invoiceNo" onKeyDown={this.controlSubmit}
                                                     value={this.state.asnDetails.invoiceNo}
+                                                    maxLength={16}
                                                     onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceNo"); } } />
                                               </div>
                                              <label className="col-sm-2 mt-20">Invoice Date <span className="redspan">*</span></label>
                                              <div className="col-sm-2 mt-4">
                                               <input type="date" className="form-control" onKeyDown={this.controlSubmit}
-                                                  value={formatDateWithoutTimeNewDate(this.state.asnDetails.invoiceDate)}
+                                                value={formatDateWithoutTimeNewDate(this.state.asnDetails.invoiceDate)}
                                                   max="9999-12-31"                                                 
                                                   name="invoiceDate" 
                                                   onChange={(event) => {
@@ -2720,7 +2774,8 @@ async componentDidMount() {
                                   {/*-------input type-------*/}
                                   <td className="col-1">
                                      <input type="number"
-                                        step=".01" onKeyDown={textRestrict}
+                                        //step=".01"
+                                        // onKeyDown={textRestrict}
                                       // maxLength={5}
                                        placeholder="0.000"
                                         className={"form-control " + ((['DR', 'SSRJ'].includes(this.state.asnDetails.status) || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
@@ -2728,7 +2783,7 @@ async componentDidMount() {
                                         defaultValue={this.state.serviceLineArray[index].deliveryQuantity}
                                         
                                         // onChange = {(e)=>{commonHandleChange(e,this,"serviceLineArray."+index+".deliveryQuantity")}} 
-                                        onChange={(e) => {this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
+                                        onChange={(e) => {textRestrict(e); this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
                                      />
                                     </td>
                                     {/*-------input type-------*/}

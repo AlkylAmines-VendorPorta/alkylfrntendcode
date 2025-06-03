@@ -119,7 +119,7 @@ class PurchaseOrder extends Component {
       currentPOIndex:"",
       costCenterList:[],
      //ssnFundList:[],
-       
+    
     }
 }
 
@@ -155,7 +155,8 @@ getServiceFromObj(service){
     lineItemNumber: service.lineItemNumber,
     currency: service.currency,
     deliveryDate: formatDateWithoutTimeNewDate2(service.deliveryDate),
-    plant:service.plant,
+    //plant:service.plant,
+    plant:service.parentPOLine.plant,
     deliveryStatus:service.deliveryStatus,
     controlCode:service.controlCode,
     trackingNmber:service.trackingNmber,
@@ -174,7 +175,9 @@ getServiceFromObj(service){
     parentPOlineNumber:service.parentPOLine.lineItemNumber,
     grnQuantity: service.grnQuantity,
     contractPo:service.purchaseOrder.contractPo,
-    balanceLimit:service.purchaseOrder.balanceLimit
+    balanceLimit:service.purchaseOrder.balanceLimit,
+    orderNo:service.orderNo,
+    poNo:service.purchaseOrder.purchaseOrderNumber
   }
 }
 
@@ -488,7 +491,7 @@ handleFilterClick = () => {
   this.setState({openModal:false})
   this.clearFields();
   }
- 
+
   onSelectVendorRow = (partner) => {
     
     console.log('onSelectVendorRow',partner)
@@ -718,7 +721,7 @@ var frmhidden = {
                     />
       
       </div> 
-                 
+
                   <div  style={ shown }>
                     <Container style={{marginTop:"10px !important"}}>
                       <Paper className="p-3">
@@ -738,7 +741,6 @@ var frmhidden = {
                             >
                              {this.state.po.isServicePO?"Service History":"ASN History"}
                           </Button>}
-                          
                           {(this.state.po.status==="REL" || this.state.po.status==="REJ")&&<Button variant="contained"  className="ml-2" color="primary" type="button"  
                             onClick={()=>{this.setState({loadPODetails: true}); commonSubmitWithParam(this.props,"poAcceptance","/rest/acceptPO/",this.state.po.poId)}}>
                              Accept
@@ -923,8 +925,8 @@ var frmhidden = {
           </span>
         </div>
        
-        </div>     
-        </div>     
+        </div>
+        </div>
         </FormWithConstraints>   
                  </Paper>
                  </Container>

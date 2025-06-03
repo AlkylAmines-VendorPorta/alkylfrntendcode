@@ -133,7 +133,7 @@ class BankDetails extends Component {
             }}
             noValidate
           >
-           <input type="hidden" name="partnerBankDetailId" 
+           <input type="hidden" name="partnerBankDetailId"
             value={this.state.partnerBankDetails.partnerBankDetailId}/>
             <input type="hidden" name="partner[bPartnerId]" value={this.props.partner.partnerId} />
 
@@ -149,6 +149,7 @@ class BankDetails extends Component {
                     <FieldFeedbacks for="ifscCode">
                       <FieldFeedback when="*"></FieldFeedback>
                       {/* <FieldFeedback when={value=>!/^[a-zA-Z]{4}[0-9]{7}$/.test(value)}>Please Enter a Valid IFSC Code</FieldFeedback> */}
+                      <FieldFeedback when={value => !/^[a-zA-Z]{4}[A-Z0-9]{7}$/.test(value)}>Please Enter a Valid IFSC Code</FieldFeedback>
                     </FieldFeedbacks>
             </div>
             <label className="col-sm-2">Bank Name <span className="redspan">*</span></label>
@@ -177,7 +178,8 @@ class BankDetails extends Component {
               <FieldFeedbacks for="accountNumber">
                       <FieldFeedback when="*"></FieldFeedback>
                       <FieldFeedback when="patternMismatch">Pattern Mismatch</FieldFeedback>
-                      <FieldFeedback when={value => !/^[a-zA-Z0-9]+$/.test(value)}>Please enter valid number</FieldFeedback>
+                      <FieldFeedback when={value => !/^[0-9]{9,18}$/.test(value)}>Please enter valid number</FieldFeedback>
+                      {/* <FieldFeedback when={value => !/^[a-zA-Z0-9]+$/.test(value)}>Please enter valid number</FieldFeedback> */}
                     </FieldFeedbacks>
             </div>
             <label className="col-sm-2">Name As Per Cheque <span className="redspan">*</span></label>

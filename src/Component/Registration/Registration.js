@@ -179,7 +179,7 @@ else{
         <Loader isLoading={this.state.isLoading} />
         <VendorDashboardHeader />
         <div className="page-content">
-        <div className="wizard-v1-content" id="togglesidebar" >
+        <div className="wizard-v1-content" id="togglesidebar">
             <div className="wizard-form">
 
             {this.state.userRole.value==="VENADM" && this.state.partner.status==="CO"?

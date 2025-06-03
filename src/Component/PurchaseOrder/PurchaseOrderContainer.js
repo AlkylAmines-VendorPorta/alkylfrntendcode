@@ -136,6 +136,7 @@ getPurchaseOrderFromObj(po){
     requestedBy: reqBy,
     isServicePO : isServicePO(po.pstyp),
     pstyp:po.pstyp,
+    userID:po.userID
   }
 }
 

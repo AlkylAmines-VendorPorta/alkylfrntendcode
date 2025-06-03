@@ -67,7 +67,7 @@ class AdvancePayApproval extends Component {
               else if(e.target.checked === false){
              let index = acceptedCheckedItems.findIndex(c => c.advancePaymentId == key.advancePaymentId)
              acceptedCheckedItems.splice(index,1)
-            
+             this.setState({acceptedCheckedItems});
               }
             }
 
@@ -76,6 +76,7 @@ class AdvancePayApproval extends Component {
               let advancePaymentId = "";
               let documentNumber = "";
               let vendorCode="";
+              let interestRate="";
               let interestAmount="";
               let nextPaymentDate="";
               let grossAmount="";
@@ -85,7 +86,9 @@ class AdvancePayApproval extends Component {
               let amountInLC=""
               let invoiceDate="";
               let reference="";
-              let netPayableAmount=""
+              let netPayableAmount="";
+              let gapinDays="";
+              let actualPaymentDate="";
 
 
               
@@ -94,6 +97,7 @@ class AdvancePayApproval extends Component {
                   advancePaymentId = advanceObj.advancePaymentId;
                   documentNumber=advanceObj.documentNumber;
                   vendorCode=advanceObj.vendorCode;
+                  interestRate=advanceObj.interestRate;
                   interestAmount=advanceObj.interestAmount;
                   nextPaymentDate=advanceObj.nextPaymentDate;
                   grossAmount=advanceObj.grossAmount;
@@ -103,7 +107,9 @@ class AdvancePayApproval extends Component {
                   amountInLC=advanceObj.amountInLC;
                   invoiceDate=advanceObj.invoiceDate;
                   reference=advanceObj.reference;
-                  netPayableAmount=advanceObj.netPayableAmount
+                  netPayableAmount=advanceObj.netPayableAmount;
+                  gapinDays=advanceObj.gapinDays;
+                  actualPaymentDate=advanceObj.actualPaymentDate;
                  }
         
                
@@ -111,6 +117,7 @@ class AdvancePayApproval extends Component {
                   advancePaymentId: advancePaymentId,   
                   documentNumber:documentNumber,
                   vendorCode:vendorCode,
+                  interestRate:interestRate,
                   interestAmount:interestAmount,
                   nextPaymentDate:nextPaymentDate,
                   grossAmount:grossAmount,
@@ -120,7 +127,9 @@ class AdvancePayApproval extends Component {
                   amountInLC:amountInLC,
                   invoiceDate:invoiceDate,
                   reference:reference    ,
-                  netPayableAmount:netPayableAmount    
+                  netPayableAmount:netPayableAmount,
+                  gapinDays:gapinDays,
+                  actualPaymentDate:actualPaymentDate
                  };
               }
            }
@@ -215,7 +224,7 @@ class AdvancePayApproval extends Component {
                  });
            }
 
-           calculateGrossAmount = (child) => {
+           calculateGrossAmount = (child,key) => {
 
             let list = child;
         
@@ -225,48 +234,42 @@ class AdvancePayApproval extends Component {
             // let TotalGrossArray = [];
         
              list.map((qbvLine) => {
+              if(qbvLine.vendorCode===key){ 
              GrossAmount= (qbvLine.grossAmount)
                 //    TotalGrossArray.push(GrossAmount);
                    TotalGrossAmount= Number(TotalGrossAmount) + Number(GrossAmount);
-            })
+           }})
 
           // return getDecimalUpto(TotalGrossAmount,2);
           return TotalGrossAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})
           
         }
-        calculateNetPayableAmount = (child) => {
+        calculateNetPayableAmount = (child,key) => {
 
           let list = child;
-      
-      
-           let netPayableAmount=0.0;
+          let netPayableAmount=0.0;
           let TotalnetPayableAmount=0.0;
-          // let TotalGrossArray = [];
       
            list.map((qbvLine) => {
+            if(qbvLine.vendorCode===key){
             netPayableAmount= (qbvLine.netPayableAmount)
-              //    TotalGrossArray.push(GrossAmount);
-              TotalnetPayableAmount= Number(TotalnetPayableAmount) + Number(netPayableAmount);
-          })
+            TotalnetPayableAmount= Number(TotalnetPayableAmount) + Number(netPayableAmount);
+        }})
 
-        // return getDecimalUpto(TotalGrossAmount,2);
         return TotalnetPayableAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})
         
       }
-        calculateTotalInvoiceAmount = (child) => {
+        calculateTotalInvoiceAmount = (child,key) => {
 
           let list = child;
-      
-      
-           let InvoiceAmount=0.0;
+          let InvoiceAmount=0.0;
           let TotalInvoiceAmount=0.0;
-          // let TotalGrossArray = [];
-      
-           list.map((qbvLine) => {
+        
+          list.map((qbvLine) => {
+            if(qbvLine.vendorCode===key){
             InvoiceAmount= (qbvLine.amountInLC)
-              //    TotalGrossArray.push(GrossAmount);
-              TotalInvoiceAmount= Number(TotalInvoiceAmount) + Number(InvoiceAmount);
-          })
+            TotalInvoiceAmount= Number(TotalInvoiceAmount) + Number(InvoiceAmount);
+        }})
 
           // return getDecimalUpto(TotalInvoiceAmount,2);
 
@@ -274,7 +277,7 @@ class AdvancePayApproval extends Component {
         
       }
 
-      calculateTotalInterestAmount = (child) => {
+      calculateTotalInterestAmount = (child,key) => {
 
         let list = child;
     
@@ -284,103 +287,221 @@ class AdvancePayApproval extends Component {
         // let TotalGrossArray = [];
     
          list.map((qbvLine) => {
+          if(qbvLine.vendorCode===key){
           InterestAmount= (qbvLine.interestAmount)
             //    TotalGrossArray.push(GrossAmount);
             TotalInterestAmount= Number(TotalInterestAmount) + Number(InterestAmount);
-        })
+      }})
 
        // return getDecimalUpto(TotalInterestAmount,2);
 
        return TotalInterestAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})
-      
+    
     }
 
-    calculateTotalCGSTAmount = (child) => {
+    calculateTotalCGSTAmount = (child,key) => {
 
       let list = child;
-  
-  
-       let CgstAmount=0.0;
+      let CgstAmount=0.0;
       let TotalCgstAmount=0.0;
-      // let TotalGrossArray = [];
-  
+
        list.map((qbvLine) => {
+        if(qbvLine.vendorCode===key){
         CgstAmount= (qbvLine.cgstAmount)
-          //    TotalGrossArray.push(GrossAmount);
           TotalCgstAmount= Number(TotalCgstAmount) + Number(CgstAmount);
-      })
+    }})
 
     //  return getDecimalUpto(TotalCgstAmount,2);
     return TotalCgstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})
     
   }
 
-  calculateTotalSGSTAmount = (child) => {
+  calculateTotalSGSTAmount = (child,key) => {
 
     let list = child;
-
-
-     let SgstAmount=0.0;
+    let SgstAmount=0.0;
     let TotalSgstAmount=0.0;
-    // let TotalGrossArray = [];
 
      list.map((qbvLine) => {
+      if(qbvLine.vendorCode===key){
       SgstAmount= (qbvLine.sgstAmount)
-        //    TotalGrossArray.push(GrossAmount);
-        TotalSgstAmount= Number(TotalSgstAmount) + Number(SgstAmount);
-    })
+      TotalSgstAmount= Number(TotalSgstAmount) + Number(SgstAmount);
+  }})
 
   //  return getDecimalUpto(TotalSgstAmount,2);
   return TotalSgstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})
   
 }
 
-calculateTotalIGSTAmount = (child) => {
+calculateTotalIGSTAmount = (child,key) => {
 
   let list = child;
-
-
-   let IgstAmount=0.0;
+  let IgstAmount=0.0;
   let TotalIgstAmount=0.0;
-  // let TotalGrossArray = [];
 
    list.map((qbvLine) => {
+    if(qbvLine.vendorCode===key){
     IgstAmount= (qbvLine.igstAmount)
-      //    TotalGrossArray.push(GrossAmount);
       TotalIgstAmount= Number(TotalIgstAmount) + Number(IgstAmount);
-  })
+}})
 
  // return getDecimalUpto(TotalIgstAmount,2);
  return TotalIgstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})
 
 }
 
+actualPaymentDate=(baselineDate,days1Date,i)=>{
+    
+  let actualPaymentDate=""
+  var invoiceDate=new Date(baselineDate);
+  var numberOfDaysToAdd = Number(days1Date);
+ 
+  actualPaymentDate= (invoiceDate.setDate(invoiceDate.getDate() + numberOfDaysToAdd));
+ // this.setState({actualPaymentDate:actualPaymentDate})
+  return formatDateWithoutTime(actualPaymentDate);
 
-            calculateinterestAmtFrLineItem=(e,i,actualPayDate,nextPayDate,amount,rate,formRef)=> {
-              let {getVendorPayListforApproval} = this.state;
-              let row = getVendorPayListforApproval[i];
-              let value = e.target.value ? e.target.value:"12";
-              let interestAmt=row.interestAmount;
-              let interestRate=value;
-              let irate=value;
 
-              let newinterestRate=irate/100;
-              const diffInMs   = new Date(nextPayDate) - new Date(actualPayDate)
-              const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-            
-              interestAmt=getDecimalUpto((diffInDays/365*amount*newinterestRate),2);
-              getVendorPayListforApproval[i] = {
-                ...row,
-                interestRate,
-                interestAmt
-            };
+}
 
-            updateState(this,{getVendorPayListforApproval});
-            if(!isEmpty(formRef)){
-                this[formRef].validateFields(e.target);
+nextPaymentDate=()=>{
+  let now = new Date();
+  let today=formatDateWithoutTime(now.setDate(now.getDate()));
+  let day = 1; // Monday
+  // let nextPaymentdt="";
+
+  // let nextupdatedPaymentdt = formatDateWithoutTime(now.setDate(now.getDate() + 1));
+  let nextupdatedPaymentdt = formatDateWithoutTime(now.setDate(now.getDate()));
+
+  // let monday = this.getMondayDate();
+  // let friday = this.getRelativeDayInWeek(new Date(),5);
+  // let saturday = this.getRelativeDayInWeek(new Date(),6);
+  // let sunday = this.getRelativeDayInWeek(new Date(),7);
+
+  return  nextupdatedPaymentdt;
+
+
+}
+
+calculateInterestAmt=(actualPayDate,nextPayDate,amount,interestRate)=>{
+  let interestAmt=0.0;
+  let newinterestRate=interestRate/100;
+ // const diffInMs   = new Date(nextPayDate) - new Date(actualPayDate)
+ const diffInMs   = new Date(actualPayDate) - new Date(nextPayDate)
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24);      
+  interestAmt=(diffInDays/365*amount*newinterestRate);
+  return getDecimalUpto(Number(interestAmt),2);
+   
+
+// return interestAmt.toLocaleString('en-IN', {minimumFractionDigits: 2,maximumFractionDigits: 2})
+}
+
+calculategapindays=(actualPayDate,nextPayDate)=>{
+  // const diffInMs   = new Date(nextPayDate) - new Date(actualPayDate)
+  const diffInMs   = new Date(actualPayDate) - new Date(nextPayDate)
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+ 
+   // interestAmt=(diffInDays/365*amount*newinterestRate);
+   return diffInDays
+ }
+
+ calculatecgstAmt=(interestAmt,taxRatecgst)=>{
+  let taxratecgstAmt=taxRatecgst/100;
+  // let finalcgstAmt=newinterestamt*taxratecgstAmt;
+let finalcgstAmt=interestAmt*taxratecgstAmt;
+ return getDecimalUpto(Number(finalcgstAmt),2);
+
+// return finalcgstAmt.toLocaleString('en-IN', {minimumFractionDigits: 2})
+}
+
+calculatesgstAmt=(interestAmt,taxRatesgst)=>{
+  let taxratesgstAmt=taxRatesgst/100;
+ 
+ let finalsgstAmt=interestAmt*taxratesgstAmt;
+
+ 
+  return getDecimalUpto(Number(finalsgstAmt),2);
+// return finalsgstAmt.toLocaleString('en-IN', {minimumFractionDigits: 2})
+}
+
+calculateigstAmt=(interestAmt,taxRateigst)=>{
+  let taxrateigstAmt=taxRateigst/100;
+ 
+ let finaligstAmt=interestAmt*taxrateigstAmt;
+
+ 
+  return getDecimalUpto(Number(finaligstAmt),2);
+}
+
+calculategrossAmt=(interestAmt,cgstAmt,sgstAmt,igstAmt)=>{
+        let GrossAmount=""
+  if(igstAmt!="0.00"){
+    GrossAmount=Number(interestAmt)+Number(igstAmt);
+  }else{
+    GrossAmount=Number(interestAmt)+Number(sgstAmt)+Number(cgstAmt);
+  }
+  return getDecimalUpto(Number(GrossAmount),2);
+ 
+// return GrossAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})
+}
+
+calculatenetPayableAmt=(invoiceAmt,GrossAmt)=>{
+ 
+  let TotalnetPayableAmt=""
+
+  TotalnetPayableAmt=invoiceAmt-GrossAmt;
+
+  return getDecimalUpto(Number(TotalnetPayableAmt),2);
+
+// return TotalnetPayableAmt.toLocaleString('en-IN', {minimumFractionDigits: 2})
+}
+
+onApprovalStateChange=(e,payment,key,index)=> {
+  // let {getVendorPayListforApproval} = this.state;
+  let getVendorPayListforApproval = this.state.getVendorPayListforApproval;
+  let Items = getVendorPayListforApproval[key];
+   let actualPaymentDate = this.actualPaymentDate(payment.invoiceDate,payment.days1);
+  //let nextPaymentDate=this.nextPaymentDate();
+  let nextPaymentDate=e.target.value;
+  let interestRate=payment.interestRate;
+  let interestType="%"
+ // let isMailSent="Y"
+  // let interestAmount=this.calculateInterestAmt(payment.actualPaymentDate,payment.nextPaymentDateForDisplay,payment.amount,payment.interestRate)
+  let interestAmount=this.calculateInterestAmt(actualPaymentDate,nextPaymentDate,payment.amountInLC,interestRate)
+  let gapinDays=this.calculategapindays(actualPaymentDate,nextPaymentDate)
+  let taxratesgst=payment.sgst;
+  let taxratecgst=payment.cgst;
+  let taxrateigst=payment.igst
+ 
+
+    let cgstAmount=this.calculatecgstAmt(interestAmount,taxratecgst)
+    let sgstAmount=this.calculatesgstAmt(interestAmount,taxratesgst)
+    let igstAmount=this.calculateigstAmt(interestAmount,taxrateigst)
+    let grossAmount=this.calculategrossAmt(interestAmount,cgstAmount,sgstAmount,igstAmount)
+    let netPayableAmount=this.calculatenetPayableAmt(payment.amountInLC,grossAmount)
+   Items[index] = {
+    ...Items[index],
+    nextPaymentDate,
+    actualPaymentDate,
+    interestRate,
+    interestType,
+    interestAmount,
+    cgstAmount,
+    sgstAmount,
+    igstAmount,
+    grossAmount,
+    gapinDays,
+    netPayableAmount
+  }
+
+  getVendorPayListforApproval = {
+    ...getVendorPayListforApproval,
+    [key]:Items
+  };
+
+//return Items[index]
+  updateState(this,{getVendorPayListforApproval});
+ // this.setState({getVendorPayListforApproval})
             }
-            }
-
 
             render() {
                
@@ -454,14 +575,22 @@ calculateTotalIGSTAmount = (child) => {
                             
                             {/* <td>{this.calculateGrossAmount(childs)}</td> */}
                             <td></td><td></td><td></td>
-                            <td>{this.calculateTotalInvoiceAmount(childs)}</td>
+                            {/* <td>{this.calculateTotalInvoiceAmount(childs)}</td> */}
+                            <td>{this.calculateTotalInvoiceAmount(this.state.acceptedCheckedItems,key)}</td>
                             <td></td><td></td><td></td><td></td><td></td>
-                            <td>{this.calculateTotalInterestAmount(childs)}</td>
+                            {/* <td>{this.calculateTotalInterestAmount(childs)}</td>
                             <td>{this.calculateTotalCGSTAmount(childs)}</td>
                             <td>{this.calculateTotalSGSTAmount(childs)}</td>
                             <td>{this.calculateTotalIGSTAmount(childs)}</td>
                             <td>{this.calculateGrossAmount(childs)}</td>
-                            <td>{this.calculateNetPayableAmount(childs)}</td>
+                            <td>{this.calculateNetPayableAmount(childs)}</td>*/}
+                            <td>{this.calculateTotalInterestAmount(this.state.acceptedCheckedItems,key)}</td>
+                            
+                            <td>{this.calculateTotalCGSTAmount(this.state.acceptedCheckedItems,key)}</td>
+                            <td>{this.calculateTotalSGSTAmount(this.state.acceptedCheckedItems,key)}</td>
+                            <td>{this.calculateTotalIGSTAmount(this.state.acceptedCheckedItems,key)}</td>
+                            <td>{this.calculateGrossAmount(this.state.acceptedCheckedItems,key)}</td>
+                            <td>{this.calculateNetPayableAmount(this.state.acceptedCheckedItems,key)}</td>
                             <td>
                               </td><td></td>
                               {/* <td></td><td></td><td></td>
@@ -482,7 +611,18 @@ calculateTotalIGSTAmount = (child) => {
                                <td id={"collapse" + i} class="collapse in p-1">{(payment.amountInLC).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                                <td id={"collapse" + i} class="collapse in p-1">{payment.invoiceDate!=null?formatDate(payment.invoiceDate):""}</td>
                                <td id={"collapse" + i} class="collapse in p-1">{payment.actualPaymentDate!=null?formatDate(payment.actualPaymentDate):""}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.nextPaymentDate!=null?formatDate(payment.nextPaymentDate):""}</td>
+                               {/* <td id={"collapse" + i} class="collapse in p-1">{payment.nextPaymentDate!=null?formatDate(payment.nextPaymentDate):""}</td> */}
+                               <td id={"collapse" + i} class="collapse in p-1"> <input
+                                                                                type="date" 
+                                                                                className={"col-12 form-control "}
+                                                                                defaultValue={formatDate(payment.nextPaymentDate)}
+                                                                                
+                                                                                onChange={(e) => {
+                                                                                  this.onApprovalStateChange(e,payment,key,index)
+                                                                                    // commonHandleChange(e, this, "quotations."+i+".deliveryDate","quotationForm");
+                                                                                }}
+                                                                                
+                                                                            /></td>
                                <td id={"collapse" + i} class="collapse in p-1">{payment.gapinDays}</td>
                                <td id={"collapse" + i} class="collapse in p-1">{payment.interestRate}</td>
                            

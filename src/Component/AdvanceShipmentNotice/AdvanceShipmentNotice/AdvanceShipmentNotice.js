@@ -24,7 +24,7 @@ import {
 import { searchTableDataThree, searchTableDataFour } from "../../../Util/DataTable";
 import * as actionCreators from "./Action";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import formatDate, { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
+import formatDate,{formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict,checkIsNaN } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -33,6 +33,8 @@ import Loader from "../../FormElement/Loader/LoaderWithProps";
 import { currentDate } from "../../../Constants/commonConstants";
 import NewHeader from "../../NewHeader/NewHeader";
 import Swal from 'sweetalert2'
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const SwalNew = require('sweetalert2')
 const height_dy = window.innerHeight - 135;
@@ -42,6 +44,7 @@ class AdvanceShipmentNotice extends Component {
    constructor(props) {
       super(props)
       this.state = {
+         costCenterList:[],
          gateentryAsnList:[],
          cancelSsnButton: "block",
          cancelAsnButton: "block",
@@ -66,6 +69,7 @@ class AdvanceShipmentNotice extends Component {
             invoiceNo: "",
             invoiceDate: "",
             invoiceAmount: "",
+            servicePostingDate:"",
             loadingCharges: "",
             mismatchAmount: "",
             deliveryNoteNo: "",
@@ -158,7 +162,8 @@ class AdvanceShipmentNotice extends Component {
             versionNumber: "",
             status: "",
             documentType: "",
-            isServicePO: false
+            isServicePO: false,
+            userID:""
          },
          currentASN: "",
          serviceLineArray: [],
@@ -291,7 +296,8 @@ getPurchaseOrderFromObj(po){
     poAtt: att,
     requestedBy: reqBy,
 
-    isServicePO:isServicePO(po.pstyp)
+    isServicePO:isServicePO(po.pstyp),
+    userID:po.userID
  }
 } else {
          return {
@@ -304,7 +310,8 @@ getPurchaseOrderFromObj(po){
             purchaseGroup: "",
             versionNumber: "",
             status: "",
-            documentType: ""
+            documentType: "",
+            userID:""
          }
       }
 
@@ -467,7 +474,8 @@ getPurchaseOrderFromObj(po){
          plant: service.plant,
          parentPOLineId: service.parentPOLineId,
          contractPo: service.contractPo,
-         balanceLimit: service.balanceLimit
+         balanceLimit: service.balanceLimit,
+         orderNo:service.orderNo
 
       };
    }
@@ -542,6 +550,7 @@ getPurchaseOrderFromObj(po){
       let plant = "";
       let parentLineNumber = "";
       let parentLineId = "";
+      let orderNo=""
       if (!isEmpty(asnLineObj)) {
          if (!isEmpty(asnLineObj.advanceshipmentnotice)) {
             asnId = asnLineObj.advanceshipmentnotice.advanceShipmentNoticeId;
@@ -557,9 +566,10 @@ getPurchaseOrderFromObj(po){
             poQty = asnLineObj.poLine.poQuantity;
             balQty1 = asnLineObj.poLine.balanceQuantity1;
             balQty = asnLineObj.poLine.balanceQuantity;
-            plant = asnLineObj.poLine.plant;
+            plant = asnLineObj.poLine.parentPOLine.plant;
             parentLineId = asnLineObj.poLine.parentPOLine.purchaseOrderLineId;
-            parentLineNumber = asnLineObj.poLine.parentPOLine.lineItemNumber
+            parentLineNumber = asnLineObj.poLine.parentPOLine.lineItemNumber;
+            orderNo=asnLineObj.advanceshipmentnotice.po.purchaseOrderNumber;
          }
          return {
             asnLineId: asnLineObj.advanceShipmentNoticeLineId,
@@ -582,7 +592,8 @@ getPurchaseOrderFromObj(po){
             storageLocation: asnLineObj.storageLocation,
             parentLineId: parentLineId,
             parentLineNumber: parentLineNumber,
-            asnLineCostCenter: !isEmpty(asnLineObj.asnLineCostCenter) ? asnLineObj.asnLineCostCenter : []
+            asnLineCostCenter: !isEmpty(asnLineObj.asnLineCostCenter) ? asnLineObj.asnLineCostCenter : [],
+            orderNo:orderNo
          };
       }
    }
@@ -660,6 +671,14 @@ getPurchaseOrderFromObj(po){
       })
       
     }
+
+    if(!isEmpty(props.costCenterList) ){
+      this.setState({
+         costCenterList: props.costCenterList
+      })
+      
+    }
+
       if (!isEmpty(props.serviceSheetStatusList) && this.state.loadserviceSheetStatusList) {
          this.setState({
             loadserviceSheetStatusList: false,
@@ -1260,6 +1279,7 @@ getPurchaseOrderFromObj(po){
       // console.log("eeee",e);
       this.setState({ loadASNDetails: true, loadASNLineList: true, saveServiceLines: true });
       commonSubmitFormValidation(e, this, "submitServiceSheet", "/rest/submitServiceSheet")
+      this.props.changeLoaderState(false);
    }
 
    updateSheet = (e) => {
@@ -1286,6 +1306,7 @@ getPurchaseOrderFromObj(po){
       // console.log("eeee",e);
       this.setState({ loadASNDetails: true, loadASNLineList: true, saveServiceLines: true });
       commonSubmitFormValidation(e, this, "submitServiceSheet", "/rest/updateServiceSheet")
+      this.props.changeLoaderState(false);
    }
    getSerializedForm(form) {
       return serialize(form, {
@@ -1361,7 +1382,8 @@ getPurchaseOrderFromObj(po){
       const { selectedAsnListItem } = this.state;
       let asnLineCostCenter = !isEmpty(selectedAsnListItem.asnLineCostCenter) ? selectedAsnListItem.asnLineCostCenter : [];
       asnLineCostCenter[index] = {
-         ...asnLineCostCenter[index], [name]: target.value
+         //...asnLineCostCenter[index], [name]: target.value
+         ...asnLineCostCenter[index], [name]: target.value?target.value:target.innerText!=undefined?target.innerText:""
       }
       this.setState({ selectedAsnListItem: { ...selectedAsnListItem, asnLineCostCenter } })
    }
@@ -1426,6 +1448,24 @@ getPurchaseOrderFromObj(po){
       // });
    
   }
+  setCostcenter(){
+   let newCostcenterlist=[]
+   //{(Object.entries(this.state.costCenterList)).map(item =>
+      {(this.state.costCenterList).map(item =>
+         newCostcenterlist.push(this.getItem(item))
+          
+       )}
+     
+    return newCostcenterlist;
+ }
+
+ getItem(item) {
+   return {
+      value:item.value +"-"+ item.description,
+         // value:item[0],
+        // description:item.description
+   }
+}
 
    onRemoveCost = (index) => {
       const { selectedAsnListItem } = this.state;
@@ -1473,6 +1513,7 @@ getPurchaseOrderFromObj(po){
       if (isEmpty(item.deliveryQuantity)) return alert('please enter qty')
       item = { ...item, asnLineCostCenter: !isEmptyDeep(item.asnLineCostCenter) ? item.asnLineCostCenter : [{ quantity: 0, costCenter: '' }] }
       this.setState({ selectedAsnListItem: item, openModal: true })
+      commonSubmitWithParam(this.props, "getCostcenterFromSAP", "/rest/getCostCenterfromSAP", item.orderNo, item.poLineNumber, item.plant);
    }
 
    // onSelectFund = (item) => {
@@ -1563,6 +1604,66 @@ getPurchaseOrderFromObj(po){
       this.setState({ canEdit: true })
    }
 
+   enablelastDateofLastMonth=()=>{
+
+  
+      var date = new Date();
+      let firstDateOfMonth = new Date(date.getFullYear(), date.getMonth(), 2).toISOString().substr(0, 10)
+      var lastDay = new Date(date.getFullYear(), date.getMonth(), 1);
+      var lastDayOfLastMonth = lastDay.toISOString().substr(0, 10);
+      
+      const diffInMs   = new Date(date) - new Date(lastDayOfLastMonth)
+      const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+      
+      //  if(diffInDays>3){
+      //    return firstDateOfMonth;
+         
+      // }else{
+      //    return lastDayOfLastMonth
+      // }
+      var givenLastDate = new Date(lastDayOfLastMonth);
+      var lastMonthDay = givenLastDate.getDay();
+      var lastDayisWeekend = (lastMonthDay === 6) || (lastMonthDay === 0) ? "Its weekend": "Its working day";
+      
+      
+      var givenFirstDate = new Date(firstDateOfMonth);
+      var firstDay = givenFirstDate.getDay();
+      var firstDayisWeekend = (firstDay === 6) || (firstDay === 0) ? "Its weekend": "Its working day";
+      
+     // if((diffInDays>3) || ((!lastDayisWeekend) || (!firstDayisWeekend))){
+      if((diffInDays>4)){
+         return firstDateOfMonth;
+         
+      }else if(((!lastDayisWeekend) || (!firstDayisWeekend))){
+         return firstDateOfMonth;
+      }
+         else{
+         return lastDayOfLastMonth
+      }
+      
+      
+      // if((diffInDays>2))
+      // {
+      //    return lastDayOfLastMonth
+      // }
+      // else if((diffInDays>3) || ((!lastDayisWeekend) || (!firstDayisWeekend))){
+      //    return firstDateOfMonth;
+         
+      // }
+      // else{
+      //    return lastDayOfLastMonth
+      // }
+      
+      
+      }
+
+      controlSubmit=(e)=>{
+         if (e.key === 'Enter' && e.shiftKey === false) {
+            e.preventDefault();
+            // callback(submitAddress);
+          }
+      }
+
    render() {
       var displayDivForAsnLine = "block";
       if (this.props.po.isServicePO) {
@@ -1620,6 +1721,7 @@ getPurchaseOrderFromObj(po){
                            {/* }  */}
                            <input type="hidden" value={this.state.po.documentType} name="po[documentType]" />
                            <input type="hidden" value={formatDate(this.state.po.poDate)} name="po[date]" />
+                           <input type="hidden" value={this.state.po.userID} name="po[userID]" />
 
                            <label className="col-sm-2" >Vendor</label>
                            <label className="col-sm-2" >{this.state.po.vendorName}</label>
@@ -1818,12 +1920,14 @@ getPurchaseOrderFromObj(po){
                                     {getDecimalUpto(asnLine.poQty,3)}
                                  </td> */}
                                                       <td className="col-1">
-                                                         <input type="text" onKeyDown={textRestrict} placeholder="0.000"
+                                                         <input type="text" 
+                                                         //onKeyDown={textRestrict}
+                                                         placeholder="0.000"
                                                             className={"form-control " + ((this.state.asnDetails.status === 'DR' || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
                                                             name={"asnLineList[" + index + "][deliveryQuantity]"}
                                                             defaultValue={(this.props.po.isServicePO) ?
                                                                1 :this.state.asnLineArray[index].deliveryQuantity}
-                                                            onChange={(e) => {
+                                                            onChange={(e) => {textRestrict(e);
                                                                (this.props.po.isServicePO)
                                                                ? e.preventDefault() : this.calculateBasicAmount(e, index, "asnLineArray")
                                                             }} />
@@ -1938,12 +2042,24 @@ getPurchaseOrderFromObj(po){
                                                    {!isEmpty(this.state.selectedAsnListItem) && !isEmpty(this.state.selectedAsnListItem.asnLineCostCenter) && this.state.selectedAsnListItem.asnLineCostCenter.map((item, index) => {
                                                       return (<div className="row" key={index}>
                                                          <div className="col-5">
-                                                            <input type="text" className="form-control" placeholder="Enter quantity" value={item.quantity} onChange={this.onCostChange.bind(this, index, 'quantity')} />
+                                                            <input type="text" className="form-control" placeholder="Enter quantity" value={item.quantity} onChange={this.onCostChange.bind(this, index, 'quantity')}  disabled={this.state.role === "SSNAPP"}/>
                                                          </div>
 
-                                                         <div className="col-5">
+                  <div className="w-full flex flex-row flex-wrap">
 
-                                                            <select className="form-control"
+                  <Autocomplete
+                   disablePortal
+                   options={this.setCostcenter()}
+                   getOptionLabel={(option) => typeof option === "string" ? option : option.value}
+                   onChange={this.onCostChange.bind(this, index, 'costCenter')}
+                   value={item.costCenter}
+                   style={{ width: '150px' }}
+                   onKeyDown={this.controlSubmit}
+                   disabled={this.state.role === "SSNAPP"}
+                  renderInput={(params) => <TextField value={item.costCenter} {...params}   />}
+                />
+
+                                                            {/* <select className="form-control"
                                                                value={item.costCenter}
                                                                onChange={this.onCostChange.bind(this, index, 'costCenter')}
                                                             >
@@ -1952,7 +2068,7 @@ getPurchaseOrderFromObj(po){
                                                                  //<option value={item.value}>{item.value}-{item.display}</option>
                                                                  <option value={item.value}>{item.value}</option>
                                                                )}
-                                                            </select>
+                                                            </select> */}
                                                          </div>
 
                                                          <div className="col-2">
@@ -1979,6 +2095,7 @@ getPurchaseOrderFromObj(po){
                                                 </div>
                                              </div>
                                           </div>
+                                          {this.state.role != 'SSNAPP'?
                                           <div className={"modal-footer"}>
                                              {['', 'SSIP'].includes(this.state.asnDetails.status) && <button
                                                 className={"btn btn-success"}
@@ -1988,7 +2105,7 @@ getPurchaseOrderFromObj(po){
                                                 Update
                                              </button>
                                              }
-                                          </div>
+                                          </div>:""}
                                        </div>
                                     </div>
                                  </div>
@@ -2084,7 +2201,7 @@ getPurchaseOrderFromObj(po){
                                       
                                  <div className="col-sm-12 mt-2">
                                  { asn.advanceshipmentnotice!=null && index==0 ? 
-                                 <div className="row text-center"> 
+                                 <div className="row"> 
                                  {<label className="col-sm-1" >SSN No</label>}
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.serviceSheetNo===null?"":asn.advanceshipmentnotice.serviceSheetNo}</span>}
                                 {<label className="col-sm-1" >Created Date</label>}
@@ -2101,12 +2218,65 @@ getPurchaseOrderFromObj(po){
                                 {<label className="col-sm-1" >Location</label> }
                                 {<span className="col-sm-2"> {asn.advanceshipmentnotice.serviceLocation}</span>}
                                 {<label className="col-sm-1" >Invoice No</label> }
-                                {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceNo===null?"":asn.advanceshipmentnotice.invoiceNo}</span>}  
+                                <div className="col-sm-2">
+                                                 <input type="text" className="form-control" 
+                                                // name="invoiceNo" 
+                                                 onKeyDown={this.controlSubmit}
+                                                 disabled={this.state.role === "SSNAPP"}
+                                                 maxLength={16}
+                                                 defaultValue={asn.advanceshipmentnotice.invoiceNo}
+                                                 onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceNo"); } } />
+                                              </div>
+                                {/* {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceNo===null?"":asn.advanceshipmentnotice.invoiceNo}</span>}   */}
                                 {<label className="col-sm-1" >Invoice Date</label> }
-                                {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceDate===null?"":formatDate(asn.advanceshipmentnotice.invoiceDate)}</span>} 
+                                {/* {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceDate===null?"":formatDate(asn.advanceshipmentnotice.invoiceDate)}</span>}  */}
+                                <div className="col-sm-2">
+                                              <input type="date" className="form-control" onKeyDown={this.controlSubmit}
+                                                  defaultValue={formatDate(asn.advanceshipmentnotice.invoiceDate)}
+                                                  max="9999-12-31"   
+                                                  disabled={this.state.role === "SSNAPP"}                                              
+                                                //   name="invoiceDate" 
+                                                  onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceDate") }}
+                                                 />
+                                              </div>
                                 {<label className="col-sm-1" >Posting Date</label> }
-                                {<span className="col-sm-2"> {asn.advanceshipmentnotice.servicePostingDate!=null?formatDate(asn.advanceshipmentnotice.servicePostingDate):""}</span>} 
-{this.state.asnDetails.status === "SSIP"?
+                                <div className="col-sm-2">
+                                                 <input type="date" className="form-control" onKeyDown={this.controlSubmit}
+                                                  defaultValue={formatDateWithoutTimeNewDate2(asn.advanceshipmentnotice.servicePostingDate)}
+                                                  disabled={this.state.role === "SSNAPP"}
+                                                  min={this.enablelastDateofLastMonth()}
+                                                 // max={currentDate}
+                                                  //=max="9999-12-31"
+                                                  name="servicePostingDate" 
+                                                  onChange={(e) => { commonHandleChange(e, this, "asnDetails.servicePostingDate") }}
+                                                //   onChange={(event) => {
+                                                //     if (event.target.value.length < 60) {
+                                                //        commonHandleChange(event, this, "asndetails.servicePostingDate", "reports");
+                                                //     }
+                                                //  } } 
+                                                 />
+                 
+                                              
+                                              </div>
+                                {/* {<span className="col-sm-2"> {asn.advanceshipmentnotice.servicePostingDate!=null?formatDateWithoutTime(asn.advanceshipmentnotice.servicePostingDate):""}</span>}  */}
+
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                {/* {<span className="col-sm-2"> {asn.advanceshipmentnotice.servicePostingDate!=null?formatDate(asn.advanceshipmentnotice.servicePostingDate):""}</span>} */}
+                                 {this.state.asnDetails.status === "SSIP"?
                                   <button type="button" className={"btn btn-primary"}
                             style={{ display: this.state.cancelSsnButton }} onClick={e => this.onComfirmationOfCancelSsn(e)} >Cancel SSN</button>
                                  :""}
@@ -2149,6 +2319,7 @@ getPurchaseOrderFromObj(po){
                                                             <td className="col-1">
                                                                <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][advanceShipmentNoticeLineId]"} value={serviceLine.asnLineId} disabled={isEmpty(serviceLine.asnLineId)} />
                                                                <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][purchaseOrderLineId]"} value={serviceLine.poLineId} />
+                                                               <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][orderNo]"} value={serviceLine.orderNo} />
                                                                <input type="hidden" name={"asnLineList[" + el + "][serviceLineList][" + index + "][poLine][lineItemNumber]"} value={serviceLine.poLineNumber} />
                                                                {removeLeedingZeros(serviceLine.poLineNumber)}</td>
                                                             {
@@ -2180,7 +2351,8 @@ getPurchaseOrderFromObj(po){
                                                             {/*-------input type-------*/}
                                                             <td className="col-1">
                                                                <input type="number"
-                                                                  step=".01" onKeyDown={textRestrict}
+                                                                  step=".01" 
+                                                                  //onKeyDown={textRestrict}
                                                                 // maxLength={5}
                                                                  placeholder="0.000"
                                                                   className={"form-control " + ((['DR', 'SSRJ'].includes(this.state.asnDetails.status) || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
@@ -2188,7 +2360,7 @@ getPurchaseOrderFromObj(po){
                                                                   defaultValue={this.state.serviceLineArray[index].deliveryQuantity}
                                                                   
                                                                   // onChange = {(e)=>{commonHandleChange(e,this,"serviceLineArray."+index+".deliveryQuantity")}} 
-                                                                  onChange={(e) => {this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
+                                                                  onChange={(e) => {textRestrict(e); this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
                                                                />
                                                             </td>
                                                             {/*-------input type-------*/}
@@ -2247,8 +2419,9 @@ getPurchaseOrderFromObj(po){
                            {/* <button type="submit" className={(this.props.po.isServicePO ) && (isEmpty(this.state.asnDetails.status) || (this.state.asnDetails.status==="DR"))?"btn btn-success mr-1 inline-block":"none"}
                         onClick={(e)=>{this.props.changeASNStatus(false);this.setState({loadASNDetails:true,loadASNLineList:true,saveServiceLines:true});commonSubmitFormValidation(e,this,"saveASN","/rest/saveASN")}}
                         >Save</button> */}
+                        {this.state.role != "SSNAPP"?
                        <button type="button" className={this.state.asnDetails.status == "SSIP"? "btn btn-primary mr-1 inline-block" : "none"}
-                             onClick={this.updateSheet} >Edit & Submit</button>
+                             onClick={this.updateSheet} >Edit & Submit</button>:""}
                         { /*  <button type="button" className={this.state.asnDetails.status == "SSIP" ? "btn btn-primary mr-1 inline-block" : "none"}
                              onClick={this.onEdit} >Edit</button>
 

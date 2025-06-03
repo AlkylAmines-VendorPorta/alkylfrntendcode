@@ -17,7 +17,8 @@ let defaultState = {
   SSNVersion:1,
   locationList:{},
   message:"",
-  gateentryAsnList:[]
+  gateentryAsnList:[],
+  costCenterList:[]
 }
 
 const asnReducer = (state = defaultState, action) => {
@@ -77,6 +78,12 @@ const asnReducer = (state = defaultState, action) => {
     return {
        ...state,
        locationList: action.payload.objectMap.storageLocation
+     };
+   }
+   else if (action.type === "POPULATE_COST_CENTER") {
+    return {
+       ...state,
+       costCenterList: action.payload.objectMap.costCenterList
      };
    }
   else if (action.type === "POPULATE_SERVICE_LINE_LIST_FOR_ASN_LINE") {

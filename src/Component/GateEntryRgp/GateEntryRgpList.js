@@ -127,9 +127,7 @@ class GateEntryRgpList extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => {
+const mapStateToProps=(state)=>{
   return state.gateEntryRgpReducer;
 };
-
-export default connect(mapStateToProps, actionCreators)(GateEntryRgpList);
+export default connect(mapStateToProps,actionCreators)(GateEntryRgpList);

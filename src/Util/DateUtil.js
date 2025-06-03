@@ -14,34 +14,26 @@ month[10] = "Nov";
 month[11] = "Dec";
 
 
-export default function formatDate(longDate) {
-    function getDoubleDigit(value) {
-    return value.toString().padStart(2, '0');
-  }
+export default function formatDate(longDate){
+    var dt;
+    if (null !== longDate && undefined !== longDate && "" !== longDate) {
+        dt = new Date(longDate);
+    } else {
+        dt = new Date();
+    }
+    var dd = dt.getDate();
+    var MM = dt.getMonth() + 1;
+    var yyyy = dt.getFullYear();
+    var hh = dt.getHours();
+    var mm = dt.getMinutes();
 
-  // Check if longDate is provided and not empty
-  if (!longDate) {
-    return "";
-  }
+    //    var HH= dt.getHours();
+    //    var mm= dt.getMinutes();
+    //    var ss= dt.getSeconds();
 
-  // Attempt to create a Date object
-  const dt = new Date(longDate);
+    return getDoubleDigit(yyyy) + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) + ' '+getDoubleDigit(hh) + ':' + getDoubleDigit(mm);
 
-  // Validate the Date object
-  if (isNaN(dt.getTime())) {
-    return "";
-  }
-
-
-    const dd = getDoubleDigit(dt.getDate());
-    const MM = getDoubleDigit(dt.getMonth() + 1);
-    const yyyy = dt.getFullYear();
-    //const hh = getDoubleDigit(dt.getHours());
-    // mm = getDoubleDigit(dt.getMinutes());
-
-    return `${dd}-${MM}-${yyyy}`
 }
-
 export function formatDateWithoutTime(longDate){
     var dt;
     if (null !== longDate && undefined !== longDate && "" !== longDate) {
@@ -190,6 +182,6 @@ export function formatDate1(longDate){
     //    var mm= dt.getMinutes();
     //    var ss= dt.getSeconds();
 
-    return getDoubleDigit(dd) + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(yyyy) + ' '+getDoubleDigit(hh) + ':' + getDoubleDigit(mm)+ ':' + getDoubleDigit(ss);
+    return getDoubleDigit(yyyy) + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) + ' '+getDoubleDigit(hh) + ':' + getDoubleDigit(mm)+ ':' + getDoubleDigit(ss);
 
 }

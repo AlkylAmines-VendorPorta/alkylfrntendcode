@@ -53,6 +53,7 @@ class GateEntryRgpDetail extends Component {
     this.state = {
       open:false,
       inputValue:"",
+      vendorData:[],
       gateEntryLineDto:[],
       gateEntryLineDtoTest:[],
       //componentRef:null,
@@ -92,12 +93,16 @@ class GateEntryRgpDetail extends Component {
       },
       plantDropDownList:[],
       TransporterDropDownList:[],
+      VendorNameDropDownList:[],
+
+      role:"",
       url:"",
       formno:""
     };
   }
   handleSubmit = () => {
    this.transporterDetails();
+   this.vendorDetails();
    commonSubmitFormNoValidationWithData(this.state.gateEntryDto, this, "gateEntryRgpSubmit", "/rest/saveGateEntry");
   }
 
@@ -197,13 +202,30 @@ class GateEntryRgpDetail extends Component {
     submitToURL(`/rest/getTransporterDataSAP`).then(({ objectMap }) => {
       console.log("PLANT LIST ---->>>", objectMap);
       let transporterListArray = [];
+      let role=objectMap.role;
       Object.keys(objectMap.TransporterData).map((key) => {
         transporterListArray.push({ display: objectMap.TransporterData[key], value: key });
       });
       this.setState({
-        TransporterDropDownList: transporterListArray
+        TransporterDropDownList: transporterListArray,
+        role:role
       })
     });
+
+
+    submitToURL(`/rest/getVendorName`).then(({ objectMap }) => {
+      console.log("PLANT LIST ---->>>", objectMap);
+      let vendorListArray = [];
+      let role=objectMap.role;
+      Object.keys(objectMap.vendorDataList).map((key) => {
+        vendorListArray.push({ display: objectMap.vendorDataList[key], value: key });
+      });
+      this.setState({
+        VendorNameDropDownList: vendorListArray,
+        role:role
+      })
+    });
+
   }
 
   handleFilterClick = () => {
@@ -219,8 +241,17 @@ class GateEntryRgpDetail extends Component {
     if(document.getElementById('VendorSearch').value==""){
      return false;
    }else{
-     commonSubmitWithParam(this.props,"getGateEntryVendorSAP",'/rest/getVendorDataSAP',this.state.gateEntryDto.vendorCode)
-    
+   let VendorSearch=document.getElementById('VendorSearch').value;
+   let parts = VendorSearch.split('-');
+   let vendorName = parts[0];
+   let vendorCode = parts.length > 1 ? parts[1] : '';
+
+   let gateEntryDto=this.state.gateEntryDto;
+   gateEntryDto.vendorName=vendorName
+   // gateEntryDto.vendorName=vendorCode
+   this.setState({gateEntryDto:gateEntryDto})
+    //commonSubmitWithParam(this.props,"getGateEntryVendorSAP",'/rest/getVendorDataSAP',this.state.gateEntryDto.vendorCode)
+    commonSubmitWithParam(this.props,"getGateEntryVendorSAP",'/rest/getVendorAddressByName',vendorCode,this.state.gateEntryDto.vendorName)
    }
  }
 
@@ -248,12 +279,12 @@ onCancelGateEntryRequest = (value) => {
       this.setState({ gateEntryDto: gateEntryDto })
     }
 
-    if (!isEmpty(props.VendorData)) {
+    if (!isEmpty(props.vendorData)) {
 
-      this.state.gateEntryDto.vendorName=props.VendorData.vendorName;
-      this.state.gateEntryDto.vendorAddress=props.VendorData.vendorAddress;
+    //this.state.gateEntryDto.vendorName=props.VendorData.vendorName;
+      this.state.gateEntryDto.vendorAddress=props.vendorData[0].vendorAddress;
       this.setState({
-        vendorName:this.state.gateEntryDto.vendorName,
+       //vendorName:this.state.gateEntryDto.vendorName,
         vendorAddress:this.state.gateEntryDto.vendorAddress
       })
     } 
@@ -289,6 +320,49 @@ transporterDetails=()=>{
     let gateEntryDto=this.state.gateEntryDto;
     gateEntryDto.transporterName=document.getElementById('transporterName').value;
     this.setState({gateEntryDto:gateEntryDto})
+  }
+}
+vendorDetails=()=>{
+  if(document.getElementById('VendorSearch').value==""){
+    return false;
+   }else{
+    let gateEntryDto=this.state.gateEntryDto;
+    gateEntryDto.vendorName=document.getElementById('VendorSearch').value;
+    this.setState({gateEntryDto:gateEntryDto})
+  }
+}
+
+handleFilterChange = (key,event) => {
+  this.props.onFilterChange && this.props.onFilterChange(key,event.target.value?event.target.value:event.target.innerText!=undefined?event.target.innerText:"");
+
+}
+
+controlSubmit=(e)=>{
+  if (e.key === 'Enter' && e.shiftKey === false) {
+     e.preventDefault();
+     // callback(submitAddress);
+   }
+}
+
+setvendorName(){
+  let newvendorlist=[]
+  // {(Object.entries(this.state.VendorNameDropDownList)).map(item =>
+
+  {(this.state.VendorNameDropDownList).map(item =>
+    newvendorlist.push(this.getItem(item))
+      
+   )}
+    
+   return newvendorlist;
+  }
+// }
+
+    getItem(item) {
+  return {
+     //value:item.value,
+      value:item.display[0]+"-"+item.display[1],
+    // description:item.description
+     
   }
 }
 
@@ -551,7 +625,11 @@ transporterDetails=()=>{
     // console.log("plantDropDownListplantDropDownList",this.state.plantDropDownList);
     return (
       <>
-      
+        {/* <div>
+        <Button color="primary" variant="contained" type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Print Details</Button> */}
+
+{/* <button type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} class="btn btn-primary">Print Details</button> */}
+{/* </div> */}
         <div style={searchHidden} >
         <fieldset class="scheduler-border">
           <b style={{fontSize:"2vw"}}>Alkyl Amines Chemicals Ltd.</b>
@@ -988,7 +1066,7 @@ transporterDetails=()=>{
                   </div>
                 </div>
 
-                {gateEntryDto.reqNo==""?
+                {/* {gateEntryDto.reqNo==""?
                 <div className="row mt-0 px-4 pt-2">
                 <label className="col-sm-2">Vendor Code</label>
 
@@ -1011,28 +1089,58 @@ transporterDetails=()=>{
                           <Button variant="contained" color="primary" type="button" className={"btn btn-primary"} onClick={this.searchVendorData.bind(this)}> Search </Button>
                       </div>
                        </div> :""
-  }
+  } */}
                 <div className="row mt-0 px-4 pt-2">
                   <label className="col-sm-2">Vendor Name</label>
+                  {/* <div className="col-sm-2" > */}
+                  {gateEntryDto.reqNo==""?
+                  <><div className="col-sm-4">
+                      <Autocomplete id="VendorSearch"
+                        freeSolo
+                        disablePortal
+                        options={this.setvendorName()}
+                        getOptionLabel={(option) => option.value ? option.value : gateEntryDto.vendorName}
+                        onChange={this.handleFilterChange.bind(this, 'vendorName')}
+                        defaultValue={gateEntryDto.vendorName}
+                        style={{ width: '300px' }}
+                        onKeyDown={this.controlSubmit}
+                        renderInput={(params) => <TextField value={gateEntryDto.vendorName} {...params} />} />
+                    {/* <span className="display_block">
+      <input
+        type="text"
+        className="form-control"
+          //  disabled={gateEntryDto.reqNo}
+        value={gateEntryDto.vendorName}
+        onChange={(e) => {
+          commonHandleChange(e, this, "gateEntryDto.vendorName");
+        }}
+      />
+    </span> */}
+                    </div><div className="col-sm-3">
+                        <button type="button" className={"btn btn-primary"} onClick={this.searchVendorData.bind(this)}> Search </button>
+                      </div></>:
+                      <div className="col-sm-4">
+                      <Autocomplete id="VendorSearch"
+                        disablePortal
+                        options={this.setvendorName()}
+                        getOptionLabel={(option) => option.value ? option.value : gateEntryDto.vendorName}
+                        onChange={this.handleFilterChange.bind(this, 'vendorName')}
+                        value={gateEntryDto.vendorName}
+                        style={{ width: '300px' }}
+                        onKeyDown={this.controlSubmit}
+                        renderInput={(params) => <TextField value={gateEntryDto.vendorName} {...params} />} /></div>}
 
-
+                      <label className="col-sm-2">Status</label>
                   <div className="col-sm-2" >
                     <span className="display_block">
-                      <input
-                        type="text"
-                        className="form-control"
-                      //  disabled={gateEntryDto.reqNo}
-                        value={gateEntryDto.vendorName}
-                        onChange={(e) => {
-                          commonHandleChange(e, this, "gateEntryDto.vendorName");
-                        }}
-                      />
+                      {gateEntryDto.status}
                     </span>
-
-
                   </div>
+
+                </div>
+                <div className="row mt-0 px-4 pt-2">
                   <label className="col-sm-2">Address</label>
-                  <div className="col-sm-2" >
+                  <div className="col-sm-6" >
                     <span className="display_block">
                       <textarea
                         className={"h-50px form-control"}
@@ -1045,20 +1153,16 @@ transporterDetails=()=>{
                       />
                     </span>
                   </div>
-                  <label className="col-sm-2">Status</label>
+                  {/* <label className="col-sm-2">Status</label>
                   <div className="col-sm-2" >
                     <span className="display_block">
                       {gateEntryDto.status}
                     </span>
-                  </div>
+                  </div>*/}
                 </div>
-
-
-
-               
                 {"NRGP" === gateEntryDto.docType?"":
                 <div className="row mt-0 px-4 pt-2">
-                  
+
                   <label className="col-sm-2">Expected Return Date</label>
                   <div className="col-sm-2" >
                     <input type="date" className="form-control" name="returnBy" value={formatDateWithoutTimeNewDate(gateEntryDto.returnBy)} 
@@ -1154,7 +1258,8 @@ transporterDetails=()=>{
                     <div className="col-6 col-md-2 col-lg-2">
                       <label className="mr-4 label_12px">Reject Reason</label>
                       <span className="display_block">
-                        {"HOD REJECTED" === gateEntryDto.status ? gateEntryDto.hodRejectDesc : "FH REJECTED" === gateEntryDto.status ? gateEntryDto.rejectDesc : gateEntryDto.commRejectDesc}
+                        {/* {"HOD REJECTED" === gateEntryDto.status ? gateEntryDto.hodRejectDesc : "FH REJECTED" === gateEntryDto.status ? gateEntryDto.rejectDesc : gateEntryDto.commRejectDesc} */}
+                        {"FH/HOD REJECTED" === gateEntryDto.status ? gateEntryDto.hodRejectDesc : "PH/HOD REJECTED" === gateEntryDto.status ? gateEntryDto.rejectDesc : gateEntryDto.commRejectDesc}
                       </span>
                     </div> : null}
 
@@ -1334,39 +1439,45 @@ transporterDetails=()=>{
                 <div className="col-12 mb-2">
                   <div className="d-flex justify-content-center">
                     {/* {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED", "FH REJECTED", "HOD REJECTED"].includes(gateEntryDto.status) ? */}
-                    {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED", "PLANT HEAD REJECTED", "HOD REJECTED"].includes(gateEntryDto.status) ?
+                    {/* {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED", "PLANT HEAD REJECTED", "HOD REJECTED"].includes(gateEntryDto.status) ? */}
+                    {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED", "PH/HOD REJECTED", "FH/HOD REJECTED"].includes(gateEntryDto.status) ?
                       <Button color="primary" variant="contained" type="button" onClick={this.handleSubmit} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Save</Button> : null}
-                    {"CREATED" === gateEntryDto.status && <>
-                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("hodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
-                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "hodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
+                    {/* {"CREATED" === gateEntryDto.status && <> */}
+                    {"CREATED" === gateEntryDto.status && this.state.role==="FH/HODAPP" ?<>
+                      {/* <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("hodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "hodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>} */}
+                       <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("fhORhodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "fhORhodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>:""}
                     {/* {"NRGP" === gateEntryDto.docType && "FH APPROVED" === gateEntryDto.status && <>
                       <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
                       <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>} */}
-                    {"NRGP" === gateEntryDto.docType && "PLANT HEAD APPROVED" === gateEntryDto.status && <>
+                    {/* {"NRGP" === gateEntryDto.docType && "PLANT HEAD APPROVED" === gateEntryDto.status && <> */}
+                    {"NRGP" === gateEntryDto.docType && "PH/HOD APPROVED" === gateEntryDto.status &&  this.state.role==="COMAPP" ?<>
                       <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
-                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>:""}
 
-                    {"RGP" === gateEntryDto.docType && "HOD APPROVED" === gateEntryDto.status && <>
-                      {/* <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button> */}
+                    {/* {"RGP" === gateEntryDto.docType && "HOD APPROVED" === gateEntryDto.status && <> */}
+                    {"RGP" === gateEntryDto.docType && "FH/HOD APPROVED" === gateEntryDto.status && this.state.role==="COMAPP" ?<>
                       <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatusCommercial("commApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
-                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "commReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>:""}
 
                     {/* {"HOD APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType && <>
                       <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("functionalApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
                       <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "functionalReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>} */}
 
-                    {"HOD APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType && <>
-                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("plantheadApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
-                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "plantheadReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>}
-
-
-                    {"COMMERCIAL APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType &&
+                    {/* {"HOD APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType && <> */}
+                    {/* <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("plantheadApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "plantheadReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>} */}
+                    {"FH/HOD APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType &&  this.state.role==="PH/HODAPP" ?<>
+                      <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("plantheadORhodApproval")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</Button>
+                      <Button color="primary" variant="contained" type="button" onClick={(e) => this.updateStatusRemark(e, "plantheadORhodReject")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Reject</Button></>:""}
+                    {"COMMERCIAL APPROVED" === gateEntryDto.status && "NRGP" === gateEntryDto.docType && "SECADM"===this.state.role &&
                       <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("nrgpClosed")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</Button>}
-                    {"COMMERCIAL APPROVED" === gateEntryDto.status && "RGP" === gateEntryDto.docType &&
+                    {"COMMERCIAL APPROVED" === gateEntryDto.status && "RGP" === gateEntryDto.docType && "SECADM"===this.state.role &&
                       <Button color="primary" variant="contained" type="button" onClick={() => this.updateStatus("rgpGateout")} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Gate Out</Button>}
-                      {!isEmpty(gateEntryDto.status) && gateEntryDto.status!== "CANCELED" ?
+                      {/* {!isEmpty(gateEntryDto.status) && gateEntryDto.status!== "CANCELED"? */}
+                      {!isEmpty(gateEntryDto.status) && gateEntryDto.status!== "CANCELED" && gateEntryDto.status!=="GATE OUT" ?
                        <Button color="primary" variant="contained" className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</Button> 
-                       
                       :""}
                       <Button variant="contained" size="small" className="ml-2" color="primary" type="button" onClick={this.handleRedirect}>Back</Button> 
                   </div>

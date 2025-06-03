@@ -591,6 +591,7 @@ className={"form-control "+this.props.readonly} />
             </div>
             </div>
             <br/>
+            <div className="row">
 
                 <label className="col-sm-12">
                 <label>
@@ -695,7 +696,7 @@ className={"form-control "+this.props.readonly} />
                   </div>
               {/* </div> */}
           {/* </div> */}
-          
+          </div>
         
           {/* <div className="row">
             <label className="col-sm-2">
@@ -742,6 +743,7 @@ className={"form-control "+this.props.readonly} />
           </div>
            */}
               <hr/>
+              <br />
           <div className="row">
             <label className="col-sm-3">
               <div className="">
@@ -776,6 +778,7 @@ className={"form-control "}
           </div>
             {/* } */}
           </div>
+          <br />
           {/* {this.state.isLDC && */}
            <div className="row" style={{display:this.state.isLDC ? 'flex':'none'}}>
             <label className="col-sm-2">Valid To</label>
@@ -793,6 +796,7 @@ className={"form-control "} readOnly={this.props.readOnly}
           </div>
           {/* } */}
           <hr/>
+          <br />
           <div className="row">
             <label className="col-sm-2">Is your organization Related Party?</label>
             <div className="col-sm-3">

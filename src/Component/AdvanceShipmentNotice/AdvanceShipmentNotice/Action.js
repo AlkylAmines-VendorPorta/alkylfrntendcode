@@ -296,14 +296,16 @@ import swal from "sweetalert";
 
   export function submitServiceSheet(response){ 
     if(!isEmpty(response)){
-      showAlertAndReload(!response.success,response.message,"");
+    //showAlertAndReload(!response.success,response.message,"");
       
       if(response.success){
+        showAlertAndReload(!response.success,response.message,"");
         return {
           type: "SAVE_AND_SUBMIT_SERVICE_SHEET",
           payload:  response
         }
       }else{
+        showAlert(!response.success,response.message);
         return {
           type: "",
           payload:  ""
@@ -441,3 +443,9 @@ if(!response.hasError){
 }
 }
 
+export function getCostcenterFromSAP(response){
+  return {
+    type:"POPULATE_COST_CENTER",
+    payload: response
+   }
+ }

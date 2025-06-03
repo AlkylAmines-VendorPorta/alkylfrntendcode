@@ -46,6 +46,7 @@ class GateEntryRgpDetail extends Component {
     this.state = {
       gateEntryLineDto:[],
       gateEntryLineDtoTest:[],
+      role:"",
       //componentRef:null,
       gateEntryDto: {
         gateEntryId: "",
@@ -252,7 +253,8 @@ UNSAFE_componentWillReceiveProps = props => {
   if (!isEmpty(props.gateEntryLineDtoTest)) {
       
     this.setState({
-      gateEntryLineDtoTest: props.gateEntryLineDtoTest
+      gateEntryLineDtoTest: props.gateEntryLineDtoTest,
+      role:props.role
     })
   } 
 
@@ -504,7 +506,10 @@ plantAddress() {
     }
     return (
       <>
-     
+      {/* <div>
+          <Button color="primary" variant="contained" type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Print Details</Button> */}
+      {/* <button type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} class="btn btn-primary">Print Details</button>      */}
+  {/* </div> */}
         <div style={searchHidden} >
         <fieldset class="scheduler-border">
           <b style={{fontSize:"2vw"}}>Alkyl Amines Chemicals Ltd.</b>
@@ -1358,10 +1363,11 @@ plantAddress() {
                 <div className="col-12">
                   <div className="d-flex justify-content-center">
                     {/* {isEmpty(gateEntryDto.status) || ["COMMERCIAL REJECTED","FH REJECTED","HOD REJECTED"].includes(gateEntryDto.status) && */}
-                    <Button variant="contained" size="small" color="primary" type="button" onClick={this.handleSubmit} className="mr-2"><i className="fa fa-check" />&nbsp;Release</Button>
-                      {gateEntryDto.status!== "CANCELED" ?
-                       <Button variant="contained" size="small" color="secondary" type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</Button> 
-                       
+                    {"SECADM"===this.state.role &&
+                    <Button variant="contained" size="small" color="primary" type="button" onClick={this.handleSubmit} className="mr-2"><i className="fa fa-check" />&nbsp;Release</Button>}
+                      {/* {gateEntryDto.status!== "CANCELED" ? */}
+                      {gateEntryDto.status!== "CANCELED" && gateEntryDto.status!=="GATE OUT" ?
+                       <Button variant="contained" size="small" color="secondary" type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</Button>
                       :""}
                       <Button variant="contained" size="small" className="ml-2" color="primary" type="button" onClick={this.handleRedirect}>Back</Button> 
                     </div>

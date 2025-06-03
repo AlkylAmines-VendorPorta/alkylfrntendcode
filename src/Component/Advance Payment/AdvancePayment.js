@@ -46,18 +46,19 @@ class AdvancePayment extends Component {
     }
 
 
-    async componentDidMount(){
-
+   componentDidMount(){
+    commonSubmitWithParam(this.props, "getVendorPayList", "/rest/getAlladvancePayment");
       commonSubmitWithParam(this.props, "getAdvancePaymentDetails", "/rest/getAdvancePaymentDetailsforVendor");
 
-      commonSubmitWithParam(this.props, "getVendorPayList", "/rest/getAlladvancePayment");
-       this.changeLoaderState(true);
-        await delay(500);
-        this.changeLoaderState(true);
-        this.compareList();
-        this.changeLoaderState(false);
+      this.changeLoaderState(true);
+       //await delay(500);
+       //this.changeLoaderState(true);
+   }
+   async componentDidUpdate(){
        
-      }
+    this.compareList();
+  
+  }
 
       componentWillReceiveProps(props){
 
@@ -66,10 +67,10 @@ class AdvancePayment extends Component {
           // this.setState({
           //   advancePaymentList:props.advancePaymentList
           // })
-          this.setState({
-            response: props.advancePaymentList,
+          // this.setState({
+          //   response: props.advancePaymentList,
            
-           });
+          //  });
         }
 
         if(!isEmpty(props.getVendorPayListforApproval)){
@@ -104,7 +105,7 @@ class AdvancePayment extends Component {
         
        }
      })
-           this.setState({
+        this.setState({
          response: pendingArray,
         
         });
@@ -516,7 +517,7 @@ class AdvancePayment extends Component {
           
           
            
-         </div>
+   </div>
    </FormWithConstraints> 
 
             </React.Fragment>

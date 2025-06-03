@@ -1005,7 +1005,14 @@ class GeneralInformation extends Component {
                   <label class="col-sm-2">Telephone No </label>
                   <div class="col-sm-3">
                     <input type="text" value={this.state.contactDetails.telephoneNo} name="telephone1" 
+                    required={false}
                       onChange={(event) => { commonHandleChange(event, this, "contactDetails.telephoneNo", "contDetForm") }} className={"form-control "} readOnly={this.props.readOnly}/>
+                      {!(this.isEmptyObject(this.state.contactDetails.telephoneNo))?
+                      <FieldFeedbacks for="telephone1">
+                      <FieldFeedback when="*"></FieldFeedback>
+                      <FieldFeedback when="patternMismatch">Pattern Mismatch</FieldFeedback>
+                      <FieldFeedback when={value => !/^\+?[0-9]{2,3}-?[0-9]{6,12}$/.test(value)}>Please enter valid Telephone Number</FieldFeedback>
+                    </FieldFeedbacks>:""}
                     {/* <FieldFeedbacks for="telephone1">
                       <FieldFeedback when={(value)=>isEmpty(value)}>Mandatory</FieldFeedback> */}
                       {/* <FieldFeedback when={value => !/^[0-9]+$/.test(value)}>Please enter valid Telephone Number</FieldFeedback> */}

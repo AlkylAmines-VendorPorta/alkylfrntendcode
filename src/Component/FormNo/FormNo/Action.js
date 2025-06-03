@@ -114,6 +114,12 @@ export function getServiceLineList(response){
     payload:  response
   }
 }
+export function getCostcenterFromSAP(response){
+  return {
+    type:"POPULATE_COST_CENTER",
+    payload: response
+   }
+ }
 
 export function saveGateEntry(response){
   

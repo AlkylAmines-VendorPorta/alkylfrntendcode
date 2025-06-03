@@ -18,7 +18,7 @@ export function getVendorPayforApproval(response,c,e) {
       // console.log('response',response)
       // if(!isEmpty(response) && !isEmpty(response.objectMap)
       // && !isEmpty(response.objectMap.quotation) )
-      if(!isEmpty(response) && !isEmpty(response.objectMap)){
+      if(!isEmpty(response.success==true)){
           showAlertAndReload(!response.success,response.message);
           return {
               type: "APPROVE_PAYMENT",

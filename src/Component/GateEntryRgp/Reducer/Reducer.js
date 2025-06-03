@@ -3,7 +3,8 @@ let defaultState={
     gateEntryLineDto:[],
     gateEntryLineDtoTest:[],
     formno:"",
-    VendorData:{}
+    vendorData:[],
+    role:""
 }
 
 const gateEntryRgpReducer = (state= defaultState,action)=>{
@@ -20,7 +21,8 @@ const gateEntryRgpReducer = (state= defaultState,action)=>{
     }else if(action.type==="POPULATE_GATE_ENTRY_LINE_RGP_TEST"){
         return{
             ...state,
-            gateEntryLineDtoTest:action.payload.objectMap.gateEntryLineDtoTest
+            gateEntryLineDtoTest:action.payload.objectMap.gateEntryLineDtoTest,
+            role:action.payload.objectMap.role
         }
     }else if(action.type==="POPULATE_FORM_NO"){
         return{
@@ -30,7 +32,7 @@ const gateEntryRgpReducer = (state= defaultState,action)=>{
         else if(action.type==="POPULATE_GATE_ENTRY_SAP_VENDOR_DATA"){
             return{
                 ...state,
-                VendorData:action.payload.objectMap.VendorData
+                vendorData:action.payload.objectMap.vendorData
             }}
             else if (action.type === "CANCEL_GATE_ENTRY_BUTTON") {
   

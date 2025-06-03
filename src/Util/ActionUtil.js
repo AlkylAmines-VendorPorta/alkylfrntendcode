@@ -292,24 +292,46 @@ function getSerializedForm(form){
 }
 
 
-
-export function commonHandleChange(event,component,statePath,formRef){
-
-
+export function commonHandleChange(event, component, statePath, formRef) {
     let stateObject = component.state;
-    let path = statePath.split(".");
-    path.map((key,index)=>{
-        if(path.length===index+1){
-            stateObject[key]=event.target.value;
-        }else{            
-            stateObject=stateObject[key];
-        }
+    const path = statePath.split(".");
+  
+    path.forEach((key, index) => {
+      if (stateObject[key] === undefined) {
+        stateObject[key] = {}; // Initialize the key if it doesn't exist
+      }
+      if (index === path.length - 1) {
+        stateObject[key] = event.target.value;
+      } else {
+        stateObject = stateObject[key];
+      }
     });
+  
     component.setState(component.state);
-    if(!isEmpty(formRef)){
-        component[formRef].validateFields(event.target);
+  
+    if (formRef && component[formRef]) {
+      component[formRef].validateFields(event.target);
     }
-}
+  }
+
+
+// export function commonHandleChange(event,component,statePath,formRef){
+
+
+//     let stateObject = component.state;
+//     let path = statePath.split(".");
+//     path.map((key,index)=>{
+//         if(path.length===index+1){
+//             stateObject[key]=event.target.value;
+//         }else{            
+//             stateObject=stateObject[key];
+//         }
+//     });
+//     component.setState(component.state);
+//     if(!isEmpty(formRef)){
+//         component[formRef].validateFields(event.target);
+//     }
+// }
 
 export function getObjectFromPath(value,statePath){
     let path = statePath.split(".");

@@ -20,7 +20,8 @@ let defaultState = {
   message:"",
   gateentryAsnList:[],
   asnList:[],
-  stoASNList:[]
+  stoASNList:[],
+  costCenterList:[]
 }
 
 const formNo = (state = defaultState, action) => {
@@ -86,6 +87,12 @@ else if (action.type === "POPULATE_ASN_LINE_LIST") {
   return {
      ...state,
      locationList: action.payload.objectMap.storageLocation
+   };
+ }
+ else if (action.type === "POPULATE_COST_CENTER") {
+  return {
+     ...state,
+     costCenterList: action.payload.objectMap.costCenterList
    };
  }
 else if (action.type === "POPULATE_SERVICE_LINE_LIST_FOR_ASN_LINE") {
