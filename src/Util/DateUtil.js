@@ -62,6 +62,22 @@ export function formatDateWithoutTimeNewDate(longDate){
     return getDoubleDigit(yyyy)  + '-' + getDoubleDigit(MM) + '-' + getDoubleDigit(dd) ;
 
 }
+export function formatDateWithoutTimeNewDate3(longDate) {
+    if (!longDate) return null;
+
+    // If input is in "DD/MM/YYYY" format
+    const parts = longDate.split('/');
+    if (parts.length !== 3) return null;
+
+    const dd = parseInt(parts[0], 10);
+    const MM = parseInt(parts[1], 10);
+    const yyyy = parseInt(parts[2], 10);
+
+    // Ensure all parts are valid numbers
+    if (isNaN(dd) || isNaN(MM) || isNaN(yyyy)) return null;
+
+    return `${yyyy}-${getDoubleDigit(MM)}-${getDoubleDigit(dd)}`;
+}
 
 export function formatDateWithoutTimeWithMonthName(longDate){
     
