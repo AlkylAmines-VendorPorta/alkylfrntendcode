@@ -29,11 +29,11 @@ import {searchTableDataThree, searchTableDataFour, searchTableData, searchTableD
 import * as actionCreators from "./Action";
 import Loader from "../../FormElement/Loader/LoaderWithProps";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-<<<<<<< HEAD
-import formatDate,{ formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
-=======
-import { formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate, formatDateWithoutTimeNewDate3 } from "../../../Util/DateUtil";
->>>>>>> fa3991a9f056a4589e53a7ff56df2fcc199bd532
+
+import formatDate,{ formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate, formatDateWithoutTimeNewDate3 } from "../../../Util/DateUtil";
+
+//import { formatDateWithoutTime, formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate, formatDateWithoutTimeNewDate3 } from "../../../Util/DateUtil";
+
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
