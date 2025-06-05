@@ -407,7 +407,8 @@ class PRBody extends Component {
   }
 
   loadPRDetails=(index)=> {
-    let pr=this.props.prList[index];
+    //let pr=this.props.prList[index];
+    let pr=this.props.prList.find(item => item.prId === index);
     this.resetCurrentPr();
     this.props.changeLoaderState(true)
     this.setState({

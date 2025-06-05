@@ -1012,98 +1012,88 @@ render() {
   </thead>
   <tbody id="DataTableBodyThree" className="table-header-fixed-min">
     {Object.keys(groupByList).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, i) => {
-      console.log('groupByList', groupByList);
       let itemData = groupByList[key];
-      let childs = !isEmptyDeep(itemData) ? itemData : [];
-      
-      return (
-        <>
-          {/* <tr>
-            
-          </tr> */}
-          {!isEmptyDeep(childs) && childs.map((item, index) => {
-            return (
-              <tr>
-                <td style={{minWidth: "20px"}}>
-              <input 
-                type="checkbox" 
-                checked={this.state.checkedItems.includes(key)} 
-                onChange={this.onChecked.bind(this, key)} 
-              />
-            </td>
-            <td style={{minWidth: "10px"}}>{key}</td>
-            <td>
-              <button 
-                type="button" 
-                onClick={this.handleSelect.bind(this, itemData)} 
-                data-toggle="modal" 
-                className="btn btn-light" 
-                data-target="#viewPrDetail"
-              >
-                View PR
-              </button>
-            </td>
-              
-                <td style={{minWidth: "20px"}}>
-                  {formatDateWithoutTimeNewDate2(item.pr.date != null ? item.pr.date : "")}
-                </td>
-                <td style={{minWidth: "20px"}}>
-                  {removeLeedingZeros(item.prLineNumber)}
-                </td>
-                {/* <td>{this.props.prStatusList[item.status]}</td> */}
-                <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
-                <td style={{minWidth: "5px"}}>{item.reqQty}</td>
-                <td style={{minWidth: "26px"}}>{item.uom}</td>
-                <td style={{minWidth: "20px"}}>{item.price}</td>
-                <td style={{minWidth: "26px"}}>
-                  {item.plantDesc != null ? `${item.plant}-${item.plantDesc}` : item.plant}
-                </td>
-                <td>
-                  <input
-                    type="date" 
-                    min={disablePastDate()}
-                    max="9999-12-31"
-                    className={"form-control"}   
-                    pattern="\d{2}-\d{2}-\d{4}"             
-                    value={item.deliverDate}
-                    onChange={(event) => {
-                      this.commonHandleChange(event, "deliverDate", key, index);
-                    }}
-                  />
-                  
-                </td>
-                {/* <td>
-                  {!isEmptyDeep(item.desiredVendor) 
-                    ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - ` : ''}${item.desiredVendor.userName ? item.desiredVendor.userName : ''}`
-                    : '-'}
-                </td> */}
-                <td>
-                  {`${item.matGrp ? `${item.matGrp} - ` : ''}${item.matGrpDesc ? item.matGrpDesc : ''}`}
-                </td>
-                <td>
-                  <select
-                    className={"form-control"}
-                    onChange={(event) => {
-                      this.commonHandleChange(event, "buyer", key, index);
-                    }}
-                    value={item.buyer ? item.buyer.userId : null}
-                  >
-                    <option value="">Select Buyer</option>
-                    {!isEmptyDeep(this.props.buyerList) && this.props.buyerList.map(records => {
-                      return (
-                        <option value={records.userId}>{records.name}</option>
-                      );
-                    })}
-                  </select>
-                </td>
-                <td>{item.trackingNo}</td>
-              </tr>
-            );
-          })}
-        </>
-      );
-    })}
-  </tbody>
+                          let childs = !isEmptyDeep(itemData) ? itemData:[];
+                          return (
+                            <>
+                            <tr>
+                              <td style={{minWidth:"20px"}}>
+                                <input type="checkbox" checked={this.state.checkedItems.includes(key)} onChange={this.onChecked.bind(this,key)} />
+                              </td>
+
+                              <td style={{minWidth:"10px"}}>{key}</td>
+                              <td>
+                              <button type="button" onClick={this.handleSelect.bind(this,itemData)} data-toggle="modal" className="btn btn-light" data-target="#viewPrDetail">View PR</button>
+                              </td>
+                            </tr>
+                            {
+                              !isEmptyDeep(childs) && childs.map((item,index) => {
+                                return (
+                                  <tr>
+                                    <td colSpan="3"></td>
+                                    <td style={{minWidth:"20px"}}>{formatDateWithoutTimeNewDate2(item.pr.date!=null?item.pr.date:"")}</td>
+                                    <td style={{minWidth:"20px"}}>{removeLeedingZeros(item.prLineNumber)}</td>
+                                    <td>{this.props.prStatusList[item.status]}</td>
+                                    <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
+                                    <td style={{minWidth:"5px"}}>{item.reqQty}</td>
+                                    <td style={{minWidth:"26px"}}>{item.uom}</td>
+                                    <td style={{minWidth:"20px"}}>{item.price}</td>
+                                    {/* <td style={{minWidth:"26px"}}>{item.plant}</td> */}
+                                    <td style={{minWidth:"26px"}}>{item.plantDesc!=null?item.plant+"-"+item.plantDesc:item.plant}</td>
+                                    <td>
+                                      <input
+                                        type="date" 
+                                        min={disablePastDate()}
+                                        max="9999-12-31"
+                                        className={"form-control"}
+                                          value={item.deliverDate}
+                                        onChange={(event) => {
+                                          this.commonHandleChange(event,  "deliverDate",key,index);
+                                        }}
+                                      />
+                                    </td>
+                                    {/*<td>
+                                      <input
+                                        type="date"
+                                        className={"form-control"}
+                                          value={item.requiredDate}
+                                        onChange={(event) => {
+                                          this.commonHandleChange(event,"requiredDate",key,index);
+                                        }}
+                                      />
+                                    </td>*/}
+                                   
+                                    <td>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</td>
+                                    <td>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</td>
+                                    <td>
+                                    <>
+                                      <select
+                                        className={"form-control"}
+                                        onChange={(event) => {
+                                          this.commonHandleChange(event, "buyer",key,index);
+                                        }}
+                                        value={item.buyer ? item.buyer.userId:null}
+                                      >
+                                        <option value="">Select Buyer</option>
+                                        {!isEmptyDeep(this.props.buyerList) && this.props.buyerList.map(records =>{
+                                          return (
+                                            <option value={records.userId}>{records.name}</option>
+                                          )
+                                        })}
+                                      </select>
+
+                                   </>
+                                   </td>
+                                    <td>{item.trackingNo}</td>
+
+                                  </tr>
+                                )
+                              })
+                            }
+                            </>
+                        )})}
+
+                      </tbody>
 </table>
 <TablePagination
                               rowsPerPageOptions={[50, 100, 150]}
@@ -1165,7 +1155,7 @@ render() {
                 <tbody id="DataTableBody">
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((pr, i) =>{
                     return (
-                      <tr onClick={() => this.props.loadPRDetails(i)}>
+                      <tr onClick={() => this.props.loadPRDetails(pr.prId)}>
                       <td>{pr.prNumber}</td>
                       <td>{pr.docType}</td>
                       <td>{pr.date}</td>
