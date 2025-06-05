@@ -491,7 +491,8 @@ class VendorSelection extends Component {
                                     <div class="row px-4 py-1">
                                         <div className="col-8 col-sm-8 col-lg-8">
                                             <div class="form-group">
-                                                <label>Enter vendor code/name/Email ID</label>
+                                                {/* <label>Enter vendor code/name/Email ID</label> */}
+                                                <label>Enter vendor code/name</label>
                                                 <input
                                                     type="text"
                                                     className={

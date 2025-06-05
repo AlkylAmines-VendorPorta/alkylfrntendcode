@@ -2,7 +2,8 @@ let defaultState={
     prLineList:[],
     emailList:[],
     attachmentList:[],
-    removeAttachmentRes:{}
+    removeAttachmentRes:{},
+    attrespData:[]
 }
 
 const prBodyReducer = (state= defaultState,action)=>{
@@ -40,6 +41,11 @@ const prBodyReducer = (state= defaultState,action)=>{
         return{
             ...state,
             removeAttachmentRes:action.payload
+        }
+    }else if(action.type==="PR_Att_RES"){
+        return{
+            ...state,
+            attrespData:action.payload.objectMap.resDto
         }
     }else{
         return{

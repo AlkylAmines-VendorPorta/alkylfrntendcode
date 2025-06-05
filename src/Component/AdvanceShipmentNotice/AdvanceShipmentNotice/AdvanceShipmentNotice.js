@@ -24,7 +24,7 @@ import {
 import { searchTableDataThree, searchTableDataFour } from "../../../Util/DataTable";
 import * as actionCreators from "./Action";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
-import formatDate,{formatDateWithoutTime,formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
+import formatDate,{formatDateWithoutTime,formatDateWithoutTimeNewDate2,formatDateWithoutTimeNewDate,formatDateWithoutTimeNewDate3 } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict,checkIsNaN } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -510,7 +510,7 @@ getPurchaseOrderFromObj(po){
             balQty1 = asnLineObj.poLine.balanceQuantity1;
             balQty = asnLineObj.poLine.balanceQuantity;
             plant = asnLineObj.poLine.plant;
-            poNumber = asnLineObj.poLine.purchaseOrder.purchaseOrderNumber
+            poNumber = asnLineObj.poLine.purchaseOrder!=null?asnLineObj.poLine.purchaseOrder.purchaseOrderNumber:"";
          }
          return {
             asnLineId: asnLineObj.advanceShipmentNoticeLineId,
@@ -1720,7 +1720,7 @@ getPurchaseOrderFromObj(po){
                               {/* //  <input type="hidden" value={this.state.po.purchaseOrderId} name="po[purchaseOrderId]" /> */}
                            {/* }  */}
                            <input type="hidden" value={this.state.po.documentType} name="po[documentType]" />
-                           <input type="hidden" value={formatDate(this.state.po.poDate)} name="po[date]" />
+                           <input type="hidden" value={formatDateWithoutTimeNewDate3(this.state.po.poDate)} name="po[date]" />
                            <input type="hidden" value={this.state.po.userID} name="po[userID]" />
 
                            <label className="col-sm-2" >Vendor</label>
@@ -2207,7 +2207,7 @@ getPurchaseOrderFromObj(po){
                                 {<label className="col-sm-1" >Created Date</label>}
                                 {<span className="col-sm-2"> {formatDate(asn.advanceshipmentnotice.created ==null?"":asn.advanceshipmentnotice.created)}</span>}
                                 {<label className="col-sm-1" >Created By</label> }
-                                {<span className="col-sm-5"> {asn.createdBy.userDetails.name==null?"":asn.createdBy.userDetails.name}</span>} 
+                                {<span className="col-sm-5"> {asn.createdBy==null?"":asn.createdBy.userDetails.name}</span>} 
                                 {<label className="col-sm-1" >Po No</label>}
                                {<span className="col-sm-2">{asn.advanceshipmentnotice.po.purchaseOrderNumber}</span>}
                                 {<label className="col-sm-1" >Vendor Name</label>}
@@ -2232,7 +2232,7 @@ getPurchaseOrderFromObj(po){
                                 {/* {<span className="col-sm-2"> {asn.advanceshipmentnotice.invoiceDate===null?"":formatDate(asn.advanceshipmentnotice.invoiceDate)}</span>}  */}
                                 <div className="col-sm-2">
                                               <input type="date" className="form-control" onKeyDown={this.controlSubmit}
-                                                  defaultValue={formatDate(asn.advanceshipmentnotice.invoiceDate)}
+                                                  defaultValue={formatDateWithoutTimeNewDate(asn.advanceshipmentnotice.invoiceDate)}
                                                   max="9999-12-31"   
                                                   disabled={this.state.role === "SSNAPP"}                                              
                                                 //   name="invoiceDate" 
@@ -2242,7 +2242,7 @@ getPurchaseOrderFromObj(po){
                                 {<label className="col-sm-1" >Posting Date</label> }
                                 <div className="col-sm-2">
                                                  <input type="date" className="form-control" onKeyDown={this.controlSubmit}
-                                                  defaultValue={formatDateWithoutTimeNewDate2(asn.advanceshipmentnotice.servicePostingDate)}
+                                                  defaultValue={formatDateWithoutTimeNewDate(asn.advanceshipmentnotice.servicePostingDate)}
                                                   disabled={this.state.role === "SSNAPP"}
                                                   min={this.enablelastDateofLastMonth()}
                                                  // max={currentDate}
@@ -2886,7 +2886,7 @@ getPurchaseOrderFromObj(po){
                                                    <td>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</td>
                                                    <td>{asn.po.purchaseOrderNumber}</td>
                                                  {/*  <td>{formatDateWithoutTimeNewDate2(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</td>*/}
-                                                   <td>{formatDateWithoutTimeNewDate2(asn.created)}</td>
+                                                   <td>{formatDate(asn.created)}</td>
                                                    <td>{asn.po.vendorName}</td>
                                                    <td>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</td>
                                                    <td style={{ display: this.state.displayDivForAsnHistoryTable }}>{asn.po.documentType}</td>

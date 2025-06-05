@@ -39,6 +39,7 @@ class PRBody extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      attrespData:[],
       isLoading:false,
       prMainContainer: true,
       prDetailsContainer:false,
@@ -212,6 +213,14 @@ class PRBody extends Component {
     if(this.state.loadPrChangeStatus && !isEmpty(props.prDto)){
       // this.props.changeLoaderState(false);
       this.setPrStatus(props.prDto);
+    }else{
+      this.props.changeLoaderState(false);
+    }
+
+
+    if(!isEmpty(props.attrespData)){
+      this.setState({ attrespData: props.attrespData});
+     // this.setPrStatus(props.prDto);
     }else{
       this.props.changeLoaderState(false);
     }
@@ -490,14 +499,34 @@ class PRBody extends Component {
   }
 
   onClearPRDocuments =(i) => {
-    commonSubmitWithParam(this.props, "removeAttachment", "/rest/deletePRAttachment", this.state.otherDocumentsList[i].prAttachmentId);
-    this.setState({ currentDocRemoveIndex: i, loadDocument:true });
+    let otherDocumentsList = this.state.otherDocumentsList[i];
+    if(otherDocumentsList.attachment.fileName=="" || otherDocumentsList.attachment.fileName==undefined){
+      return alert("Please Attach file");
+    }
+    else{
+      
+      if(this.state.attrespData[i]==undefined && otherDocumentsList.prAttachmentId==undefined){
+        return alert("Please save file");
+      }
+      else{
+          commonSubmitWithParam(this.props, "removeAttachment", "/rest/deletePRAttachment", otherDocumentsList.prAttachmentId!==undefined?otherDocumentsList.prAttachmentId:this.state.attrespData[i].prAttachmentId);
+          this.setState({ currentDocRemoveIndex: i, loadDocument:true});
+          let attrespData = this.state.attrespData;
+          attrespData[i] = {
+            ...attrespData[i],
+           prAttachmentId:"",
+          }
+        this.setState({ attrespData: attrespData });
+         
+      }
+    }
   }
 
   onSavePRDocuments =(e) => {
     let otherDocumentsList = this.state.otherDocumentsList[0];
-    if(otherDocumentsList.attachment.fileName==""){
-      return false;
+    if(otherDocumentsList.attachment.fileName=="" || otherDocumentsList.attachment.fileName==undefined){
+     // return false;
+     return alert("Please Attach file");
     }
     else{
     commonSubmitFormNoValidation(e, this,"updatePRAttachmentSubmit", "/rest/updatePRDocumentSave");

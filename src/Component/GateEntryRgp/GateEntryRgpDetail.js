@@ -38,7 +38,7 @@ import { Col, Divider, Row } from 'antd';
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { TableBody,Table, TableRow, TableCell, TableHead, Button } from "@material-ui/core";
+import { TableBody,Table, tr, TableCell, TableHead, Button } from "@material-ui/core";
 
 const delay = ms => new Promise(
   resolve => setTimeout(resolve, ms)
@@ -416,17 +416,17 @@ setvendorName(){
       })
     }
     return  (
-      <Table>
-      <TableRow>
-        <TableCell>{name}</TableCell>
-      </TableRow> 
-      <TableRow>
-      <TableCell>{formatDateWithoutTimeNewDate1(created)}</TableCell>
-    </TableRow>
-    <TableRow>
-    <TableCell>{ created===null?"":formatTime(created)}</TableCell>
-  </TableRow>
-  </Table>
+      <table>
+      <tr>
+        <td>{name}</td>
+      </tr> 
+      <tr>
+      <td>{formatDateWithoutTimeNewDate1(created)}</td>
+    </tr>
+    <tr>
+    <td>{ created===null?"":formatTime(created)}</td>
+  </tr>
+  </table>
    
     )
   }
@@ -452,19 +452,19 @@ setvendorName(){
       })
     }
     return  (
-      <Table>
-      <TableRow>
-        <TableCell>{name}</TableCell>
-      </TableRow> 
-      <TableRow>
+      <table>
+      <tr>
+        <td>{name}</td>
+      </tr> 
+      <tr>
       {/* <TableCell>{formatDateWithoutTimeNewDate1(hodDate)}</TableCell> */}
-      <TableCell>{formatDateWithoutTimeNewDate1(plantheadDate)}</TableCell>
-    </TableRow>
-    <TableRow>
+      <td>{formatDateWithoutTimeNewDate1(plantheadDate)}</td>
+    </tr>
+    <tr>
     {/* <TableCell>{ hodDate===null?"":formatTime(hodDate)}</TableCell> */}
-    <TableCell>{ plantheadDate===null?"":formatTime(plantheadDate)}</TableCell>
-  </TableRow>
-  </Table>
+    <td>{ plantheadDate===null?"":formatTime(plantheadDate)}</td>
+  </tr>
+  </table>
    
     )
     //name
@@ -489,17 +489,17 @@ setvendorName(){
       })
     }
     return  (
-      <Table>
-      <TableRow>
-        <TableCell>{name}</TableCell>
-      </TableRow> 
-      <TableRow>
-      <TableCell>{formatDateWithoutTimeNewDate1(hodDate)}</TableCell>
-    </TableRow>
-    <TableRow>
-    <TableCell>{ hodDate===null?"":formatTime(hodDate)}</TableCell>
-  </TableRow>
-  </Table>
+      <table>
+      <tr>
+        <td>{name}</td>
+      </tr> 
+      <tr>
+      <td>{formatDateWithoutTimeNewDate1(hodDate)}</td>
+    </tr>
+    <tr>
+    <td>{ hodDate===null?"":formatTime(hodDate)}</td>
+  </tr>
+  </table>
    
     )
   //   let name = ""
@@ -519,15 +519,15 @@ setvendorName(){
   //   }
   //   return  (
   //     <table>
-  //     <TableRow>
+  //     <tr>
   //       <TableCell>{name}</TableCell>
-  //     </TableRow> 
-  //     <TableRow>
+  //     </tr> 
+  //     <tr>
   //     <TableCell>{formatDateWithoutTimeNewDate1(fhDate)}</TableCell>
-  //   </TableRow>
-  //   <TableRow>
+  //   </tr>
+  //   <tr>
   //   <TableCell>{ fhDate===null?"":formatTime(fhDate)}</TableCell>
-  // </TableRow>
+  // </tr>
  // </table>
    
   // )
@@ -554,17 +554,17 @@ setvendorName(){
       })
     }
     return  (
-      <Table>
-      <TableRow>
-        <TableCell>{name}</TableCell>
-      </TableRow> 
-      <TableRow>
-      <TableCell>{formatDateWithoutTimeNewDate1(commercialDate)}</TableCell>
-    </TableRow>
-    <TableRow>
-    <TableCell>{ commercialDate===null?"":formatTime(commercialDate)}</TableCell>
-  </TableRow>
-  </Table>
+      <table>
+      <tr>
+        <td>{name}</td>
+      </tr> 
+      <tr>
+      <td>{formatDateWithoutTimeNewDate1(commercialDate)}</td>
+    </tr>
+    <tr>
+    <td>{ commercialDate===null?"":formatTime(commercialDate)}</td>
+  </tr>
+  </table>
    
     )
     //name
@@ -662,23 +662,23 @@ setvendorName(){
           <fieldset class="scheduler-border">
           <Row>
             <Col span={8}>
-            <Table>
-                <TableRow>
-                  <TableCell>Request No :</TableCell>
-                  <TableCell>{gateEntryDto.reqNo}</TableCell>
-                </TableRow>
-              </Table>
+            <table>
+                <tr>
+                  <td>Request No :</td>
+                  <td>{gateEntryDto.reqNo}</td>
+                </tr>
+              </table>
             </Col>
             <Col span={8}>
             </Col>
             <Col span={8} align="right">
-            <Table>
-                <TableRow>
-                  <TableCell> Date :</TableCell>
-                  {/* <TableCell>{formatDateWithoutTime(gateEntryDto.created)}</TableCell> */}
-                  <TableCell>{formatDateWithoutTimeNewDate1(gateEntryDto.created)}</TableCell>
-                </TableRow>
-              </Table>
+            <table>
+                <tr>
+                  <td> Date :</td>
+                  {/* <td>{formatDateWithoutTime(gateEntryDto.created)}</td> */}
+                  <td>{formatDateWithoutTimeNewDate1(gateEntryDto.created)}</td>
+                </tr>
+              </table>
             </Col>
           </Row>
 
@@ -694,58 +694,58 @@ setvendorName(){
               }
             </b> */} 
             {/* <table>
-                  <TableRow>
+                  <tr>
                   <b>From,</b>
-                    </TableRow>
-                    <TableRow>
+                    </tr>
+                    <tr>
                     <TableCell><b> {this.plantAddress() } </b></TableCell>
-                  </TableRow>
+                  </tr>
                   <br/>
                 </table> */}
-                <Table>
-                  <TableRow>
-                    <TableCell>From</TableCell>
-                    </TableRow>
-                    <TableRow>
-                    <TableCell> {this.plantAddress() } </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>.</TableCell>
-                  </TableRow>
-                </Table>
+                <table>
+                  <tr>
+                    <td>From</td>
+                    </tr>
+                    <tr>
+                    <td> {this.plantAddress() } </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>.</td>
+                  </tr>
+                </table>
             </fieldset>
           </Col> 
             <Col span={12}>
             <fieldset class="scheduler-border">
-            <Table>
-                  <TableRow>
-                    <TableCell>To,</TableCell>
-                    </TableRow>
-                    <TableRow>
-                    <TableCell>{gateEntryDto.vendorName}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>{gateEntryDto.vendorAddress}</TableCell>
-                  </TableRow>                
-                </Table>
+            <table>
+                  <tr>
+                    <td>To,</td>
+                    </tr>
+                    <tr>
+                    <td>{gateEntryDto.vendorName}</td>
+                  </tr>
+                  <tr>
+                    <td>{gateEntryDto.vendorAddress}</td>
+                  </tr>                
+                </table>
             </fieldset>
             </Col>
             {/* <Col span={8} offset={8}>
               <table>
-                <TableRow>
+                <tr>
                   <TableCell>Request No :</TableCell>
                   <TableCell>{gateEntryDto.reqNo}</TableCell>
-                </TableRow>
-                <TableRow>
+                </tr>
+                <tr>
                   <TableCell>Date:</TableCell>
                   <TableCell>{formatDateWithoutTime(gateEntryDto.created)}</TableCell>
-                </TableRow>
-                <TableRow>
+                </tr>
+                <tr>
                   <TableCell>Department :</TableCell>
 
                   <TableCell>{this.createdBy()}</TableCell>
-                </TableRow>
+                </tr>
               </table>
             </Col> */}
           </Row>
@@ -753,29 +753,29 @@ setvendorName(){
           <Col span={12} style={{height:"10px"}}>
             <fieldset class="scheduler-border">
             <div>
-              <Table>
-                <TableRow>
-                  <TableCell> <b>PAN NO:</b></TableCell>
-                  <TableCell> AAACA6783F<br></br></TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>  <b>CIN No:</b></TableCell>
-                  <TableCell>L99999MH1979PLC021796<br></br></TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell><b>GST NO:</b></TableCell>
-                  <TableCell>  27AAACA6783F1ZM<br></br></TableCell>
-                </TableRow>
-                <TableRow>
-                 <TableCell>.</TableCell>
-                </TableRow>
-                <TableRow>
-                 <TableCell>.</TableCell>
-                </TableRow>
-                <TableRow>
-                 <TableCell>.</TableCell>
-                </TableRow>
-              </Table>
+              <table>
+                <tr>
+                  <td> <b>PAN NO:</b></td>
+                  <td> AAACA6783F<br></br></td>
+                </tr>
+                <tr>
+                  <td>  <b>CIN No:</b></td>
+                  <td>L99999MH1979PLC021796<br></br></td>
+                </tr>
+                <tr>
+                  <td><b>GST NO:</b></td>
+                  <td>  27AAACA6783F1ZM<br></br></td>
+                </tr>
+                <tr>
+                 <td>.</td>
+                </tr>
+                <tr>
+                 <td>.</td>
+                </tr>
+                <tr>
+                 <td>.</td>
+                </tr>
+              </table>
              
           
          </div>
@@ -784,36 +784,36 @@ setvendorName(){
 
           <Col span={12}>
             <fieldset class="scheduler-border">
-            <Table>
-            <TableRow>
-                  <TableCell>Department Name :</TableCell>
-                  <TableCell>{this.createdByDepartment()}</TableCell>
-                </TableRow>
-                {/* <TableRow>
-                  <TableCell>Department Code :</TableCell>
-                  <TableCell>{this.createdBy()}</TableCell>
-                </TableRow> */}
-                <TableRow>
-                  <TableCell>Requestioner Name :</TableCell>
-                  <TableCell>{this.createdBy()}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Transporter :</TableCell>
-                  <TableCell>{gateEntryDto.transporterName}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Driver Name :</TableCell>
-                  <TableCell>{ }</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>LR NO. :</TableCell>
-                  <TableCell>{ }</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Vehicle NO. :</TableCell>
-                  <TableCell>{gateEntryDto.vehicleNo}</TableCell>
-                </TableRow>
-              </Table>
+            <table>
+            <tr>
+                  <td>Department Name :</td>
+                  <td>{this.createdByDepartment()}</td>
+                </tr>
+                {/* <tr>
+                  <td>Department Code :</td>
+                  <td>{this.createdBy()}</td>
+                </tr> */}
+                <tr>
+                  <td>Requestioner Name :</td>
+                  <td>{this.createdBy()}</td>
+                </tr>
+                <tr>
+                  <td>Transporter :</td>
+                  <td>{gateEntryDto.transporterName}</td>
+                </tr>
+                <tr>
+                  <td>Driver Name :</td>
+                  <td>{ }</td>
+                </tr>
+                <tr>
+                  <td>LR NO. :</td>
+                  <td>{ }</td>
+                </tr>
+                <tr>
+                  <td>Vehicle NO. :</td>
+                  <td>{gateEntryDto.vehicleNo}</td>
+                </tr>
+              </table>
             </fieldset>
           </Col> 
           </Row>
@@ -826,87 +826,87 @@ setvendorName(){
             </div>
           </Row> */}
           <Row>
-          <Table className="my-table" >
-                <TableRow className="row m-0">
+          <table className="my-table" >
+                <tr className="row m-0">
                   {/* <TableCell>#</TableCell> */}
-                  <TableCell className="col-1" ><b> Sr No.</b> </TableCell>
-                  <TableCell className="col-4" ><b> Material Details</b></TableCell>
-                  <TableCell className="col-1" ><b>UOM</b></TableCell>
-                  <TableCell className="col-1" ><b>Quantity</b> </TableCell>
-                  <TableCell className="col-1" ><b> Rate</b> </TableCell>
-                  <TableCell className="col-1"><b>Amount</b></TableCell>
-                  <TableCell className="col-2" ><b>Ref.DocNo. (GPRN) / Date</b></TableCell>
-                  <TableCell className="col-1" ><b>Exp.Ret. Date</b></TableCell>
+                  <th className="col-1" ><b> Sr No.</b> </th>
+                  <th className="col-4" ><b> Material Details</b></th>
+                  <th className="col-1" ><b>UOM</b></th>
+                  <th className="col-1" ><b>Quantity</b> </th>
+                  <th className="col-1" ><b> Rate</b> </th>
+                  <th className="col-1"><b>Amount</b></th>
+                  <th className="col-2" ><b>Ref.DocNo. (GPRN) / Date</b></th>
+                  <th className="col-1" ><b>Exp.Ret. Date</b></th>
                   {/* <TableCell className="w-6per" ><b>Purpose</b></TableCell> */}
-                </TableRow>
-                {/* <TableRow>
+                </tr>
+                {/* <tr>
                
-                </TableRow> */}
-              <TableBody>
+                </tr> */}
+              <tbody>
                 {gateEntryLineList.map((item, i) => {
                   return (
                     <>
-                      <TableRow className="row m-0">
-                        <TableCell className="col-1" >{item.serialNo}</TableCell>
-                        <TableCell className="col-4" >{item.materialCode}</TableCell>
-                        <TableCell className="col-1">{item.uom}</TableCell>
-                        <TableCell className="col-1">{getDecimalUpto(item.materialQty, 3)}</TableCell>
-                        <TableCell className="col-1">{getDecimalUpto(item.materialRate, 2)}</TableCell>
-                        <TableCell className="col-1">{getDecimalUpto(item.materialCost, 2)}</TableCell>                       
-                        <TableCell className="col-2">{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</TableCell>
-                        <TableCell className="col-1"></TableCell>
-                        {/* <TableCell>{item.purpose}</TableCell> */}
+                      <tr className="row m-0">
+                        <td className="col-1" >{item.serialNo}</td>
+                        <td className="col-4" >{item.materialCode}</td>
+                        <td className="col-1">{item.uom}</td>
+                        <td className="col-1">{getDecimalUpto(item.materialQty, 3)}</td>
+                        <td className="col-1">{getDecimalUpto(item.materialRate, 2)}</td>
+                        <td className="col-1">{getDecimalUpto(item.materialCost, 2)}</td>                       
+                        <td className="col-2">{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</td>
+                        <td className="col-1"></td>
+                        {/* <td>{item.purpose}</td> */}
                         
                        
-                      <TableRow>
-                      <TableCell><b>Purpose:</b> {item.purpose} </TableCell>
-                      {/* <TableCell>{item.purpose}</TableCell> */}
-                      </TableRow>
-                      </TableRow>
+                      <tr>
+                      <td><b>Purpose:</b> {item.purpose} </td>
+                      {/* <td>{item.purpose}</td> */}
+                      </tr>
+                      </tr>
                     </>
                   )
                 })
                 }
-              </TableBody>
+              </tbody>
 
-            </Table>
+            </table>
             </Row >
             <fieldset class="scheduler-border">        
-              <Table  align="right">
-                <TableRow>
-                  <TableCell>**Total Amount** :</TableCell>
-                  <TableCell><b>{this.subtotal()}</b></TableCell>
-                </TableRow>
+              <table  align="right">
+                <tr>
+                  <td>**Total Amount** :</td>
+                  <td><b>{this.subtotal()}</b></td>
+                </tr>
 
-              </Table>    
+              </table>    
           </fieldset>
           <fieldset class="scheduler-border"> 
           <Row >
             <Col span={8}>
               <b>
-                <Table>
-                  {/* <TableRow>
+                <table>
+                  {/* <tr>
                     <TableCell>Purpose:</TableCell>
                     <TableCell>{gateEntryDto.purpose}</TableCell>
-                  </TableRow> */}
-                  <TableRow>
-                    <TableCell>Expected Return Date :</TableCell>
-                    <TableCell>{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</TableCell>
-                  </TableRow>
-                </Table>
+                  </tr> */}
+                  <tr>
+                    <td>Expected Return Date :</td>
+                    <td>{formatDateWithoutTimeNewDate1(gateEntryDto.returnBy)}</td>
+                  </tr>
+                </table>
               </b>
 
             </Col>
 
             <Col span={8} offset={8}>
               <b>
-                <Table>
+                <table>
 
-                  <TableRow>
-                    <TableCell>Vehicle Type :</TableCell>
-                    <TableCell>{gateEntryDto.vehicleType}</TableCell>
-                  </TableRow>
-                </Table>
+                  <tr>
+                    <td>Vehicle Type :</td>
+                    <td>{gateEntryDto.vehicleType}</td>
+                  </tr>
+                </table>
               </b>
             </Col>
 
@@ -916,12 +916,12 @@ setvendorName(){
           <Row >
           <Col span={8}>
               <b>
-                <Table>
-                  <TableRow>
-                    <TableCell>Remarks:</TableCell>
-                    <TableCell>{gateEntryDto.remark}</TableCell>
-                  </TableRow>
-                </Table>
+                <table>
+                  <tr>
+                    <td>Remarks:</td>
+                    <td>{gateEntryDto.remark}</td>
+                  </tr>
+                </table>
                 <br/><br/>
               </b>
 
@@ -944,57 +944,57 @@ setvendorName(){
           <b>E.& O.E.</b>
           <Row>
             <Col span={6}>
-              <TableRow>
-                <TableCell>PREPARED BY :</TableCell>
+              <tr>
+                <td>PREPARED BY :</td>
 
-              </TableRow>
-              <TableRow>
-                <TableCell>{this.preparedBy()}</TableCell>
-              </TableRow>
+              </tr>
+              <tr>
+                <td>{this.preparedBy()}</td>
+              </tr>
 
             </Col>
             <Col span={6}>
-              <TableRow>
-                <TableCell>APPROVED BY :</TableCell>
-              </TableRow>
+              <tr>
+                <td>APPROVED BY :</td>
+              </tr>
               {"RGP" === gateEntryDto.docType?
-               <TableRow>
-               {/* <TableCell>{this.authorizedBy()}</TableCell> */}
-               <TableCell>{this.approvedBy()}</TableCell>
-             </TableRow>:
-              <TableRow>
-                <TableCell>{this.approvedBy()}</TableCell>
-              </TableRow>}
+               <tr>
+               {/* <td>{this.authorizedBy()}</td> */}
+               <td>{this.approvedBy()}</td>
+             </tr>:
+              <tr>
+                <td>{this.approvedBy()}</td>
+              </tr>}
             </Col>
       {"RGP" === gateEntryDto.docType?
           <>
             <Col span={8}>
               
-              <TableRow>
-                <TableCell>STORE IN-CHARGE/AUTHORISED BY:</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{this.storeInchargeBy()}</TableCell>
-              </TableRow>
+              <tr>
+                <td>STORE IN-CHARGE/AUTHORISED BY:</td>
+              </tr>
+              <tr>
+                <td>{this.storeInchargeBy()}</td>
+              </tr>
             </Col>
             </>
             :
             <>
             <Col span={6}>
-              <TableRow>
-                <TableCell>AUTHORISED BY :</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{this.authorizedBy()}</TableCell>
-              </TableRow>
+              <tr>
+                <td>AUTHORISED BY :</td>
+              </tr>
+              <tr>
+                <td>{this.authorizedBy()}</td>
+              </tr>
             </Col>
             <Col span={6}>
-              <TableRow>
-                <TableCell>STORE IN-CHARGE :</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{this.storeInchargeBy()}</TableCell>
-              </TableRow>
+              <tr>
+                <td>STORE IN-CHARGE :</td>
+              </tr>
+              <tr>
+                <td>{this.storeInchargeBy()}</td>
+              </tr>
             </Col></>} 
           </Row>
           <br/>
@@ -1015,10 +1015,11 @@ setvendorName(){
           <FormWithConstraints ref={formWithConstraints => this.prForm = formWithConstraints}>
             <div style={frmhidden}>
               <div className="card my-2" >
+              {gateEntryDto.reqNo!=""?
                <div className="col-lg-12">
               
               <Button color="primary" variant="contained" size="small" type="button" id="togglesidebar" onClick={this.handleFilterClick.bind(this)} style={frmhidden} >Print Details</Button>
-              </div>
+              </div>:""}
                 <div className="row mt-0 px-4 pt-2">
                   <label className="col-sm-2">Type</label>
                   <div className="col-sm-2">
@@ -1276,29 +1277,29 @@ setvendorName(){
                     <div className="col-sm-12 mt-2">
                       <div>
                         <StickyHeader height={250} className="table-responsive">
-                          <Table className="my-table">
-                            <TableHead>
-                              <TableRow>
+                          <table className="my-table">
+                            <thead>
+                              <tr>
                                 {/* <TableCell>#</TableCell> */}
-                                <TableCell className="w-6per"> Sr No. </TableCell>
-                                <TableCell className="w-12per"> Material</TableCell>
-                                {/* <TableCell className="w-4per"> Material Description</TableCell> */}
-                                <TableCell className="w-7per">Qty </TableCell>
-                                <TableCell className="w-6per"> UOM</TableCell>
+                                <th className="w-6per"> Sr No. </th>
+                                <th className="w-12per"> Material</th>
+                                {/* <th className="w-4per"> Material Description</th> */}
+                                <th className="w-7per">Qty </th>
+                                <th className="w-6per"> UOM</th>
 
-                                <TableCell className="w-8per"> Rate </TableCell>
-                                <TableCell className="w-8per">Cost</TableCell>
-                              { "NRGP" === gateEntryDto.docType?"": <TableCell className="w-8per">Repairing Cost</TableCell>}
-                                <TableCell className="w-8per">Purpose</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody id="DataTableBodyTwo">
+                                <th className="w-8per"> Rate </th>
+                                <th className="w-8per">Cost</th>
+                              { "NRGP" === gateEntryDto.docType?"": <th className="w-8per">Repairing Cost</th>}
+                                <th className="w-8per">Purpose</th>
+                              </tr>
+                            </thead>
+                            <tbody id="DataTableBodyTwo">
                               {gateEntryLineList.map((item, i) => {
                                 return (
                                   <>
-                                    <TableRow class="accordion-toggle" >
+                                    <tr class="accordion-toggle" >
                                       {/* <TableCell class="expand-button collapsed" id={"accordion" + i} data-toggle="collapse" data-parent={"#accordion" + i} href={"#collapse" + i}></TableCell> */}
-                                      <TableCell>
+                                      <td>
                                         <label className="mr-4 label_12px">{item.serialNo}</label>
                                         {/* <input
                                           type="text"
@@ -1308,8 +1309,8 @@ setvendorName(){
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".serialNo");
                                           }}
                                         /> */}
-                                      </TableCell>
-                                      <TableCell>
+                                      </td>
+                                      <td>
                                         <input
                                           type="text"
                                           className={"form-control"}
@@ -1319,8 +1320,8 @@ setvendorName(){
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".materialCode");
                                           }}
                                         />
-                                      </TableCell>
-                                      {/* <TableCell>
+                                      </td>
+                                      {/* <td>
                                         <input
                                           type="text"
                                           className={"form-control"}
@@ -1329,9 +1330,9 @@ setvendorName(){
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".materialDesc");
                                           }}
                                         />
-                                      </TableCell> */}
+                                      </td> */}
 
-                                      <TableCell>
+                                      <td>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1342,8 +1343,8 @@ setvendorName(){
                                             commonSetState(this, "gateEntryDto.gateEntryLineList." + i + ".materialCost", item.materialQty * item.materialRate)
                                           }}
                                         />
-                                      </TableCell>
-                                      <TableCell>
+                                      </td>
+                                      <td>
                                         <input
                                           type="text"
                                           className={"form-control"}
@@ -1353,8 +1354,8 @@ setvendorName(){
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".uom");
                                           }}
                                         />
-                                      </TableCell>
-                                      <TableCell>
+                                      </td>
+                                      <td>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1365,8 +1366,8 @@ setvendorName(){
                                             commonSetState(this, "gateEntryDto.gateEntryLineList." + i + ".materialCost", item.materialQty * item.materialRate)
                                           }}
                                         />
-                                      </TableCell>
-                                      {/* <TableCell>
+                                      </td>
+                                      {/* <td>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1375,12 +1376,12 @@ setvendorName(){
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".materialCost");
                                           }}
                                         />
-                                      </TableCell> */}
-                                      <TableCell>
+                                      </td> */}
+                                      <td>
                                         <label className="mr-4 label_12px">{item.materialCost}</label>
-                                      </TableCell>
+                                      </td>
                                       { "NRGP" === gateEntryDto.docType?"": 
-                                      <TableCell>
+                                      <td>
                                         <input
                                           type="number"
                                           className={"form-control"}
@@ -1390,8 +1391,8 @@ setvendorName(){
                                             commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".repairingCost");
                                           }}
                                         />
-                                      </TableCell>}
-                                      <TableCell>
+                                      </td>}
+                                      <td>
                                       <textarea
                                               class="form-control" rows="1"
                                             //  disabled={gateEntryDto.reqNo}
@@ -1400,8 +1401,8 @@ setvendorName(){
                                              commonHandleChange(event, this, "gateEntryDto.gateEntryLineList." + i + ".purpose");
                                                  }}
                                                    />
-                                      </TableCell>
-                                      <TableCell>
+                                      </td>
+                                      <td>
 
                                         <button
                                           className={
@@ -1422,14 +1423,14 @@ setvendorName(){
                                             aria-hidden="true"
                                           ></i>
                                         </button>
-                                      </TableCell>
-                                    </TableRow>
+                                      </td>
+                                    </tr>
                                   </>
                                 )
                               })
                               }
-                            </TableBody>
-                          </Table>
+                            </tbody>
+                          </table>
                         </StickyHeader>
                       </div>
                     </div>

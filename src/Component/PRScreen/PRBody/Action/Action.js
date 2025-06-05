@@ -53,6 +53,10 @@ export function updatePRAttachmentSubmit(response) {
     // else{
         if(!isEmpty(response) && !isEmpty(response.success)){
             showAlert(!response.success,response.message);
+        return{
+                type:"PR_Att_RES",
+                payload:response
+            }
         }
         return {
             type : "PR_SUBMIT_FAILED",
