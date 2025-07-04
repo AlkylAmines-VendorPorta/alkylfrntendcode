@@ -14,6 +14,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import Loader from "../FormElement/Loader/LoaderWithProps";
+import DataTable from "react-data-table-component";
 
 class GateEntryRgpList extends Component {
   constructor(props) {
@@ -49,7 +50,43 @@ class GateEntryRgpList extends Component {
         value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
-
+const columns = [
+  {
+    name: 'Req No',
+    selector: row => row.gateEntry.reqNo,
+    sortable: true
+  },
+  {
+    name: 'Doc No',
+    selector: row => row.docNo,
+    sortable: true
+  },
+  {
+    name: 'Vendor Name',
+    selector: row => row.gateEntry.vendorName,
+    sortable: true
+  },
+  {
+    name: 'PO No',
+    selector: row => row.gateEntry.poNo,
+    sortable: true
+  },
+  {
+    name: 'Remark',
+    selector: row => row.gateEntry.remark,
+    sortable: true
+  },
+    {
+    name: 'Status',
+    selector: row => row.status,
+    sortable: true
+  },
+  {
+    name: 'Doc Type',
+    selector: row => row.gateEntry.docType,
+    sortable: true
+  },
+];
     return (
       <>
         <Loader isLoading={this.state.isLoading} />
@@ -64,7 +101,7 @@ class GateEntryRgpList extends Component {
           </Grid>
         </Grid>
         <TableContainer >
-          <Table  className="my-table">
+          {/* <Table  className="my-table">
             <TableHead>
               <TableRow>
                 <TableCell>Req No</TableCell>
@@ -96,9 +133,17 @@ class GateEntryRgpList extends Component {
                   </TableRow>
                 ))}
             </TableBody>
-          </Table>
+          </Table> */}
+          <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              responsive
+              paginationPerPage={50}  
+              paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+            />
         </TableContainer>
-        <TablePagination
+        {/* <TablePagination
           rowsPerPageOptions={[50, 100, 150]}
           component="div"
           count={filteredData.length}
@@ -106,7 +151,7 @@ class GateEntryRgpList extends Component {
           page={page}
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
+        /> */}
       </>
     );
   }

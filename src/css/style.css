@@ -40,6 +40,46 @@ body {
 	background-color: #c9d9e9;
 	font-weight: bold;
   }
+  /* new table css */
+  .rdt_Table {
+  /* border: 1px solid gray; */
+  width: 100%;
+  border-radius: 0px !important;
+  background-color: transparent !important;
+}
+.rdt_Table .icdHOq{
+	background-color: transparent !important;
+}
+.rdt_TableRow:hover .rdt_TableCell {
+  background-color: lightgreen;
+  cursor: pointer;
+}
+
+.rdt_TableCol,
+.rdt_TableCell {
+  border: 1px solid gray; 
+  padding: 0px 2px !important;
+  text-align: left;
+  white-space: nowrap;
+  font-size: 0.60rem !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 0.50rem;
+}
+
+.rdt_TableCol {
+  background-color: #c9d9e9;
+  font-weight: bold;
+}
+.rdt_TableHeadRow, .rdt_TableRow{
+	min-height: auto !important;
+	border-bottom-style:none;
+}
+.rdt_TableRow{
+	background-color: transparent !important;
+	border: none !important;
+}
+
   /* New CSS class for the specific modal */
 .customModal .modal-dialog {
     position: fixed;
@@ -1027,7 +1067,7 @@ select option {text-transform:capitalize !important}
 } */
 .resLogo{width:100px; float:right;}
 .dJdvKB{min-height:auto !important;}
-.rdt_TableRow{min-height:25px !important; border-bottom: 1px solid #ededed;}
+/* .rdt_TableRow{min-height:25px !important; border-bottom: 1px solid #ededed;} */
 .table td, .table th {
 	padding: 1px 4px;
 	border: 1px solid #dee2e6;
