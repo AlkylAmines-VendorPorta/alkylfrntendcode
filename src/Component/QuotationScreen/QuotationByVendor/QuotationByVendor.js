@@ -1595,7 +1595,7 @@ class QuotationByVendor extends Component{
                                                                             <input
                                                                                 type="date" 
                                                                                 //min={disablePastDate()}
-                                                                               // max="9999-12-31"
+                                                                                max="9999-12-31"
                                                                                 className={"col-4 form-control "}
                                                                               // className={"col-4 form-control " + this.props.readonly}
                                                                                 value={qbvLine.deliveryDate}
@@ -2262,13 +2262,16 @@ class QuotationByVendor extends Component{
                
                     <input type="date"  className={"col-3 form-control "}  name="bidder[validityDateFrom]"
                      value={this.state.qbvArray.validityDateFrom} 
+                     max="9999-12-31"
                      min={disablePastDate()}
                      onChange={(event)=>{commonHandleChange(event,this,"qbvArray.validityDateFrom", "quotationForm")}}/>
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     
                     <label>To </label>
                     <div className="col-sm-6">
-                    <input type="date" name="bidder[validityDateTo]" className={"col-8 form-control "}   value={this.state.qbvArray.validityDateTo}
+                    <input type="date" name="bidder[validityDateTo]" className={"col-8 form-control "}   
+                    max="9999-12-31" 
+                    value={this.state.qbvArray.validityDateTo}
                      onChange={(event)=>{commonHandleChange(event,this,"qbvArray.validityDateTo", "quotationForm")}}/>
                     </div>
                     </div>

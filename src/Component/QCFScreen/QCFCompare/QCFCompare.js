@@ -276,7 +276,7 @@ setOptionProposedReason=(props)=>{
      // columns.push(<><th colSpan="2"> {this.state.bidderList[i].partner.bPartnerId}<span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
      //columns.push(<><th colSpan="2"> <span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
 
-     columns.push(<><th colSpan="2"> {"RFQ NO: "+ this.state.bidderList[i].saprfqno}<span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
+     columns.push(<><th colSpan="2"> {"RFQ NO: "+ this.state.bidderList[i].saprfqno}&nbsp;&nbsp;<span class="display_block"> {this.state.bidderList[i].partner.vendorSapCode}{!isEmpty(this.state.bidderList[i].partner.vendorSapCode)?" - ":""}{this.state.bidderList[i].partner.name}</span></th></>);
     }
     return columns;
   }
@@ -1330,7 +1330,7 @@ toPdf(){
           <div className="lineItemDiv min-height-0px">
             <div className="row px-4 py-2">
               <div className="col-sm-9"></div>
-              <div className="col-sm-3">
+              {/* <div className="col-sm-3">
                 <input
                   type="text"
                   id="SearchTableDataInput"
@@ -1338,7 +1338,7 @@ toPdf(){
                   onKeyUp={searchTableData}
                   placeholder="Search .."
                 />
-              </div>
+              </div> */}
               <div className="col-sm-12 mt-2">
                 <div class="table-proposed" >
                   {/* <StickyHeader height={height} className="table-responsive w-max-content"> */}
@@ -1348,6 +1348,7 @@ toPdf(){
                         <tr>
                            {/* <th rowSpan="3">Line Item</th> */}
                            <th rowSpan="2">Serial No</th>
+                           <th rowSpan="2">PR No</th>
                            <th rowSpan="2">Material</th>
                            <th rowSpan="2">Short Text</th>
                            <th rowSpan="2">Required Qty</th>
@@ -1376,6 +1377,7 @@ toPdf(){
                           return (
                             <tr>
                               <td>{i+1}</td>
+                              <td>{el.pr.prNumber}</td>
                               <td>{el.materialCode}</td>
                               <td>{el.materialDesc}</td>
                               <td>{this.getItemBidQuantity(el)}</td> 
@@ -1390,6 +1392,7 @@ toPdf(){
                         <tr className="text-right border_top_1 border_left_1 border_right_1">
                           <th></th>
                           <th></th>
+                          <th></th>
                           <th>Basic Value</th>
                           {/* <th></th> */}
                           {this.generateBasicTotal()}
@@ -1398,6 +1401,7 @@ toPdf(){
                         </tr>
                         {this.state.freightColumn===true?
                         <tr className="text-right border_top_1 border_left_1 border_right_1">
+                          <th></th>
                           <th></th>
                           <th></th>
                           <th>Freight</th>
@@ -1410,6 +1414,7 @@ toPdf(){
                         <tr className="text-right border_top_1 border_left_1 border_right_1">
                           <th></th>
                           <th></th>
+                          <th></th>
                           <th>Packing & Fwd</th>
                           
                           {this.getBidderPackingFWDAmount()}   
@@ -1418,6 +1423,7 @@ toPdf(){
                         </tr>:""}
                         {this.state.otherChargeColumn===true?
                         <tr className="text-right border_top_1 border_left_1 border_right_1">
+                          <th></th>
                           <th></th>
                           <th></th>
                           <th>Other Charges</th>
@@ -1430,6 +1436,7 @@ toPdf(){
                         <tr className="text-right border_left_1 border_right_1 ">
                           <th></th>
                           <th></th>
+                          <th></th>
                           <th>Gross Value</th>
                           {/* <th></th> */}
                           {this.generateGrossValue()}
@@ -1438,6 +1445,7 @@ toPdf(){
                         </tr>
                         {/* <tr className="text-right border_left_1 border_right_1 resultant_data"> */}
                         <tr className="text-right border_left_1 border_right_1">
+                          <th></th>
                           <th></th>
                           <th></th>
                           <th>Landed Cost</th>
@@ -1455,6 +1463,7 @@ toPdf(){
                         <tr className="text-right border_top_1 border_left_1 border_right_1">
                           <th></th>
                           <th></th>
+                          <th></th>
                           <th> Split Basic Value</th>
                           {/* <th></th> */}
                           {this.generateSplitBasicTotal()}
@@ -1465,6 +1474,7 @@ toPdf(){
                         <tr className="text-right border_left_1 border_right_1">
                           <th></th>
                           <th></th>
+                          <th></th>
                           <th> Split Gross Value</th>
                           {/* <th></th> */}
                           {this.generateSplitGrossValue()}
@@ -1473,6 +1483,7 @@ toPdf(){
                         </tr>
                         {/* <tr className="text-right border_left_1 border_right_1 resultant_data"> */}
                         <tr className="text-right border_left_1 border_right_1">
+                          <th></th>
                           <th></th>
                           <th></th>
                           <th> Split Landed Cost</th>
@@ -1488,6 +1499,7 @@ toPdf(){
                         <tr className="text-right border_top_1 border_left_1 border_right_1">
                           <th></th>
                           <th></th>
+                          <th></th>
                           <th> Total Basic Value</th>
                           <th></th>
                           {this.generateFinalBasicTotal()}
@@ -1497,6 +1509,7 @@ toPdf(){
                         <tr className="text-right border_left_1 border_right_1">
                           <th></th>
                           <th></th>
+                          <th></th>
                           <th> Total Gross Value</th>
                           <th></th>
                           {this.generateFinalGrossValue()}
@@ -1504,6 +1517,7 @@ toPdf(){
                         </tr>
                         {/* <tr className="text-right border_left_1 border_right_1 border_bottom_1 resultant_data"> */}
                         <tr className="text-right border_left_1 border_right_1 border_bottom_1">
+                          <th></th>
                           <th></th>
                           <th></th>
                           <th> Total Landed Cost</th>

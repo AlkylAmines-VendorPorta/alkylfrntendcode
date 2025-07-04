@@ -51,6 +51,7 @@ class PRList extends Component {
       openModal:false,
       openModalNew:false,
       selectedItemsPr: [],
+      selectedItemsPrPlant: [],
       selectedItem:{
         requestedBy:{},
         approver:{},
@@ -228,7 +229,7 @@ else
   }
   clearFields = () => {
     this.props.onClearFilter(); // Calls parent's clearFilter
-    this.setState({selectedItemsPr: []})
+    this.setState({selectedItemsPr: [],selectedItemsPrPlant:[]})
   }
   handleFilterChange = (key,event) => {
     this.props.onFilterChange && this.props.onFilterChange(key,event.target.value);
@@ -253,6 +254,7 @@ else
     
     this.setState({
       selectedItemsPr: event.target.value,  // Update selected items
+      selectedItemsPrPlant:event.target.value
     });
     this.props.onFilterChange && this.props.onFilterChange(key, selectedValues);
   };
@@ -281,7 +283,7 @@ else
   }
 
 render() {
-    const { page, rowsPerPage, search , selectedItemsPr} = this.state;
+    const { page, rowsPerPage, search , selectedItemsPr,selectedItemsPrPlant} = this.state;
     const {filterBuyerList,filterPlantList,filterPRStatusList,filterPurhaseGroupList,filter} = this.props;
     const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
     
@@ -303,6 +305,7 @@ render() {
       return searchInObject(entry, search);
     });
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
+    const selectedItemsDisplayPlant=filterPlantList && filterPlantList.filter(item=>selectedItemsPrPlant.includes(item.value));    
     return (
       <>
 <LoaderWithProps isLoading={this.state.isLoading} />
@@ -907,6 +910,8 @@ render() {
                   ))}
                 </Select>
               </FormControl>
+
+              
     
     {/* <Grid item xs={6}>
       <FormControl fullWidth size="small" variant="outlined">
@@ -948,6 +953,43 @@ render() {
         </Select>
       </FormControl>
     </Grid>
+    <Grid item xs={6}>
+              <FormControl fullWidth size="small" variant="outlined">
+                      <InputLabel shrink>Plant</InputLabel>
+
+                      <Select
+                  multiple
+                  value={this.state.selectedItemsPrPlant}
+                 // onChange={this.handleChange}
+                  onChange={this.handleChange.bind(this,'multiplePlantList')}
+                  sx={{ fontSize: 12, height: "15px" }}
+                  renderValue={(selected) => {
+                    // Display both item.display and item.value as selected items
+                    return selectedItemsDisplayPlant.map(item => `${item.display} - ${item.value}`).join(", ");
+                  }}  // Custom display for selected items
+                >
+                  {!isEmpty(filterPlantList) && filterPlantList.map((item, i) => (
+                    <MenuItem  key={i + 1} value={item.value} style={{padding:"0px"}}>
+                      <Checkbox size="small" checked={this.state.selectedItemsPrPlant.indexOf(item.value) > -1} />
+                      <ListItemText className="customListItemText" primary={item.display + " - " + item.value} />
+                    </MenuItem>
+                  ))}
+                </Select>
+                      {/* <Select
+                         value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
+                        label="Plant"
+                        sx={{ fontSize: 12, height: "15px" }}
+                      >
+                        <MenuItem value="">Select</MenuItem>
+                        {!isEmptyDeep(filterPlantList) && filterPlantList.map(item => (
+                          <MenuItem key={item.value} value={item.value}>
+                            {item.display + "-" + item.value}
+                          </MenuItem>
+                        ))}
+                      </Select> */}
+                    </FormControl>
+         </Grid>
+              
   </Grid>
 </Grid>
 
@@ -968,10 +1010,10 @@ render() {
               <div className="row" >
                                  <div className="col-sm-9"></div>
                                  <div className="col-sm-3">
-                                <input type="text" id="SearchTableDataInputThree"
+                                {/* <input type="text" id="SearchTableDataInputThree"
                                  //className="form-control" 
                                  onKeyUp={searchTableDataThree} placeholder="Search .." 
-                                 style={{fontSize: "10px", float:"right" }}/> 
+                                 style={{fontSize: "10px", float:"right" }}/>  */}
                                  <IconButton size="small" style={{float:"right", marginRight:"10px"}} 
                                  onClick={(this.onOpenModalNew)} color="primary">
                                   <i class="fa fa-filter"></i></IconButton>
@@ -1033,7 +1075,7 @@ render() {
                                     <td colSpan="3"></td>
                                     <td style={{minWidth:"20px"}}>{formatDateWithoutTimeNewDate2(item.pr.date!=null?item.pr.date:"")}</td>
                                     <td style={{minWidth:"20px"}}>{removeLeedingZeros(item.prLineNumber)}</td>
-                                    <td>{this.props.prStatusList[item.status]}</td>
+                                    {/* <td>{this.props.prStatusList[item.status]}</td> */}
                                     <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
                                     <td style={{minWidth:"5px"}}>{item.reqQty}</td>
                                     <td style={{minWidth:"26px"}}>{item.uom}</td>
@@ -1063,7 +1105,7 @@ render() {
                                       />
                                     </td>*/}
                                    
-                                    <td>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</td>
+                                    {/* <td>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</td> */}
                                     <td>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</td>
                                     <td>
                                     <>

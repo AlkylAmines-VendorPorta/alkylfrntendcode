@@ -1023,6 +1023,14 @@ class PRBody extends Component {
                                   {/* } */}
                                 </td>
                                 <td>
+                                <input
+                                    type="hidden"
+                                    className={"form-control " + this.state.prLineReadOnly}
+                                    
+                                    name={"prLines["+i+"][prLineNumber]"}
+                                    value={prLine.prLineNumber}
+                                    disabled={isEmpty(prLine.prLineId)}
+                                  />
                                   <input
                                     type="hidden"
                                     className={"form-control " + this.state.prLineReadOnly}

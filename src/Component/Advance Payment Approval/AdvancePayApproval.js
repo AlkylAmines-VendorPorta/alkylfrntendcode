@@ -615,7 +615,7 @@ onApprovalStateChange=(e,payment,key,index)=> {
                                <td id={"collapse" + i} class="collapse in p-1"> <input
                                                                                 type="date" 
                                                                                 className={"col-12 form-control "}
-                                                                                defaultValue={formatDate(payment.nextPaymentDate)}
+                                                                                defaultValue={formatDateWithoutTime(payment.nextPaymentDate)}
                                                                                 
                                                                                 onChange={(e) => {
                                                                                   this.onApprovalStateChange(e,payment,key,index)

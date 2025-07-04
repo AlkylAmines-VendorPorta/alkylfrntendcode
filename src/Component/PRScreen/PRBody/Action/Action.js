@@ -89,7 +89,8 @@ export function updatePRApprove(response) {
         }
     }else{
         if(!isEmpty(response) && !isEmpty(response.success)){
-            showAlertAndReload(!response.success,response.message);
+            // showAlertAndReload(!response.success,response.message);
+            showAlert(!response.success,response.message);
         }
         return {
             type : "PR_SUBMIT_FAILED",

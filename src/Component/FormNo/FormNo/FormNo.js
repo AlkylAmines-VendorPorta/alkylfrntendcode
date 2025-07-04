@@ -2702,15 +2702,35 @@ async componentDidMount() {
                                                     if (event.target.value.length < 60) {
                                                        commonHandleChange(event, this, "asndetails.servicePostingDate", "reports");
                                                     }
-
-
                                                  } } />
                  
                                               
                                               </div>
 </div>
 
-                                              </div></>
+                                              </div>
+                                              <div className="col-sm-12">
+                                              <div className="row mt-4">
+                                    <label className="col-sm-2">Upload Invoice
+                                    </label>
+                                    <div className="col-sm-3">
+                                       <div className="input-group">
+                                          <input type="hidden" disabled={(isEmpty(this.state.asnDetails.invoiceDoc.attachmentId)) || (this.state.asnDetails.invoiceApplicable ? false : true)} name="invoice[attachmentId]" value={this.state.asnDetails.invoiceDoc.attachmentId} />
+                                          <input type="hidden" name="invoice[fileName]" value={this.state.asnDetails.invoiceDoc.fileName} disabled={(isEmpty(this.state.asnDetails.invoiceDoc.attachmentId)) || (this.state.asnDetails.invoiceApplicable ? false : true)} />
+                                          <input type="file" onChange={(e) => { commonHandleFileUploadInv(e, this, "asnDetails.invoiceDoc") }} disabled={(this.state.asnDetails.invoiceApplicable ? false : true)}
+                                             className={"form-control "} name="invoiceAttach" required />
+                                          {/* <FieldFeedbacks for="invoiceAttach">
+                                             <FieldFeedback when={(value) => isEmpty(value) && isEmpty(this.state.snDetails.invoiceDoc.attachmentId)}> Inovice File Mandatory</FieldFeedback>
+                                          </FieldFeedbacks> */}
+                                          <div className="input-group-append">
+                                             <button className="btn btn-danger clearFile" onClick={() => { this.clearInoviceAttachment() }} type="button">X</button>
+                                          </div>
+                                       </div>
+                                       <div disabled={this.state.asnDetails.invoiceApplicable ? false : true}><a href={API_BASE_URL + "/rest/download/" + this.state.asnDetails.invoiceDoc.attachmentId}>{this.state.asnDetails.invoiceDoc.fileName}</a></div>
+
+                                    </div>
+                                 </div></div>
+                                              </>
                                            :""}
                                  
                                  </div>

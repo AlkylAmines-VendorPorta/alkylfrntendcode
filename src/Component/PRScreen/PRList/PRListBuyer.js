@@ -192,19 +192,19 @@ console.log('mohan', item)
 
   handleChange = (key,event) => {
     const selectedValues = event.target.value; // The selected values (array of item.value)
-    const selectedValuesStr = selectedValues.join(", ");
+    // const selectedValuesStr = selectedValues.join(", ");
     this.setState({
       selectedItemsPr: event.target.value,  // Update selected items
     });
-    this.props.onFilterChange && this.props.onFilterChange(key, selectedValuesStr);
+    this.props.onFilterChange && this.props.onFilterChange(key, selectedValues);
   };
   handleChangePL = (key,event) => {
     const selectedValues = event.target.value; // The selected values (array of item.value)
-    const selectedValuesStr = selectedValues.join(", ");
+   // const selectedValuesStr = selectedValues.join(", ");
     this.setState({
       selectedItemsPL: event.target.value,  // Update selected items
     });
-    this.props.onFilterChange && this.props.onFilterChange(key, selectedValuesStr);
+    this.props.onFilterChange && this.props.onFilterChange(key, selectedValues);
   };
 
   getHiddenFields = (prLine, index) => {
@@ -268,6 +268,7 @@ if(this.state.checked===true){
 }
 clearFields = () => {
   this.props.onClearFilter(); // Calls parent's clearFilter
+  this.setState({selectedItemsPr: [],selectedItemsPL:[]})
 }
 handleFilterClick = () => {
   this.setState({ openModal:false})
@@ -777,7 +778,7 @@ onOpenModal=()=>{
 </div>
 </>
 {this.state.openModal && <div className="modal roleModal customModal" id="updateRoleModal show" style={{ display: 'block' }}>
-<div className="modal-backdrop"></div> <div className="modal-dialog modal-sm">
+<div className="modal-backdrop"></div> <div className="modal-dialog modal-md">
                                        <div className="modal-content">
 <FormWithConstraints ref={formWithConstraints => this.prFormbuyer = formWithConstraints} 
 //onSubmit={this.onSubmit}
@@ -804,7 +805,7 @@ onOpenModal=()=>{
                     
                      <div className="col-sm-12 mt-5">
                     
-              <FormControl fullWidth size="small" variant="outlined">
+              {/* <FormControl fullWidth size="small" variant="outlined">
                       <InputLabel shrink>Purchase Group</InputLabel>
                       <Select
                        value={filter.purchaseGroupFrom}
@@ -820,10 +821,53 @@ onOpenModal=()=>{
                           </MenuItem>
                         ))}
                       </Select>
-                    </FormControl>            
+                    </FormControl>             */}
+                    <FormControl fullWidth size="small" variant="outlined">
+                <InputLabel shrink>Purchase Group</InputLabel>
+                <Select
+                  multiple
+                  value={this.state.selectedItemsPr}
+                 // onChange={this.handleChange}
+                  onChange={this.handleChange.bind(this,'multiplePurchaseGroup')}
+                  sx={{ fontSize: 12, height: "15px" }}
+                  renderValue={(selected) => {
+                    // Display both item.display and item.value as selected items
+                    return selectedItemsDisplay.map(item => `${item.display} - ${item.value}`).join(", ");
+                  }}  // Custom display for selected items
+                >
+                  {!isEmpty(filterPurhaseGroupList) && filterPurhaseGroupList.map((item, i) => (
+                    <MenuItem  key={i + 1} value={item.value} style={{padding:"0px"}}>
+                      <Checkbox size="small" checked={this.state.selectedItemsPr.indexOf(item.value) > -1} />
+                      <ListItemText className="customListItemText" primary={item.display + " - " + item.value} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               </div>
               <div className="col-sm-12 mt-5">
               <FormControl fullWidth size="small" variant="outlined">
+                      <InputLabel shrink>Plant</InputLabel>
+
+                      <Select
+                  multiple
+                  value={this.state.selectedItemsPL}
+                 // onChange={this.handleChange}
+                  onChange={this.handleChangePL.bind(this,'multiplePlantList')}
+                  sx={{ fontSize: 12, height: "15px" }}
+                  renderValue={(selected) => {
+                    // Display both item.display and item.value as selected items
+                    return selectedItemsDisplayPlant.map(item => `${item.display} - ${item.value}`).join(", ");
+                  }}  // Custom display for selected items
+                >
+                  {!isEmpty(filterPlantList) && filterPlantList.map((item, i) => (
+                    <MenuItem  key={i + 1} value={item.value} style={{padding:"0px"}}>
+                      <Checkbox size="small" checked={this.state.selectedItemsPL.indexOf(item.value) > -1} />
+                      <ListItemText className="customListItemText" primary={item.display + " - " + item.value} />
+                    </MenuItem>
+                  ))}
+                </Select>
+                    </FormControl>
+              {/* <FormControl fullWidth size="small" variant="outlined">
                       <InputLabel shrink>Plant</InputLabel>
                       <Select
                          value={filter.plant} onChange={this.handleFilterChange.bind(this,'plant')}
@@ -837,9 +881,41 @@ onOpenModal=()=>{
                           </MenuItem>
                         ))}
                       </Select>
-                    </FormControl>
+                    </FormControl> */}
          
               </div>
+
+              {/* PR Release Date Row */}
+              <div className="col-sm-12 mt-5">
+  <Grid item xs={12} container alignItems="center" spacing={2} >
+   
+   <Grid item xs={6}>
+     <TextField
+       label="PR Date From"
+       variant="outlined"
+       size="small"
+       fullWidth
+       type="date"
+       value={filter.prDateFrom}
+       onChange={this.handleFilterChange.bind(this, 'prDateFrom')}
+       InputLabelProps={{ shrink: true }}
+       inputProps={{ style: { fontSize: 12, height: "15px" } }}
+     />
+   </Grid>
+   <Grid item xs={6}>
+     <TextField
+       label="PR Date To"
+       variant="outlined"
+       size="small"
+       fullWidth
+       type="date"
+       value={filter.prDateTo}
+       onChange={this.handleFilterChange.bind(this, 'prDateTo')}
+       InputLabelProps={{ shrink: true }}
+       inputProps={{ style: { fontSize: 12, height: "15px" } }}
+     />
+   </Grid>
+ </Grid></div>
             <div className="col-lg-12 text-center mt-2">
                       <Button type="button" size="small" color="primary" variant="contained" onClick={this.handleFilterClick.bind(this)}> Search </Button> 
                       <Button size="small" color="secondary" variant="contained" type="button" className="ml-1" onClick={this.onCloseModal.bind(this)}>

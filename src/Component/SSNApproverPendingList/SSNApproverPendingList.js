@@ -260,7 +260,8 @@ showASNHistory = () =>{
        roundOffValue: asnlineObj.advanceshipmentnotice.roundOffValue,
        serviceLocation:asnlineObj.advanceshipmentnotice.serviceLocation,
        serviceFromDate:asnlineObj.advanceshipmentnotice.serviceFromDate,
-       serviceToDate:asnlineObj.advanceshipmentnotice.serviceToDate
+       serviceToDate:asnlineObj.advanceshipmentnotice.serviceToDate,
+       invoice:asnlineObj.advanceshipmentnotice.invoice
     };
  }
 
