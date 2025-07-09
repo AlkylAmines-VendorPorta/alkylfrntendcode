@@ -26,6 +26,7 @@ import TableToExcel from "@linways/table-to-excel";
 import moment from "moment";
 import formatDate from '../../Util/DateUtil';
 import { Button, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 
 class ASNReportsWithoutPO extends Component {
@@ -237,7 +238,128 @@ exportReportToExcel() {
     const filteredData = this.state.asnLinereportlistWithoutPO.filter((entry) => {
       return searchInObject(entry, searchQuery);
     });
+   const columns = [
+  {
+    name: 'ASN No',
+    selector: row => row.advanceshipmentnotice.advanceShipmentNoticeNo,
+    sortable: true
+  },
+{
+    name: 'ASN Date',
+    selector: row => row.advanceshipmentnotice.created===null?"":formatDate(row.advanceshipmentnotice.created),
+    sortable: true
+  },
+{
+    name: 'Status',
+    selector: row => row.advanceshipmentnotice.status,
+    sortable: true
+  },
+{
+    name: 'Vehicle Number',
+    selector: row =>  row.advanceshipmentnotice.vehicalNo,
+    sortable: true
+  },
+{
+    name: 'Lr No.',
+    selector: row =>  row.advanceshipmentnotice.lrNumber,
+    sortable: true
+  },
+{
+    name: 'Transport Name',
+    selector: row =>  row.advanceshipmentnotice.transporterNo,
+    sortable: true
+  },
+  {
+    name: 'Line No',
+    selector: row =>  row.lineItemNo,
+    sortable: true
+  },
+  {
+    name: 'Material Description',
+    selector: row => row.name,
+    sortable: true
+  },
+ {
+    name: 'Qty',
+    selector: row => row.deliveryQuantity,
+    sortable: true
+  },
+ {
+    name: 'UOM',
+    selector: row => row.uom,
+    sortable: true
+  },
+ {
+    name: 'Rate',
+    selector: row => row.rate,
+    sortable: true
+  },
+ {
+    name: 'Invoice No',
+    selector: row => row.advanceshipmentnotice.invoiceNo,
+    sortable: true
+  },
+ {
+    name: 'Invoice Date',
+    selector: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
+    sortable: true
+  },
+ {
+    name: 'Created By',
+    selector: row => row.advanceshipmentnotice.createdBy===null?"":(row.advanceshipmentnotice.createdBy.userDetails===null?"":row.advanceshipmentnotice.createdBy.userDetails.name),
+    sortable: true
+  },
+ {
+    name: 'Reported By',
+    selector: row => row.advanceshipmentnotice.reportedBy===null?"":(row.advanceshipmentnotice.reportedBy.userDetails===null?"":row.advanceshipmentnotice.reportedBy.userDetails.name),
+    sortable: true
+  },
+ {
+    name: 'Reported Date',
+    selector: row => row.advanceshipmentnotice.reportedDate===null?"":formatDate(row.advanceshipmentnotice.reportedDate),
+    sortable: true
+  },
+ {
+    name: 'Reported Time',
+    selector: row => row.advanceshipmentnotice.reportedDate===null?"":formatTime(row.advanceshipmentnotice.reportedDate),
+    sortable: true
+  },
+ {
+    name: 'Gate In By',
+    selector: row => row.advanceshipmentnotice.gateinBy==null?"":(row.advanceshipmentnotice.gateinBy.userDetails===null?"":row.advanceshipmentnotice.gateinBy.userDetails.name),
+    sortable: true
+  },
+ {
+    name: 'Gate In Date',
+    selector: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
+    sortable: true
+  },
+ {
+    name: 'Gate In Time',
+    selector: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
+    sortable: true
+  },
+ {
+    name: 'Gate Out Date',
+    selector: row => row.advanceshipmentnotice.gateOutDate===null?"":formatDate(row.advanceshipmentnotice.gateOutDate),
+    sortable: true
+  },
+{
+    name: 'Gate Out Time',
+    selector: row => row.advanceshipmentnotice.gateOutDate===null?"":formatTime(row.advanceshipmentnotice.gateOutDate),
+    sortable: true
+  },
+{
+    name: 'Closed By',
+    selector: row => row.advanceshipmentnotice.closedBy==null?"":(row.advanceshipmentnotice.closedBy.userDetails===null?"":row.advanceshipmentnotice.closedBy.userDetails.name),
+    sortable: true
+  },
+{
+    name: 'Diff. (Vehicle In time & Out Time)',
+    selector: row => row.advanceshipmentnotice.gateOutDate===null?"":this.getinoutTimeDifference(formatDate(row.advanceshipmentnotice.gateInDate),formatDate(row.advanceshipmentnotice.gateOutDate)),
+    sortable: true  },
 
+]
     return (
       <>
 
@@ -356,7 +478,7 @@ exportReportToExcel() {
         </Grid>
         </Grid>
             <TableContainer>
-                    <Table className="my-table" >
+                    {/* <Table className="my-table" >
                       <TableHead>
                         <TableRow>
                           <TableCell>ASN No</TableCell>
@@ -417,7 +539,7 @@ exportReportToExcel() {
                         ))}
                       </TableBody> 
                     </Table>
-                  </TableContainer>
+               
                   <TablePagination
                     rowsPerPageOptions={[50, 100, 150]}
                     component="div"
@@ -426,7 +548,16 @@ exportReportToExcel() {
                     page={page}
                     onPageChange={this.handlePageChange}
                     onRowsPerPageChange={this.handleRowsPerPageChange}
-                  />
+                  /> */}
+                   <DataTable
+                        columns={columns}
+                        data={filteredData}
+                        pagination
+                        paginationPerPage={50}  
+                        //responsive
+                        paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                      />
+                </TableContainer>
 <div style={{display:"none"}}>
 <Table className="my-table"  id="AsnLineWithoutPOReport">
                       <TableHead>

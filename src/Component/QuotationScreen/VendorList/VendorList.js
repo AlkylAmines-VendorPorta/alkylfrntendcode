@@ -33,6 +33,7 @@ import {
 } from "@material-ui/core";
 import { API_BASE_URL } from "../../../Constants";
 import axios from "axios";
+import DataTable from "react-data-table-component";
 class VendorList extends Component {
   constructor(props) {
     super(props);
@@ -153,6 +154,10 @@ class VendorList extends Component {
       this.setState({ loading: false, error: error.message }); // Handle any errors
     }
   };
+  handleRowClick = (row) => {
+  
+  this.props.loadVendorQuotationByBidder(row, row.bidderId);
+};
   render() {
     const { page, rowsPerPage, search } = this.state;
     const searchInObject = (obj, searchTerm) => {
@@ -172,6 +177,61 @@ class VendorList extends Component {
       return searchInObject(entry, search);
     });
     const { filter } = this.state;
+         const columns = [
+      {
+        name: 'Enq No',
+        selector: row => row.enquiry.enquiryId,
+        sortable: true,
+        maxWidth: '50px'
+      },
+     {
+        name: 'Enq Date',
+        selector: row => formatDate(row.enquiry.created),
+        sortable: true
+      },
+    
+      {
+        name: 'Vendor Name',
+        selector: row => row.partner.vendorSapCode + "-" + row.partner.name,
+        sortable: true
+      },
+      {
+        name: 'Buyer Name',
+        selector: row => row.enquiry.createdBy.userName + " - " + row.enquiry.createdBy.name,
+        sortable: true
+      },
+      {
+        name: 'Enq End Date',
+        selector: row => formatDate(row.enquiry.bidEndDate),
+        sortable: true
+      },
+    {
+        name: 'Status',
+        selector: row =>  row.status,
+        sortable: true
+      },
+    
+      {
+        name: 'Action',
+        selector: row => row.tcApprover.name,
+       cell: (row) => (
+      <Button size="small" variant="contained"
+                         color="primary" 
+                         style={{fontSize:"8px", margin:"2px 0px"}}
+                         onClick={()=>this.resendEnquiry(row.bidderId)}
+                         >Resend Enquiry</Button>
+    ),
+    ignoreRowClick: true,
+    button: true,
+    minWidth:"180px"
+      },
+      {
+        name: 'Bidder Code & Name',
+        selector: row => row.bidderId + " & " + row.name,
+        sortable: true,
+        omit:(this.props.role === ROLE_BUYER_ADMIN) || (this.props.role === ROLE_NEGOTIATOR_ADMIN)
+      }
+    ]
     return (
       <>
         <>
@@ -339,7 +399,7 @@ class VendorList extends Component {
         </Grid>
         </Grid>
           <TableContainer>
-              <table className="my-table">
+              {/* <table className="my-table">
                 <thead>
                   <tr>
                   
@@ -357,16 +417,15 @@ class VendorList extends Component {
                 </thead>
                 <tbody id="DataTableBody">
                 {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((el, i) => 
-                    // this.props.role === ROLE_NEGOTIATOR_ADMIN ?
-                    
-                      <tr >
+                 <tr >
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.enquiry.enquiryId}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDate(el.enquiry.created)}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.partner.vendorSapCode + "-" + el.partner.name}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.enquiry.createdBy.userName + " - " + el.enquiry.createdBy.name}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}> {formatDate(el.enquiry.bidEndDate)}</td>
                         <td onClick={() => this.props.loadVendorQuotationByBidder(el, el.bidderId)}>{el.status}</td>
-                        <td className="w-10per"><Button size="small" variant="contained"
+                        <td className="w-10per">
+                          <Button size="small" variant="contained"
                          color="primary" 
                          style={{fontSize:"8px", margin:"2px 0px"}}
                          onClick={()=>this.resendEnquiry(el.bidderId)}
@@ -375,9 +434,18 @@ class VendorList extends Component {
                       </tr>
                   )}
                 </tbody>
-              </table>
+              </table> */}
+              <DataTable
+                              columns={columns}
+                              data={filteredData}
+                              pagination
+                              responsive
+                              paginationPerPage={50}  
+                              paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                              onRowClicked={this.handleRowClick}
+                            />
             </TableContainer>
-            <TablePagination
+            {/* <TablePagination
                 rowsPerPageOptions={[50, 100, 150]}
                 component="div"
                 count={filteredData.length}
@@ -385,7 +453,7 @@ class VendorList extends Component {
                 page={page}
                 onPageChange={this.handlePageChange}
                 onRowsPerPageChange={this.handleRowsPerPageChange}
-              />
+              /> */}
         </>
       </>
     );

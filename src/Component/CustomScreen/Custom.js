@@ -599,7 +599,7 @@ if(props.vendorList){
                               </TableRow>
                             </TableHead>
                             <TableBody id="DataTableBodyTwo">
-                            {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((vendor, index) => (
+                            {filteredData && filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((vendor, index) => (
                                 <TableRow>
                                   <TableCell>
                                     <Checkbox id={"checkbox" + index} />

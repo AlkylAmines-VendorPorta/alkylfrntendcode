@@ -40,6 +40,7 @@ import {
   ListItemText
 } from "@material-ui/core";
 import LoaderWithProps from "../../FormElement/Loader/LoaderWithProps";
+import DataTable from "react-data-table-component";
 class PRList extends Component {
   constructor(props) {
     super(props);
@@ -281,7 +282,10 @@ else
       openModalNew:true
     })
   }
-
+   handleRowClick = (row) => {
+  
+  this.props.loadPRDetails(row.prId);
+};
 render() {
     const { page, rowsPerPage, search , selectedItemsPr,selectedItemsPrPlant} = this.state;
     const {filterBuyerList,filterPlantList,filterPRStatusList,filterPurhaseGroupList,filter} = this.props;
@@ -304,8 +308,267 @@ render() {
     const filteredData = this.props.prList.filter((entry) => {
       return searchInObject(entry, search);
     });
+    const filteredData2 = [];
+
+Object.keys(groupByList).forEach((key) => {
+  const itemData = groupByList[key];
+  // Push parent row (PR row)
+  filteredData2.push({
+    type: 'parent',
+    key,
+    itemData,
+  });
+
+  // Push children rows
+  if (itemData && itemData.length) {
+    itemData.forEach((childItem, index) => {
+      filteredData2.push({
+        type: 'child',
+        key,
+        index,
+        item: childItem,
+      });
+    });
+  }
+});
+
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
     const selectedItemsDisplayPlant=filterPlantList && filterPlantList.filter(item=>selectedItemsPrPlant.includes(item.value));    
+     const columns = [
+      {
+        name: 'PR No',
+        selector: row => row.prNumber,
+        sortable: true
+      },
+    {
+        name: 'PR Type',
+        selector: row => row.docType,
+        sortable: true
+      },
+    
+      {
+        name: 'PR Date',
+        selector: row => row.date,
+        sortable: true
+      },
+      {
+        name: 'Emp. Code',
+        selector: row => row.releasedBy!=null?row.releasedBy.empCode:"",
+        sortable: true
+      },
+      {
+        name: 'Emp. Name',
+        selector: row => row.releasedBy!=null?row.releasedBy.name:"",
+        sortable: true
+      },
+    {
+        name: 'Approver',
+        selector: row =>  row.releasedBy!=null?row.releasedBy.name:"",
+        sortable: true
+      },
+    
+      {
+        name: 'Tech Approver',
+        selector: row => row.tcApprover.name,
+        sortable: true
+      },
+      {
+        name: 'Status',
+        selector: row => this.props.prStatusList[row.status],
+        sortable: true
+      },
+      {
+        name: 'Release Date',
+        selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
+        sortable: true
+      },
+    
+    {
+        name: 'Release Time',
+        selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
+        sortable: true
+      },
+    
+      {
+        name: 'Approved Date',
+        selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
+        sortable: true
+      },
+      {
+        name: 'Approved Time',
+        selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
+        sortable: true
+      },
+      {
+        name: 'Purchase Manager Approver',
+        selector: row => row.pmapprovedBy!=null?row.pmapprovedBy.name:"",
+        sortable: true
+      },
+    {
+        name: 'PM Approved Date',
+        selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
+        sortable: true
+      },
+    
+    {
+        name: 'PM Approved Time',
+        selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
+        sortable: true
+      }
+    ]
+    const columns2 = [
+  {
+    name: (
+      <div>
+        <input
+          type="checkbox"
+          checked={this.state.checked}
+          onChange={this.toggleChecked}
+          style={{ marginRight: 5 }}
+        />
+        Rel
+      </div>
+    ),
+    cell: row =>
+      row.type === 'parent' ? (
+        <input
+          type="checkbox"
+          checked={this.state.checkedItems.includes(row.key)}
+          onChange={() => this.onChecked(row.key)}
+        />
+      ) : (
+        ''
+      ),
+    width: '80px',
+    ignoreRowClick: true,
+  },
+  {
+    name: 'PR No',
+    selector: row => (row.type === 'parent' ? row.key : ''),
+    width: '120px',
+  },
+  {
+    name: '',
+    cell: row =>
+      row.type === 'parent' ? (
+        <button
+          type="button"
+          onClick={() => this.handleSelect(row.itemData)}
+          className="btn btn-light"
+          data-toggle="modal"
+          data-target="#viewPrDetail"
+        >
+          View PR
+        </button>
+      ) : (
+        ''
+      ),
+    width: '100px',
+    ignoreRowClick: true,
+    button: true,
+  },
+  {
+    name: 'PR Date',
+    selector: row =>
+      row.type === 'child' ? formatDateWithoutTimeNewDate2(row.item?.pr?.date ?? '') : '',
+    width: '140px',
+  },
+  {
+    name: 'Line No.',
+    selector: row =>
+      row.type === 'child' ? removeLeedingZeros(row.item?.prLineNumber) : '',
+    width: '100px',
+  },
+  {
+    name: 'Material Code & Description',
+    selector: row =>
+      row.type === 'child'
+        ? `${row.item?.materialCode} - ${row.item?.materialDesc}`
+        : '',
+    minWidth: '250px',
+  },
+  {
+    name: 'Req. Qty.',
+    selector: row => (row.type === 'child' ? row.item?.reqQty : ''),
+    width: '100px',
+  },
+  {
+    name: 'UOM',
+    selector: row => (row.type === 'child' ? row.item?.uom : ''),
+    width: '80px',
+  },
+  {
+    name: 'Val. Price',
+    selector: row => (row.type === 'child' ? row.item?.price : ''),
+    width: '120px',
+  },
+  {
+    name: 'Plant',
+    selector: row =>
+      row.type === 'child'
+        ? row.item?.plantDesc
+          ? `${row.item?.plant} - ${row.item?.plantDesc}`
+          : row.item?.plant
+        : '',
+    width: '140px',
+  },
+  {
+    name: 'Delivery Date',
+    cell: row =>
+      row.type === 'child' ? (
+        <input
+          type="date"
+          min={disablePastDate()}
+          max="9999-12-31"
+          className="form-control"
+          value={row.item?.deliverDate}
+          onChange={(e) =>
+            this.commonHandleChange(e, 'deliverDate', row.key, row.index)
+          }
+        />
+      ) : (
+        ''
+      ),
+    width: '160px',
+  },
+  {
+    name: 'Material Group',
+    selector: row =>
+      row.type === 'child'
+        ? `${row.item?.matGrp ?? ''} - ${row.item?.matGrpDesc ?? ''}`
+        : '',
+    minWidth: '180px',
+  },
+  {
+    name: 'Buyer',
+    cell: row =>
+      row.type === 'child' ? (
+        <select
+          className="form-control"
+          onChange={(e) =>
+            this.commonHandleChange(e, 'buyer', row.key, row.index)
+          }
+          value={row.item?.buyer?.userId ?? ''}
+        >
+          <option value="">Select Buyer</option>
+          {this.props.buyerList.map((buyer) => (
+            <option key={buyer.userId} value={buyer.userId}>
+              {buyer.name}
+            </option>
+          ))}
+        </select>
+      ) : (
+        ''
+      ),
+    width: '160px',
+  },
+  {
+    name: 'Tracking No',
+    selector: row => (row.type === 'child' ? row.item?.trackingNo : ''),
+    width: '140px',
+  },
+];
+
     return (
       <>
 <LoaderWithProps isLoading={this.state.isLoading} />
@@ -1023,7 +1286,7 @@ render() {
                
                   <TableContainer className="mt-1">
                 
-                  <table className="my-table">
+                  {/* <table className="my-table">
   <thead>
     <tr>
       <th>
@@ -1039,14 +1302,12 @@ render() {
       <th></th>
       <th>PR Date</th>
       <th>Line No.</th>
-      {/* <th>Status</th> */}
       <th>Material Code & Description</th>
       <th>Req. Qty.</th>
       <th>UOM</th>
       <th>Val. Price</th>
       <th>Plant</th>
       <th>Delivery Date</th>
-      {/* <th>Desire Vendor</th> */}
       <th>Material Group</th>
       <th>Buyer</th>
       <th>Tracking No</th>
@@ -1075,12 +1336,11 @@ render() {
                                     <td colSpan="3"></td>
                                     <td style={{minWidth:"20px"}}>{formatDateWithoutTimeNewDate2(item.pr.date!=null?item.pr.date:"")}</td>
                                     <td style={{minWidth:"20px"}}>{removeLeedingZeros(item.prLineNumber)}</td>
-                                    {/* <td>{this.props.prStatusList[item.status]}</td> */}
+                                   
                                     <td>{`${item.materialCode} - ${item.materialDesc}`}</td>
                                     <td style={{minWidth:"5px"}}>{item.reqQty}</td>
                                     <td style={{minWidth:"26px"}}>{item.uom}</td>
                                     <td style={{minWidth:"20px"}}>{item.price}</td>
-                                    {/* <td style={{minWidth:"26px"}}>{item.plant}</td> */}
                                     <td style={{minWidth:"26px"}}>{item.plantDesc!=null?item.plant+"-"+item.plantDesc:item.plant}</td>
                                     <td>
                                       <input
@@ -1094,19 +1354,7 @@ render() {
                                         }}
                                       />
                                     </td>
-                                    {/*<td>
-                                      <input
-                                        type="date"
-                                        className={"form-control"}
-                                          value={item.requiredDate}
-                                        onChange={(event) => {
-                                          this.commonHandleChange(event,"requiredDate",key,index);
-                                        }}
-                                      />
-                                    </td>*/}
-                                   
-                                    {/* <td>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</td> */}
-                                    <td>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</td>
+                                   <td>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</td>
                                     <td>
                                     <>
                                       <select
@@ -1145,8 +1393,15 @@ render() {
                               page={page}
                               onPageChange={this.handlePageChange}
                               onRowsPerPageChange={this.handleRowsPerPageChange}
-                            />
-
+                            /> */}
+                            <DataTable
+                                columns={columns2}
+                                data={filteredData2}
+                                pagination
+                                paginationPerPage={50}  
+                                paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                                //onRowClicked={this.handleRowClick}
+                              />
                   </TableContainer>
           
                 <div className="col-sm-12 text-center">
@@ -1174,7 +1429,7 @@ render() {
                         </Grid>
                         </Grid>
               <TableContainer>
-              <table className="my-table">
+              {/* <table className="my-table">
                 <thead>
                   <tr>
                     <th>PR No</th>
@@ -1203,10 +1458,7 @@ render() {
                       <td>{pr.date}</td>
                       <td>{pr.releasedBy!=null?pr.releasedBy.empCode:""}</td>
                       <td>{pr.releasedBy!=null?pr.releasedBy.name:""}</td>
-                      {/* <td>{pr.requestedBy.empCode}</td>
-                      <td>{pr.requestedBy.empCode!=""?pr.requestedBy.name:""}</td> */}
-                      {/* <td></td> */}
-                      {/* <td>{pr.approver.name}</td> */}
+                     
                       <td>{pr.approvedBy!=null?pr.approvedBy.name:""}</td>
                       <td>{pr.tcApprover.name}</td>
                       <td>{this.props.prStatusList[pr.status]}</td>
@@ -1221,8 +1473,8 @@ render() {
                     )  
                   })}
                 </tbody>
-              </table>
-              <TablePagination
+              </table> */}
+              {/* <TablePagination
                               rowsPerPageOptions={[50, 100, 150]}
                               component="div"
                               count={filteredData.length}
@@ -1230,7 +1482,15 @@ render() {
                               page={page}
                               onPageChange={this.handlePageChange}
                               onRowsPerPageChange={this.handleRowsPerPageChange}
-                            />
+                            /> */}
+                             <DataTable
+                                columns={columns}
+                                data={filteredData}
+                                pagination
+                                paginationPerPage={50}  
+                                paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                                onRowClicked={this.handleRowClick}
+                              />
               </TableContainer>
               </div>
               </>

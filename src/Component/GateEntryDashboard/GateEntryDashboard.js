@@ -11,11 +11,12 @@ import { isEmpty } from "../../Util/validationUtil";
 import {
   commonSubmitWithParam
 } from "../../Util/ActionUtil";
-import { formatDateWithoutTimeNewDate } from "../../Util/DateUtil";
+import formatDate, { formatDateWithoutTimeNewDate } from "../../Util/DateUtil";
 import {saveServer, savetoServer} from "../../Util/APIUtils";
 import UserDashboardHeader from "../../Component/Header/UserDashboardHeader";
 import LoaderWithProps from "../FormElement/Loader/LoaderWithProps";
 import ReportVechicle from "../ReportVehicle/ReportVehicle";
+import DataTable from "react-data-table-component";
 
 class GateEntryDashboard extends Component {
   constructor(props) {
@@ -113,7 +114,9 @@ class GateEntryDashboard extends Component {
   handleChangeRowsPerPage = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
-
+  handleRowClick = (row) => {
+      this.handleVehicleRegistrationDetails(row);
+    };
   getStatusFullForm = (status) => {
     const statusMap = {
       CR: "Created",
@@ -128,7 +131,46 @@ class GateEntryDashboard extends Component {
 
   render() {
     const { isLoading, searchQuery, filteredList, page, rowsPerPage } = this.state;
-
+   const columns = [
+  {
+    name: "Sales Order No",
+    selector: row => row.saleOrderNo,
+    sortable: true
+  },
+{
+    name: 'Request No',
+    selector: row => row.requestNo,
+    sortable: true
+  },
+{
+    name: 'Request On',
+    selector: row => formatDate(row.requiredOn),
+    sortable: true,  },
+{
+    name: 'Plant',
+    selector: row =>  row.plant,
+    sortable: true,
+},
+{
+    name: 'Ship to Party',
+    selector: row =>  row.shipToParty,
+    sortable: true
+  },
+{
+    name: 'Destination',
+    selector: row =>  row.destination,
+    sortable: true
+  },
+{
+    name: 'Transporter',
+    selector: row =>  row.transporter,
+    sortable: true
+  }, {
+    name: 'Status',
+    selector: row => this.getStatusFullForm(row.status),
+    sortable: true
+  }
+]
     return (
       <div className="wizard-v1-content" style={{marginTop:"80px"}}>
          
@@ -153,7 +195,7 @@ class GateEntryDashboard extends Component {
 
               {/* Table */}
               <TableContainer>
-                <Table className="my-table">
+                {/* <Table className="my-table">
                   <TableHead>
                     <TableRow>
                       <TableCell><b>Sales Order No</b></TableCell>
@@ -183,11 +225,11 @@ class GateEntryDashboard extends Component {
                         </TableRow>
                       ))}
                   </TableBody>
-                </Table>
-              </TableContainer>
+                </Table> */}
+            
 
-              {/* Pagination */}
-              <TablePagination
+             
+              {/* <TablePagination
                 rowsPerPageOptions={[50, 100, 150]}
                 component="div"
                 count={filteredList.length}
@@ -195,7 +237,17 @@ class GateEntryDashboard extends Component {
                 page={page}
                 onChangePage={this.handleChangePage}
                 onChangeRowsPerPage={this.handleChangeRowsPerPage}
-              />
+              /> */}
+        <DataTable
+            columns={columns}
+            data={filteredList}
+            pagination
+            paginationPerPage={50}  
+            //responsive
+            paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+            onRowClicked={this.handleRowClick}
+            />
+              </TableContainer>
           </div>
           <div className={
               (this.state.loadReportVehicle == true

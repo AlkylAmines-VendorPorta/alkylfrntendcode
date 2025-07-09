@@ -1372,12 +1372,12 @@ toPdf(){
                         }
                       </thead>
                       <tbody id="DataTableBody">
-                        {this.state.prLineList.sort((a, b) => a.prLineNumber > b.prLineNumber ? 1:-1).map((el,i)=>{
+                        {this.state.prLineList && this.state.prLineList.sort((a, b) => a.prLineNumber > b.prLineNumber ? 1:-1).map((el,i)=>{
                           console.log("el",el);
                           return (
                             <tr>
                               <td>{i+1}</td>
-                              <td>{el.pr.prNumber}</td>
+                              <td>{el?.pr?.prNumber}</td>
                               <td>{el.materialCode}</td>
                               <td>{el.materialDesc}</td>
                               <td>{this.getItemBidQuantity(el)}</td> 

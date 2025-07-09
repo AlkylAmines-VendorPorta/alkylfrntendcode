@@ -9,6 +9,8 @@ import Loader from "../FormElement/Loader/LoaderWithProps";
 import formatDateWithoutTimeNewDate2 from "../../Util/DateUtil";
 import * as actionCreators from "./Action/Action";
 import { isLoading } from "../../Util/APIUtils";
+import formatDate from "../../Util/DateUtil";
+import DataTable from "react-data-table-component";
 
 class GateEntryRgpList extends Component {
   constructor(props) {
@@ -63,8 +65,50 @@ class GateEntryRgpList extends Component {
 
   render() {
     const { filteredList, searchQuery, page, rowsPerPage } = this.state;
-    const currentItems = filteredList.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
-
+    const filteredData = filteredList;
+ const columns = [
+  {
+    name: 'Req No',
+    selector: row => row.reqNo,
+    sortable: true
+  },
+  {
+    name: 'Req Date',
+    selector: row => formatDate(row.created),
+    sortable: true,
+    ceil: row => formatDate(row.created),
+  },
+  {
+    name: 'Plant',
+    selector: row => row.plant,
+    sortable: true
+  },
+  {
+    name: 'Status',
+    selector: row => row.status,
+    sortable: true
+  },
+  {
+    name: 'Doc Type',
+    selector: row => row.docType,
+    sortable: true
+  },
+  {
+    name: 'Vendor Name',
+    selector: row => row.vendorName,
+    sortable: true
+  },
+  {
+    name: 'Created By',
+    selector: row => row.createdBy?.name || "",
+    sortable: true
+  },
+  {
+    name: 'Department',
+    selector: row => row.createdBy?.userDetails?.department || "",
+    sortable: true
+  }
+];
     return (
       <>
         <Loader isLoading={this.state.isLoading} />
@@ -81,7 +125,14 @@ class GateEntryRgpList extends Component {
         </Grid>
 
           <TableContainer  className="mt-1">
-            <Table className="my-table">
+             <DataTable
+                  columns={columns}
+                  data={filteredData}
+                  pagination
+                  paginationPerPage={50}  
+                  paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                />
+            {/* <Table className="my-table">
               <TableHead>
                 <TableRow>
                   <TableCell>Req No</TableCell>
@@ -109,11 +160,11 @@ class GateEntryRgpList extends Component {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table> */}
           </TableContainer>
 
           {/* Pagination */}
-          <TablePagination
+          {/* <TablePagination
             rowsPerPageOptions={[50, 100, 150]}
             component="div"
             count={filteredList.length}
@@ -121,7 +172,7 @@ class GateEntryRgpList extends Component {
             page={page}
             onPageChange={this.handleChangePage}
             onRowsPerPageChange={this.handleChangeRowsPerPage}
-          />
+          /> */}
         </div>
       </>
     );

@@ -12,7 +12,7 @@ import {
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 import { getIFSCDetails } from "../../Util/APIUtils";
 import Loader from "../FormElement/Loader/LoaderWithProps";
-import { formatDateWithoutTime,formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
+import formatDate, { formatDateWithoutTime,formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
 import TableToExcel from "@linways/table-to-excel";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
@@ -26,6 +26,7 @@ import {
   Button,
   IconButton
 } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 class MaterialInwardReport extends Component {
 
@@ -278,9 +279,109 @@ class MaterialInwardReport extends Component {
       });
     };
   
-    const filteredData = this.props.materialgateEntryLineListDto.filter((entry) => {
+    const filteredData = this.props.materialgateEntryLineListDto && this.props.materialgateEntryLineListDto.filter((entry) => {
       return searchInObject(entry, search);
     });
+    const columns = [
+  {
+    name: 'Req No',
+    selector: row => row.gateEntryLine.gateEntry.reqNo,
+    sortable: true
+  },
+{
+    name: 'Document No',
+    selector: row => row.materialGateIn.docNo,
+    sortable: true
+  },
+
+  {
+    name: 'Req Date',
+    selector: row => formatDate(row.gateEntryLine.gateEntry.created),
+    sortable: true,
+    ceil: row => formatDate(row.gateEntry.created),
+  },
+  {
+    name: 'Return By',
+    selector: row => formatDate(row.gateEntryLine.gateEntry.returnBy),
+    sortable: true,
+    ceil: row => formatDate(row.gateEntry.returnBy),
+  },
+  {
+    name: 'Requestioner Name',
+    selector: row => row.gateEntryLine.gateEntry.createdBy!=null?row.gateEntryLine.gateEntry.createdBy.userDetails.name:"",
+    sortable: true
+  },
+  {
+    name: 'Vehicle No',
+    selector: row => row.gateEntryLine.gateEntry.vehicleNo,
+    sortable: true
+  },
+  {
+    name: 'Vendor Name',
+    selector: row => row.gateEntryLine.gateEntry.vendorName,
+    sortable: true
+  },
+   {
+    name: 'Doc Type',
+    selector: row => row.gateEntryLine.gateEntry.docType,
+    sortable: true
+  },
+  {
+    name: 'Plant',
+    selector: row => row.gateEntryLine.gateEntry.plant,
+    sortable: true
+  },
+    {
+    name: 'Material Details',
+    selector: row => row.gateEntryLine.materialCode,
+    sortable: true
+  },
+    {
+    name: 'UOM',
+    selector: row => row.gateEntryLine.uom,
+    sortable: true
+  },
+  {
+    name: 'Material Quantity',
+    selector: row => row.gateEntryLine.materialQty,
+    sortable: true
+  },
+{
+    name: 'Gate In Quantity',
+    selector: row => row.gateInQty,
+    sortable: true
+  },
+
+{
+    name: 'Accepted Quantity',
+    selector: row => row.acceptQty,
+    sortable: true
+  },
+
+{
+    name: 'Rejected Quantity',
+    selector: row => row.rejectQty,
+    sortable: true
+  },
+
+   {
+    name: 'Purpose',
+    selector: row => row.gateEntryLine.purpose,
+    sortable: true
+  },
+   {
+    name: 'Material Status',
+    selector: row => row.materialGateIn.status,
+    sortable: true
+  },
+  {
+    name: 'Material Closed Date',
+   selector: row => formatDate(row.materialGateIn.closedDate),
+    sortable: true,
+    ceil: row => formatDate(row.materialGateIn.closedDate),
+    sortable: true
+  },
+];
     return (
       <>
 
@@ -413,7 +514,7 @@ class MaterialInwardReport extends Component {
               </Grid>
             </Grid>
             <TableContainer className="mt-1">
-              <Table className="my-table">
+              {/* <Table className="my-table">
                 <TableHead>
                 <TableRow>
                             <TableCell>Req No</TableCell>
@@ -466,9 +567,17 @@ class MaterialInwardReport extends Component {
                   </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table> */}
+              <DataTable
+                  columns={columns}
+                  data={filteredData}
+                  pagination
+                  paginationPerPage={50}  
+                  responsive
+                  paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                />
             </TableContainer>
-            <TablePagination
+            {/* <TablePagination
               rowsPerPageOptions={[50, 100, 150]}
               component="div"
               count={filteredData.length}
@@ -476,7 +585,7 @@ class MaterialInwardReport extends Component {
               page={page}
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
-            />
+            /> */}
         <div style={{display:"none"}}>
         <Table id="RGPLineReport">
                 <TableHead>
@@ -505,7 +614,7 @@ class MaterialInwardReport extends Component {
                           </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredData.map((gaterntrylineList, index) => (
+                  {filteredData && filteredData.map((gaterntrylineList, index) => (
                     <TableRow>
                     <TableCell>{gaterntrylineList.gateEntryLine.gateEntry.reqNo}</TableCell>
                     <TableCell>{gaterntrylineList.materialGateIn.docNo}</TableCell>

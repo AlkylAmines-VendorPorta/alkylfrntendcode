@@ -20,6 +20,7 @@ import {
   Container,
   IconButton
 } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 class PurchaseOrder extends Component {
   
   constructor (props) {
@@ -517,6 +518,11 @@ handleFilterClick = () => {
       openModal:true
     })
   }
+    handleRowClick = (row) => {
+      
+      const index = this.props.poList.findIndex(v => v.poId === row.poId);
+      this.loadPODetails(index);
+    };
 render() {
   const {filter} = this.props;
   var displayService="none";
@@ -543,6 +549,44 @@ var frmhidden = {
                   val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
                 )
               );
+                 const columns = [
+  {
+    name: 'PO No',
+    selector: row => row.purchaseOrderNumber,
+    sortable: true
+  },
+{
+    name: 'PO Date',
+    selector: row => row.poDate,
+    sortable: true
+  },
+{
+    name: 'Vendor Code',
+    selector: row => row.vendorCode,
+    sortable: true,
+    omit:vendorCodeShown
+  },
+{
+    name: 'Vendor Name',
+    selector: row =>  row.vendorName,
+    sortable: true,
+    omit:vendorCodeShown
+  },
+{
+    name: 'Requested By',
+    selector: row =>  row.requestedBy.name,
+    sortable: true
+  },
+{
+    name: 'Version No',
+    selector: row =>  row.versionNumber,
+    sortable: true
+  },
+  {
+    name: 'Status',
+    selector: row =>  row.status,
+    sortable: true
+  }]
     return (
       <React.Fragment>
       <div className="w-100" style={{marginTop:"80px"}}>
@@ -682,7 +726,7 @@ var frmhidden = {
         </Grid>
         </Grid>
            <TableContainer >
-          <Table className="my-table" aria-label="po table">
+           {/* <Table className="my-table" aria-label="po table">
             <TableHead>
               <TableRow>
                 <TableCell>PO No</TableCell>
@@ -708,8 +752,8 @@ var frmhidden = {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-        </TableContainer>
+          </Table> */}
+        {/*
         <TablePagination
                       rowsPerPageOptions={[50, 100, 150]}
                       component="div"
@@ -718,7 +762,17 @@ var frmhidden = {
                       page={page}
                       onPageChange={this.handleChangePage}
                       onRowsPerPageChange={this.handleChangeRowsPerPage}
-                    />
+                    /> */}
+                     <DataTable
+                        columns={columns}
+                        data={filteredData}
+                        pagination
+                        paginationPerPage={50}  
+                        //responsive
+                        paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                        onRowClicked={this.handleRowClick}
+                      />
+                </TableContainer>
       
       </div> 
 

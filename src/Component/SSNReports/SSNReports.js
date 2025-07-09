@@ -22,6 +22,7 @@ import { isNull } from "lodash-es";
 import NewHeader from "../NewHeader/NewHeader";
 import TableToExcel from "@linways/table-to-excel";
 import { Button, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 
 class SSNReports extends Component {
@@ -202,6 +203,80 @@ class SSNReports extends Component {
     const filteredData = this.props.ssnLinereportlist.filter((entry) => {
       return searchInObject(entry, searchQuery);
     });
+       const columns = [
+  {
+    name: 'SSN No',
+    selector: row => row.advanceshipmentnotice.serviceSheetNo,
+    sortable: true
+  },
+{
+    name: 'SSN Date',
+    selector: row => formatDate(row.advanceshipmentnotice.created),
+    sortable: true
+  },
+{
+    name: 'SSN Created By',
+    selector: row => row.advanceshipmentnotice.createdBy===null?"":(row.advanceshipmentnotice.createdBy.userDetails===null?"":row.advanceshipmentnotice.createdBy.userDetails.name),
+    sortable: true
+  },
+
+  {
+    name: 'PO No',
+    selector: row =>row.advanceshipmentnotice.po.purchaseOrderNumber,
+    sortable: true
+  },
+  {
+    name: 'PO Date',
+    selector: row => formatDate(row.advanceshipmentnotice.po.created),
+    sortable: true
+  },
+  {
+    name: 'Service Posting Date',
+    selector: row => row.advanceshipmentnotice.servicePostingDate!=null?formatDate(row.advanceshipmentnotice.servicePostingDate):"",
+    sortable: true
+  },
+{
+    name: 'Approved By',
+    selector: row =>  row.advanceshipmentnotice.ssnApprovedBy===null?"":(row.advanceshipmentnotice.ssnApprovedBy.userDetails===null?"":row.advanceshipmentnotice.ssnApprovedBy.userDetails.name),
+    sortable: true
+  },
+{
+    name: 'Approved Date',
+    selector: row =>  row.advanceshipmentnotice.ssnApprovedDate!=null?formatDate(row.advanceshipmentnotice.ssnApprovedDate):"",
+    sortable: true
+  },
+{
+    name: 'Service Line No',
+    selector: row =>  row.poLine.lineItemNumber,
+    sortable: true
+  },
+{
+    name: 'Material Description',
+    selector: row =>  row.poLine.code+"-"+row.poLine.name,
+    sortable: true
+  },
+
+{
+    name: 'Quantity',
+    selector: row =>  row.deliveryQuantity,
+    sortable: true
+  },
+
+  {
+    name: 'Invoice No',
+    selector: row => row.advanceshipmentnotice.invoiceNo===null?"":row.advanceshipmentnotice.invoiceNo,
+    sortable: true
+  },
+ {
+    name: 'Invoice Date',
+    selector: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
+    sortable: true
+  },
+ {
+    name: 'Status',
+    selector: row => row.advanceshipmentnotice.status,
+    sortable: true
+  }]
     return (
       <>
 
@@ -386,7 +461,7 @@ class SSNReports extends Component {
         </Grid>
         </Grid>
                         <TableContainer>
-                    <Table className="my-table" >
+                    {/* <Table className="my-table" >
                       <TableHead>
                         <TableRow>
                           <TableCell>SSN No</TableCell>
@@ -426,9 +501,9 @@ class SSNReports extends Component {
                           </TableRow>
                         ))}
                       </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
+                    </Table> */}
+                 
+                  {/* <TablePagination
                                 rowsPerPageOptions={[50, 100, 150]}
                                 component="div"
                                 count={filteredData.length}
@@ -436,7 +511,16 @@ class SSNReports extends Component {
                                 page={page}
                                 onPageChange={this.handleChangePage}
                                 onRowsPerPageChange={this.handleChangeRowsPerPage}
-                              />
+                              /> */}
+                              <DataTable
+                                  columns={columns}
+                                  data={filteredData}
+                                  pagination
+                                  paginationPerPage={50}  
+                                  //responsive
+                                  paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                                />
+                                 </TableContainer>
                 <div style={{display:"none"}}>
                 <Table  id="ssnLineReport">
                       <TableHead>

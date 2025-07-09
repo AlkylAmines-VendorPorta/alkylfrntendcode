@@ -9,7 +9,7 @@ import {
   commonSubmitWithParam
 } from "../../Util/ActionUtil";
 import { FormWithConstraints } from 'react-form-with-constraints';
-import { formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
+import formatDate, { formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
 import TableToExcel from "@linways/table-to-excel";
 
 // Material-UI Components
@@ -34,6 +34,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import Loader from "../FormElement/Loader/Loader";
+import DataTable from "react-data-table-component";
 
 class NRGPReport extends Component {
   constructor(props) {
@@ -265,6 +266,75 @@ class NRGPReport extends Component {
     const filteredData = this.props.gateEntryListDto.filter((entry) => {
       return searchInObject(entry, search);
     });
+    const columns = [
+      {
+        name: 'Req No',
+        selector: row => row.gateEntry.reqNo,
+        sortable: true
+      },
+      {
+        name: 'Req Date',
+        selector: row => formatDate(row.gateEntry.created),
+        sortable: true,
+        ceil: row => formatDate(row.gateEntry.created),
+      },
+      {
+        name: 'Return By',
+        selector: row => formatDate(row.gateEntry.returnBy),
+        sortable: true,
+        ceil: row => formatDate(row.gateEntry.returnBy),
+      },
+      {
+        name: 'Requestioner Name',
+        selector: row => row.gateEntry.createdBy?.userDetails?.name || "",
+        sortable: true
+      },
+      {
+        name: 'Vehicle No',
+        selector: row => row.gateEntry.vehicleNo,
+        sortable: true
+      },
+      {
+        name: 'Vendor Name',
+        selector: row => row.gateEntry.vendorName,
+        sortable: true
+      },
+       {
+        name: 'Doc Type',
+        selector: row => row.gateEntry.docType,
+        sortable: true
+      },
+      {
+        name: 'Plant',
+        selector: row => row.gateEntry.plant,
+        sortable: true
+      },
+        {
+        name: 'Material Details',
+        selector: row => row.materialCode,
+        sortable: true
+      },
+        {
+        name: 'UOM',
+        selector: row => row.uom,
+        sortable: true
+      },
+      {
+        name: 'Quantity',
+        selector: row => row.materialQty,
+        sortable: true
+      },
+       {
+        name: 'Purpose',
+        selector: row => row.purpose,
+        sortable: true
+      },
+       {
+        name: 'Status',
+        selector: row => row.gateEntry.status,
+        sortable: true
+      }
+    ];
     return (
       <>
         <React.Fragment>
@@ -399,7 +469,7 @@ class NRGPReport extends Component {
               </Grid>
             </Grid>
 <TableContainer className="mt-1">
-                  <Table className="my-table">
+                  {/* <Table className="my-table">
                     <TableHead>
                       <TableRow>
                         <TableCell>Req No</TableCell>
@@ -440,7 +510,7 @@ class NRGPReport extends Component {
                     </TableBody>
                   </Table>
 
-                  {/* Pagination */}
+                 
                   <TablePagination
                     rowsPerPageOptions={[50, 100, 150]}
                     component="div"
@@ -449,7 +519,15 @@ class NRGPReport extends Component {
                     page={page}
                     onPageChange={this.handleChangePage}
                     onRowsPerPageChange={this.handleChangeRowsPerPage}
-                  />
+                  /> */}
+                  <DataTable
+                        columns={columns}
+                        data={filteredData}
+                        pagination
+                        paginationPerPage={50}  
+                        responsive
+                        paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                      />
 
               {/* Download Excel Button */}
               <div style={{display:"none"}}>

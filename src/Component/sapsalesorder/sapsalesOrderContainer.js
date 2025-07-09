@@ -171,7 +171,7 @@ componentWillReceiveProps(props){
   if(this.state.loadPurchaseOrderList && !isEmpty(props.SapSalesOrderStatusList)){
     this.changeLoaderState(false);
     let poList = [];
-    props.SapSalesOrderStatusList.map((po)=>{
+     props.SapSalesOrderStatusList && props.SapSalesOrderStatusList.map((po)=>{
       poList.push(this.getSapSalesOrderFromObj(po));
     });
 

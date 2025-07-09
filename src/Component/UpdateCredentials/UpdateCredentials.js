@@ -26,6 +26,8 @@ import {
   Button,
   IconButton
 } from "@material-ui/core";
+import { omit } from "lodash-es";
+import DataTable from "react-data-table-component";
 
 class UpdateCredentials extends Component {
 
@@ -891,8 +893,99 @@ class UpdateCredentials extends Component {
         val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
-    // console.log("LISTOFGENERATING", this.state.generateLoginOfVendor);
-    // console.log("User", this.state.selectedVendorMode);
+ const columns = [
+  {
+    name: 'Invite',
+    cell: (row, index) =>
+      (row.createdBy?.isInvited ?? row.isInvited) === 'Y' ? (
+        <></>
+      ) : (
+        <input
+          type="checkbox"
+          id={`checkbox${index}`}
+          onChange={e => this.inviteVendorCheckboxHandler(e, row, index)}
+          checked={this.state.checked?.[index] || false}
+        />
+      ),
+    button: true,
+    ignoreRowClick: true,
+    omit: this.state.requestedUsersType === 'internaluser', // ❌ Hide for internal users
+  },
+  {
+    name: this.state.requestedUsersType === 'internaluser' ? 'Employee Code' : 'Vendor Code',
+    selector: row =>
+      this.state.requestedUsersType === 'internaluser'
+        ? row.userName
+        : row.createdBy?.partner?.vendorSapCode || '',
+    sortable: true,
+  },
+  {
+    name: 'Email',
+    selector: row =>
+      this.state.requestedUsersType === 'internaluser'
+        ? row.email
+        : row.createdBy?.email || '',
+    sortable: true,
+  },
+  {
+    name: 'Company Name',
+    selector: row => row.createdBy?.partner?.name || '',
+    sortable: true,
+    omit: this.state.requestedUsersType === 'internaluser',
+  },
+  {
+    name: 'Status',
+    selector: row => statusForVendor(row.createdBy?.partner?.status),
+    sortable: true,
+    omit: this.state.requestedUsersType === 'internaluser',
+  },
+  {
+    name: 'State',
+    selector: row => row.location?.region?.name || '',
+    sortable: true,
+    omit: this.state.requestedUsersType === 'internaluser',
+  },
+  {
+    name: 'District',
+    selector: row => row.location?.district?.name || '',
+    sortable: true,
+    omit: this.state.requestedUsersType === 'internaluser',
+  },
+  {
+    name: 'Designation',
+    selector: row => row.email || '',
+    sortable: true,
+    omit: this.state.requestedUsersType !== 'internaluser',
+  },
+  {
+    name: 'Department',
+    selector: row => row.partner?.name || '',
+    sortable: true,
+    omit: this.state.requestedUsersType !== 'internaluser',
+  },
+  {
+    name: 'Plant',
+    selector: row => row.partner?.panNumber || '',
+    sortable: true,
+    omit: this.state.requestedUsersType !== 'internaluser',
+  },
+  {
+    name: 'Edit',
+    cell: (row) => (
+      <button
+        className={`btn btn-outline-info ${this.state.editButtonFlag ? 'not-allowed' : ''}`}
+        type="button"
+        disabled={this.state.editButtonFlag}
+        onClick={() => this.displayUserInfo(row)}
+      >
+        <i className={`fa fa-pencil-square-o ${this.props.displayDiv}`} aria-hidden="true" />
+      </button>
+    ),
+    ignoreRowClick: true,
+    button: true,
+  },
+];
+
     return (
       <>
         <Loader isLoading={this.state.isLoading} />
@@ -976,7 +1069,7 @@ class UpdateCredentials extends Component {
                         </Grid>
                       </Grid>
             <TableContainer className="mt-1">
-                    <Table className="my-table">
+                    {/* <Table className="my-table">
                       <TableHead>
                         <TableRow>
 
@@ -1038,7 +1131,7 @@ class UpdateCredentials extends Component {
                               this.state.requestedUsersType !== "internaluser" &&
                               <>
                                 <TableCell>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? user.createdBy.partner.name : <></>}</> : <>{user.partner.name}</>}</TableCell>
-                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</TableCell> */}
+                                
                                 <TableCell>{this.state.requestedUsersType !== "internaluser" ? <>{user.createdBy != null && user.createdBy.partner ? statusForVendor(user.createdBy.partner.status) : <></>}</> : <>{statusForVendor(user.partner.status)}</>}</TableCell>
                               </>
                             }
@@ -1067,10 +1160,7 @@ class UpdateCredentials extends Component {
                                   className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                   aria-hidden="true"
                                 ></i>
-                                {/* <i
-                                  className={"fa fa-eye " + this.props.displayDiv1}
-                                  aria-hidden="true"
-                                ></i> */}
+                                
                               </button>
                             </TableCell>
 
@@ -1078,10 +1168,10 @@ class UpdateCredentials extends Component {
                         ))}
 
                       </TableBody>
-                    </Table>
+                    </Table> */}
 
-                    </TableContainer>
-            <TablePagination
+                   
+            {/* <TablePagination
               rowsPerPageOptions={[50, 100, 150]}
               component="div"
               count={filteredData.length}
@@ -1089,9 +1179,16 @@ class UpdateCredentials extends Component {
               page={page}
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
-            />
-         
-                
+            /> */}
+         <DataTable
+            columns={columns}
+            data={filteredData}
+            pagination
+            paginationPerPage={50}  
+            paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+            //onRowClicked={this.handleRowClick}
+          />
+                 </TableContainer>
                 {/* {this.state.loginGeneratedResponseMessage}
                 <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button> */}
                 
@@ -1189,15 +1286,13 @@ class UpdateCredentials extends Component {
 
                             <TableCell>
 
-                              <button className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")} type="button" disabled={this.state.editButtonFlag ? true : false} onClick={() => { this.displayUserInfoForAll(user) }} >
+                              <button 
+                              className={"btn btn-outline-info " + (this.state.editButtonFlag ? "not-allowed" : "")} type="button" disabled={this.state.editButtonFlag ? true : false} 
+                              onClick={() => { this.displayUserInfoForAll(user) }} >
                                 <i
                                   className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                   aria-hidden="true"
-                                ></i>
-                                {/* <i
-                                  className={"fa fa-eye " + this.props.displayDiv1}
-                                  aria-hidden="true"
-                                ></i> */}
+                                ></i>                             
 
                               </button>
                             </TableCell>

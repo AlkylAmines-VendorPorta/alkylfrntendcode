@@ -26,6 +26,7 @@ import {
   MenuItem,
   Button
 } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 const selectStyles = {
   control: provided => ({ ...provided, minWidth: 240, margin: 8 }),
@@ -442,6 +443,10 @@ class InternalUser extends Component {
   handleChangeRowsPerPage = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
+   handleRowClick = (row) => {
+  
+  this.loadUser(row);
+};
   render() {
     var shown = {
       display: this.state.shown ? "block" : "none"
@@ -451,17 +456,72 @@ class InternalUser extends Component {
     };
     const { searchQuery, page, rowsPerPage,internalUsersList } = this.state;
      // Filter the data based on the search query
-  const filteredData = internalUsersList.filter((entry) => {
-    return Object.values(entry).some((val) => {
-      if (val && typeof val === 'object') {
-        // If the value is an object (e.g., userDetails), recursively check its properties
-        return Object.values(val).some((nestedVal) => 
-          nestedVal && nestedVal.toString().toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }
-      return val && val.toString().toLowerCase().includes(searchQuery.toLowerCase());
+  // const filteredData = internalUsersList.filter((entry) => {
+  //   return Object.values(entry).some((val) => {
+  //     if (val && typeof val === 'object') {
+  //       // If the value is an object (e.g., userDetails), recursively check its properties
+  //       return Object.values(val).some((nestedVal) => 
+  //         nestedVal && nestedVal.toString().toLowerCase().includes(searchQuery.toLowerCase())
+  //       );
+  //     }
+  //     return val && val.toString().toLowerCase().includes(searchQuery.toLowerCase());
+  //   });
+  // });
+   const searchInObject = (obj, searchTerm) => {
+      return Object.keys(obj).some((key) => {
+        const value = obj[key];
+        if (typeof value === 'object' && value !== null) {
+          return searchInObject(value, searchTerm);
+        }
+        if (value === null || value === undefined) {
+          return false;
+        }
+        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+  
+    const filteredData = internalUsersList.filter((entry) => {
+      return searchInObject(entry, searchQuery);
     });
-  });
+     const columns = [
+  {
+    name: 'Role',
+    selector: row => row.role.name,
+    sortable: true
+  },
+{
+    name: 'Plant',
+    selector: row => row.user.userDetails!=null?this.state.plantMap[row.user.userDetails.plant]:"",
+    sortable: true
+  },
+
+  {
+    name: 'Designation',
+    selector: row => row.user.userDetails!=null?row.user.userDetails.userDesignation:"",
+    sortable: true
+  },
+  {
+    name: 'Department',
+    selector: row => row.user.userDetails!=null?row.user.userDetails.department:"",
+    sortable: true
+  },
+  {
+    name: 'Email Id',
+    selector: row => row.user.email,
+    sortable: true
+  },
+{
+    name: 'Employee Code',
+    selector: row =>  row.user.userName,
+    sortable: true
+  },
+
+  {
+    name: 'Name',
+    selector: row => row.user.userDetails!=null?row.user.userDetails.name:"",
+    sortable: true
+  }
+]
   const { isOpen, value } = this.state;
     return (
       <React.Fragment>
@@ -483,7 +543,7 @@ class InternalUser extends Component {
             </Grid>
           </Grid>
             <TableContainer className="mt-1">
-                <Table className="my-table">
+                {/* <Table className="my-table">
                   <TableHead>
                     <TableRow>
                       <TableCell>Role</TableCell>
@@ -511,9 +571,18 @@ class InternalUser extends Component {
                     }
 
                   </TableBody>
-                </Table>
+                </Table> */}
+                <DataTable
+                      columns={columns}
+                      data={filteredData}
+                      pagination
+                      responsive
+                      paginationPerPage={50}  
+                      paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                      onRowClicked={this.handleRowClick}
+                    />
               </TableContainer>
-              <TablePagination
+              {/* <TablePagination
               rowsPerPageOptions={[50, 100, 150]}
               component="div"
               count={filteredData.length}
@@ -521,7 +590,7 @@ class InternalUser extends Component {
               page={page}
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
-            />
+            /> */}
             </div>
             <div className="row" style={shown}>
               <form className="card wizard-v1-content">

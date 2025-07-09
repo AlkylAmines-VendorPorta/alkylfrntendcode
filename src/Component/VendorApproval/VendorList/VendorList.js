@@ -20,6 +20,7 @@ import {
   Button,
   Grid,
 } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 class VendorList extends Component {
   constructor(props) {
@@ -169,15 +170,65 @@ class VendorList extends Component {
       openModal:true
     })
   }
+  handleRowClick = (row) => {
+  const index = this.vendorList.findIndex(v => v.partner === row.partner);
+  this.onSelectVendorRow('selectedVendor' + index, row.partner);
+};
   render() {
     const { vendorList, search, page, rowsPerPage, hoveredRow } = this.state;
 
     // Filter vendors based on search query
-    const filteredVendors = vendorList.filter((vendor) =>
+    const filteredData = vendorList.filter((vendor) =>
       Object.values(vendor).some((value) =>
         String(value).toLowerCase().includes(search.toLowerCase())
     ));
+const columns = [
+  {
+    name: 'Person Name',
+    selector: row => row.name,
+    sortable: true
+  },
+{
+    name: 'Mobile No',
+    selector: row => row.mobNo,
+    sortable: true
+  },
 
+  {
+    name: 'Mail ID',
+    selector: row => row.email,
+    sortable: true
+  },
+  {
+    name: 'Company Name',
+    selector: row => row.companyName,
+    sortable: true
+  },
+  {
+    name: 'Vendor Code',
+    selector: row => row.vendorCode,
+    sortable: true
+  },
+  {
+    name: 'Invited By',
+    selector: row => row.invitedBy,
+    sortable: true
+  },
+  {
+    name: 'Department',
+    selector: row => row.department,
+    sortable: true
+  },
+   {
+    name: 'Designation',
+    selector: row => row.designation,
+    sortable: true
+  },
+  {
+    name: 'Status',
+    selector: row => this.statusForVendor(row.vendor),
+    sortable: true
+  }];
     return (
       <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
       {this.state.openModal && 
@@ -229,7 +280,7 @@ class VendorList extends Component {
           </Grid>
           </Grid>
         <TableContainer component={Paper}>
-          <Table className="my-table">
+          {/* <Table className="my-table">
             <TableHead>
               <TableRow>
                 <TableCell>Person Name</TableCell>
@@ -269,9 +320,17 @@ class VendorList extends Component {
                   </TableRow>
                 ))}
             </TableBody>
-          </Table>
+          </Table> */}
+          <DataTable
+            columns={columns}
+            data={filteredData}
+            pagination
+            paginationPerPage={50}  
+            paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+            onRowClicked={this.handleRowClick}
+          />
         </TableContainer>
-        <TablePagination
+        {/* <TablePagination
           rowsPerPageOptions={[25, 50, 100]}
           component="div"
           count={filteredVendors.length}
@@ -279,7 +338,7 @@ class VendorList extends Component {
           page={page}
           onPageChange={this.handleChangePage}
           onRowsPerPageChange={this.handleChangeRowsPerPage}
-        />
+        /> */}
       </div>
     );
   }

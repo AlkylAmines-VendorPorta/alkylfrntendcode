@@ -26,6 +26,7 @@ import { connect } from "react-redux";import {
   Container,
   IconButton
 } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 class PRList extends Component {
   constructor(props) {
@@ -34,6 +35,7 @@ class PRList extends Component {
       loadGenerateQCF:"",
       page: 0,
       rowsPerPage: 50,
+      searchQuery:""
     };
   }
 
@@ -50,9 +52,10 @@ class PRList extends Component {
     commonSubmitWithParam(this.props,"generateQCF","/rest/generateQCF",pr.prId ? pr.prId:pr.enquiryId);
   }
 
-  handleQCFDetails = (pr,i)=>{
+  handleQCFDetails = (pr)=>{
     // if(!isEmpty(pr.qcfNo)){
-      this.props.loadQCFDetails(i);
+ //alert(pr.enquiryId,"pr.enquiryId")
+      this.props.loadQCFDetails(pr.enquiryId);
     // }
   }
   handlePageChange = (event, newPage) => {
@@ -62,8 +65,50 @@ class PRList extends Component {
   handleRowsPerPageChange = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
+   handleRowClick = (row) => {
+  
+  this.handleQCFDetails(row);
+};
+handleSearchChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+
+  };
   render() {
     const { page, rowsPerPage } = this.state;
+    const columns = [
+  {
+    name: 'Enquiry No',
+    selector: row => row.enquiryId,
+    sortable: true
+  },
+{
+    name: 'QCF No',
+    selector: row => row.qcfNo!=null?row.qcfNo:"",
+    sortable: true
+  },
+
+  {
+    name: 'Enquiry End Date',
+    selector: row => row.bidEndDate,
+    sortable: true
+  },
+  {
+    name: 'Buyer Name/Code',
+    selector: row => row.createdBy?.userName+"-"+row.createdBy?.name,
+    sortable: true
+  },
+  {
+    name: 'Status',
+    selector: row => row.code ?row.code:this.props.prStatusList[row.status],
+    sortable: true
+  },
+]
+
+const filteredData = this.props.prList.filter((entry) =>
+      Object.values(entry).some((val) =>
+        val && val.toString().toLowerCase().includes(this.state.searchQuery.toLowerCase())
+      )
+    );
     return (
       <>
         <div className="row" id="togglesidebar">
@@ -73,17 +118,16 @@ class PRList extends Component {
               type="text"
               id="SearchTableDataInput"
               style={{fontSize: "10px", float:"right" }}
-              onKeyUp={searchTableData}
+              onChange={this.handleSearchChange}
               placeholder="Search .."
             />            
           </div>
           <div className="col-12">
             <TableContainer className="mt-1">
-              <Table className="my-table">
+              {/* <Table className="my-table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Enquiry No</TableCell>
-                    {/* <TableCell>RFQ No</TableCell> */}
                     <TableCell>QCF No</TableCell>
                     <TableCell>Enquiry End Date</TableCell>
                     <TableCell>Buyer Name/Code</TableCell>
@@ -93,8 +137,7 @@ class PRList extends Component {
                 <TableBody id="DataTableBody">
                   {this.props.prList.map((pr, i) =>
                     <TableRow>
-                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.enquiryId}</TableCell>
-                      {/* <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.rfqNo!=null?pr.rfqNo:""}</TableCell> */}
+                      <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.enquiryId}</TableCell>                      
                       <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.qcfNo!=null?pr.qcfNo:""}</TableCell>
                       <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.bidEndDate}</TableCell>
                       <TableCell onClick={() => this.handleQCFDetails(pr,i)}>{pr.createdBy?.userName+"-"+pr.createdBy?.name}</TableCell>
@@ -102,9 +145,9 @@ class PRList extends Component {
                     </TableRow>
                   )}
                 </TableBody>
-              </Table>
-            </TableContainer>
-             <TablePagination
+              </Table> */}
+          
+             {/* <TablePagination
                 rowsPerPageOptions={[50, 100, 150]}
                 component="div"
                 count={this.props.prList.length}
@@ -112,7 +155,16 @@ class PRList extends Component {
                 page={page}
                 onPageChange={this.handlePageChange}
                 onRowsPerPageChange={this.handleRowsPerPageChange}
-              />
+              /> */}
+              <DataTable
+                          columns={columns}
+                          data={filteredData}
+                          pagination
+                          paginationPerPage={50}  
+                          paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                          onRowClicked={this.handleRowClick}
+                        />
+                          </TableContainer>
           </div>
         </div>
       </>

@@ -12,12 +12,13 @@ import {
   commonSubmitWithParam
 } from "../../../Util/ActionUtil";
 import { submitForm } from "../../../Util/APIUtils";
-import { formatDateWithoutTimeNewDate2, disablePastDate} from "../../../Util/DateUtil";
+import formatDate, { formatDateWithoutTimeNewDate2, disablePastDate} from "../../../Util/DateUtil";
 import * as actionCreators from "../PRList/Action/Action";
 import { connect } from "react-redux";
 import { API_BASE_URL } from "../../../Constants";
 import { getUserDto, getFileAttachmentDto,getDecimalUpto,removeLeedingZeros } from "../../../Util/CommonUtil";
 import { Button, Checkbox, FormControl, Grid, IconButton, InputLabel, ListItemText, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 class PRListBuyer extends Component {
   constructor(props) {
@@ -317,6 +318,224 @@ onOpenModal=()=>{
     if(this.props.role != ROLE_BUYER_ADMIN) return null;
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
     const selectedItemsDisplayPlant = filterPlantList && filterPlantList.filter(item => selectedItemsPL.includes(item.value));
+const columns = [
+{
+  name: (
+    <div>
+      <input
+        type="checkbox"
+        checked={this.state.checked}
+        onChange={this.toggleChecked}
+      />{' '}
+      ENQ
+    </div>
+  ),
+  cell: (row, index) => {
+    const rowIndex = this.state.prList.findIndex(
+      item => item.id === row.id // or another unique field
+    );
+    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
+
+    return (
+      <input
+        type="checkbox"
+        disabled={isDisabled}
+        value="Y"
+        checked={row.isChecked}
+        onChange={(e) => {
+          commonHandleChangeCheckBox(e, this, `prList.${rowIndex}.isChecked`);
+        }}
+        className="display_block"
+      />
+    );
+  },
+  ignoreRowClick: true,
+  allowOverflow: true,
+  button: true,
+  sortable: false
+},
+{
+    name: 'PR No',
+    selector: row => row.prNumber,
+    sortable: true
+  },
+
+{
+  name: '',
+  cell: (row) => (
+    <>
+      <button
+        type="button"
+        onClick={() => this.handleSelect(row)}
+        className="btn btn-light"
+        data-toggle="modal"
+        data-target="#viewPrDetail"
+        data-backdrop="static"
+        data-keyboard="false"
+      >
+        View PR
+      </button>
+      &nbsp;
+      <button
+        type="button"
+        onClick={() => this.viewInquiry(row)}
+        className="btn btn-light myname"
+        data-toggle="modal"
+        data-target="#viewInquiry"
+        data-backdrop="static"
+        data-keyboard="false"
+      >
+        Enquiry
+      </button>
+    </>
+  ),
+  ignoreRowClick: true,
+  allowOverflow: true,
+  button: true,
+  sortable: false,
+},
+
+  {
+    name: 'PR Released Date',
+    selector: row => row.pr.releasedDate!=null?formatDate(row.pr.releasedDate):"",
+    sortable: true,
+    ceil: row => formatDate(row.pr.releasedDate)
+  },
+ {
+    name: 'PR Doc Type',
+    selector: row => row.pr.docType,
+    sortable: true
+  },
+
+ {
+    name: 'PR Date',
+    selector: row => row.pr.date!=null?formatDate(row.pr.date):"",
+    sortable: true,
+    ceil: row => formatDate(row.pr.date)
+
+  },
+
+ {
+    name: 'Line No.',
+    selector: row => removeLeedingZeros(row.prLineNumber),
+    sortable: true
+  },
+
+ {
+    name: 'Material Code & Description',
+    selector: row => `${row.materialCode} - ${row.materialDesc}`,
+    sortable: true
+  },
+
+  {
+    name: 'Req. Qty.',
+   cell: (row, index) => {
+    const rowIndex = this.state.prList.findIndex(
+      item => item.id === row.id // or another unique field
+    );
+    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
+
+    return (
+     <input
+                                        type="number"
+                                        className={"form-control"}
+                                          value={row.reqQty}
+                                        onChange={(event) => {
+                                          this.commonHandleChange(event,"reqQty",index);
+                                        }}
+                                        style={{width:"55px"}}
+                                      />
+    );
+  },
+
+  },
+  {
+    name: 'UOM',
+    selector: row => row.uom,
+    sortable: true
+  },
+  {
+    name: 'Val. Price',
+    selector: row => row.price,
+    sortable: true
+  },  
+   {
+    name: 'Plant',
+    selector: row => row.plantDesc!=null?row.plant+"-"+row.plantDesc:row.plant,
+    sortable: true
+  },
+ {
+    name: 'Delivery Date',
+    cell: (row, index) => {
+    const rowIndex = this.state.prList.findIndex(
+      item => item.id === row.id // or another unique field
+    );
+    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
+
+    return (
+     <input
+                                        type="date"
+                                        min={disablePastDate()}
+                                        max="9999-12-31"
+                                        className={"form-control"}
+                                          value={row.deliverDate}
+                                        onChange={(event) => {
+                                          this.commonHandleChange(event,  "deliverDate",index);
+                                        }}
+                                        style={{width:"100px"}}
+                                      />
+    );
+  },
+
+    sortable: true
+  },
+  {
+    name: 'Material group',
+    selector: row =>  `${row.matGrp ? `${row.matGrp} - `:''}${row.matGrpDesc ? row.matGrpDesc:''}`,
+    sortable: true
+  },
+ {
+    name: 'Buyer',
+    cell: (row, index) => {
+    const rowIndex = this.state.prList.findIndex(
+      item => item.id === row.id // or another unique field
+    );
+    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
+
+    return (
+      <select
+                                        className={"form-control"}
+                                        disabled={true}
+                                        value={row.buyer ? row.buyer.userId:null}
+                                      >
+                                        <option value="">Select Buyer</option>
+                                        {!isEmptyDeep(this.props.buyerList) && this.props.buyerList.map(records =>{
+                                          return (
+                                            <option value={records.userId}>{records.name}</option>
+                                          )
+                                        })}
+                                      </select>
+    );
+  },
+
+    sortable: true
+  },
+
+ {
+    name: 'Tracking No',
+    selector: row => row.trackingNo,
+    sortable: true
+  },
+
+{
+    name: 'Status',
+    sortable: true,
+   selector: row => this.props.prStatusList[row.status],
+
+  }];
+  const filteredData = !isEmptyDeep(groupByList)
+  ? groupByList.sort((a, b) => new Date(a.pr.releasedDate) - new Date(b.pr.releasedDate))
+  : [];
 
     return (
       <> 
@@ -949,7 +1168,7 @@ onOpenModal=()=>{
         </Grid>
          
                 <TableContainer className="mt-1">
-                    <Table className="my-table">
+                    {/* <Table className="my-table">
                       <TableHead>
                         <TableRow>
 
@@ -968,7 +1187,6 @@ onOpenModal=()=>{
                           <TableCell> Val. Price </TableCell>
                           <TableCell> Plant </TableCell>
                           <TableCell> Delivery Date </TableCell>
-                          {/* <TableCell> Desire Vendor </TableCell> */}
                           <TableCell> Material group </TableCell>
                           <TableCell> Buyer </TableCell>
                           <TableCell> Tracking No </TableCell>
@@ -1007,7 +1225,8 @@ onOpenModal=()=>{
                                     <TableCell>{formatDateWithoutTimeNewDate2(item.pr.date)}</TableCell>
                                     <TableCell style={{minWidth:"15px"}}>{removeLeedingZeros(item.prLineNumber)}</TableCell>
                                     <TableCell>{`${item.materialCode} - ${item.materialDesc}`}</TableCell>
-                                    <TableCell style={{minWidth:"30px"}}><input
+                                    <TableCell style={{minWidth:"30px"}}>
+                                      <input
                                         type="number"
                                         className={"form-control"}
                                           value={item.reqQty}
@@ -1019,8 +1238,7 @@ onOpenModal=()=>{
                                       </TableCell>
                                     <TableCell style={{minWidth:"26px"}}>{item.uom}</TableCell>
                                     <TableCell style={{minWidth:"40px"}}>{item.price}</TableCell>
-                                    {/* <TableCell style={{minWidth:"26px"}}>{item.plant}</TableCell> */}
-                                    <TableCell style={{minWidth:"26px"}}>{item.plantDesc!=null?item.plant+"-"+item.plantDesc:item.plant}</TableCell>
+                                   <TableCell style={{minWidth:"26px"}}>{item.plantDesc!=null?item.plant+"-"+item.plantDesc:item.plant}</TableCell>
                                     <TableCell>
                                       <input
                                         type="date"
@@ -1034,8 +1252,7 @@ onOpenModal=()=>{
                                         style={{width:"100px"}}
                                       />
                                     </TableCell>
-                                    {/* <TableCell>{!isEmptyDeep(item.desiredVendor) ? `${item.desiredVendor.name ? `${item.desiredVendor.name} - `:''}${item.desiredVendor.userName ? item.desiredVendor.userName:''}`:'-'}</TableCell> */}
-                                    <TableCell>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</TableCell>
+                                   <TableCell>{ `${item.matGrp ? `${item.matGrp} - `:''}${item.matGrpDesc ? item.matGrpDesc:''}`}</TableCell>
                                     <TableCell>
                                     <>
                                       <select
@@ -1063,7 +1280,14 @@ onOpenModal=()=>{
 
                       </TableBody>
                  
-                    </Table>
+                    </Table> */}
+                    <DataTable
+                      columns={columns}
+                      data={filteredData}
+                      pagination
+                      paginationPerPage={50}  
+                      paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                    />
                     </TableContainer>
         </div>
       </>

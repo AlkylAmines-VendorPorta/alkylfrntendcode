@@ -16,6 +16,7 @@ import { API_BASE_URL } from "../../../Constants";
 import { isServicePO } from "../../../Util/AlkylUtil";
 import { submitForm, submitToURL,savetoServer } from "../../../Util/APIUtils";
 import { TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Button, Grid, IconButton } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 
 class SapsalesOrder extends Component {
@@ -237,7 +238,8 @@ rejectPO = () =>{
 
 
 
-loadPODetails(index,e){
+loadPODetails(index){
+  debugger
    // console.log("index",index)
     // this.props.changeLoaderState(true);
 
@@ -391,6 +393,9 @@ onOpenModal=()=>{
     openModal:true
   })
 }
+ handleRowClick = (row) => {
+      this.props.SapSalesOrderList(row);
+    };
 render() {
   const {filter} = this.props;
   var displayService="none"; 
@@ -424,6 +429,108 @@ render() {
       const filteredData = this.props.SapSalesOrderStatusList.filter((entry) => {
         return searchInObject(entry, searchQuery);
       });
+         const columns = [
+ {
+  name: 'Request No',
+  cell: (row) => {
+   const index = filteredData.findIndex(i => i.saleOrdNo === row.saleOrdNo);
+    return row.requestNo == null && row.custBlockStatus === '@08@' ? (
+      <Button size="small" variant="outlined" color="primary" 
+      onClick={()=>{this.loadPODetails(index)}} key={index}  type="button" >Create</Button>
+    ) : (
+      row.requestNo
+    );
+  },
+  center: true, // Aligns text/button to center
+  ignoreRowClick: true,
+  allowOverflow: true,
+  button: true,
+},
+{
+  name: 'Cust Blk',
+  cell: (row) => {
+    const isGreen = row.custBlockStatus === '@08@';
+    return (
+      <div
+        onClick={isGreen ? () => this.props.SapSalesOrderList(row) : undefined}
+        style={{
+          height: '15px',
+          width: '15px',
+          backgroundColor: isGreen ? 'green' : 'red',
+          borderRadius: '50%',
+          display: 'inline-block',
+          margin: '5px',
+          cursor: isGreen ? 'pointer' : 'default',
+        }}
+        title={isGreen ? 'Click to view order' : 'Blocked'}
+      />
+    );
+  },
+  center: true,
+  ignoreRowClick: true,
+  allowOverflow: true,
+  button: true
+},
+
+{
+    name: 'Plant',
+    selector: row => row.plant,
+    sortable: true,  },
+{
+    name: 'Sales Ord No',
+    selector: row =>  row.saleOrdNo,
+    sortable: true,
+},
+{
+    name: 'Date',
+    selector: row =>  row.date,
+    sortable: true
+  },
+{
+    name: 'Delivery Date',
+    selector: row =>  row.deliveryDate,
+    sortable: true
+  },
+{
+    name: 'Sold To Party- Sold To Party Name',
+    selector: row =>  row.soldToParty+"-"+row.soldToPartyName,
+    sortable: true
+  }, {
+    name: 'Material Desc',
+    selector: row => row.material+"-"+row.materialDesc,
+    sortable: true
+  },
+ {
+    name: 'Qty',
+    selector: row => row.qty,
+    sortable: true
+  },
+ {
+    name: 'Vehicle Type',
+    selector: row => row.vehicleType,
+    sortable: true
+  },
+ {
+    name: 'Inward Transporter',
+    selector: row => row.inwardTransporter,
+    sortable: true
+  },
+ {
+    name: 'Outward Transporter',
+    selector: row => row.outwardTransporter,
+    sortable: true
+  },
+ {
+    name: 'inco',
+    selector: row => row.inco,
+    sortable: true
+  },
+ {
+    name: 'inco1',
+    selector: row => row.inco1,
+    sortable: true
+  },
+]
     return (
       <div className="wizard-v1-content" style={{marginTop:"80px"}}>
         <div style={ hidden} >
@@ -481,7 +588,7 @@ render() {
                 </Grid>
                 </Grid>
                 <TableContainer className="mt-1">
-              
+{/*               
                      <Table className="my-table">
                        <TableHead>
                          <TableRow>                          
@@ -507,8 +614,14 @@ render() {
                               
                                 
                               <TableRow>
-                              {po.requestNo == null && po.custBlockStatus == "@08@"    ? <TableCell style={{textAlign:"center"}} > <Button size="small" variant="outlined" color="primary" onClick={()=>{this.loadPODetails(index)}} key={index}  type="button" >Create</Button></TableCell> :<TableCell key={index}>{po.requestNo}</TableCell>}
-                               {po.custBlockStatus == "@08@"? <TableCell style={{textAlign:"center"}} onClick={()=>{this.props.SapSalesOrderList(po)}} ><div style={{height: "15px",width: "15px",backgroundColor: "green",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> :<TableCell style={{textAlign:"center"}} ><div style={{height: "15px",width: "15px",backgroundColor: "red",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> }
+                              {po.requestNo == null && po.custBlockStatus == "@08@"    ? 
+                              <TableCell style={{textAlign:"center"}} >
+                                 <Button size="small" variant="outlined" color="primary" onClick={()=>{this.loadPODetails(index)}} key={index}  type="button" >Create</Button>
+                                 </TableCell> :
+                                 <TableCell key={index}>{po.requestNo}</TableCell>}
+                               {po.custBlockStatus == "@08@"? 
+                               <TableCell style={{textAlign:"center"}} onClick={()=>{this.props.SapSalesOrderList(po)}} >
+                                <div style={{height: "15px",width: "15px",backgroundColor: "green",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> :<TableCell style={{textAlign:"center"}} ><div style={{height: "15px",width: "15px",backgroundColor: "red",borderRadius: "50%",display: "inline-block",margin: 5}} ></div></TableCell> }
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center">{po.plant}</TableCell>
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} className="text-center" >{po.saleOrdNo}</TableCell>
                                <TableCell onClick={()=>{this.props.SapSalesOrderList(po)}} >{formatDate(po.date)}</TableCell>
@@ -531,7 +644,7 @@ render() {
                         
                        </TableBody>
                      </Table>
-                     </TableContainer>
+                   
                      <TablePagination
                                          rowsPerPageOptions={[50, 100, 150]}
                                          component="div"
@@ -540,7 +653,18 @@ render() {
                                          page={page}
                                          onPageChange={this.handlePageChange}
                                          onRowsPerPageChange={this.handleRowsPerPageChange}
-                                       />
+                                       /> */}
+                                         </TableContainer>
+                      <DataTable
+                                  columns={columns}
+                                  data={filteredData}
+                                  pagination
+                                  paginationPerPage={50}  
+                                  //responsive
+                                  paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                                  onRowClicked={this.handleRowClick}
+                                  />
+                              
                   </div>
       </div> 
                  

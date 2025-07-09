@@ -3,6 +3,7 @@ import { searchTableData} from "../../../Util/DataTable";
 import StickyHeader from "react-sticky-table-thead";
 import { formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
 import { TableContainer, TablePagination } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 class PRList extends Component {
   constructor(props) {
     super(props);
@@ -22,8 +23,69 @@ class PRList extends Component {
   handleChangeRowsPerPage = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
+     handleRowClick = (row) => {
+      
+      const index = this.props.prList.findIndex(v => v.enquiryId === row.enquiryId);
+      this.loadPRDetails(index);
+    };
   render() {
     const {  page, rowsPerPage } = this.state;
+    const filteredData =this.props.prList
+     const columns = [
+  {
+    name: 'Enquiry Id',
+    selector: row => row.enquiryId,
+    sortable: true
+  },
+{
+    name: 'Enquiry End Date',
+    selector: row => row.created,
+    sortable: true
+  },
+{
+    name: 'Status',
+    selector: row => row.code,
+    sortable: true
+  },
+]
+ const columns1 = [
+  {
+    name: 'Enquiry No',
+    selector: row => row.enquiryId,
+    sortable: true
+  },
+{
+    name: 'RFQ No',
+    selector: row => row.saprfqno,
+    sortable: true
+  },
+{
+    name: 'Status',
+    selector: row => row.enquiry.code,
+    sortable: true
+  },
+ {
+    name: 'Enquiry Date',
+    selector: row => formatDateWithoutTimeNewDate2(row.created),
+    sortable: true
+  },
+{
+    name: 'Enquiry End Date',
+    selector: row => row.bidEndDate,
+    sortable: true
+  },
+ {
+    name: 'Buyer Code/Name',
+    selector: row => row.enquiry.createdBy.userName+"-"+row.enquiry.createdBy.name,
+    sortable: true
+  },
+
+ {
+    name: 'Vendor',
+    selector: row => row.partner.vendorSapCode+"-"+row.partner.name,
+    sortable: true
+  }
+]
     return (
       <>
         <div className="row">
@@ -41,7 +103,8 @@ class PRList extends Component {
           <TableContainer>
               {
                 this.props.role == 'NADMIN' ? 
-                <><table className="my-table">
+                <>
+                {/* <table className="my-table">
                 <thead>
                   <tr>
                     <th>Enquiry Id</th>
@@ -62,8 +125,17 @@ class PRList extends Component {
                    }
                   )}
                 </tbody> 
-              </table>
-                <TablePagination
+              </table> */}
+              <DataTable
+                columns={columns}
+                data={filteredData}
+                pagination
+                paginationPerPage={50}  
+                //responsive
+                paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                onRowClicked={this.handleRowClick}
+              />
+                {/* <TablePagination
                     rowsPerPageOptions={[50, 100, 150]}
                     component="div"
                     count={this.props.prList.length}
@@ -71,11 +143,11 @@ class PRList extends Component {
                     page={page}
                     onPageChange={this.handleChangePage}
                     onRowsPerPageChange={this.handleChangeRowsPerPage}
-                  />
+                  /> */}
               </>
               :
               <>
-              <table className="my-table">
+              {/* <table className="my-table">
                 <thead>
                   <tr>
                     <th>Enquiry No</th>
@@ -105,8 +177,8 @@ class PRList extends Component {
                    }
                   )}
                 </tbody> 
-              </table>
-              <TablePagination
+              </table> */}
+              {/* <TablePagination
                     rowsPerPageOptions={[50, 100, 150]}
                     component="div"
                     count={this.props.prList.length}
@@ -114,7 +186,16 @@ class PRList extends Component {
                     page={page}
                     onPageChange={this.handleChangePage}
                     onRowsPerPageChange={this.handleChangeRowsPerPage}
-                  />
+                  /> */}
+                  <DataTable
+                        columns={columns1}
+                        data={filteredData}
+                        pagination
+                        paginationPerPage={50}  
+                        //responsive
+                        paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                        onRowClicked={this.handleRowClick}
+                      />
               </>
               }
             </TableContainer>

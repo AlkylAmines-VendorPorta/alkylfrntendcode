@@ -5,7 +5,7 @@ import UserDashboardHeader from "../Header/UserDashboardHeader";
 import Loader from "../FormElement/Loader/LoaderWithProps";
 import { submitToURL } from "../../Util/APIUtils";
 import { commonSubmitForm, commonHandleChange } from "../../Util/ActionUtil";
-import { formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
+import formatDate, { formatDateWithoutTimeNewDate1 } from "../../Util/DateUtil";
 import TableToExcel from "@linways/table-to-excel";
 
 // Material-UI Components
@@ -31,6 +31,7 @@ import {
 } from "@material-ui/core";
 import { FormWithConstraints } from "react-form-with-constraints";
 import { isEmpty } from "../../Util/validationUtil";
+import DataTable from "react-data-table-component";
 
 class RGPReport extends Component {
   constructor(props) {
@@ -283,7 +284,87 @@ clearFields=()=>{
     const filteredData = this.props.gateEntryListDto.filter((entry) => {
       return searchInObject(entry, search);
     });
-  
+  const columns = [
+  {
+    name: 'Req No',
+    selector: row => row.gateEntry.reqNo,
+    sortable: true
+  },
+  {
+    name: 'Req Date',
+    selector: row => formatDate(row.gateEntry.created),
+    sortable: true,
+    ceil: row => formatDate(row.gateEntry.created),
+  },
+  {
+    name: 'Return By',
+    selector: row => formatDate(row.gateEntry.returnBy),
+    sortable: true,
+    ceil: row => formatDate(row.gateEntry.returnBy),
+  },
+  {
+    name: 'Requestioner Name',
+    selector: row => row.gateEntry.createdBy?.userDetails?.name || "",
+    sortable: true
+  },
+  {
+    name: 'Vehicle No',
+    selector: row => row.gateEntry.vehicleNo,
+    sortable: true
+  },
+  {
+    name: 'Vendor Name',
+    selector: row => row.gateEntry.vendorName,
+    sortable: true
+  },
+   {
+    name: 'Doc Type',
+    selector: row => row.gateEntry.docType,
+    sortable: true
+  },
+  {
+    name: 'Plant',
+    selector: row => row.gateEntry.plant,
+    sortable: true
+  },
+    {
+    name: 'Material Details',
+    selector: row => row.materialCode,
+    sortable: true
+  },
+    {
+    name: 'UOM',
+    selector: row => row.uom,
+    sortable: true
+  },
+  {
+    name: 'Quantity',
+    selector: row => row.materialQty,
+    sortable: true
+  },
+   {
+    name: 'Purpose',
+    selector: row => row.purpose,
+    sortable: true
+  },
+   {
+    name: 'Status',
+    selector: row => row.gateEntry.status,
+    sortable: true
+  },
+   {
+    name: 'Closed By',
+    selector: row => row.gateEntry.closedBy?.name || "",
+    sortable: true
+  },
+  {
+    name: 'Closed Date',
+   selector: row => formatDate(row.gateEntry.closedDate),
+    sortable: true,
+    ceil: row => formatDate(row.gateEntry.closedDate),
+    sortable: true
+  },
+];
     return (
       <>
         <React.Fragment>
@@ -450,7 +531,7 @@ clearFields=()=>{
               </Grid>
             </Grid>
             <TableContainer className="mt-1">
-              <Table className="my-table">
+              {/* <Table className="my-table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Req No</TableCell>
@@ -501,7 +582,15 @@ clearFields=()=>{
                 page={page}
                 onPageChange={this.handlePageChange}
                 onRowsPerPageChange={this.handleRowsPerPageChange}
-              />
+              /> */}
+               <DataTable
+                  columns={columns}
+                  data={filteredData}
+                  pagination
+                  paginationPerPage={50}  
+                  responsive
+                  paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                />
             </TableContainer>
             <div style={{display:"none"}}>
               <Table id="RGPLineReport" >

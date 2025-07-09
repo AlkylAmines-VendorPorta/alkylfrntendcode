@@ -25,6 +25,7 @@ import moment from "moment";
 import formatDate from '../../Util/DateUtil';
 import ReportVechicle from "../ReportVehicle/ReportVehicle";
 import { Button, Container, Grid, IconButton, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 class OutwardReport extends Component {
 
@@ -220,6 +221,9 @@ class OutwardReport extends Component {
               openModal:true
             })
           }
+           handleRowClick = (row) => {
+      this.handleVehicleRegistrationDetails(row);
+    };
   render() {
 
     const {  searchQuery, page, rowsPerPage } = this.state;
@@ -239,6 +243,90 @@ class OutwardReport extends Component {
     const filteredData = this.props.outwardReportlist.filter((entry) => {
       return searchInObject(entry, searchQuery);
     })
+     const columns = [
+  {
+    name: 'Sales Order No',
+    selector: row => row.saleOrderNo,
+    sortable: true
+  },
+{
+    name: 'Request No',
+    selector: row => row.requestNo,
+    sortable: true
+  },
+{
+    name: 'Status',
+    selector: row => this.getStatusFullForm(row),
+    sortable: true
+  },
+ {
+    name: 'Created By',
+    selector: row => row.createdBy===null?"":(row.createdBy.userDetails.name),
+    sortable: true
+  },
+{
+    name: 'Created Date',
+    selector: row => formatDate(row.created),
+    sortable: true
+  },
+ {
+    name: 'Created Time',
+    selector: row => formatDate(row.created),
+    sortable: true
+  },
+
+ {
+    name: 'Reported By',
+    selector: row => row.reportedby===null?"":(row.reportedby.userDetails.name),
+    sortable: true
+  },
+ {
+    name: 'Reported Date',
+    selector: row => row.reporteddate===null?"":formatDate(row.reporteddate),
+    sortable: true
+  },
+ {
+    name: 'Reported Time',
+    selector: row => row.reporteddate===null?"":formatDate(row.reporteddate),
+    sortable: true
+  },
+ {
+    name: 'Gate In By',
+    selector: row => row.gateInby==null?"":(row.gateInby.userDetails.name),
+    sortable: true
+  },
+ {
+    name: 'Gate In Date',
+    selector: row => row.gateIndate===null?"":formatDate(row.gateIndate),
+    sortable: true
+  },
+ {
+    name: 'Gate In Time',
+    selector: row => row.gateIndate===null?"":formatDate(row.gateIndate),
+    sortable: true
+  },
+{
+    name: 'Closed By',
+    selector: row => row.gateOutby==null?"":(row.gateOutby.userDetails.name),
+    sortable: true
+  },
+ {
+    name: 'Gate Out Date',
+    selector: row => row.gateOutdate===null?"":formatDate(row.gateOutdate),
+    sortable: true
+  },
+{
+    name: 'Gate Out Time',
+    selector: row => row.gateOutdate===null?"":formatDate(row.gateOutdate),
+    sortable: true
+  },
+{
+    name: 'Diff (In time & Out time)',
+    selector: row => row.gateOutdate===null?"":
+                            this.getinoutTimeDifference(formatDate1(row.gateIndate),formatDate1(row.gateOutdate)),
+    sortable: true  },
+
+]
     return (
         <>
 
@@ -469,7 +557,7 @@ class OutwardReport extends Component {
             </Grid>
           </Grid>
           <TableContainer className="mt-1">
-                    <Table className="my-table">
+                    {/* <Table className="my-table">
                       <TableHead>
                         <TableRow>
                           <TableCell>Sales Order No</TableCell>
@@ -519,7 +607,7 @@ class OutwardReport extends Component {
                     </Table>
 
                    
-                  </TableContainer>
+                  
                   <TablePagination
                     rowsPerPageOptions={[50, 100, 150]}
                     component="div"
@@ -528,7 +616,17 @@ class OutwardReport extends Component {
                     page={page}
                     onPageChange={this.handleChangePage}
                     onRowsPerPageChange={this.handleChangeRowsPerPage}
-                  />
+                  /> */}
+                   <DataTable
+                      columns={columns}
+                      data={filteredData}
+                      pagination
+                      paginationPerPage={50}  
+                      //responsive
+                      paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                      onRowClicked={this.handleRowClick}
+                      />
+                      </TableContainer>
                   <div style={{display:"none"}}>
                   <Table  stickyHeader  id="table1">
                       <TableHead>

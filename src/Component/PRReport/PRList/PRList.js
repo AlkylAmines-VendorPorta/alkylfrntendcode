@@ -34,6 +34,7 @@ import {
   Container,
   IconButton
 } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 class PRList extends Component {
   constructor(props) {
     super(props);
@@ -240,6 +241,10 @@ class PRList extends Component {
   handleRowsPerPageChange = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
+    handleRowClick = (row) => {
+  
+  this.props.loadPRDetails(row.prId);
+};
   render() {
     const {filterBuyerList,filterPlantList,filterPRStatusList,filter} = this.props;
     console.log("PRLIST REN PROPS",this.props);
@@ -264,6 +269,88 @@ class PRList extends Component {
     const filteredData = this.props.prList.filter((entry) => {
       return searchInObject(entry, search);
     });
+       const columns = [
+  {
+    name: 'PR No',
+    selector: row => row.prNumber,
+    sortable: true
+  },
+{
+    name: 'PR Type',
+    selector: row => row.docType,
+    sortable: true
+  },
+
+  {
+    name: 'PR Date',
+    selector: row => row.date,
+    sortable: true
+  },
+  {
+    name: 'Emp. Code',
+    selector: row => row.releasedBy!=null?row.releasedBy.empCode:"",
+    sortable: true
+  },
+  {
+    name: 'Emp. Name',
+    selector: row => row.releasedBy!=null?row.releasedBy.name:"",
+    sortable: true
+  },
+{
+    name: 'Approver',
+    selector: row =>  row.releasedBy!=null?row.releasedBy.name:"",
+    sortable: true
+  },
+
+  {
+    name: 'Tech Approver',
+    selector: row => row.tcApprover.name,
+    sortable: true
+  },
+  {
+    name: 'Status',
+    selector: row => this.props.prStatusList[row.status],
+    sortable: true
+  },
+  {
+    name: 'Release Date',
+    selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
+    sortable: true
+  },
+
+{
+    name: 'Release Time',
+    selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
+    sortable: true
+  },
+
+  {
+    name: 'Approved Date',
+    selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
+    sortable: true
+  },
+  {
+    name: 'Approved Time',
+    selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
+    sortable: true
+  },
+  {
+    name: 'Purchase Manager Approver',
+    selector: row => row.pmapprovedBy!=null?row.pmapprovedBy.name:"",
+    sortable: true
+  },
+{
+    name: 'PM Approved Date',
+    selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
+    sortable: true
+  },
+
+{
+    name: 'PM Approved Time',
+    selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
+    sortable: true
+  }
+]
     return (
       <>
 
@@ -895,7 +982,7 @@ class PRList extends Component {
                     </Grid>
                     </Grid>
             <TableContainer>
-              <Table className="my-table">
+              {/* <Table className="my-table">
                 <TableHead>
                   <TableRow>
                     <TableCell>PR No</TableCell>
@@ -938,9 +1025,17 @@ class PRList extends Component {
                     )  
                   })}
                 </TableBody>
-              </Table>
+              </Table> */}
+              <DataTable
+                columns={columns}
+                data={filteredData}
+                pagination
+                paginationPerPage={50}  
+                paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                onRowClicked={this.handleRowClick}
+              />
               </TableContainer>
-              <TablePagination
+              {/* <TablePagination
                 rowsPerPageOptions={[50, 100, 150]}
                 component="div"
                 count={filteredData.length}
@@ -948,7 +1043,7 @@ class PRList extends Component {
                 page={page}
                 onPageChange={this.handlePageChange}
                 onRowsPerPageChange={this.handleRowsPerPageChange}
-              />
+              /> */}
               </>
               }
              

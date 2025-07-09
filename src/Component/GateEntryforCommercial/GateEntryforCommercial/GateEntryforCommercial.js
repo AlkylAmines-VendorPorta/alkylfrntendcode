@@ -31,6 +31,7 @@ import { currentDate } from "../../../Constants/commonConstants";
 import {getReferenceListDataApi, submitToSAPURL,savetoServer} from "../../../Util/APIUtils"
 import TableToExcel from "@linways/table-to-excel";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Grid, Button, TableFooter } from '@material-ui/core';
+import DataTable from "react-data-table-component";
 
 const SwalNew = require('sweetalert2')
 const height_dy = window.innerHeight - 135;
@@ -1652,6 +1653,9 @@ async componentDidMount() {
     handleChangeRowsPerPage = (event) => {
       this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
     };
+    handleRowClick = (row) => {
+      this.loadASNForEdit(row);
+    };
    render() {
       const coalMaterialList=this.state.asnLineArray[0];
       const securityPOHeaderDto = this.state.securityPOHeaderDto;
@@ -1689,6 +1693,56 @@ async componentDidMount() {
           val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
+         const columns = [
+  {
+    name: this.props.po.isServicePO ? "Service Note No" : "ASN No",
+    selector: row => this.props.po.isServicePO ? row.serviceSheetNo : row.asnNumber,
+    sortable: true
+  },
+{
+    name: 'PO No',
+    selector: row => row.po.purchaseOrderNumber !== "" ? row.po.purchaseOrderNumber : row.deliveryNoteNo,
+    sortable: true
+  },
+{
+    name: 'ASN Date',
+    selector: row => formatDateWithoutTimeWithMonthName(row.created),
+    sortable: true,  },
+{
+    name: 'Vendor',
+    selector: row =>  row.po.vendorName,
+    sortable: true,
+},
+{
+    name: 'Document No',
+    selector: row =>  row.invoiceNo != null ? row.invoiceNo : row.deliveryNoteNo,
+    sortable: true
+  },
+{
+    name: 'Document Type',
+    selector: row =>  row.po.documentType,
+    sortable: true,
+    omit:!this.state.displayDivForAsnHistoryTable
+  },
+{
+    name: 'Transporter Name',
+    selector: row =>  row.transporterNo,
+    sortable: true,
+    omit:!this.state.displayDivForAsnHistoryTable
+  },
+
+  {
+    name: 'Vehicle Number',
+    selector: row => row.vehicalNo,
+    sortable: true,
+    omit:!this.state.displayDivForAsnHistoryTable
+  },
+ {
+    name: 'Status',
+    selector: row => this.props.po.isServicePO ? this.state.serviceSheetStatusList[row.status] : this.state.asnStatusList[row.status],
+    sortable: true
+  },
+]
       return (
          <>
             <Loader isLoading={this.state.isLoading} />
@@ -2599,7 +2653,7 @@ async componentDidMount() {
     </TableRow>
   </TableHead>
   <TableBody>
-  {filteredData.map((asn, index) => (
+  {filteredData && filteredData.map((asn, index) => (
       <TableRow key={index} onClick={() => this.loadASNForEdit(asn)}>
         <TableCell>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</TableCell>
         <TableCell>{asn.po.purchaseOrderNumber !== "" ? asn.po.purchaseOrderNumber : asn.deliveryNoteNo}</TableCell>
@@ -2618,19 +2672,16 @@ async componentDidMount() {
   </TableBody>
 </Table>
 
-<Table className="my-table">
+{/* <Table className="my-table">
   <TableHead>
     <TableRow>
       <TableCell>{this.props.po.isServicePO ? "Service Note No" : "ASN No"}</TableCell>
       <TableCell>PO No</TableCell>
-      {/* <TableCell>Invoice Date</TableCell> */}
-      <TableCell>ASN Date</TableCell>
+       <TableCell>ASN Date</TableCell>
       <TableCell>Vendor</TableCell>
       <TableCell>Document No</TableCell>
       {this.state.displayDivForAsnHistoryTable && <TableCell>Document Type</TableCell>}
-      {/* <TableCell>Invoice Amount</TableCell> */}
-      {/* <TableCell>Packing Type</TableCell> */}
-      {this.state.displayDivForAsnHistoryTable && <TableCell>Transporter Name</TableCell>}
+      {this.state.displayDivForAsnHistoryTable && <TableCell>  </TableCell>}
       {this.state.displayDivForAsnHistoryTable && <TableCell>Vehicle Number</TableCell>}
       <TableCell>Status</TableCell>
     </TableRow>
@@ -2640,23 +2691,21 @@ async componentDidMount() {
       <TableRow key={index} onClick={() => this.loadASNForEdit(asn)} >
         <TableCell>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</TableCell>
         <TableCell>{asn.po.purchaseOrderNumber !== "" ? asn.po.purchaseOrderNumber : asn.deliveryNoteNo}</TableCell>
-        {/* <TableCell>{formatDateWithoutTimeWithMonthName(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</TableCell> */}
         <TableCell>{formatDateWithoutTimeWithMonthName(asn.created)}</TableCell>
         <TableCell>{asn.po.vendorName}</TableCell>
         <TableCell>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</TableCell>
         {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.po.documentType}</TableCell>}
-        {/* <TableCell>{asn.invoiceAmount}</TableCell> */}
-        {/* <TableCell>{asn.typeOfPackingBulk}</TableCell> */}
+       
         {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.transporterNo}</TableCell>}
         {this.state.displayDivForAsnHistoryTable && <TableCell>{asn.vehicalNo}</TableCell>}
         <TableCell>{this.props.po.isServicePO ? this.state.serviceSheetStatusList[asn.status] : this.state.asnStatusList[asn.status]}</TableCell>
       </TableRow>
     ))}
   </TableBody>
-</Table>
+</Table> */}
 
-                              </TableContainer>
-                              <TablePagination
+                            
+                              {/* <TablePagination
                                             rowsPerPageOptions={[50, 100, 150]}
                                             component="div"
                                             count={filteredData.length}
@@ -2664,7 +2713,17 @@ async componentDidMount() {
                                             page={page}
                                             onPageChange={this.handleChangePage}
                                             onRowsPerPageChange={this.handleChangeRowsPerPage}
-                                          />
+                                          /> */}
+                                           <DataTable
+                                             columns={columns}
+                                             data={filteredData}
+                                             pagination
+                                             paginationPerPage={50}  
+                                             //responsive
+                                             paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                                             onRowClicked={this.handleRowClick}
+                                             />
+                                               </TableContainer>
                            </div>
                         </div>
                      </div>
