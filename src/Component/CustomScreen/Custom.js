@@ -22,6 +22,7 @@ import { isEmpty } from "lodash-es";
 import StickyHeader from "react-sticky-table-thead";
 import { searchTableData, searchTableDataTwo} from "../../Util/DataTable";
 import { Button, Checkbox, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 
 class AsnComponent extends React.Component{
   constructor(){
@@ -369,6 +370,74 @@ if(props.vendorList){
         val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
+    const columns = [
+  {
+    name: 'Invite',
+    cell: (row, index) => (
+      <Checkbox id={`checkbox${index}`} />
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+    width: '80px',
+  },
+  {
+    name: 'Vendor Email',
+    selector: row => row.vendorEmail,
+    sortable: true,
+  },
+  {
+    name: 'VendorCode-Name',
+    selector: row =>
+      row.vendor
+        ? `${row.vendor.userName || ''}${row.vendor.name ? '-' + row.vendor.name : ''}`
+        : '',
+    sortable: true,
+    wrap: true,
+  },
+  {
+    name: 'UserCode-Name',
+    selector: row => `${row.createdBy.userName}-${row.createdBy.name}`,
+    sortable: true,
+  },
+  {
+    name: 'Location',
+    selector: row => row.createdBy.userDetails.plant,
+    sortable: true,
+  },
+  {
+    name: 'PO NO',
+    selector: row => row.poNo,
+    sortable: true,
+  },
+  {
+    name: 'Invoice NO',
+    selector: row => row.invoiceNo,
+    sortable: true,
+  },
+  {
+    name: 'Invoice Date',
+    selector: row => row.invoiceDate,
+    sortable: true,
+  },
+  {
+    name: 'Delete',
+    cell: row => (
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() => this.deleteAsnReminder(row)}
+      >
+        <i className="fa fa-trash" aria-hidden="true"></i>
+      </Button>
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+    width: '90px',
+  },
+];
+
     return (
       <React.Fragment>
     
@@ -583,13 +652,13 @@ if(props.vendorList){
           </Grid>
             <Paper className="mt-3">
             <TableContainer>
-                <StickyHeader height={400} className="table-responsive width-adjustment">
+                {/* <StickyHeader height={400} className="table-responsive width-adjustment">
                           <Table>
                             <TableHead>
                               <TableRow>
                                 <TableCell>Invite</TableCell>
                                 <TableCell>Vendor Email</TableCell>
-                                <TableCell style={{width:"100px"}}>VendorCode-Name</TableCell>
+                                <TableCell>VendorCode-Name</TableCell>
                                 <TableCell>UserCode-Name</TableCell>
                                 <TableCell>Location</TableCell>
                                 <TableCell>PO NO</TableCell>
@@ -605,9 +674,9 @@ if(props.vendorList){
                                     <Checkbox id={"checkbox" + index} />
                                   </TableCell>
                                   <TableCell>{vendor['vendorEmail']}</TableCell>
-                                  <TableCell style={{width:"100px"}}>{(vendor.vendor == null ? "" : (vendor.vendor.userName == null ? "" : vendor.vendor.userName) + (vendor.vendor.name == null ? "" : '-' + vendor.vendor.name))}</TableCell>
+                                  <TableCell >{(vendor.vendor == null ? "" : (vendor.vendor.userName == null ? "" : vendor.vendor.userName) + (vendor.vendor.name == null ? "" : '-' + vendor.vendor.name))}</TableCell>
                                   <TableCell>{vendor.createdBy.userName + '-' + vendor.createdBy.name}</TableCell>
-                                  <TableCell align="left">{vendor.createdBy.userDetails.plant}</TableCell>
+                                  <TableCell>{vendor.createdBy.userDetails.plant}</TableCell>
                                   <TableCell>{vendor['poNo']}</TableCell>
                                   <TableCell>{vendor['invoiceNo']}</TableCell>
                                   <TableCell>{vendor['invoiceDate']}</TableCell>
@@ -620,9 +689,17 @@ if(props.vendorList){
                               ))}
                             </TableBody>
                           </Table>
-                        </StickyHeader>
+                        </StickyHeader> */}
+                  <DataTable
+                        columns={columns}
+                        data={filteredData}
+                        pagination
+                        paginationPerPage={50}  
+                        paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                        //onRowClicked={this.handleRowClick}
+                      />
                 </TableContainer>
-                <TablePagination
+                {/* <TablePagination
               rowsPerPageOptions={[10, 25, 50]}
               component="div"
               count={filteredData.length}
@@ -630,7 +707,7 @@ if(props.vendorList){
               page={page}
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
-            />
+            /> */}
                 </Paper>
                 <hr style={{ margin: "0px" }} />
                 {this.state.loginGeneratedResponseMessage}

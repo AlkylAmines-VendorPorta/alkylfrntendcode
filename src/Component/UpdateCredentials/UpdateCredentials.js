@@ -985,6 +985,162 @@ class UpdateCredentials extends Component {
     button: true,
   },
 ];
+const columns1 = [
+  ...(this.state.requestedUsersType !== "internaluser"
+    ? [
+        {
+          name: "Invite",
+          cell: (row, index) =>
+            row[7] === "Y" ? null : (
+              <input
+                type="checkbox"
+                id={`checkbox${index}`}
+                onChange={(e) =>
+                  this.inviteVendorCheckboxHandlerForAll(e, row, index)
+                }
+                checked={this.state.checked[index] || false}
+              />
+            ),
+          width: "80px",
+          ignoreRowClick: true,
+          allowOverflow: true,
+        },
+      ]
+    : []),
+
+  {
+    name:
+      this.state.requestedUsersType === "internaluser"
+        ? "Employee Code"
+        : "Vendor Code",
+    selector: (row) => row[2],
+    wrap: true,
+  },
+  {
+    name: "Email",
+    selector: (row) => row[4],
+    wrap: true,
+  },
+  ...(this.state.requestedUsersType !== "internaluser"
+    ? [
+        {
+          name: "Company Name",
+          selector: (row) => row[1],
+        },
+        {
+          name: "Status",
+          selector: (row) => statusForVendor(row[8]),
+        },
+      ]
+    : []),
+  {
+    name: "State",
+    selector: (row) => row[6],
+  },
+  {
+    name: "District",
+    selector: (row) => row[5],
+  },
+  {
+    name: "Edit",
+    cell: (row) => (
+      <button
+        className={
+          "btn btn-outline-info " +
+          (this.state.editButtonFlag ? "not-allowed" : "")
+        }
+        type="button"
+        disabled={this.state.editButtonFlag}
+        onClick={() => this.displayUserInfoForAll(row)}
+      >
+        <i
+          className={"fa fa-pencil-square-o " + this.props.displayDiv}
+          aria-hidden="true"
+        ></i>
+      </button>
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+    width: "80px",
+  },
+];
+const columns2 = [
+  ...(this.state.requestedUsersType !== "internaluser"
+    ? [
+        {
+          name: "Invite",
+          cell: (row, index) => (
+            <input
+              type="checkbox"
+              id={`checkbox${index}`}
+              onChange={(e) =>
+                this.inviteVendorCheckboxHandlerForAll(e, row, index)
+              }
+              checked={this.state.checked[index] || false}
+            />
+          ),
+          width: "80px",
+          ignoreRowClick: true,
+          allowOverflow: true,
+        },
+      ]
+    : []),
+
+  {
+    name:
+      this.state.requestedUsersType === "internaluser"
+        ? "Employee Code"
+        : "Vendor Code",
+    selector: (row) => row[6],
+    wrap: true,
+  },
+  {
+    name: "Email",
+    selector: (row) => row[2],
+    wrap: true,
+  },
+  ...(this.state.requestedUsersType !== "internaluser"
+    ? [
+        {
+          name: "Company Name",
+          selector: (row) => row[1],
+          wrap: true,
+        },
+        {
+          name: "Status",
+          selector: (row) => statusForVendor(row[5]),
+        },
+      ]
+    : []),
+
+  {
+    name: "Edit",
+    cell: (row) => (
+      <button
+        className={
+          "btn btn-outline-info " +
+          (this.state.editButtonFlag ? "not-allowed" : "")
+        }
+        data-toggle="modal"
+        data-target="#EditUserInfo"
+        type="button"
+        disabled={this.state.editButtonFlag}
+        onClick={() => this.displayUserInfoForResendInvitation(row)}
+      >
+        <i
+          className={"fa fa-pencil-square-o " + this.props.displayDiv}
+          aria-hidden="true"
+        ></i>
+      </button>
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+    width: "80px",
+  },
+];
+
 
     return (
       <>
@@ -1216,7 +1372,7 @@ class UpdateCredentials extends Component {
                         </Grid>
                       </Grid>
             <TableContainer className="mt-1">
-                    <Table className="my-table">
+                    {/* <Table className="my-table">
                       <TableHead>
                         <TableRow>
 
@@ -1231,20 +1387,12 @@ class UpdateCredentials extends Component {
                           <TableCell>Email</TableCell>
                           <>
                             <TableCell>Company name</TableCell>
-                            {/* <th style={{ width: "150px" }}>PAN No</TableCell> */}
                             <TableCell>Status</TableCell>
                           </>
                           <>
                             <TableCell>State</TableCell>
-                            {/* <th style={{ width: "150px" }}>PAN No</TableCell> */}
                             <TableCell>District</TableCell>
                           </>
-
-
-                          {/* <th style={{ width: "150px" }}>Vendor SAP Code</TableCell>
-                          <th style={{ width: "100px" }}>is Invited</TableCell> */}
-                          <TableCell>Edit</TableCell>
-                          {/* <th className={this.props.displayDiv}>Delete</TableCell> */}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -1265,18 +1413,12 @@ class UpdateCredentials extends Component {
                             <TableCell>{<>{user[2]}</>}</TableCell>
                             <TableCell>{user[4]}</TableCell>
 
-                            {/* <td style={{ width: "150px" }}>{user.partner.vendorSapCode}</TableCell>
-                            <td style={{ width: "100px" }}>{user.partner.isInvited}</TableCell> */}
-
-
-
 
                             {
                               this.state.requestedUsersType !== "internaluser" &&
                               <>
                                 <TableCell>{user[1]}</TableCell>
-                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</TableCell> */}
-                                <TableCell>{statusForVendor(user[8])}</TableCell>
+                                 <TableCell>{statusForVendor(user[8])}</TableCell>
                               </>
                             }
                             <TableCell>{user[6]}</TableCell>
@@ -1301,9 +1443,17 @@ class UpdateCredentials extends Component {
                         ))}
 
                       </TableBody>
-                    </Table>
+                    </Table> */}
+                    <DataTable
+                      columns={columns1}
+                      data={filteredData}
+                      pagination
+                      paginationPerPage={50}  
+                      paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                      //onRowClicked={this.handleRowClick}
+                    />
                     </TableContainer>
-            <TablePagination
+            {/* <TablePagination
               rowsPerPageOptions={[50, 100, 150]}
               component="div"
               count={filteredData.length}
@@ -1311,7 +1461,7 @@ class UpdateCredentials extends Component {
               page={page}
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
-            />
+            /> */}
          
                 {/* {this.state.loginGeneratedResponseMessage}
                 <button type="button" className="btn btn-outline-success float-right my-2 mr-4" onClick={() => { this.setState({ vendorLogInBtnClick: true }); this.inviteVendorsForLogin() }}><i className="fa fa-envelope"></i>&nbsp;Send Invite</button> */}
@@ -1340,7 +1490,7 @@ class UpdateCredentials extends Component {
                         </Grid>
                       </Grid>
             <TableContainer className="mt-1">
-                    <Table className="my-table">
+                    {/* <Table className="my-table">
                       <TableHead>
                         <TableRow>
                           {this.state.requestedUsersType !== "internaluser" &&
@@ -1369,7 +1519,6 @@ class UpdateCredentials extends Component {
                               this.state.requestedUsersType !== "internaluser" &&
                               <>
                                 <TableCell>{user[1]}</TableCell>
-                                {/* <td style={{ width: "150px" }}>{user.partner.panNumber}</TableCell> */}
                                 <TableCell>{statusForVendor(user[5])}</TableCell>
                               </>
                             }
@@ -1379,19 +1528,24 @@ class UpdateCredentials extends Component {
                                   className={"fa fa-pencil-square-o " + this.props.displayDiv}
                                   aria-hidden="true"
                                 ></i>
-                                {/* <i
-                                  className={"fa fa-eye " + this.props.displayDiv1}
-                                  aria-hidden="true"
-                                ></i> */}
+                                
                               </button>
                             </TableCell>
 
                           </TableRow>
                         ))}
                       </TableBody>
-                    </Table> 
+                    </Table>  */}
+                    <DataTable
+                      columns={columns2}
+                      data={filteredData}
+                      pagination
+                      paginationPerPage={50}  
+                      paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                      //onRowClicked={this.handleRowClick}
+                    />
                     </TableContainer>
-            <TablePagination
+            {/* <TablePagination
               rowsPerPageOptions={[50, 100, 150]}
               component="div"
               count={filteredData.length}
@@ -1399,7 +1553,7 @@ class UpdateCredentials extends Component {
               page={page}
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
-            />
+            /> */}
          
                 
                 {/* {this.state.loginGeneratedResponseMessage}

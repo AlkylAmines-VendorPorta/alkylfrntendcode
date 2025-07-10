@@ -17,6 +17,7 @@ import formatDate, { formatDateWithoutTime, formatDateWithoutTimeNewDate2 } from
 import { isServicePO } from "../../Util/AlkylUtil";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../Util/CommonUtil";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Grid, Container } from '@material-ui/core';
+import DataTable from "react-data-table-component";
 
  const height_dy = window.innerHeight - 135;
  const delay = ms => new Promise(
@@ -427,6 +428,9 @@ handleChangePage = (event, newPage) => {
 handleChangeRowsPerPage = (event) => {
   this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
 };
+ handleRowClick = (row) => {
+      this.loadASNForEdit(row);
+    };
   render() {
     const {  searchQuery, page, rowsPerPage } = this.state;
     var shown = {
@@ -451,6 +455,39 @@ handleChangeRowsPerPage = (event) => {
         const filteredData = this.state.ApprovalPendingServiceSheetLIst.filter((entry) => {
           return searchInObject(entry, searchQuery);
         });
+        const columns = [
+  {
+    name: "Service Note No",
+    selector: row => row.serviceSheetNo,
+    sortable: true,
+  },
+  {
+    name: "PO No",
+    selector: row => row.po?.purchaseOrderNumber,
+    sortable: true,
+  },
+  {
+    name: "SSN Date",
+    selector: row => formatDate(row.created),
+    sortable: true,
+  },
+  {
+    name: "Vendor",
+    selector: row => row.po?.vendorName,
+    sortable: true,
+  },
+  {
+    name: "Document No",
+    selector: row => row.invoiceNo ?? row.deliveryNoteNo,
+    sortable: true,
+  },
+  {
+    name: "Status",
+    selector: row => this.state.serviceSheetStatusList[row.status],
+    sortable: true,
+  }
+];
+
     return (
       <>
         <Loader isLoading={this.state.isLoading} />
@@ -469,7 +506,7 @@ handleChangeRowsPerPage = (event) => {
             </Grid>
           </Grid>
           <TableContainer className="mt-1">
-         <Table className="my-table">
+         {/* <Table className="my-table">
                       <TableHead>
                         <TableRow>
                           <TableCell>Service Note No</TableCell>
@@ -510,7 +547,15 @@ handleChangeRowsPerPage = (event) => {
                                   page={page}
                                   onPageChange={this.handleChangePage}
                                   onRowsPerPageChange={this.handleChangeRowsPerPage}
-                                />
+                                /> */}
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData}
+                                    pagination
+                                    paginationPerPage={50}  
+                                    paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                                    onRowClicked={this.handleRowClick}
+                                  />
                                 </TableContainer></div>
      
         </div>

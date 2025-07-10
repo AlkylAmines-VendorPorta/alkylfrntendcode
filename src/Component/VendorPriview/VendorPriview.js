@@ -15,6 +15,7 @@ import {
   TableRow, TablePagination, Paper, TextField, Grid,
   Button
 } from "@material-ui/core";
+import DataTable from "react-data-table-component";
 class VendorPriview extends Component {
     constructor (props) {
         super(props)
@@ -62,6 +63,37 @@ class VendorPriview extends Component {
         val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
+     const columns = [
+  {
+    name: 'Serial No.',
+    cell: (row, index) => index + 1,
+    sortable: true
+  },
+{
+    name: 'Date',
+    selector: row => formatDateWithoutTimeNewDate2(row.created),
+    sortable: true
+  },
+{
+    name: 'Module',
+    selector: row => row.module,
+    sortable: true
+  },
+ {
+    name: 'Field Name',
+    selector: row => row.fieldName,
+    sortable: true
+  },
+{
+    name: 'Old Value',
+    selector: row => row.oldValue,
+    sortable: true
+  },
+ {
+    name: 'New Value',
+    selector: row => row.newValue,
+    sortable: true
+  }]
     return (
         <React.Fragment>
             <UserDashboardHeader/>
@@ -88,7 +120,7 @@ class VendorPriview extends Component {
             </Grid>
           </Grid>
           <TableContainer component={Paper} className="mt-2">
-            <Table className="my-table">
+            {/* <Table className="my-table">
               <TableHead>
                 <TableRow>
                   <TableCell>Serial No.</TableCell>
@@ -111,9 +143,18 @@ class VendorPriview extends Component {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table> */}
+            <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              paginationPerPage={50}  
+              //responsive
+              paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+              //onRowClicked={this.handleRowClick}
+            />
           </TableContainer>
-          <TablePagination
+          {/* <TablePagination
               rowsPerPageOptions={[10, 25, 50]}
               component="div"
               count={filteredData.length}
@@ -121,7 +162,7 @@ class VendorPriview extends Component {
               page={page}
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
-            />
+            /> */}
         </div>
 
               </div>
