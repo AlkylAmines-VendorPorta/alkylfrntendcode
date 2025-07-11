@@ -446,6 +446,7 @@ Object.keys(groupByList).forEach((key) => {
     name: 'PR No',
     selector: row => (row.type === 'parent' ? row.key : ''),
     width: '120px',
+    sortable: true
   },
   {
     name: '',
@@ -472,12 +473,14 @@ Object.keys(groupByList).forEach((key) => {
     selector: row =>
       row.type === 'child' ? formatDateWithoutTimeNewDate2(row.item?.pr?.date ?? '') : '',
     width: '140px',
+    sortable: true
   },
   {
     name: 'Line No.',
     selector: row =>
       row.type === 'child' ? removeLeedingZeros(row.item?.prLineNumber) : '',
     width: '100px',
+    sortable: true
   },
   {
     name: 'Material Code & Description',
@@ -486,21 +489,25 @@ Object.keys(groupByList).forEach((key) => {
         ? `${row.item?.materialCode} - ${row.item?.materialDesc}`
         : '',
     minWidth: '250px',
+    sortable: true
   },
   {
     name: 'Req. Qty.',
     selector: row => (row.type === 'child' ? row.item?.reqQty : ''),
     width: '100px',
+    sortable: true
   },
   {
     name: 'UOM',
     selector: row => (row.type === 'child' ? row.item?.uom : ''),
     width: '80px',
+    sortable: true
   },
   {
     name: 'Val. Price',
     selector: row => (row.type === 'child' ? row.item?.price : ''),
     width: '120px',
+    sortable: true
   },
   {
     name: 'Plant',
@@ -511,6 +518,7 @@ Object.keys(groupByList).forEach((key) => {
           : row.item?.plant
         : '',
     width: '140px',
+    sortable: true
   },
   {
     name: 'Delivery Date',
@@ -530,6 +538,7 @@ Object.keys(groupByList).forEach((key) => {
         ''
       ),
     width: '160px',
+    sortable: true
   },
   {
     name: 'Material Group',
@@ -538,6 +547,7 @@ Object.keys(groupByList).forEach((key) => {
         ? `${row.item?.matGrp ?? ''} - ${row.item?.matGrpDesc ?? ''}`
         : '',
     minWidth: '180px',
+    sortable: true
   },
   {
     name: 'Buyer',
@@ -566,6 +576,7 @@ Object.keys(groupByList).forEach((key) => {
     name: 'Tracking No',
     selector: row => (row.type === 'child' ? row.item?.trackingNo : ''),
     width: '140px',
+    sortable: true
   },
 ];
 
