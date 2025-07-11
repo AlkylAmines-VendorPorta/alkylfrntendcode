@@ -55,7 +55,7 @@ class PRList extends Component {
   handleQCFDetails = (pr)=>{
     // if(!isEmpty(pr.qcfNo)){
  //alert(pr.enquiryId,"pr.enquiryId")
-      this.props.loadQCFDetails(pr.enquiryId);
+      this.props.loadQCFDetails(pr);
     // }
   }
   handlePageChange = (event, newPage) => {
@@ -66,8 +66,8 @@ class PRList extends Component {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
    handleRowClick = (row) => {
-  
-  this.handleQCFDetails(row);
+    const index = this.props.prList.findIndex(v => v.enquiryId === row.enquiryId);
+  this.handleQCFDetails(index);
 };
 handleSearchChange = (event) => {
     this.setState({ searchQuery: event.target.value });

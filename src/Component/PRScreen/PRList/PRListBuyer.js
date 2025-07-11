@@ -364,35 +364,38 @@ const columns = [
   name: '',
   cell: (row) => (
     <>
-      <button
+      <Button
         type="button"
+        size="small"
         onClick={() => this.handleSelect(row)}
-        className="btn btn-light"
+        variant="outlined"
         data-toggle="modal"
         data-target="#viewPrDetail"
         data-backdrop="static"
         data-keyboard="false"
       >
         View PR
-      </button>
+      </Button>
       &nbsp;
-      <button
+      <Button
         type="button"
+        size="small"
         onClick={() => this.viewInquiry(row)}
-        className="btn btn-light myname"
+        variant="outlined"
         data-toggle="modal"
         data-target="#viewInquiry"
         data-backdrop="static"
         data-keyboard="false"
       >
         Enquiry
-      </button>
+      </Button>
     </>
   ),
   ignoreRowClick: true,
-  allowOverflow: true,
+  //allowOverflow: true,
   button: true,
   sortable: false,
+  width:"200px"
 },
 
   {
