@@ -311,9 +311,13 @@ onOpenModal=()=>{
 }
   render() {
     const {selectedItemsPr, selectedItemsPL}=this.state
-    const groupByList = this.state.prList;
+    const groupByList = this.state.prList.map((item, index) => ({
+      ...item,
+      _rowIndex: index,
+    }));;
     const {filterBuyerList,filterPlantList,filterPRStatusList,filterPurhaseGroupList} = this.props;
    // const groupByList = this.props.buy ? this.state.prList:this.props.prList;
+   console.log(this.state.prList,"this.state.prList")
     let filter = {};
     if(this.props.role != ROLE_BUYER_ADMIN) return null;
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
@@ -322,18 +326,12 @@ const columns = [
 {
   name: (
     <div>
-      <input
-        type="checkbox"
-        checked={this.state.checked}
-        onChange={this.toggleChecked}
-      />{' '}
+      <input type="checkbox" checked={this.state.checked} onChange={this.toggleChecked} />
       ENQ
     </div>
   ),
-  cell: (row, index) => {
-    const rowIndex = this.state.prList.findIndex(
-      item => item.id === row.id // or another unique field
-    );
+  cell: (row) => {
+    const index = row._rowIndex;
     const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
 
     return (
@@ -343,7 +341,8 @@ const columns = [
         value="Y"
         checked={row.isChecked}
         onChange={(e) => {
-          commonHandleChangeCheckBox(e, this, `prList.${rowIndex}.isChecked`);
+          console.log(index, "rowIndex");
+          commonHandleChangeCheckBox(e, this, `prList.${index}.isChecked`);
         }}
         className="display_block"
       />
@@ -352,7 +351,7 @@ const columns = [
   ignoreRowClick: true,
   allowOverflow: true,
   button: true,
-  sortable: false
+  sortable: false,
 },
 {
     name: 'PR No',
@@ -427,7 +426,8 @@ const columns = [
  {
     name: 'Material Code & Description',
     selector: row => `${row.materialCode} - ${row.materialDesc}`,
-    sortable: true
+    sortable: true,
+    width:"350px"
   },
 
   {

@@ -452,15 +452,17 @@ Object.keys(groupByList).forEach((key) => {
     name: '',
     cell: row =>
       row.type === 'parent' ? (
-        <button
+       <Button
           type="button"
+          size="small"
+          variant="outlined"
           onClick={() => this.handleSelect(row.itemData)}
           className="btn btn-light"
           data-toggle="modal"
           data-target="#viewPrDetail"
         >
           View PR
-        </button>
+        </Button>
       ) : (
         ''
       ),
