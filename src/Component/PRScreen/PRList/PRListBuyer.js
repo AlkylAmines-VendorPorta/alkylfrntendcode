@@ -381,7 +381,7 @@ const columns = [
         </button>
       </>
     ),
-    width: "160px",
+    width: "250px",
   },
   {
     name: "PR Released Date",
@@ -406,7 +406,7 @@ const columns = [
   {
     name: "Material Code & Description",
     selector: row => `${row.materialCode} - ${row.materialDesc}`,
-    minWidth: "180px",
+    minWidth: "220px",
   },
   {
     name: "Req. Qty.",
