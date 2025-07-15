@@ -113,62 +113,125 @@ class PRList extends Component {
     this.setState({loadGetDocuments:true})
   }
 
-  onChecked = (key) => {
-    let {checkedItems} = this.state;
-    let index = checkedItems.findIndex(c => c == key)
-    if(index != -1) checkedItems.splice(index)
-    else checkedItems.push(key)
-    this.setState({checkedItems});
+  // onChecked = (key) => {
+  //   let {checkedItems} = this.state;
+  //   let index = checkedItems.findIndex(c => c == key)
+  //   if(index != -1) checkedItems.splice(index)
+  //   else checkedItems.push(key)
+  //   this.setState({checkedItems});
+  // }
+onChecked = (key) => {
+  let { checkedItems } = this.state;
+  let updatedItems = [...checkedItems];
+  const index = updatedItems.findIndex(c => c === key);
+
+  if (index !== -1) {
+    updatedItems.splice(index, 1); // remove only 1 item at index
+  } else {
+    updatedItems.push(key);
   }
 
-  onSubmit = (e) => {
-    let {checkedItems,prList} = this.state;
-    let data = [];
-    if(isEmptyDeep(checkedItems)) return showAlert(true,"Please Select Item");
-    checkedItems.map((item) => {
-      let items = prList[item];
-      if(!isEmptyDeep(items)){
-        items = items.map(li => {
-          let itm = {prLineId:li.prLineId,pr:{prId:li.pr.prId,prStatus:li.pr.status},deliverDate:li.deliverDate,requiredDate:li.requiredDate,prLineNumber: li.prLineNumber}
-          if(!isEmptyDeep(li.buyer)){
-            itm = { ...itm,buyerId:Number(li.buyer.userId) }
-          }
-          return itm;
-        });
-        data = data.concat(items)
-      }
-      return item;
-    })
+  this.setState({ checkedItems: updatedItems });
+}
 
-    data.map(da =>{
-// if(da.pr.prStatus==="REL" || da.pr.prStatus==="CREATED"){
-//        showAlert(true,"PR is not released or accepted yet")
-//    //   swal("PR is not released or accepted yet")
+//   onSubmit = (e) => {
+//     let {checkedItems,prList} = this.state;
+//     let data = [];
+//     if(isEmptyDeep(checkedItems)) return showAlert(true,"Please Select Item");
+//     checkedItems.map((item) => {
+//       let items = prList[item];
+//       if(!isEmptyDeep(items)){
+//         items = items.map(li => {
+//           let itm = {prLineId:li.prLineId,pr:{prId:li.pr.prId,prStatus:li.pr.status},deliverDate:li.deliverDate,requiredDate:li.requiredDate,prLineNumber: li.prLineNumber}
+//           if(!isEmptyDeep(li.buyer)){
+//             itm = { ...itm,buyerId:Number(li.buyer.userId) }
+//           }
+//           return itm;
+//         });
+//         data = data.concat(items)
+//       }
+//       return item;
+//     })
+
+//     data.map(da =>{
+// // if(da.pr.prStatus==="REL" || da.pr.prStatus==="CREATED"){
+// //        showAlert(true,"PR is not released or accepted yet")
+// //    //   swal("PR is not released or accepted yet")
+// // }
+// if(da.pr.prStatus!="ACPT"){
+//   showAlert(true,"Buyer Cannot be assigned,Please Check PR Status")
+// //   swal("PR is not released or accepted yet")
 // }
-if(da.pr.prStatus!="ACPT"){
-  showAlert(true,"Buyer Cannot be assigned,Please Check PR Status")
-//   swal("PR is not released or accepted yet")
-}
-else
-{
-  submitForm(data,'/rest/updatePRBuyerAssignNew')
-    .then(res => {
-      if(res.success){
-        this.setState({checkedItems:[]})
-        showAlertAndReload(!res.success,res.message);
-      }else{
-        showAlert(true,res.message)
-      }
-    }).catch(err => {
-      showAlert(err.success,err.message)
-    })
+// else
+// {
+//   submitForm(data,'/rest/updatePRBuyerAssignNew')
+//     .then(res => {
+//       if(res.success){
+//         this.setState({checkedItems:[]})
+//         showAlertAndReload(!res.success,res.message);
+//       }else{
+//         showAlert(true,res.message)
+//       }
+//     }).catch(err => {
+//       showAlert(err.success,err.message)
+//     })
+//   }
+// }
+// )}
+onSubmit = (e) => {
+  const { checkedItems, prList } = this.state;
+
+  if (isEmptyDeep(checkedItems)) {
+    return showAlert(true, "Please Select Item");
   }
-}
-)}
+
+  // Filter and prepare data
+  let data = prList
+    .filter(item => checkedItems.includes(item.prLineId)) // or item.id or index
+    .map(li => {
+      let itm = {
+        prLineId: li.prLineId,
+        pr: {
+          prId: li.pr?.prId,
+          prStatus: li.pr?.status
+        },
+        deliverDate: li.deliverDate,
+        requiredDate: li.requiredDate,
+        prLineNumber: li.prLineNumber
+      };
+
+      if (!isEmptyDeep(li.buyer)) {
+        itm = { ...itm, buyerId: Number(li.buyer.userId) };
+      }
+
+      return itm;
+    });
+
+  // Validation: all PRs must be ACPT
+  const hasInvalidPR = data.some(da => da.pr.prStatus !== "ACPT");
+
+  if (hasInvalidPR) {
+    return showAlert(true, "Buyer cannot be assigned, Please check PR Status");
+  }
+
+  // Submit
+  submitForm(data, '/rest/updatePRBuyerAssignNew')
+    .then(res => {
+      if (res.success) {
+        this.setState({ checkedItems: [] });
+        showAlertAndReload(!res.success, res.message);
+      } else {
+        showAlert(true, res.message);
+      }
+    })
+    .catch(err => {
+      showAlert(err.success, err.message);
+    });
+};
 
   componentWillReceiveProps(nextProps){
     let list = groupBy(nextProps.prList, 'prNumber');
-    this.setState({prList: list})
+    this.setState({prList: nextProps.prList})
     if(!isEmpty(nextProps.prList)){
       this.setState({isLoading:false})
     }
@@ -181,53 +244,99 @@ else
 
   }
 
-  commonHandleChange(event,keyName,key,index){
+  // commonHandleChange(event,keyName,key,index){
 
-    let {prList} = this.state;
-    let prItems = prList[key];
-    if(keyName == 'buyer'){
-      let val = event.target.value;
-      let buyer = null;
-      if(!includes(['',null,undefined],val)) buyer = {userId: val};
-      prItems[index] = {
-        ...prItems[index],
-        buyer
-      }
-    }else{
-      prItems[index] = {
-        ...prItems[index],
-        [keyName]:event.target.value
-      }
-    }
-    prList = {
-      ...prList,
-      [key]:prItems
+  //   let {prList} = this.state;
+  //   let prItems = prList[key];
+  //   if(keyName == 'buyer'){
+  //     let val = event.target.value;
+  //     let buyer = null;
+  //     if(!includes(['',null,undefined],val)) buyer = {userId: val};
+  //     prItems[index] = {
+  //       ...prItems[index],
+  //       buyer
+  //     }
+  //   }else{
+  //     prItems[index] = {
+  //       ...prItems[index],
+  //       [keyName]:event.target.value
+  //     }
+  //   }
+  //   prList = {
+  //     ...prList,
+  //     [key]:prItems
+  //   };
+  //   this.setState({prList})
+  // }
+commonHandleChange(event, keyName, key, index) {
+  let { prList } = this.state;
+  let newList = [...prList];
+
+  if (keyName === 'buyer') {
+    let val = event.target.value;
+    let buyer = null;
+    if (!['', null, undefined].includes(val)) buyer = { userId: val };
+    newList[index] = {
+      ...newList[index],
+      buyer,
     };
-    this.setState({prList})
+  } else {
+    newList[index] = {
+      ...newList[index],
+      [keyName]: event.target.value,
+    };
   }
 
-  handleSelect = (items) => {
-    console.log('itemData',items[0],this.state)
-    let pr = !isEmptyDeep(items[0]) && !isEmptyDeep(items[0].pr) ? items[0].pr:{};
-  //  let item = !isEmptyDeep(childs) ?  childs[0].pr:{};
-  //  this.setState({selectedItem:item})
-    // if(!isEmptyDeep(item.prLineId)){
-    //   commonSubmitWithParam(this.props,"getPRLines","/rest/getPRLinebyPrId",item.prLineId); 
-    // }
-   this.setState({selectedItem:{
-     ...pr,
-     prLineList:items
-   }})
+  this.setState({ prList: newList });
+}
+
+  // handleSelect = (items) => {
+  //   console.log('itemData',items[0],this.state)
+  //   let pr = !isEmptyDeep(items[0]) && !isEmptyDeep(items[0].pr) ? items[0].pr:{};
+  // //  let item = !isEmptyDeep(childs) ?  childs[0].pr:{};
+  // //  this.setState({selectedItem:item})
+  //   // if(!isEmptyDeep(item.prLineId)){
+  //   //   commonSubmitWithParam(this.props,"getPRLines","/rest/getPRLinebyPrId",item.prLineId); 
+  //   // }
+  //  this.setState({selectedItem:{
+  //    ...pr,
+  //    prLineList:items
+  //  }})
  
-  }
+  // }
+handleSelect = (item) => {
+  console.log('Selected Item:', item, this.state);
 
+  let pr = item?.pr ?? {};
+
+  this.setState({
+    selectedItem: {
+      ...pr,
+      prLineList: [item] // wrap in array to maintain structure if needed
+    }
+  });
+};
+
+  // toggleChecked = (e) => {
+  //   let {checked} = e.target;
+  //   const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
+  //   let checkedItems = [];
+  //   if(checked) checkedItems = Object.keys(groupByList);
+  //   this.setState({checked,checkedItems})
+  // }
   toggleChecked = (e) => {
-    let {checked} = e.target;
-    const groupByList = this.props.purchaseManager ? this.state.prList:this.props.prList;
-    let checkedItems = [];
-    if(checked) checkedItems = Object.keys(groupByList);
-    this.setState({checked,checkedItems})
-  }
+  const { checked } = e.target;
+  const prList = this.props.purchaseManager ? this.state.prList : this.props.prList;
+  
+  let checkedItems = [];
+
+ if (checked) {
+  checkedItems = prList.map(item => item.prLineId);
+}
+
+  this.setState({ checked, checkedItems });
+}
+
   clearFields = () => {
     this.props.onClearFilter(); // Calls parent's clearFilter
     this.setState({selectedItemsPr: [],selectedItemsPrPlant:[]})
@@ -308,29 +417,32 @@ render() {
     const filteredData = this.props.prList.filter((entry) => {
       return searchInObject(entry, search);
     });
-    const filteredData2 = [];
+    const filteredData2 = this.state.prList.map((item, index) => ({
+          ...item,
+          _rowIndex: index,
+        }));;;
+console.log(filteredData2,"filteredData2")
+// Object.keys(groupByList).forEach((key) => {
+//   const itemData = groupByList[key];
+//   // Push parent row (PR row)
+//   filteredData2.push({
+//     type: 'parent',
+//     key,
+//     itemData,
+//   });
 
-Object.keys(groupByList).forEach((key) => {
-  const itemData = groupByList[key];
-  // Push parent row (PR row)
-  filteredData2.push({
-    type: 'parent',
-    key,
-    itemData,
-  });
-
-  // Push children rows
-  if (itemData && itemData.length) {
-    itemData.forEach((childItem, index) => {
-      filteredData2.push({
-        type: 'child',
-        key,
-        index,
-        item: childItem,
-      });
-    });
-  }
-});
+//   // Push children rows
+//   if (itemData && itemData.length) {
+//     itemData.forEach((childItem, index) => {
+//       filteredData2.push({
+//         type: 'child',
+//         key,
+//         index,
+//         item: childItem,
+//       });
+//     });
+//   }
+// });
 
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
     const selectedItemsDisplayPlant=filterPlantList && filterPlantList.filter(item=>selectedItemsPrPlant.includes(item.value));    
@@ -430,41 +542,35 @@ Object.keys(groupByList).forEach((key) => {
       </div>
     ),
     cell: row =>
-      row.type === 'parent' ? (
         <input
           type="checkbox"
-          checked={this.state.checkedItems.includes(row.key)}
-          onChange={() => this.onChecked(row.key)}
+          // checked={this.state.checkedItems.includes(row.prNumber)}
+          // onChange={() => this.onChecked(row.prNumber)}
+          checked={this.state.checkedItems.includes(row.prLineId)} // or row.id
+          onChange={() => this.onChecked(row.prLineId)}
         />
-      ) : (
-        ''
-      ),
+      ,
     width: '80px',
     ignoreRowClick: true,
   },
   {
     name: 'PR No',
-    selector: row => (row.type === 'parent' ? row.key : ''),
+    selector: row => row.prNumber,
     width: '120px',
     sortable: true
   },
   {
     name: '',
-    cell: row =>
-      row.type === 'parent' ? (
-       <Button
+    cell: row =>(
+        <button
           type="button"
-          size="small"
-          variant="outlined"
-          onClick={() => this.handleSelect(row.itemData)}
+          onClick={() => this.handleSelect(row)}
           className="btn btn-light"
           data-toggle="modal"
           data-target="#viewPrDetail"
         >
           View PR
-        </Button>
-      ) : (
-        ''
+        </button>
       ),
     width: '100px',
     ignoreRowClick: true,
@@ -472,95 +578,85 @@ Object.keys(groupByList).forEach((key) => {
   },
   {
     name: 'PR Date',
-    selector: row =>
-      row.type === 'child' ? formatDateWithoutTimeNewDate2(row.item?.pr?.date ?? '') : '',
+    selector: row => formatDateWithoutTimeNewDate2(row.pr?.date ?? ''),
     width: '140px',
     sortable: true
   },
   {
     name: 'Line No.',
-    selector: row =>
-      row.type === 'child' ? removeLeedingZeros(row.item?.prLineNumber) : '',
+    selector: row => removeLeedingZeros(row.prLineNumber),
     width: '100px',
     sortable: true
   },
   {
     name: 'Material Code & Description',
-    selector: row =>
-      row.type === 'child'
-        ? `${row.item?.materialCode} - ${row.item?.materialDesc}`
-        : '',
+    selector: row =>`${row.materialCode} - ${row.materialDesc}`,
     minWidth: '250px',
     sortable: true
   },
   {
     name: 'Req. Qty.',
-    selector: row => (row.type === 'child' ? row.item?.reqQty : ''),
+    selector: row => row.reqQty,
     width: '100px',
     sortable: true
   },
   {
     name: 'UOM',
-    selector: row => (row.type === 'child' ? row.item?.uom : ''),
+    selector: row => row.uom ,
     width: '80px',
     sortable: true
   },
   {
     name: 'Val. Price',
-    selector: row => (row.type === 'child' ? row.item?.price : ''),
+    selector: row => row.price,
     width: '120px',
     sortable: true
   },
   {
     name: 'Plant',
-    selector: row =>
-      row.type === 'child'
-        ? row.item?.plantDesc
-          ? `${row.item?.plant} - ${row.item?.plantDesc}`
-          : row.item?.plant
-        : '',
+    selector: row =>row.plantDesc
+          ? `${row.plant} - ${row.plantDesc}`
+          : row.plant,
     width: '140px',
     sortable: true
   },
   {
     name: 'Delivery Date',
-    cell: row =>
-      row.type === 'child' ? (
+    cell: row =>{
+      const index = row._rowIndex;
+      return(
+      
         <input
           type="date"
           min={disablePastDate()}
           max="9999-12-31"
           className="form-control"
-          value={row.item?.deliverDate}
+          value={row.deliverDate}
           onChange={(e) =>
-            this.commonHandleChange(e, 'deliverDate', row.key, row.index)
+            this.commonHandleChange(e, 'deliverDate', row.prNumber, index)
           }
         />
-      ) : (
-        ''
-      ),
+      )},
     width: '160px',
     sortable: true
   },
   {
     name: 'Material Group',
-    selector: row =>
-      row.type === 'child'
-        ? `${row.item?.matGrp ?? ''} - ${row.item?.matGrpDesc ?? ''}`
-        : '',
+    selector: row =>`${row.matGrp ?? ''} - ${row.matGrpDesc ?? ''}`,
     minWidth: '180px',
     sortable: true
   },
   {
     name: 'Buyer',
-    cell: row =>
-      row.type === 'child' ? (
+    cell: row =>{
+      const index = row._rowIndex;
+      return(
         <select
           className="form-control"
           onChange={(e) =>
-            this.commonHandleChange(e, 'buyer', row.key, row.index)
+            this.commonHandleChange(e, 'buyer', row.prNumber, index)
           }
-          value={row.item?.buyer?.userId ?? ''}
+          value={row.buyer?.userId ?? ''}
         >
           <option value="">Select Buyer</option>
           {this.props.buyerList.map((buyer) => (
@@ -568,15 +664,14 @@ Object.keys(groupByList).forEach((key) => {
               {buyer.name}
             </option>
           ))}
-        </select>
-      ) : (
-        ''
-      ),
+        </select>)}
+        
+        ,
     width: '160px',
   },
   {
     name: 'Tracking No',
-    selector: row => (row.type === 'child' ? row.item?.trackingNo : ''),
+    selector: row => row.trackingNo,
     width: '140px',
     sortable: true
   },
@@ -1298,38 +1393,38 @@ Object.keys(groupByList).forEach((key) => {
 
                
                   <TableContainer className="mt-1">
-                
-                  {/* <table className="my-table">
-  <thead>
-    <tr>
-      <th>
-        <input 
-          type="checkbox" 
-          checked={this.state.checked} 
-          onChange={this.toggleChecked} 
-          style={{marginRight: 5}} 
-        />
-        Rel
-      </th>
-      <th>PR No</th>
-      <th></th>
-      <th>PR Date</th>
-      <th>Line No.</th>
-      <th>Material Code & Description</th>
-      <th>Req. Qty.</th>
-      <th>UOM</th>
-      <th>Val. Price</th>
-      <th>Plant</th>
-      <th>Delivery Date</th>
-      <th>Material Group</th>
-      <th>Buyer</th>
-      <th>Tracking No</th>
-    </tr>
-  </thead>
-  <tbody id="DataTableBodyThree" className="table-header-fixed-min">
-    {Object.keys(groupByList).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, i) => {
-      let itemData = groupByList[key];
-                          let childs = !isEmptyDeep(itemData) ? itemData:[];
+                                            
+                                              {/* <table className="my-table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <input 
+                                      type="checkbox" 
+                                      checked={this.state.checked} 
+                                      onChange={this.toggleChecked} 
+                                      style={{marginRight: 5}} 
+                                    />
+                                    Rel
+                                  </th>
+                                  <th>PR No</th>
+                                  <th></th>
+                                  <th>PR Date</th>
+                                  <th>Line No.</th>
+                                  <th>Material Code & Description</th>
+                                  <th>Req. Qty.</th>
+                                  <th>UOM</th>
+                                  <th>Val. Price</th>
+                                  <th>Plant</th>
+                                  <th>Delivery Date</th>
+                                  <th>Material Group</th>
+                                  <th>Buyer</th>
+                                  <th>Tracking No</th>
+                                </tr>
+                              </thead>
+                              <tbody id="DataTableBodyThree" className="table-header-fixed-min">
+                                {Object.keys(groupByList).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, i) => {
+                                  let itemData = groupByList[key];
+                                                      let childs = !isEmptyDeep(itemData) ? itemData:[];
                           return (
                             <>
                             <tr>
@@ -1397,8 +1492,8 @@ Object.keys(groupByList).forEach((key) => {
                         )})}
 
                       </tbody>
-</table>
-<TablePagination
+                        </table>
+                          <TablePagination
                               rowsPerPageOptions={[50, 100, 150]}
                               component="div"
                               count={Object.keys(groupByList).length}
