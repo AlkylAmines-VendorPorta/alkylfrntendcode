@@ -323,222 +323,176 @@ onOpenModal=()=>{
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
     const selectedItemsDisplayPlant = filterPlantList && filterPlantList.filter(item => selectedItemsPL.includes(item.value));
 const columns = [
-{
-  name: (
-    <div>
-      <input type="checkbox" checked={this.state.checked} onChange={this.toggleChecked} />
-      ENQ
-    </div>
-  ),
-  cell: (row) => {
-    const index = row._rowIndex;
-    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
-
-    return (
+  {
+    name: (
       <input
         type="checkbox"
-        disabled={isDisabled}
-        value="Y"
+        checked={this.state.checked}
+        onChange={this.toggleChecked}
+      />
+    ),
+    cell: (row) => (
+      <input
+        type="checkbox"
+        disabled={this.props.prStatusList[row.status] !== "Purchase Head"}
         checked={row.isChecked}
         onChange={(e) => {
-          console.log(index, "rowIndex");
-          commonHandleChangeCheckBox(e, this, `prList.${index}.isChecked`);
+          commonHandleChangeCheckBox(e, this, `prList.${row._rowIndex}.isChecked`);
         }}
         className="display_block"
       />
-    );
+    ),
+    width: "60px",
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
   },
-  ignoreRowClick: true,
-  allowOverflow: true,
-  button: true,
-  sortable: false,
-},
-{
-    name: 'PR No',
+  {
+    name: "PR No",
     selector: row => row.prNumber,
-    sortable: true
+    width: "90px",
   },
-
-{
-  name: '',
-  cell: (row) => (
-    <>
-      <Button
-        type="button"
-        size="small"
-        onClick={() => this.handleSelect(row)}
-        variant="outlined"
-        data-toggle="modal"
-        data-target="#viewPrDetail"
-        data-backdrop="static"
-        data-keyboard="false"
-      >
-        View PR
-      </Button>
-      &nbsp;
-      <Button
-        type="button"
-        size="small"
-        onClick={() => this.viewInquiry(row)}
-        variant="outlined"
-        data-toggle="modal"
-        data-target="#viewInquiry"
-        data-backdrop="static"
-        data-keyboard="false"
-      >
-        Enquiry
-      </Button>
-    </>
-  ),
-  ignoreRowClick: true,
-  //allowOverflow: true,
-  button: true,
-  sortable: false,
-  width:"200px"
-},
-
   {
-    name: 'PR Released Date',
-    selector: row => row.pr.releasedDate!=null?formatDate(row.pr.releasedDate):"",
-    sortable: true,
-    ceil: row => formatDate(row.pr.releasedDate)
+    name: "",
+    cell: row => (
+      <>
+        <button
+          type="button"
+          onClick={() => this.handleSelect(row)}
+          className="btn btn-light"
+          data-toggle="modal"
+          data-target="#viewPrDetail"
+          data-backdrop="static"
+          data-keyboard="false"
+        >
+          View PR
+        </button>
+        &nbsp;
+        <button
+          type="button"
+          onClick={() => this.viewInquiry(row)}
+          className="btn btn-light myname"
+          data-toggle="modal"
+          data-target="#viewInquiry"
+          data-backdrop="static"
+          data-keyboard="false"
+        >
+          Enquiry
+        </button>
+      </>
+    ),
+    width: "160px",
   },
- {
-    name: 'PR Doc Type',
-    selector: row => row.pr.docType,
-    sortable: true
+  {
+    name: "PR Released Date",
+    selector: row => row.pr?.releasedDate ? formatDateWithoutTimeNewDate2(row.pr.releasedDate) : "",
+    width: "130px",
   },
-
- {
-    name: 'PR Date',
-    selector: row => row.pr.date!=null?formatDate(row.pr.date):"",
-    sortable: true,
-    ceil: row => formatDate(row.pr.date)
-
+  {
+    name: "PR Doc Type",
+    selector: row => row.pr?.docType,
+    width: "100px",
   },
-
- {
-    name: 'Line No.',
+  {
+    name: "PR Date",
+    selector: row => formatDateWithoutTimeNewDate2(row.pr?.date),
+    width: "100px",
+  },
+  {
+    name: "Line No.",
     selector: row => removeLeedingZeros(row.prLineNumber),
-    sortable: true
+    width: "80px",
   },
-
- {
-    name: 'Material Code & Description',
+  {
+    name: "Material Code & Description",
     selector: row => `${row.materialCode} - ${row.materialDesc}`,
-    sortable: true,
-    width:"350px"
-  },
-
-  {
-    name: 'Req. Qty.',
-   cell: (row, index) => {
-    const rowIndex = this.state.prList.findIndex(
-      item => item.id === row.id // or another unique field
-    );
-    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
-
-    return (
-     <input
-                                        type="number"
-                                        className={"form-control"}
-                                          value={row.reqQty}
-                                        onChange={(event) => {
-                                          this.commonHandleChange(event,"reqQty",index);
-                                        }}
-                                        style={{width:"55px"}}
-                                      />
-    );
-  },
-
+    minWidth: "180px",
   },
   {
-    name: 'UOM',
+    name: "Req. Qty.",
+    cell: (row) => (
+      <input
+        type="number"
+        className="form-control"
+        value={row.reqQty}
+        onChange={(e) => this.commonHandleChange(e, "reqQty", row._rowIndex)}
+        style={{ width: "60px" }}
+      />
+    ),
+    width: "80px",
+  },
+  {
+    name: "UOM",
     selector: row => row.uom,
-    sortable: true
+    width: "60px",
   },
   {
-    name: 'Val. Price',
+    name: "Val. Price",
     selector: row => row.price,
-    sortable: true
-  },  
-   {
-    name: 'Plant',
-    selector: row => row.plantDesc!=null?row.plant+"-"+row.plantDesc:row.plant,
-    sortable: true
-  },
- {
-    name: 'Delivery Date',
-    cell: (row, index) => {
-    const rowIndex = this.state.prList.findIndex(
-      item => item.id === row.id // or another unique field
-    );
-    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
-
-    return (
-     <input
-                                        type="date"
-                                        min={disablePastDate()}
-                                        max="9999-12-31"
-                                        className={"form-control"}
-                                          value={row.deliverDate}
-                                        onChange={(event) => {
-                                          this.commonHandleChange(event,  "deliverDate",index);
-                                        }}
-                                        style={{width:"100px"}}
-                                      />
-    );
-  },
-
-    sortable: true
+    width: "90px",
   },
   {
-    name: 'Material group',
-    selector: row =>  `${row.matGrp ? `${row.matGrp} - `:''}${row.matGrpDesc ? row.matGrpDesc:''}`,
-    sortable: true
+    name: "Plant",
+    selector: row => row.plantDesc ? `${row.plant} - ${row.plantDesc}` : row.plant,
+    minWidth: "140px",
   },
- {
-    name: 'Buyer',
-    cell: (row, index) => {
-    const rowIndex = this.state.prList.findIndex(
-      item => item.id === row.id // or another unique field
-    );
-    const isDisabled = this.props.prStatusList[row.status] !== 'Purchase Head';
-
-    return (
+  {
+    name: "Delivery Date",
+    cell: row => (
+      <input
+        type="date"
+        min={disablePastDate()}
+        max="9999-12-31"
+        className="form-control"
+        value={row.deliverDate}
+        onChange={(e) => this.commonHandleChange(e, "deliverDate", row._rowIndex)}
+        style={{ width: "110px" }}
+      />
+    ),
+    width: "130px",
+  },
+  {
+    name: "Material group",
+    selector: row => `${row.matGrp ? row.matGrp + ' - ' : ''}${row.matGrpDesc || ''}`,
+    minWidth: "120px",
+  },
+  {
+    name: "Buyer",
+    cell: row => (
       <select
-                                        className={"form-control"}
-                                        disabled={true}
-                                        value={row.buyer ? row.buyer.userId:null}
-                                      >
-                                        <option value="">Select Buyer</option>
-                                        {!isEmptyDeep(this.props.buyerList) && this.props.buyerList.map(records =>{
-                                          return (
-                                            <option value={records.userId}>{records.name}</option>
-                                          )
-                                        })}
-                                      </select>
-    );
+        className="form-control"
+        disabled={true}
+        value={row.buyer ? row.buyer.userId : ""}
+      >
+        <option value="">Select Buyer</option>
+        {!isEmptyDeep(this.props.buyerList) &&
+          this.props.buyerList.map(records => (
+            <option key={records.userId} value={records.userId}>
+              {records.name}
+            </option>
+          ))}
+      </select>
+    ),
+    width: "150px",
   },
-
-    sortable: true
-  },
-
- {
-    name: 'Tracking No',
+  {
+    name: "Tracking No",
     selector: row => row.trackingNo,
-    sortable: true
+    width: "100px",
   },
+  {
+    name: "Status",
+    selector: row => this.props.prStatusList[row.status],
+    width: "100px",
+}
 
-{
-    name: 'Status',
-    sortable: true,
-   selector: row => this.props.prStatusList[row.status],
+];
 
-  }];
-  const filteredData = !isEmptyDeep(groupByList)
-  ? groupByList.sort((a, b) => new Date(a.pr.releasedDate) - new Date(b.pr.releasedDate))
-  : [];
+ const filteredData = groupByList.map((item, index) => ({
+  ...item,
+  _rowIndex: index,
+}));
+
 
     return (
       <> 
@@ -1171,7 +1125,7 @@ const columns = [
         </Grid>
          
                 <TableContainer className="mt-1">
-                    {/* <Table className="my-table">
+                    <Table className="my-table" style={{display:"none"}}>
                       <TableHead>
                         <TableRow>
 
@@ -1283,7 +1237,7 @@ const columns = [
 
                       </TableBody>
                  
-                    </Table> */}
+                    </Table>
                     <DataTable
                       columns={columns}
                       data={filteredData}
