@@ -351,6 +351,7 @@ const columns = [
     name: "PR No",
     selector: row => row.prNumber,
     width: "90px",
+    sortable: true
   },
   {
     name: "",
@@ -387,26 +388,31 @@ const columns = [
     name: "PR Released Date",
     selector: row => row.pr?.releasedDate ? formatDateWithoutTimeNewDate2(row.pr.releasedDate) : "",
     width: "130px",
+    sortable: true
   },
   {
     name: "PR Doc Type",
     selector: row => row.pr?.docType,
     width: "100px",
+    sortable: true
   },
   {
     name: "PR Date",
     selector: row => formatDateWithoutTimeNewDate2(row.pr?.date),
     width: "100px",
+    sortable: true
   },
   {
     name: "Line No.",
     selector: row => removeLeedingZeros(row.prLineNumber),
     width: "80px",
+    sortable: true
   },
   {
     name: "Material Code & Description",
     selector: row => `${row.materialCode} - ${row.materialDesc}`,
     minWidth: "220px",
+    sortable: true
   },
   {
     name: "Req. Qty.",
@@ -425,16 +431,19 @@ const columns = [
     name: "UOM",
     selector: row => row.uom,
     width: "60px",
+    sortable: true
   },
   {
     name: "Val. Price",
     selector: row => row.price,
     width: "90px",
+    sortable: true
   },
   {
     name: "Plant",
     selector: row => row.plantDesc ? `${row.plant} - ${row.plantDesc}` : row.plant,
     minWidth: "140px",
+    sortable: true
   },
   {
     name: "Delivery Date",
@@ -455,6 +464,7 @@ const columns = [
     name: "Material group",
     selector: row => `${row.matGrp ? row.matGrp + ' - ' : ''}${row.matGrpDesc || ''}`,
     minWidth: "120px",
+    sortable: true
   },
   {
     name: "Buyer",
@@ -479,11 +489,13 @@ const columns = [
     name: "Tracking No",
     selector: row => row.trackingNo,
     width: "100px",
+    sortable: true
   },
   {
     name: "Status",
     selector: row => this.props.prStatusList[row.status],
     width: "100px",
+    sortable: true
 }
 
 ];
