@@ -1,7 +1,8 @@
 let defaultState={
     prList:[],
     prStatusList:[],
-    QCFApproverList:[]
+    QCFApproverList:[],
+    role:""
 }
 
 const qcfReducer = (state= defaultState,action)=>{
@@ -11,7 +12,8 @@ const qcfReducer = (state= defaultState,action)=>{
             prList:action.payload.objectMap.prList,
             enquiryList:action.payload.objectMap.enquiryList,
             prStatusList:action.payload.objectMap.prStatusList,
-            optionProposedReasonList:action.payload.objectMap.proposedReasonList
+            optionProposedReasonList:action.payload.objectMap.proposedReasonList,
+            role:action.payload.objectMap.role
         }
     }
     else if(action.type==="POPULATE_QCF_Approver_LIST_FROM_SAP"){

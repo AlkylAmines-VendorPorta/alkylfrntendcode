@@ -252,6 +252,8 @@ class QCFBody extends Component {
                             prStatusList={this.props.prStatusList}
                             loadQCFDetails={(i) => this.loadQCFDetails(i)}
                             changeLoaderState={this.props.changeLoaderState} 
+                            newrole={this.props.newrole}
+                            
                         />
                     </div>
                     <div className={

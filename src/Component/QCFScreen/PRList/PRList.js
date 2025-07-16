@@ -27,6 +27,8 @@ import { connect } from "react-redux";import {
   IconButton
 } from "@material-ui/core";
 import DataTable from "react-data-table-component";
+import {ROLE_BUYER_ADMIN} from "../../../Constants/UrlConstants"; 
+import {ROLE_PURCHASE_MANAGER_ADMIN} from "../../../Constants/UrlConstants"; 
 
 class PRList extends Component {
   constructor(props) {
@@ -74,12 +76,20 @@ handleSearchChange = (event) => {
 
   };
   render() {
+    console.log(this.props.newrole); 
     const { page, rowsPerPage } = this.state;
     const columns = [
   {
     name: 'Enquiry No',
     selector: row => row.enquiryId,
     sortable: true
+  },
+  {
+    name: 'PR No',
+    selector: row => row.prNumber,
+    sortable: true,
+    omit:(this.props.newrole === ROLE_PURCHASE_MANAGER_ADMIN)
+    
   },
 {
     name: 'QCF No',
@@ -94,7 +104,8 @@ handleSearchChange = (event) => {
   },
   {
     name: 'Buyer Name/Code',
-    selector: row => row.createdBy?.userName+"-"+row.createdBy?.name,
+    // selector: row => row.createdBy?.userName+"-"+row.createdBy?.name,
+    selector: row => row.role==="BUADM"?row.createdByuserName+"-"+row.createdByName:row.createdBy?.userName+"-"+row.createdBy?.name,
     sortable: true
   },
   {

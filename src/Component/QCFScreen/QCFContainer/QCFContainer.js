@@ -21,7 +21,8 @@ class QCFContainer extends Component {
       loadProposedReason:false,
       prList:[],
       // prStatusList:[]
-      QCFApproverList:[]
+      QCFApproverList:[],
+      role:""
     };
   }
 
@@ -48,6 +49,13 @@ class QCFContainer extends Component {
       this.setPRList(props);
     }
 
+    if(!isEmptyDeep(props.role)){
+      this.changeLoaderState(false);  
+      this.setState({
+        role:props.role
+      });
+    }
+
     // if(this.state.loadProposedReason && !isEmpty(props.proposedReasonList)){
     //   this.setProposedReason(props);
     // }
@@ -58,11 +66,43 @@ class QCFContainer extends Component {
       isLoading:action
     });
   }
+  // setPRList=(props)=>{
+  //   let tempPrList = [];
+  //   if(!isEmptyDeep(props.enquiryList)){
+  //     props.enquiryList.map((pr)=>{
+  //       if(pr){
+  //         tempPrList.push(this.getPRFromObj(pr));
+  //       }
+  //     });
+  //   }else{    
+  //     props.prList.map((pr)=>{
+  //       if(pr){
+  //         tempPrList.push(this.getPRFromObj(pr));
+  //       }
+  //     });
+  //   }
+  //     this.setState({
+  //       prList:tempPrList,
+  //       loadPRList:false,
+  //     })
+  // }
+
+
   setPRList=(props)=>{
     let tempPrList = [];
     if(!isEmptyDeep(props.enquiryList)){
+
+      const distinctEnquiries = props.enquiryList.filter((item, index, self) =>
+      index === self.findIndex(t => t[0] === item[0])
+    );
+      props.role==="BUADM"?
+      distinctEnquiries.map((pr)=>{
+        if(pr){     
+          tempPrList.push(this.getPRFromObjforBuyer(pr,props.role));
+        }
+      }):
       props.enquiryList.map((pr)=>{
-        if(pr){
+        if(pr){         
           tempPrList.push(this.getPRFromObj(pr));
         }
       });
@@ -103,6 +143,33 @@ class QCFContainer extends Component {
     }
   }
 
+  getPRFromObjforBuyer=(pr,role)=>{
+    return {
+      prId : pr.prId,
+      prNumber: pr[1],
+      status:pr.status,
+      docType: pr.docType,
+      isTC:pr.isTC==="Y",
+      priority:pr.priority,
+      requestedBy: getUserDto(pr.requestedBy),
+      tcApprover: getUserDto(pr.tcApprover),
+      buyer: getUserDto(pr.buyer),
+      approvedBy: getUserDto(pr.approvedBy),
+      // createdBy: pr.createdBy,
+      createdByuserName:pr[4],
+      createdByName:pr[5],
+      date:formatDateWithoutTimeNewDate2(pr.date),
+      approver: this.setApprover(pr),
+      qcfNo:pr[2],
+      bidEndDate: formatDateWithoutTimeNewDate2(pr[3]),
+      enquiryId: pr[0],
+      enquiryStatus:pr.firstLevelApprovalStatus,
+      code: pr[6],
+      rfqNo: pr.enqNo,
+      role:role
+    }
+  }
+
   // setPRStatus=(props)=>{
   //   this.setState({
   //     prStatusList:props.prStatusList,
@@ -136,6 +203,7 @@ class QCFContainer extends Component {
           prStatusList={this.props.prStatusList}
           optionProposedReasonList={this.props.optionProposedReasonList}
           loadApproverList={this.props.QCFApproverList}
+          newrole={this.props.role}
         />
       </>
     );

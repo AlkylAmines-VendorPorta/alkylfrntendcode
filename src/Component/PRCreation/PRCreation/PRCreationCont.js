@@ -70,7 +70,7 @@ searchPRData(){
    
       this.props.changeLoaderState(true);
       let prNo=this.props.filter.prNoFrom;
-      commonSubmitWithParam(this.props,"getPrList",'/rest/savePRfromWebservice/',prNo)
+      commonSubmitWithParam(this.props,"getPrList",'/rest/savePRfromWebservice',prNo)     
       //commonSubmitWithParam(this.props,"getPrList",'/rest/fetchPRfromWebservicetodisplay/',prNo)
   }
  }
@@ -184,7 +184,7 @@ var frmhidden = {
 
         </div>
 
-        <div className="col-sm-6">
+        {/* <div className="col-sm-6">
 
         <div className="row mt-2">
         <div className="col-sm-4"></div>
@@ -192,7 +192,7 @@ var frmhidden = {
             <input type="text" id="SearchTableDataInput" className="form-control" onKeyUp={searchTableData} placeholder="Search .." />
 </div>
     </div>
-        </div>
+        </div> */}
 
         </div>
 
