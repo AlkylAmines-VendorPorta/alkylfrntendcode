@@ -6,7 +6,7 @@ import { showAlert,swalWithUrl,showAlertAndReload} from "../../../Util/ActionUti
 import swal from "sweetalert";
 
   export function getPrList(response){
-    showAlert(!response.success,response.message);
+    showAlertAndReload(!response.success,response.message);
     return {
       
       type: "POPULATE_PR_LIST",
