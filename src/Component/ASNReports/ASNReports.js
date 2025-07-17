@@ -296,7 +296,8 @@ exportReportToExcel() {
   },
 {
     name: 'ASN Date',
-    selector: row => row.advanceshipmentnotice.created===null?"":formatDate(row.advanceshipmentnotice.created),
+    selector: row => row.advanceshipmentnotice.created,
+    cell: row => row.advanceshipmentnotice.created===null?"":formatDate(row.advanceshipmentnotice.created),
     sortable: true
   },
 
@@ -307,7 +308,8 @@ exportReportToExcel() {
   },
   {
     name: 'PO Date',
-    selector: row => formatDate(row.advanceshipmentnotice.po.created),
+    selector: row => row.advanceshipmentnotice.po.created,
+    cell: row => formatDate(row.advanceshipmentnotice.po.created),
     sortable: true
   },
   {
@@ -369,7 +371,8 @@ exportReportToExcel() {
   },
  {
     name: 'Invoice Date',
-    selector: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
+    selector: row => row.advanceshipmentnotice.invoiceDate,
+    cell: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
     sortable: true
   },
  {
@@ -384,7 +387,8 @@ exportReportToExcel() {
   },
  {
     name: 'Reported Date',
-    selector: row => row.advanceshipmentnotice.reportedDate===null?"":formatDate(row.advanceshipmentnotice.reportedDate),
+    selector: row =>row.advanceshipmentnotice.reportedDate,
+    cell: row => row.advanceshipmentnotice.reportedDate===null?"":formatDate(row.advanceshipmentnotice.reportedDate),
     sortable: true
   },
  {
@@ -399,12 +403,14 @@ exportReportToExcel() {
   },
  {
     name: 'Gate In Date',
-    selector: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
+    selector: row =>row.advanceshipmentnotice.gateInDate,
+    cell: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
     sortable: true
   },
  {
     name: 'Gate In Time',
-    selector: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
+    selector: row => row.advanceshipmentnotice.gateInDate,
+    cell: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
     sortable: true
   },
  {
@@ -414,12 +420,14 @@ exportReportToExcel() {
   },
 {
     name: '103 Posted Date',
-    selector: row => row.advanceshipmentnotice.date_103===null?"":formatDate(row.advanceshipmentnotice.date_103),
+    selector: row => row.advanceshipmentnotice.date_103,
+    cell: row => row.advanceshipmentnotice.date_103===null?"":formatDate(row.advanceshipmentnotice.date_103),
     sortable: true
   },
 {
     name: '103 Posted Time',
-    selector: row => row.advanceshipmentnotice.date_103===null?"":formatDate(row.advanceshipmentnotice.date_103),
+    selector: row => row.advanceshipmentnotice.date_103,
+    cell: row => row.advanceshipmentnotice.date_103===null?"":formatDate(row.advanceshipmentnotice.date_103),
     sortable: true
   },
 {

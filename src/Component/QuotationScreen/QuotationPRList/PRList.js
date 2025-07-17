@@ -40,7 +40,15 @@ class PRList extends Component {
 {
     name: 'Enquiry End Date',
     selector: row => row.created,
-    sortable: true
+    cell: row => row.created,
+    sortable: true,
+    sortFunction: (a, b) => {
+      const parseDate = (str) => {
+        const [dd, mm, yyyy] = str.split('/');
+        return new Date(`${yyyy}-${mm}-${dd}`);
+      };
+      return parseDate(a.created) - parseDate(b.created);
+    }
   },
 {
     name: 'Status',
@@ -66,13 +74,22 @@ class PRList extends Component {
   },
  {
     name: 'Enquiry Date',
-    selector: row => formatDateWithoutTimeNewDate2(row.created),
+    selector: row => row.created,
+    cell: row => formatDateWithoutTimeNewDate2(row.created),
     sortable: true
   },
 {
     name: 'Enquiry End Date',
     selector: row => row.bidEndDate,
-    sortable: true
+    cell: row => row.bidEndDate,
+    sortable: true,
+    sortFunction: (a, b) => {
+      const parseDate = (str) => {
+        const [dd, mm, yyyy] = str.split('/');
+        return new Date(`${yyyy}-${mm}-${dd}`);
+      };
+      return parseDate(a.bidEndDate) - parseDate(b.bidEndDate);
+    }
   },
  {
     name: 'Buyer Code/Name',

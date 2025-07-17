@@ -71,7 +71,8 @@ class VendorPriview extends Component {
   },
 {
     name: 'Date',
-    selector: row => formatDateWithoutTimeNewDate2(row.created),
+    selector: row => row.created,
+    cell: row => formatDateWithoutTimeNewDate2(row.created),
     sortable: true
   },
 {

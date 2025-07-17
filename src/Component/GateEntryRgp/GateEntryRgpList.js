@@ -74,9 +74,9 @@ class GateEntryRgpList extends Component {
   },
   {
     name: 'Req Date',
-    selector: row => formatDate(row.created),
+    selector: row => row.created,
     sortable: true,
-    ceil: row => formatDate(row.created),
+    cell: row => formatDate(row.created),
   },
   {
     name: 'Plant',

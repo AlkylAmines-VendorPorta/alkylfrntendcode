@@ -246,7 +246,8 @@ exportReportToExcel() {
   },
 {
     name: 'ASN Date',
-    selector: row => row.advanceshipmentnotice.created===null?"":formatDate(row.advanceshipmentnotice.created),
+    selector: row => row.advanceshipmentnotice.created,
+    cell: row => row.advanceshipmentnotice.created===null?"":formatDate(row.advanceshipmentnotice.created),
     sortable: true
   },
 {
@@ -301,7 +302,8 @@ exportReportToExcel() {
   },
  {
     name: 'Invoice Date',
-    selector: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
+    selector: row =>row.advanceshipmentnotice.invoiceDate,
+    cell: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
     sortable: true
   },
  {
@@ -316,11 +318,13 @@ exportReportToExcel() {
   },
  {
     name: 'Reported Date',
-    selector: row => row.advanceshipmentnotice.reportedDate===null?"":formatDate(row.advanceshipmentnotice.reportedDate),
+    selector: row => row.advanceshipmentnotice.reportedDate,
+    cell: row => row.advanceshipmentnotice.reportedDate===null?"":formatDate(row.advanceshipmentnotice.reportedDate),
     sortable: true
   },
  {
     name: 'Reported Time',
+    selector: row => row.advanceshipmentnotice.reportedDate,
     selector: row => row.advanceshipmentnotice.reportedDate===null?"":formatTime(row.advanceshipmentnotice.reportedDate),
     sortable: true
   },

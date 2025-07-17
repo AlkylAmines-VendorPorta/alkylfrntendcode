@@ -418,6 +418,14 @@ if(props.vendorList){
   {
     name: 'Invoice Date',
     selector: row => row.invoiceDate,
+    cell: row => row.invoiceDate,
+    sortFunction: (a, b) => {
+      const parseDate = (str) => {
+        const [dd, mm, yyyy] = str.split('/');
+        return new Date(`${yyyy}-${mm}-${dd}`);
+      };
+      return parseDate(a.invoiceDate) - parseDate(b.invoiceDate);
+    },
     sortable: true,
   },
   {

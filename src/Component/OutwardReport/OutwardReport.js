@@ -266,12 +266,14 @@ class OutwardReport extends Component {
   },
 {
     name: 'Created Date',
-    selector: row => formatDate(row.created),
+    selector: row => row.created,
+    cell: row => formatDate(row.created),
     sortable: true
   },
  {
     name: 'Created Time',
-    selector: row => formatDate(row.created),
+    selector: row => row.created,
+    cell: row => formatDate(row.created),
     sortable: true
   },
 
@@ -282,12 +284,14 @@ class OutwardReport extends Component {
   },
  {
     name: 'Reported Date',
-    selector: row => row.reporteddate===null?"":formatDate(row.reporteddate),
+    selector: row => row.reporteddate,
+    cell: row => row.reporteddate===null?"":formatDate(row.reporteddate),
     sortable: true
   },
  {
     name: 'Reported Time',
-    selector: row => row.reporteddate===null?"":formatDate(row.reporteddate),
+    selector: row => row.reporteddate,
+    cell: row => row.reporteddate===null?"":formatDate(row.reporteddate),
     sortable: true
   },
  {
@@ -297,12 +301,14 @@ class OutwardReport extends Component {
   },
  {
     name: 'Gate In Date',
-    selector: row => row.gateIndate===null?"":formatDate(row.gateIndate),
+    selector: row => row.gateIndate,
+    cell: row => row.gateIndate===null?"":formatDate(row.gateIndate),
     sortable: true
   },
  {
     name: 'Gate In Time',
-    selector: row => row.gateIndate===null?"":formatDate(row.gateIndate),
+    selector: row => row.gateIndate,
+    cell: row => row.gateIndate===null?"":formatDate(row.gateIndate),
     sortable: true
   },
 {
@@ -312,7 +318,8 @@ class OutwardReport extends Component {
   },
  {
     name: 'Gate Out Date',
-    selector: row => row.gateOutdate===null?"":formatDate(row.gateOutdate),
+    selector: row => row.gateOutdate,
+    cell: row => row.gateOutdate===null?"":formatDate(row.gateOutdate),
     sortable: true
   },
 {

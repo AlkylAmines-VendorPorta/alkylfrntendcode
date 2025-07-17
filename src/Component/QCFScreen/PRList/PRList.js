@@ -100,7 +100,14 @@ handleSearchChange = (event) => {
   {
     name: 'Enquiry End Date',
     selector: row => row.bidEndDate,
-    sortable: true
+    sortable: true,
+    sortFunction: (a, b) => {
+            const parseDate = (str) => {
+              const [dd, mm, yyyy] = str.split('/');
+              return new Date(`${yyyy}-${mm}-${dd}`);
+            };
+            return parseDate(a.bidEndDate) - parseDate(b.bidEndDate);
+          }
   },
   {
     name: 'Buyer Name/Code',

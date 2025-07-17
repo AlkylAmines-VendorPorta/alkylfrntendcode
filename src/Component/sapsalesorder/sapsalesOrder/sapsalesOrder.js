@@ -484,12 +484,28 @@ render() {
 {
     name: 'Date',
     selector: row =>  row.date,
-    sortable: true
+    cell: row =>  row.date,
+    sortable: true,
+    sortFunction: (a, b) => {
+      const parseDate = (str) => {
+        const [dd, mm, yyyy] = str.split('/');
+        return new Date(`${yyyy}-${mm}-${dd}`);
+      };
+      return parseDate(a.date) - parseDate(b.date);
+    }
   },
 {
     name: 'Delivery Date',
     selector: row =>  row.deliveryDate,
-    sortable: true
+    cell: row =>  row.deliveryDate,
+    sortable: true,
+    sortFunction: (a, b) => {
+      const parseDate = (str) => {
+        const [dd, mm, yyyy] = str.split('/');
+        return new Date(`${yyyy}-${mm}-${dd}`);
+      };
+      return parseDate(a.deliveryDate) - parseDate(b.deliveryDate);
+    }
   },
 {
     name: 'Sold To Party- Sold To Party Name',

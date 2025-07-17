@@ -468,7 +468,8 @@ handleChangeRowsPerPage = (event) => {
   },
   {
     name: "SSN Date",
-    selector: row => formatDate(row.created),
+    selector: row => row.created,
+    cell: row => formatDate(row.created),
     sortable: true,
   },
   {

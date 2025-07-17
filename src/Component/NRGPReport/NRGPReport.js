@@ -274,15 +274,15 @@ class NRGPReport extends Component {
       },
       {
         name: 'Req Date',
-        selector: row => formatDate(row.gateEntry.created),
+        selector: row => row.gateEntry.created,
         sortable: true,
-        ceil: row => formatDate(row.gateEntry.created),
+        cell: row => formatDate(row.gateEntry.created),
       },
       {
         name: 'Return By',
-        selector: row => formatDate(row.gateEntry.returnBy),
+        selector: row => row.gateEntry.returnBy,
         sortable: true,
-        ceil: row => formatDate(row.gateEntry.returnBy),
+        cell: row => formatDate(row.gateEntry.returnBy),
       },
       {
         name: 'Requestioner Name',

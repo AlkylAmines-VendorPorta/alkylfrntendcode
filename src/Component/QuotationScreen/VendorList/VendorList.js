@@ -186,7 +186,8 @@ class VendorList extends Component {
       },
      {
         name: 'Enq Date',
-        selector: row => formatDate(row.enquiry.created),
+        selector: row => row.enquiry.created,
+        cell: row => formatDate(row.enquiry.created),
         sortable: true
       },
     
@@ -202,7 +203,8 @@ class VendorList extends Component {
       },
       {
         name: 'Enq End Date',
-        selector: row => formatDate(row.enquiry.bidEndDate),
+        selector: row => row.enquiry.bidEndDate,
+        cell: row => formatDate(row.enquiry.bidEndDate),
         sortable: true
       },
     {

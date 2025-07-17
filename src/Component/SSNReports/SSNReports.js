@@ -211,7 +211,8 @@ class SSNReports extends Component {
   },
 {
     name: 'SSN Date',
-    selector: row => formatDate(row.advanceshipmentnotice.created),
+    selector: row => row.advanceshipmentnotice.created,
+    cell: row => formatDate(row.advanceshipmentnotice.created),
     sortable: true
   },
 {
@@ -227,12 +228,14 @@ class SSNReports extends Component {
   },
   {
     name: 'PO Date',
-    selector: row => formatDate(row.advanceshipmentnotice.po.created),
+    selector: row => row.advanceshipmentnotice.po.created,
+    cell: row => formatDate(row.advanceshipmentnotice.po.created),
     sortable: true
   },
   {
     name: 'Service Posting Date',
-    selector: row => row.advanceshipmentnotice.servicePostingDate!=null?formatDate(row.advanceshipmentnotice.servicePostingDate):"",
+    selector: row => row.advanceshipmentnotice.servicePostingDate,
+    cell: row => row.advanceshipmentnotice.servicePostingDate!=null?formatDate(row.advanceshipmentnotice.servicePostingDate):"",
     sortable: true
   },
 {
@@ -242,7 +245,8 @@ class SSNReports extends Component {
   },
 {
     name: 'Approved Date',
-    selector: row =>  row.advanceshipmentnotice.ssnApprovedDate!=null?formatDate(row.advanceshipmentnotice.ssnApprovedDate):"",
+    selector: row =>  row.advanceshipmentnotice.ssnApprovedDate,
+    cell: row =>  row.advanceshipmentnotice.ssnApprovedDate!=null?formatDate(row.advanceshipmentnotice.ssnApprovedDate):"",
     sortable: true
   },
 {
@@ -269,7 +273,8 @@ class SSNReports extends Component {
   },
  {
     name: 'Invoice Date',
-    selector: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
+    selector: row => row.advanceshipmentnotice.invoiceDate,
+    cell: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
     sortable: true
   },
  {

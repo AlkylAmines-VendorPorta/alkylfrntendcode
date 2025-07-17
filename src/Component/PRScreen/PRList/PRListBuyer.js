@@ -314,7 +314,7 @@ onOpenModal=()=>{
     const groupByList = this.state.prList.map((item, index) => ({
       ...item,
       _rowIndex: index,
-    }));;
+    }));
     const {filterBuyerList,filterPlantList,filterPRStatusList,filterPurhaseGroupList} = this.props;
    // const groupByList = this.props.buy ? this.state.prList:this.props.prList;
    console.log(this.state.prList,"this.state.prList")
@@ -386,7 +386,8 @@ const columns = [
   },
   {
     name: "PR Released Date",
-    selector: row => row.pr?.releasedDate ? formatDateWithoutTimeNewDate2(row.pr.releasedDate) : "",
+    selector: row => row.pr.releasedDate,
+    cell: row => row.pr?.releasedDate ? formatDateWithoutTimeNewDate2(row.pr.releasedDate) : "",
     width: "130px",
     sortable: true
   },
@@ -398,13 +399,15 @@ const columns = [
   },
   {
     name: "PR Date",
-    selector: row => formatDateWithoutTimeNewDate2(row.pr?.date),
+    selector: row => row.pr?.date,
+    cell: row => formatDateWithoutTimeNewDate2(row.pr?.date),
     width: "100px",
     sortable: true
   },
   {
     name: "Line No.",
-    selector: row => removeLeedingZeros(row.prLineNumber),
+    selector: row => row.prLineNumber,
+    cell: row => removeLeedingZeros(row.prLineNumber),
     width: "80px",
     sortable: true
   },

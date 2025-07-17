@@ -296,15 +296,15 @@ class MaterialInwardReport extends Component {
 
   {
     name: 'Req Date',
-    selector: row => formatDate(row.gateEntryLine.gateEntry.created),
+    selector: row => row.gateEntryLine.gateEntry.created,
     sortable: true,
-    ceil: row => formatDate(row.gateEntry.created),
+    cell: row => formatDate(row.gateEntry.created),
   },
   {
     name: 'Return By',
-    selector: row => formatDate(row.gateEntryLine.gateEntry.returnBy),
+    selector: row => row.gateEntryLine.gateEntry.returnBy,
     sortable: true,
-    ceil: row => formatDate(row.gateEntry.returnBy),
+    cell: row => formatDate(row.gateEntry.returnBy),
   },
   {
     name: 'Requestioner Name',
@@ -376,9 +376,9 @@ class MaterialInwardReport extends Component {
   },
   {
     name: 'Material Closed Date',
-   selector: row => formatDate(row.materialGateIn.closedDate),
+   selector: row => row.materialGateIn.closedDate,
     sortable: true,
-    ceil: row => formatDate(row.materialGateIn.closedDate),
+    cell: row => formatDate(row.materialGateIn.closedDate),
     sortable: true
   },
 ];

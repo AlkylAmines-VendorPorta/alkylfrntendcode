@@ -145,9 +145,9 @@ class AuditLogReport extends Component {
   },
   {
     name: 'Created Date',
-    selector: row => formatDate(row.createdDateTime),
+    selector: row => row.createdDateTime,
     sortable: true,
-    ceil: row => formatDate(row.createdDateTime),
+    cell: row => formatDate(row.createdDateTime),
   },
   {
     name: 'Updated By',
@@ -156,9 +156,9 @@ class AuditLogReport extends Component {
   },
   {
     name: 'Updated Date',
-    selector: row => formatDate(row.updatedDateTime),
+    selector: row => row.updatedDateTime,
     sortable: true,
-    ceil: row => formatDate(row.updatedDateTime),
+    cell: row => formatDate(row.updatedDateTime),
   },
   {
     name: 'Updated Column',

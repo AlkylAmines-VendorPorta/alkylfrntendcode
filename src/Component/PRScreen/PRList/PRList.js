@@ -305,17 +305,20 @@ commonHandleChange(event, keyName, key, index) {
  
   // }
 handleSelect = (item) => {
-  console.log('Selected Item:', item, this.state);
+  // Identify all PR line items that belong to the same PR
+  const prId = item.pr?.id || item.prId; // Use proper fallback
+  const allPRLines = this.props.prList.filter(it => (it.pr?.id || it.prId) === prId);
 
-  let pr = item?.pr ?? {};
+  const pr = item?.pr ?? {};
 
   this.setState({
     selectedItem: {
       ...pr,
-      prLineList: [item] // wrap in array to maintain structure if needed
+      prLineList: allPRLines
     }
   });
 };
+
 
   // toggleChecked = (e) => {
   //   let {checked} = e.target;
@@ -414,14 +417,14 @@ render() {
       });
     };
   
-    const filteredData = this.props.prList.filter((entry) => {
+    const filteredData = this.props.prList && this.props.prList.sort((a, b) => (b.date < a.date ? -1 : 1)).filter((entry) => {
       return searchInObject(entry, search);
     });
-    const filteredData2 = this.state.prList.map((item, index) => ({
+    const filteredData2 = this.props.prList && this.state.prList.sort((a, b) => (b?.pr?.date < a?.pr?.date ? -1 : 1)).map((item, index) => ({
           ...item,
           _rowIndex: index,
-        }));;;
-console.log(filteredData2,"filteredData2")
+        }));
+console.log(filteredData,"filteredData2")
 // Object.keys(groupByList).forEach((key) => {
 //   const itemData = groupByList[key];
 //   // Push parent row (PR row)
@@ -460,8 +463,15 @@ console.log(filteredData2,"filteredData2")
     
       {
         name: 'PR Date',
-        selector: row => row.date,
-        sortable: true
+        selector: row => row.date, // raw date for sorting
+        sortable: true,
+        sortFunction: (a, b) => {
+            const parseDate = (str) => {
+              const [dd, mm, yyyy] = str.split('/');
+              return new Date(`${yyyy}-${mm}-${dd}`);
+            };
+            return parseDate(a.date) - parseDate(b.date);
+          }
       },
       {
         name: 'Emp. Code',
@@ -490,43 +500,47 @@ console.log(filteredData2,"filteredData2")
         sortable: true
       },
       {
-        name: 'Release Date',
-        selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
-        sortable: true
-      },
-    
-    {
-        name: 'Release Time',
-        selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
-        sortable: true
-      },
-    
-      {
-        name: 'Approved Date',
-        selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
-        sortable: true
-      },
-      {
-        name: 'Approved Time',
-        selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
-        sortable: true
-      },
+  name: 'Release Date',
+  selector: row => row.releasedDate, // raw value for sorting
+  cell: row => row.releasedDate ? formatDate(row.releasedDate) : '',
+  sortable: true
+},
+{
+  name: 'Release Time',
+  selector: row => row.releasedDate, // raw value for sorting
+  cell: row => row.releasedDate ? formatTime(row.releasedDate) : '',
+  sortable: true
+},
+{
+  name: 'Approved Date',
+  selector: row => row.approvedDate,
+  cell: row => row.approvedDate ? formatDate(row.approvedDate) : '',
+  sortable: true
+},
+{
+  name: 'Approved Time',
+  selector: row => row.approvedDate,
+  cell: row => row.approvedDate ? formatTime(row.approvedDate) : '',
+  sortable: true
+},
       {
         name: 'Purchase Manager Approver',
         selector: row => row.pmapprovedBy!=null?row.pmapprovedBy.name:"",
         sortable: true
       },
-    {
-        name: 'PM Approved Date',
-        selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
-        sortable: true
-      },
-    
-    {
-        name: 'PM Approved Time',
-        selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
-        sortable: true
-      }
+   {
+  name: 'PM Approved Date',
+  selector: row => row.pmapprovedDate,
+  cell: row => row.pmapprovedDate ? formatDate(row.pmapprovedDate) : "",
+  sortable: true
+},
+{
+  name: 'PM Approved Time',
+  selector: row => row.pmapprovedDate,
+  cell: row => row.pmapprovedDate ? formatTime(row.pmapprovedDate) : "",
+  sortable: true
+}
+
     ]
     const columns2 = [
   {
@@ -577,11 +591,13 @@ console.log(filteredData2,"filteredData2")
     button: true,
   },
   {
-    name: 'PR Date',
-    selector: row => formatDateWithoutTimeNewDate2(row.pr?.date ?? ''),
-    width: '140px',
-    sortable: true
-  },
+      name: 'PR Date',
+      selector: row => row.pr?.date ?? '', // raw date for sorting
+      cell: row => formatDateWithoutTimeNewDate2(row.pr?.date ?? ''), // formatted for display
+      width: '140px',
+      sortable: true
+    },
+
   {
     name: 'Line No.',
     selector: row => removeLeedingZeros(row.prLineNumber),

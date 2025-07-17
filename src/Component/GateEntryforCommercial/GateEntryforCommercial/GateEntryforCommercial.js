@@ -1706,8 +1706,19 @@ async componentDidMount() {
   },
 {
     name: 'ASN Date',
-    selector: row => formatDateWithoutTimeWithMonthName(row.created),
-    sortable: true,  },
+    selector: row => row.created,
+    cell: row => formatDate(row.created),
+    sortable: true,  
+    sortFunction: (a, b) => {
+      const parseDate = (str) => {
+        if (!str) return new Date(0); // fallback for missing date
+        const [dd, mm, yyyy] = str.split(/[\/\-]/); // supports dd/mm/yyyy or dd-mm-yyyy
+        return new Date(`${yyyy}-${mm}-${dd}`);
+      };
+  
+      return parseDate(a.created) - parseDate(b.created);
+    }
+},
 {
     name: 'Vendor',
     selector: row =>  row.po.vendorName,

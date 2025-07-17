@@ -278,13 +278,20 @@ class PRList extends Component {
 {
     name: 'PR Type',
     selector: row => row.docType,
-    sortable: true
+    sortable: true,
   },
 
   {
     name: 'PR Date',
     selector: row => row.date,
-    sortable: true
+    sortable: true,
+    sortFunction: (a, b) => {
+            const parseDate = (str) => {
+              const [dd, mm, yyyy] = str.split('/');
+              return new Date(`${yyyy}-${mm}-${dd}`);
+            };
+            return parseDate(a.date) - parseDate(b.date);
+          }
   },
   {
     name: 'Emp. Code',
@@ -314,24 +321,29 @@ class PRList extends Component {
   },
   {
     name: 'Release Date',
-    selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
-    sortable: true
+   // selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
+    selector: row => row.releasedDate, // raw value for sorting
+    cell: row => row.releasedDate ? formatDate(row.releasedDate) : '',
+    sortable: true,
   },
 
 {
     name: 'Release Time',
-    selector: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
+    selector: row => row.releasedDate,
+    cell: row => row.releasedDate!=null?formatDate(row.releasedDate):"",
     sortable: true
   },
 
   {
     name: 'Approved Date',
-    selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
+    selector: row => row.approvedDate,
+    cell: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
     sortable: true
   },
   {
     name: 'Approved Time',
-    selector: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
+    selector: row =>row.approvedDate,
+    cell: row => row.approvedDate!=null?formatDate(row.approvedDate):"",
     sortable: true
   },
   {
@@ -341,13 +353,15 @@ class PRList extends Component {
   },
 {
     name: 'PM Approved Date',
-    selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
+    selector: row => row.pmapprovedDate,
+    cell: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
     sortable: true
   },
 
 {
     name: 'PM Approved Time',
-    selector: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
+    selector: row => row.pmapprovedDate,
+    cell: row => row.pmapprovedDate!=null?formatDate(row.pmapprovedDate):"",
     sortable: true
   }
 ]

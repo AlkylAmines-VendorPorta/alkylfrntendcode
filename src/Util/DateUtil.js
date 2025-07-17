@@ -41,6 +41,11 @@ export default function formatDate(longDate) {
 
     return `${dd}-${MM}-${yyyy}`
 }
+export function parseDMY (str) {
+  const [dd, mm, yyyy] = str.split('-');
+  return new Date(`${yyyy}-${mm}-${dd}`);
+};
+
 
 export function formatDateWithoutTime(longDate){
     var dt;
