@@ -62,7 +62,9 @@ class GateEntryRgpList extends Component {
   handleChangeRowsPerPage = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
-
+ handleRowClick = (row) => {
+      this.props.loadDetail(row);
+    };
   render() {
     const { filteredList, searchQuery, page, rowsPerPage } = this.state;
     const filteredData = filteredList;
@@ -131,6 +133,7 @@ class GateEntryRgpList extends Component {
                   pagination
                   paginationPerPage={50}  
                   paginationRowsPerPageOptions={[10, 25, 50, 100]} 
+                  onRowClicked={this.handleRowClick}
                 />
             {/* <Table className="my-table">
               <TableHead>
