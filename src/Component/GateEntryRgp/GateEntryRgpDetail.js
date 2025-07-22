@@ -370,6 +370,7 @@ setvendorName(){
     window.print();
   }
   handleRedirect = () => {
+    debugger
     window.location.reload();
    };
   subtotal() {
@@ -1004,7 +1005,7 @@ setvendorName(){
 
           <Row align={"center"} style={{ marginTop: 50 }}>            
             <Button color="primary" variant="contained" className="mb-2" size="small" type="button" id="printbtn"  onClick={this.print}>Print</Button>
-            <Button color="primary" variant="contained" size="small" type="button" className="ml-2 mb-2" onClick={this.goBack}>Back</Button>
+            <Button color="primary" variant="contained" size="small" type="button" className="ml-2 mb-2" onClick={this.handleRedirect}>Back</Button>
           </Row>
           <div>
 
@@ -1481,6 +1482,7 @@ setvendorName(){
                        <Button color="primary" variant="contained" className={"btn btn-danger"} type="button" onClick={(e)=>{this.onComfirmationOfCancelGateEntry(e) ; }}>Cancel Request</Button> 
                       :""}
                       <Button variant="contained" size="small" className="ml-2" color="primary" type="button" onClick={this.handleRedirect}>Back</Button> 
+                      
                   </div>
                 </div>
               </div>

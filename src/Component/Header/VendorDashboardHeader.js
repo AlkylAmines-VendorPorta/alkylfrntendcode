@@ -121,13 +121,18 @@ class VendorDashboardHeader extends Component {
     // Otherwise, the Link component will handle navigation
   };
 
-  handleSubMenuClick = (subMenuCode) => {
-    // If already on the same page, force reload
-    if (window.location.pathname === `/${subMenuCode}`) {
-      window.location.reload();
-    }
-    // Otherwise, the Link component will handle navigation
-  };
+ handleSubMenuClick = (subMenuCode) => {
+  const currentPath = window.location.pathname;
+
+  if (currentPath === `/${subMenuCode}`) {
+    // Already on the page — force a reload
+    window.location.reload();
+  } else {
+    // Navigate to the new page (optional, depends on your usage)
+    window.location.href = `/${subMenuCode}`;
+  }
+};
+
 
   handleToggle = (index, menuCode) => {
     // If clicking the same menu that's already open and on the same page, force a reload
