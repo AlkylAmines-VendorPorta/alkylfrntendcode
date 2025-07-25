@@ -447,9 +447,10 @@ class ReportVechical extends React.Component {
                 {/* <Button variant="contained" color="success" type="button" className="btn btn-success mr-1 " id="gateIn" 
                                data-toggle="modal" data-target="#getReportModal"
                                >Print</Button> */}
-                               <Button onClick={this.print} variant="contained" color="success" type="button" className="mr-1 "
+                               <Button  variant="contained" id="gateIn" 
+                               data-toggle="modal" data-target="#getReportModal" color="success" type="button" className="mr-1 "
                                
-                               >Print</Button>
+                               >Print8</Button>
                              
 
 {vehicleRegForm2.status !== "CANCELLED" ?

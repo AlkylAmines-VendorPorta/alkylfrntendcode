@@ -93,27 +93,28 @@ class VendorList extends Component {
     this.props.updatePartner(partner);
   };
 
-  statusForVendor = (vendor) => {
-    if (isEmpty(vendor.partner)) {
-      return "";
-    }
-    let list = ["In Progress", "Approved", "Rejected", "Drafted", "Complete"];
+statusForVendor = (vendor) => {
+  debugger
+  if (!vendor || isEmpty(vendor.partner)) {
+    return "";
+  }
 
-    if (vendor.partner.status === "IP") {
+  const list = ["In Progress", "Approved", "Rejected", "Drafted", "Complete"];
+
+  switch (vendor?.partner?.status) {
+    case "IP":
       return list[0];
-    }
-    if (vendor.partner.status === "AP") {
+    case "AP":
       return list[1];
-    }
-    if (vendor.partner.status === "RJ") {
+    case "RJ":
       return list[2];
-    }
-    if (vendor.partner.status === "DR") {
+    case "DR":
       return list[3];
-    } else {
+    default:
       return list[4];
-    }
-  };
+  }
+};
+
 
   async componentDidMount() {
     commonSubmitWithParam(
@@ -171,8 +172,9 @@ class VendorList extends Component {
     })
   }
   handleRowClick = (row) => {
-  const index = this.vendorList.findIndex(v => v.partner === row.partner);
+  const index = this.state.vendorList.findIndex(v => v.userId === row.userId);
   this.onSelectVendorRow('selectedVendor' + index, row.partner);
+  
 };
   render() {
     const { vendorList, search, page, rowsPerPage, hoveredRow } = this.state;
@@ -226,7 +228,8 @@ const columns = [
   },
   {
     name: 'Status',
-    selector: row => this.statusForVendor(row.vendor),
+    selector: row =>this.statusForVendor(row),
+    //cell: row => this.statusForVendor(row.vendor),
     sortable: true
   }];
     return (
