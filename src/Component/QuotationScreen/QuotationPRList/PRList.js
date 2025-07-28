@@ -28,6 +28,11 @@ class PRList extends Component {
       const index = this.props.prList.findIndex(v => v.enquiryId === row.enquiryId);
       this.loadPRDetails(index);
     };
+    handleRowClick2 = (row) => {
+      
+      const index = this.props.prList.findIndex(v => v.enquiryId === row.enquiryId);
+      this.props.loadPRDetails(index);
+    };
   render() {
     const {  page, rowsPerPage } = this.state;
     const filteredData =this.props.prList
@@ -211,7 +216,7 @@ class PRList extends Component {
                         paginationPerPage={50}  
                         //responsive
                         paginationRowsPerPageOptions={[10, 25, 50, 100]} 
-                        onRowClicked={this.handleRowClick}
+                        onRowClicked={this.handleRowClick2}
                       />
               </>
               }
