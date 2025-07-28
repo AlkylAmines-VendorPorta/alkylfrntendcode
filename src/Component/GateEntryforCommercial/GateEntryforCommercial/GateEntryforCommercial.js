@@ -2188,7 +2188,7 @@ async componentDidMount() {
                       </TableCell>
 
                       <TableCell>
-                        <button className="btn btn-sm btn-outline-primary" type="button">
+                        <button className="btn btn-sm btn-outline-primary" onClick={this.onSelectLocationCostCenter.bind(this, asnLine)} type="button" data-toggle="modal" data-target="#locationModal">
                           Select
                         </button>
                       </TableCell>
