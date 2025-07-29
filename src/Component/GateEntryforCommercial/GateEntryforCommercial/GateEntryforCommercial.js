@@ -1518,7 +1518,9 @@ async componentDidMount() {
          if (item.quantity) totalQty = getDecimalUpto(Number(item.quantity) + Number(totalQty),3);
          return item;
       });
+      debugger
       if (!isValid) return alert('Please fill all values')
+         
       if (Number(totalQty) != Number(selectedStorageLocationListItem.confirmQuantity)) return alert('sum of all quantity is must be equal to line confirm quantity');
       this.setState({ asnLineArray, openStorageLocationModal: false });
    }
@@ -1999,7 +2001,7 @@ async componentDidMount() {
          
          </div>
          {this.state.openStorageLocationModal && <div className="modal roleModal customModal" id="locationModal show" style={{ display: 'block' }}>
-         <div className="modal-backdrop"></div><div className="modal-dialog modal-md mt-100">
+         <div className="modal-backdrop"></div><div className="modal-dialog modal-lg mt-100">
                <div className="modal-content">
                   <div className="modal-header">
                      Select storage location

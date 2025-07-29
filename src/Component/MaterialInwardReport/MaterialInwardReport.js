@@ -298,13 +298,13 @@ class MaterialInwardReport extends Component {
     name: 'Req Date',
     selector: row => row.gateEntryLine.gateEntry.created,
     sortable: true,
-    cell: row => formatDate(row.gateEntry.created),
+    cell: row => formatDate(row.gateEntryLine.gateEntry.created),
   },
   {
     name: 'Return By',
     selector: row => row.gateEntryLine.gateEntry.returnBy,
     sortable: true,
-    cell: row => formatDate(row.gateEntry.returnBy),
+    cell: row => formatDate(row.gateEntryLine.gateEntry.returnBy),
   },
   {
     name: 'Requestioner Name',
