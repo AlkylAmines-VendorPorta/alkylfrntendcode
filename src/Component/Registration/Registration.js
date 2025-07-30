@@ -173,19 +173,22 @@ else{
   }
 
   render() {
+    
+    console.log(this.state.userRole.value==="VENADM" ,
+       this.state.partner.status==="CO","999999")
+       debugger
     if(isEmpty())
     return (
       <React.Fragment>
         <Loader isLoading={this.state.isLoading} />
         <VendorDashboardHeader />
         <div className="page-content">
-        <div className="wizard-v1-content" id="togglesidebar">
+        <div className="wizard-v1-content" id="togglesidebar" style={{marginTop:"80px"}}>
             <div className="wizard-form">
-
             {this.state.userRole.value==="VENADM" && this.state.partner.status==="CO"?
               <div className="row px-4 py-0">
                 <div className="col-12">
-                  <div className="d-flex justify-content-center">
+                  <div className="d-flex justify-content-end">
                     <button
                       className="btn btn-sm btn-primary mb-2"
                       type="button"

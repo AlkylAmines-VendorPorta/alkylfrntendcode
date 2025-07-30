@@ -672,7 +672,7 @@ class GeneralInformation extends Component {
   render() {
     return (
 
-      <div id="accordion" style={{marginTop:"80px"}}>
+      <div id="accordion" style={{marginTop:"0px"}}>
         <div className="card">
           <div className="card-header">
             {/* <a className="card-link" data-toggle="collapse" href="#collapseOne">
