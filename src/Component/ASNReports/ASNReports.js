@@ -288,162 +288,56 @@ exportReportToExcel() {
                   val && val.toString().toLowerCase().includes(search.toLowerCase())
                 )
               );
-       const columns = [
+ const columns = [
+  { name: 'ASN No', selector: row => row.advanceshipmentnotice.advanceShipmentNoticeNo, sortable: true },
+  { name: 'ASN Date', selector: row => row.advanceshipmentnotice.created, cell: row => row.advanceshipmentnotice.created ? formatDate(row.advanceshipmentnotice.created) : '', sortable: true },
+  { name: 'PO No', selector: row => row.advanceshipmentnotice.po.purchaseOrderNumber, sortable: true },
+  { name: 'PO Date', selector: row => row.advanceshipmentnotice.po.created, cell: row => formatDate(row.advanceshipmentnotice.po.created), sortable: true },
+  { name: 'Status', selector: row => row.advanceshipmentnotice.status, sortable: true },
+  { name: 'Vendor Name', selector: row => row.advanceshipmentnotice.po.vendorName, sortable: true },
+  { name: 'Vehicle Number', selector: row => row.advanceshipmentnotice.vehicalNo, sortable: true },
+  { name: 'Lr No.', selector: row => row.advanceshipmentnotice.lrNumber, sortable: true },
+  { name: 'Transport Name', selector: row => row.advanceshipmentnotice.transporterNo, sortable: true },
+  { name: 'Line No', selector: row => row.poLine.lineItemNumber, sortable: true },
+  { name: 'Material Description', selector: row => `${row.poLine.code}-${row.poLine.name}`, sortable: true },
+  { name: 'Qty', selector: row => row.deliveryQuantity, sortable: true },
+  { name: 'Uom', selector: row => row.poLine.uom, sortable: true },
+  { name: 'Rate', selector: row => row.poLine.rate, sortable: true },
+  { name: 'Invoice No', selector: row => row.advanceshipmentnotice.invoiceNo, sortable: true },
+  { name: 'Invoice Date', selector: row => row.advanceshipmentnotice.invoiceDate, cell: row => row.advanceshipmentnotice.invoiceDate ? formatDate(row.advanceshipmentnotice.invoiceDate) : '', sortable: true },
+  { name: 'Created By', selector: row => row.advanceshipmentnotice.createdBy?.userDetails?.name || '', sortable: true },
+  { name: 'Reported By', selector: row => row.advanceshipmentnotice.reportedBy?.userDetails?.name || '', sortable: true },
+  { name: 'Reported Date', selector: row => row.advanceshipmentnotice.reportedDate, cell: row => row.advanceshipmentnotice.reportedDate ? formatDate(row.advanceshipmentnotice.reportedDate) : '', sortable: true },
+  { name: 'Reported Time', selector: row => row.advanceshipmentnotice.reportedDate, cell: row => row.advanceshipmentnotice.reportedDate ? formatTime(row.advanceshipmentnotice.reportedDate) : '', sortable: true },
+  { name: 'Gate In By', selector: row => row.advanceshipmentnotice.gateinBy?.userDetails?.name || '', sortable: true },
+  { name: 'Gate In Date', selector: row => row.advanceshipmentnotice.gateInDate, cell: row => row.advanceshipmentnotice.gateInDate ? formatDate(row.advanceshipmentnotice.gateInDate) : '', sortable: true },
+  { name: 'Gate In Time', selector: row => row.advanceshipmentnotice.gateInDate, cell: row => row.advanceshipmentnotice.gateInDate ? formatTime(row.advanceshipmentnotice.gateInDate) : '', sortable: true },
+  { name: '103 Posted By', selector: row => row.advanceshipmentnotice.gateinPostedby?.userDetails?.name || '', sortable: true },
+  { name: '103 Posted Date', selector: row => row.advanceshipmentnotice.date_103, cell: row => row.advanceshipmentnotice.date_103 ? formatDate(row.advanceshipmentnotice.date_103) : '', sortable: true },
+  { name: '103 Posted Time', selector: row => row.advanceshipmentnotice.date_103, cell: row => row.advanceshipmentnotice.date_103 ? formatTime(row.advanceshipmentnotice.date_103) : '', sortable: true },
+  { name: '103 Doc No', selector: row => row.advanceshipmentnotice.sap103Id || '', sortable: true },
+  { name: '105 Posted By', selector: row => row.advanceshipmentnotice.grnPostedby?.userDetails?.name || '', sortable: true },
+  { name: '105 Posted Date', selector: row => row.advanceshipmentnotice.grnDate, cell: row => row.advanceshipmentnotice.grnDate ? formatDate(row.advanceshipmentnotice.grnDate) : '', sortable: true },
+  { name: '105 Posted Time', selector: row => row.advanceshipmentnotice.grnDate, cell: row => row.advanceshipmentnotice.grnDate ? formatTime(row.advanceshipmentnotice.grnDate) : '', sortable: true },
+  { name: '105 Doc No', selector: row => row.advanceshipmentnotice.grnId || '', sortable: true },
+  { name: 'Gate Out Date', selector: row => row.advanceshipmentnotice.gateOutDate, cell: row => row.advanceshipmentnotice.gateOutDate ? formatDate(row.advanceshipmentnotice.gateOutDate) : '', sortable: true },
+  { name: 'Gate Out Time', selector: row => row.advanceshipmentnotice.gateOutDate, cell: row => row.advanceshipmentnotice.gateOutDate ? formatTime(row.advanceshipmentnotice.gateOutDate) : '', sortable: true },
+  { name: 'Closed By', selector: row => row.advanceshipmentnotice.closedBy?.userDetails?.name || '', sortable: true },
   {
-    name: 'ASN No',
-    selector: row => row.advanceshipmentnotice.advanceShipmentNoticeNo,
+    name: 'Diff. (Vehicle In time & Out Time)',
+    selector: row => {
+      const inDate = row.advanceshipmentnotice.gateInDate;
+      const outDate = row.advanceshipmentnotice.gateOutDate;
+      return (inDate && outDate)
+        ? this.getinoutTimeDifference(formatDate(inDate), formatDate(outDate))
+        : '';
+    },
     sortable: true
-  },
-{
-    name: 'ASN Date',
-    selector: row => row.advanceshipmentnotice.created,
-    cell: row => row.advanceshipmentnotice.created===null?"":formatDate(row.advanceshipmentnotice.created),
-    sortable: true
-  },
-
-  {
-    name: 'PO No',
-    selector: row =>row.advanceshipmentnotice.po.purchaseOrderNumber,
-    sortable: true
-  },
-  {
-    name: 'PO Date',
-    selector: row => row.advanceshipmentnotice.po.created,
-    cell: row => formatDate(row.advanceshipmentnotice.po.created),
-    sortable: true
-  },
-  {
-    name: 'Status',
-    selector: row => row.advanceshipmentnotice.status,
-    sortable: true
-  },
-{
-    name: 'Vendor Name',
-    selector: row =>  row.advanceshipmentnotice.po.vendorName,
-    sortable: true
-  },
-{
-    name: 'Vehicle Number',
-    selector: row =>  row.advanceshipmentnotice.vehicalNo,
-    sortable: true
-  },
-{
-    name: 'Lr No.',
-    selector: row =>  row.advanceshipmentnotice.lrNumber,
-    sortable: true
-  },
-{
-    name: 'Transport Name',
-    selector: row =>  row.advanceshipmentnotice.transporterNo,
-    sortable: true
-  },
-
-{
-    name: 'Line No',
-    selector: row =>  row.poLine.lineItemNumber,
-    sortable: true
-  },
-
-  {
-    name: 'Material Description',
-    selector: row => row.poLine.code+"-"+row.poLine.name,
-    sortable: true
-  },
- {
-    name: 'Qty',
-    selector: row => row.deliveryQuantity,
-    sortable: true
-  },
- {
-    name: 'UOM',
-    selector: row => row.poLine.uom,
-    sortable: true
-  },
- {
-    name: 'Rate',
-    selector: row => row.poLine.rate,
-    sortable: true
-  },
- {
-    name: 'Invoice No',
-    selector: row => row.advanceshipmentnotice.invoiceNo,
-    sortable: true
-  },
- {
-    name: 'Invoice Date',
-    selector: row => row.advanceshipmentnotice.invoiceDate,
-    cell: row => row.advanceshipmentnotice.invoiceDate===null?"":formatDate(row.advanceshipmentnotice.invoiceDate),
-    sortable: true
-  },
- {
-    name: 'Created By',
-    selector: row => row.advanceshipmentnotice.createdBy===null?"":(row.advanceshipmentnotice.createdBy.userDetails===null?"":row.advanceshipmentnotice.createdBy.userDetails.name),
-    sortable: true
-  },
- {
-    name: 'Reported By',
-    selector: row => row.advanceshipmentnotice.reportedBy===null?"":(row.advanceshipmentnotice.reportedBy.userDetails===null?"":row.advanceshipmentnotice.reportedBy.userDetails.name),
-    sortable: true
-  },
- {
-    name: 'Reported Date',
-    selector: row =>row.advanceshipmentnotice.reportedDate,
-    cell: row => row.advanceshipmentnotice.reportedDate===null?"":formatDate(row.advanceshipmentnotice.reportedDate),
-    sortable: true
-  },
- {
-    name: 'Reported Time',
-    selector: row => row.advanceshipmentnotice.reportedDate===null?"":formatTime(row.advanceshipmentnotice.reportedDate),
-    sortable: true
-  },
- {
-    name: 'Gate In By',
-    selector: row => row.advanceshipmentnotice.gateinBy==null?"":(row.advanceshipmentnotice.gateinBy.userDetails===null?"":row.advanceshipmentnotice.gateinBy.userDetails.name),
-    sortable: true
-  },
- {
-    name: 'Gate In Date',
-    selector: row =>row.advanceshipmentnotice.gateInDate,
-    cell: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
-    sortable: true
-  },
- {
-    name: 'Gate In Time',
-    selector: row => row.advanceshipmentnotice.gateInDate,
-    cell: row => row.advanceshipmentnotice.gateInDate===null?"":formatDate(row.advanceshipmentnotice.gateInDate),
-    sortable: true
-  },
- {
-    name: '103 Posted By',
-    selector: row => row.advanceshipmentnotice.gateinPostedby==null?"":(row.advanceshipmentnotice.gateinPostedby.userDetails===null?"":row.advanceshipmentnotice.gateinPostedby.userDetails.name),
-    sortable: true
-  },
-{
-    name: '103 Posted Date',
-    selector: row => row.advanceshipmentnotice.date_103,
-    cell: row => row.advanceshipmentnotice.date_103===null?"":formatDate(row.advanceshipmentnotice.date_103),
-    sortable: true
-  },
-{
-    name: '103 Posted Time',
-    selector: row => row.advanceshipmentnotice.date_103,
-    cell: row => row.advanceshipmentnotice.date_103===null?"":formatDate(row.advanceshipmentnotice.date_103),
-    sortable: true
-  },
-{
-    name: '103 Doc No',
-    selector: row => row.advanceshipmentnotice.sap103Id===null?"":row.advanceshipmentnotice.sap103Id,
-    sortable: true
-  },
-{
-    name: '105 Doc No',
-    selector: row => row.advanceshipmentnotice.grnId===null?"":row.advanceshipmentnotice.grnId,
-    sortable: true
-  },
+  }
+];
 
 
-]
-    return (
+ return (
       <>
 
         <React.Fragment>
@@ -764,14 +658,14 @@ exportReportToExcel() {
                           <TableCell>103 Posted Date</TableCell>
                           <TableCell>103 Posted Time</TableCell>                         
                           <TableCell>103 Doc No</TableCell>
-                          {/* <TableCell>105 Posted By</TableCell>
+                          <TableCell>105 Posted By</TableCell>
                           <TableCell>105 Posted Date</TableCell> 
-                          <TableCell>105 Posted Time</TableCell>                         */}
+                          <TableCell>105 Posted Time</TableCell>                        
                           <TableCell>105 Doc No</TableCell>
-                          {/* <TableCell>Gate Out Date</TableCell>
+                          <TableCell>Gate Out Date</TableCell>
                           <TableCell>Gate Out Time</TableCell>
                           <TableCell>Closed By</TableCell>
-                          <TableCell>Diff. (Vehicle In time & Out Time)</TableCell> */}
+                          <TableCell>Diff. (Vehicle In time & Out Time)</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody id="DataTableBody">
@@ -806,15 +700,15 @@ exportReportToExcel() {
                             <TableCell> {asnLine.advanceshipmentnotice.date_103===null?"":formatDate(asnLine.advanceshipmentnotice.date_103)}</TableCell>  
                              <TableCell>{asnLine.advanceshipmentnotice.date_103===null?"":formatTime(asnLine.advanceshipmentnotice.date_103)}</TableCell>                          
                             <TableCell>{asnLine.advanceshipmentnotice.sap103Id===null?"":asnLine.advanceshipmentnotice.sap103Id}</TableCell>
-                            {/* <TableCell>{asnLine.advanceshipmentnotice.grnPostedby==null?"":(asnLine.advanceshipmentnotice.grnPostedby.userDetails===null?"":asnLine.advanceshipmentnotice.grnPostedby.userDetails.name)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.grnPostedby==null?"":(asnLine.advanceshipmentnotice.grnPostedby.userDetails===null?"":asnLine.advanceshipmentnotice.grnPostedby.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatDate(asnLine.advanceshipmentnotice.grnDate)}</TableCell> 
-                            <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatTime(asnLine.advanceshipmentnotice.grnDate)}</TableCell>                           */}
+                            <TableCell>{asnLine.advanceshipmentnotice.grnDate===null?"":formatTime(asnLine.advanceshipmentnotice.grnDate)}</TableCell>                          
                             <TableCell>{asnLine.advanceshipmentnotice.grnId===null?"":asnLine.advanceshipmentnotice.grnId}</TableCell>
-                            {/* <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
+                            <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatDate(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":formatTime(asnLine.advanceshipmentnotice.gateOutDate)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.closedBy==null?"":(asnLine.advanceshipmentnotice.closedBy.userDetails===null?"":asnLine.advanceshipmentnotice.closedBy.userDetails.name)}</TableCell>
                             <TableCell>{asnLine.advanceshipmentnotice.gateOutDate===null?"":
-                            this.getinoutTimeDifference(formatDate(asnLine.advanceshipmentnotice.gateInDate),formatDate(asnLine.advanceshipmentnotice.gateOutDate))}</TableCell> */}
+                            this.getinoutTimeDifference(formatDate(asnLine.advanceshipmentnotice.gateInDate),formatDate(asnLine.advanceshipmentnotice.gateOutDate))}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
