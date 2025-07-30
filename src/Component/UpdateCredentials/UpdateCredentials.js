@@ -888,7 +888,7 @@ class UpdateCredentials extends Component {
   render() {
     const { checked } = this.state;
     const { searchQuery, page, rowsPerPage } = this.state;
-    const filteredData = this.props.userList.filter((entry) =>
+    const filteredData =  this.props.userList && this.props.userList.filter((entry) =>
       Object.values(entry).some((val) =>
         val && val.toString().toLowerCase().includes(searchQuery.toLowerCase())
       )

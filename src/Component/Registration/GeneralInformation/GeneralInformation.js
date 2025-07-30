@@ -718,7 +718,7 @@ class GeneralInformation extends Component {
                     </FieldFeedbacks>
                   </div>
                 </div>
-                <div className="row">
+                <div className="row mt-2">
                   <label className="col-sm-2">Vendor Name <span className="redspan">*</span></label>
                   <div className="col-sm-3">
                     <input type="text" className={"form-control " + this.props.readonly} required
