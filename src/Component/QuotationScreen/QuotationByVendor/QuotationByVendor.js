@@ -100,6 +100,7 @@ class QuotationByVendor extends Component{
             chargesType:chargesTypes,
             qbvArray:{
                 saprfqNo:"",
+                isrfqnogenerated:"",
                 prNo:"",
                 prDate:"",
                 bidderId:"",
@@ -223,7 +224,11 @@ class QuotationByVendor extends Component{
                 totalPackingFwdChargeAmt:0,
                 otherChargesAmt:0,
                 taxAmt:0,
-                vendorText:item.vendorText
+                vendorText:item.vendorText,
+                igst:item.igst,
+                cgst:item.cgst,
+                sgst:item.sgst,
+
                // paymentterms:item.paymentterms
                 
             }
@@ -305,6 +310,7 @@ class QuotationByVendor extends Component{
             accept:false,
             status:qbvArray.status,
             saprfqNo:qbvArray.saprfqno,
+            isrfqnogenerated:qbvArray.isrfqnogenerated,
             negotiatorPaymentTerms:qbvArray.negotiatorPaymentTerms,
             incoTerms:qbvArray.incoTerms,
             validityDateFrom: qbvArray.validityDateFrom===""?new Date():formatDateWithoutTime(qbvArray.validityDateFrom),
@@ -752,6 +758,29 @@ class QuotationByVendor extends Component{
             }
 
 
+            let cgstForDisplay=0;
+            let sgstForDisplay=0;
+
+            if(type == 'cgst'){
+               
+                cgstForDisplay = ( row.basicAmtForDisplay + otherChargeForDisplay ) * (value/100)               
+            }
+
+            if(type == 'sgst'){
+                
+                sgstForDisplay = ( row.basicAmtForDisplay + otherChargeForDisplay ) * (value/100)               
+            }
+
+            if(type == 'cgst' || type == 'sgst'){
+                taxesForDisplay = ( cgstForDisplay + sgstForDisplay )
+                // taxesForDisplay = row.basicAmtForDisplay * (value/100)
+            }
+
+            if(type == 'igst'){
+                taxesForDisplay = ( row.basicAmtForDisplay + otherChargeForDisplay ) * (value/100)               
+            }
+
+
             let grossForDisplay = (row.basicAmtForDisplay + otherChargeForDisplay + parseFloat(taxesForDisplay)) - (discountAmt);
             //discount value enter lost the gross for display
             let netRate = row.basicAmtForDisplay  - discountAmt;
@@ -770,6 +799,8 @@ class QuotationByVendor extends Component{
                 perQtyDiscount: discountAmt ? checkIsNaN(Number.parseFloat(discountAmt/row.reqQty)):0,
                 totalFreightChargeAmt,totalPackingFwdChargeAmt,otherChargesAmt,perQtyFreightAmt,perQtyPKAmt,perQtyOtherAmt,
                 netRate,
+                cgstForDisplay,
+                sgstForDisplay
             };
     }
         let  basicAmt = sumBy(quotations,'basicAmtForDisplay');
@@ -995,19 +1026,17 @@ class QuotationByVendor extends Component{
             // console.log("taxesForDisplay",taxesForDisplay);
             // console.log("taxesForDisplay row",row);
             // console.log("taxesForDisplay",row.taxesForDisplay);
-            
            
-            // console.log("netRate --",net)
             
 
             let netRate = checkIsNaN(row.basicAmtForDisplay  - discountAmt);
             // console.log("Calculate netRate Item-- ",netRate);
 
+            /*commented on 23/07/2025*/
             if(type == 'taxRate'){
                 taxesForDisplay = ( netRate + otherChargeForDisplay ) * (value/100)
                 // taxesForDisplay = row.basicAmtForDisplay * (value/100)
             }
-
             // console.log("TAXES FOR DISPLAY -->",taxesForDisplay);
             // console.log("calculateFrLine row->",row)
             // console.log("TAXES FOR DISPLAY --->>>>",taxesForDisplay);
@@ -1030,7 +1059,8 @@ class QuotationByVendor extends Component{
                 // perQtyDiscount: discountAmt ? discountAmt/row.reqQty:0,
                 perQtyDiscount: discountAmt ? checkIsNaN(Number.parseFloat(discountAmt/row.reqQty)):0,
                 totalFreightChargeAmt,totalPackingFwdChargeAmt,otherChargesAmt,perQtyFreightAmt,perQtyPKAmt,perQtyOtherAmt,
-                netRate
+                netRate,
+               
             };
         }
 
@@ -1040,7 +1070,8 @@ class QuotationByVendor extends Component{
         let totalDiscount = sumBy(quotations,'netRate');
         let otherCharges = "";
 
-        if(value==="header_level" || (type==="exGroupPriceRate" && this.state.qbvArray.otherChargeType==="header_level") || type==="discountCharge" || type==="discountType" || (type==="taxRate" && this.state.qbvArray.otherChargeType==="header_level")){
+        // if(value==="header_level" || (type==="exGroupPriceRate" && this.state.qbvArray.otherChargeType==="header_level") || type==="discountCharge" || type==="discountType" || (type==="taxRate" && this.state.qbvArray.otherChargeType==="header_level")){
+            if(value==="header_level" || (type==="exGroupPriceRate" && this.state.qbvArray.otherChargeType==="header_level") || type==="discountCharge" || type==="discountType" || (type==="igst" && this.state.qbvArray.otherChargeType==="header_level") || (type==="cgst" && this.state.qbvArray.otherChargeType==="header_level")  || (type==="sgst" && this.state.qbvArray.otherChargeType==="header_level")){
        
             let totalFreightChargeAmt = this.calculateHeaderFreightChargeDisplay(qbvArray,totalDiscount,type);
             let totalPackingChargeAmt = this.calculateHeaderPackingChargeDisplay(qbvArray,totalDiscount,type);
@@ -1135,27 +1166,131 @@ class QuotationByVendor extends Component{
         
         return sumBy(this.state.quotations,'grossForDisplay') + parseFloat(this.state.qbvArray.totalTaxesOnOtherCharges?this.state.qbvArray.totalTaxesOnOtherCharges:0);
     }
-    calculateGrossAmount = () => {
+//     calculateGrossAmount = () => {
+
+//     let list = this.state.quotations;
+
+
+//      let GrossAmount=0.0;
+//     let TotalGrossAmount=0.0;
+//     // let TotalGrossArray = [];
+
+//     if(this.state.qbvArray.otherChargeType==="header_level"){
+        
+            
+      
+//         let headertotalotherAmt=0
+//         let taxmt1=0
+//         // headertaxamt= (Math.round(this.state.qbvArray.totalTaxesOnOtherCharges*100)/100).toLocaleString('en');
+//         headertotalotherAmt= this.state.qbvArray.otherCharges;
+//         let  headertotaltaxamt= this.state.qbvArray.totalTaxesOnOtherCharges;
+//         list.map((qbvLine)=>{
+          
+//             GrossAmount= (Math.round((qbvLine.netRate + 0 + (parseFloat(qbvLine.netRate + 0) * (qbvLine.taxRate/100)))*100)/100)
+//         //    GrossAmount= (Math.round((qbvLine.netRate + qbvLine.otherChargeForDisplay + (parseFloat(qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)))*100)/100)
+//            taxmt1= Number(taxmt1) + Number(GrossAmount);
+//            TotalGrossAmount = Number(headertotalotherAmt) + Number(taxmt1) + Number(headertotaltaxamt);
+//         })
+        
+//      // TotalGrossAmount = Number(headertaxamt) + Number(GrossAmount)
+//     }
+//       else{
+//      list.map((qbvLine) => {
+//      GrossAmount= (Math.round((qbvLine.netRate + qbvLine.otherChargeForDisplay + (parseFloat(qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)))*100)/100)
+//         //    TotalGrossArray.push(GrossAmount);
+//            TotalGrossAmount= Number(TotalGrossAmount) + Number(GrossAmount);
+//     })
+// }
+    
+//     // let TotalArray = Object.keys(TotalGrossArray).map((key) => {
+//     //     return { display: TotalGrossArray[key], value: key }
+//     //  });
+
+//     //  TotalArray.map((display,i)=>{
+//     //     TotalGrossAmount= Number(TotalGrossAmount) + Number(display.display);
+//     // } )
+
+//     return (Math.round(TotalGrossAmount*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
+//        // return getDecimalUpto(TotalGrossAmount,2);
+
+//      }
+
+
+//      calculateTotalTaxAmount=()=>{
+
+//     let list = this.state.quotations;
+//     let TaxAmount=0.0;
+//     let TotalTaxAmount=0.0;
+//     let otherCharges = 0;
+
+
+//     if(this.state.qbvArray.otherChargeType==="header_level"){
+        
+            
+        
+//         let headertaxamt=0
+//         let taxmt1=0
+//         let taxesArray = [];
+//         //headertaxamt= (Math.round(this.state.qbvArray.totalTaxesOnOtherCharges*100)/100).toLocaleString('en');
+//         headertaxamt= this.state.qbvArray.totalTaxesOnOtherCharges;
+//         list.map((qbvLine)=>{
+
+//             TaxAmount= (getDecimalUpto(((qbvLine.netRate) * (qbvLine.taxRate/100)),2))
+        
+//             taxmt1= Number(taxmt1) + Number(TaxAmount);
+
+//             // TaxAmount= (getDecimalUpto(((qbvLine.netRate + 0) * (qbvLine.taxRate/100)),2))
+
+//  // TaxAmount= (getDecimalUpto(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)),2))
+//             // taxmt1= Number(taxmt1) + Number(TaxAmount);
+//             // TotalTaxAmount = Number(headertaxamt) + Number(taxmt1)
+//         })
+
+//         TotalTaxAmount=Number(taxmt1)+ Number(headertaxamt);
+        
+//     }else{
+    
+//      list.map((qbvLine) => {
+//      TaxAmount= (getDecimalUpto(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)),2))
+        
+//         TotalTaxAmount= Number(TotalTaxAmount) + Number(TaxAmount);
+//     })
+// }
+//           return (Math.round(TotalTaxAmount*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
+//     //   return getDecimalUpto(TotalTaxAmount,2);
+//      }
+
+
+calculateGrossAmount = () => {
 
     let list = this.state.quotations;
 
 
      let GrossAmount=0.0;
     let TotalGrossAmount=0.0;
-    // let TotalGrossArray = [];
+    let taxRate=0;
 
     if(this.state.qbvArray.otherChargeType==="header_level"){
-        
-            
-      
+
         let headertotalotherAmt=0
         let taxmt1=0
         // headertaxamt= (Math.round(this.state.qbvArray.totalTaxesOnOtherCharges*100)/100).toLocaleString('en');
         headertotalotherAmt= this.state.qbvArray.otherCharges;
         let  headertotaltaxamt= this.state.qbvArray.totalTaxesOnOtherCharges;
         list.map((qbvLine)=>{
+
+            let cgstAmount=(qbvLine.cgst/100);
+            let sgstAmount=(qbvLine.sgst/100);
+            let igstAmount=(qbvLine.igst/100);
+
+            
+            if(qbvLine.cgst!=0 || qbvLine.sgst!=0){
+                taxRate=(cgstAmount+sgstAmount);
+            }else{
+                taxRate=igstAmount
+            }
           
-            GrossAmount= (Math.round((qbvLine.netRate + 0 + (parseFloat(qbvLine.netRate + 0) * (qbvLine.taxRate/100)))*100)/100)
+            GrossAmount= (Math.round((qbvLine.netRate + 0 + (parseFloat(qbvLine.netRate + 0) * (taxRate)))*100)/100)
         //    GrossAmount= (Math.round((qbvLine.netRate + qbvLine.otherChargeForDisplay + (parseFloat(qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)))*100)/100)
            taxmt1= Number(taxmt1) + Number(GrossAmount);
            TotalGrossAmount = Number(headertotalotherAmt) + Number(taxmt1) + Number(headertotaltaxamt);
@@ -1165,35 +1300,35 @@ class QuotationByVendor extends Component{
     }
       else{
      list.map((qbvLine) => {
-     GrossAmount= (Math.round((qbvLine.netRate + qbvLine.otherChargeForDisplay + (parseFloat(qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)))*100)/100)
+        let cgstAmount=(qbvLine.cgst/100);
+            let sgstAmount=(qbvLine.sgst/100);
+            let igstAmount=(qbvLine.igst/100);
+
+            
+            if(qbvLine.cgst!=0 || qbvLine.sgst!=0){
+                taxRate=(cgstAmount+sgstAmount);
+            }else{
+                taxRate=igstAmount
+            }
+     GrossAmount= (Math.round((qbvLine.netRate + qbvLine.otherChargeForDisplay + (parseFloat(qbvLine.netRate + qbvLine.otherChargeForDisplay) * (taxRate)))*100)/100)
         //    TotalGrossArray.push(GrossAmount);
            TotalGrossAmount= Number(TotalGrossAmount) + Number(GrossAmount);
     })
 }
-    
-    // let TotalArray = Object.keys(TotalGrossArray).map((key) => {
-    //     return { display: TotalGrossArray[key], value: key }
-    //  });
-
-    //  TotalArray.map((display,i)=>{
-    //     TotalGrossAmount= Number(TotalGrossAmount) + Number(display.display);
-    // } )
-
     return (Math.round(TotalGrossAmount*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
        // return getDecimalUpto(TotalGrossAmount,2);
 
      }
 
 
-     calculateTotalTaxAmount=()=>{
 
-        let list = this.state.quotations;
-    
-   
+calculateTotalTaxAmount=()=>{
+
+    let list = this.state.quotations;
     let TaxAmount=0.0;
     let TotalTaxAmount=0.0;
     let otherCharges = 0;
-
+    let taxRate=0;
 
     if(this.state.qbvArray.otherChargeType==="header_level"){
         
@@ -1202,19 +1337,25 @@ class QuotationByVendor extends Component{
         let headertaxamt=0
         let taxmt1=0
         let taxesArray = [];
+        
         //headertaxamt= (Math.round(this.state.qbvArray.totalTaxesOnOtherCharges*100)/100).toLocaleString('en');
         headertaxamt= this.state.qbvArray.totalTaxesOnOtherCharges;
         list.map((qbvLine)=>{
+            let cgstAmount=(qbvLine.cgst/100);
+            let sgstAmount=(qbvLine.sgst/100);
+            let igstAmount=(qbvLine.igst/100);
 
-            TaxAmount= (getDecimalUpto(((qbvLine.netRate) * (qbvLine.taxRate/100)),2))
+            
+            if(qbvLine.cgst!=0 || qbvLine.sgst!=0){
+                taxRate=(cgstAmount+sgstAmount);
+            }else{
+                taxRate=igstAmount
+            }
+
+            TaxAmount= (getDecimalUpto(((qbvLine.netRate) * (taxRate)),2))
         
             taxmt1= Number(taxmt1) + Number(TaxAmount);
 
-            // TaxAmount= (getDecimalUpto(((qbvLine.netRate + 0) * (qbvLine.taxRate/100)),2))
-
- // TaxAmount= (getDecimalUpto(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)),2))
-            // taxmt1= Number(taxmt1) + Number(TaxAmount);
-            // TotalTaxAmount = Number(headertaxamt) + Number(taxmt1)
         })
 
         TotalTaxAmount=Number(taxmt1)+ Number(headertaxamt);
@@ -1222,7 +1363,18 @@ class QuotationByVendor extends Component{
     }else{
     
      list.map((qbvLine) => {
-     TaxAmount= (getDecimalUpto(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)),2))
+        let cgstAmount=(qbvLine.cgst/100);
+        let sgstAmount=(qbvLine.sgst/100);
+        let igstAmount=(qbvLine.igst/100);
+
+        
+        if(qbvLine.cgst!=0 || qbvLine.sgst!=0){
+            taxRate=(cgstAmount+sgstAmount);
+        }else{
+            taxRate=igstAmount
+        }
+
+        TaxAmount= (getDecimalUpto(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (taxRate)),2))
         
         TotalTaxAmount= Number(TotalTaxAmount) + Number(TaxAmount);
     })
@@ -1230,7 +1382,56 @@ class QuotationByVendor extends Component{
           return (Math.round(TotalTaxAmount*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
     //   return getDecimalUpto(TotalTaxAmount,2);
      }
-     calculatetaxAmount=(netRate,otherChargeForDisplay,taxRate)=>{
+    //  calculatetaxAmount=(netRate,otherChargeForDisplay,taxRate)=>{
+
+    //     let taxamt=0
+      
+    //     if(this.state.qbvArray.otherChargeType==="header_level"){
+    //         taxamt= (netRate + 0) * (taxRate/100);
+    //     }else{
+    //         taxamt= (netRate + otherChargeForDisplay) * (taxRate/100);
+
+    //     }
+
+    //        return (Math.round(taxamt*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
+    //  }
+
+
+    calculatetaxAmount=(netRate,otherChargeForDisplay,cgst,sgst,igst)=>{
+
+        let taxamt=0;
+        let taxRate=0;
+       
+       let cgstAmount=(cgst/100);
+       let sgstAmount=(sgst/100);
+       let igstAmount=(igst/100);
+        if(this.state.qbvArray.otherChargeType==="header_level"){
+          
+
+            if(cgst!=0 || sgst!=0){
+                taxRate=(cgstAmount+sgstAmount);
+            }else{
+                taxRate=igstAmount
+            }
+               
+                taxamt= (netRate + 0) * (taxRate);
+        }else{
+            
+
+            if(cgst!=0 || sgst!=0){
+                taxRate=(cgstAmount+sgstAmount);
+            }else{
+                taxRate=igstAmount
+            }
+            taxamt= (netRate + otherChargeForDisplay) * (taxRate);
+
+        }
+
+           return (Math.round(taxamt*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
+     }
+
+
+      calculatetaxAmountonCondition=(netRate,otherChargeForDisplay,taxRate)=>{
 
         let taxamt=0
       
@@ -1244,19 +1445,48 @@ class QuotationByVendor extends Component{
            return (Math.round(taxamt*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
      }
 
-     calculategrossAmount=(netRate,otherChargeForDisplay,taxRate)=>{
+
+     calculategrossAmount=(netRate,otherChargeForDisplay,cgst,sgst,igst)=>{
 
         let grossamt=0
         let taxmt1=0
+        let taxRate=0;
+       
+       let cgstAmount=(cgst/100);
+       let sgstAmount=(sgst/100);
+       let igstAmount=(igst/100);
         if(this.state.qbvArray.otherChargeType==="header_level"){
-            grossamt= (netRate + 0 + (parseFloat(netRate + 0) * (taxRate/100)));
+            if(cgst!=0 || sgst!=0){
+                taxRate=(cgstAmount+sgstAmount);
+            }else{
+                taxRate=igstAmount
+            }
+            grossamt= (netRate + 0 + (parseFloat(netRate + 0) * (taxRate)));
         }else{
-            grossamt=(netRate + otherChargeForDisplay + (parseFloat(netRate + otherChargeForDisplay) * (taxRate/100)));
-
+            if(cgst!=0 || sgst!=0){
+                taxRate=(cgstAmount+sgstAmount);
+            }else{
+                taxRate=igstAmount
+            }
+            grossamt=(netRate + otherChargeForDisplay + (parseFloat(netRate + otherChargeForDisplay) * (taxRate)));
         }
 
            return (Math.round(grossamt*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
      }
+
+    //  calculategrossAmount=(netRate,otherChargeForDisplay,taxRate)=>{
+
+    //     let grossamt=0
+    //     let taxmt1=0
+    //     if(this.state.qbvArray.otherChargeType==="header_level"){
+    //         grossamt= (netRate + 0 + (parseFloat(netRate + 0) * (taxRate/100)));
+    //     }else{
+    //         grossamt=(netRate + otherChargeForDisplay + (parseFloat(netRate + otherChargeForDisplay) * (taxRate/100)));
+
+    //     }
+
+    //        return (Math.round(grossamt*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})
+    //  }
 
 
     onClearDocuments = (i) => {
@@ -1548,13 +1778,15 @@ class QuotationByVendor extends Component{
                                                     {/* <td className="w-10per">{getDecimalUpto(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)),2)}</td> */}
                                                     <td className="text-right w-8per">{this.state.qbvArray.otherChargeType==="item_level"?(Math.round(qbvLine.otherChargeForDisplay*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2}):0.00}</td>
                                                     {/* <td className="w-10per">{(Math.round(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100))*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})}</td> */}
-                                                    <td>{this.calculatetaxAmount(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.taxRate)}</td>
+                                                    {/* <td>{this.calculatetaxAmount(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.taxRate)}</td> */}
+                                                    <td>{this.calculatetaxAmount(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.cgst,qbvLine.sgst,qbvLine.igst)}</td>
                                                     {/* <td className="w-10per">{(Math.round(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100))*100)/100).toLocaleString('en-IN',{minimumFractionDigits:2})}</td> */}
                                                     {/* <td className="w-10per">{getDecimalUpto(((qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)),2)}</td> */}
                                                     {/* <td className="w-10per"> {getDecimalUpto(qbvLine.taxesForDisplay,2)} </td> */}
                                                     {/* <td className="w-10per"> {(Math.round(qbvLine.grossForDisplay*100)/100).toLocaleString('en') } </td> */}
                                                     {/* <td className="w-10per" > {(Math.round((qbvLine.netRate + qbvLine.otherChargeForDisplay + (parseFloat(qbvLine.netRate + qbvLine.otherChargeForDisplay) * (qbvLine.taxRate/100)))*100)/100).toLocaleString('en',{minimumFractionDigits:2}) } </td> */}
-                                                    <td>{this.calculategrossAmount(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.taxRate)}</td>
+                                                    {/* <td>{this.calculategrossAmount(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.taxRate)}</td> */}
+                                                    <td>{this.calculategrossAmount(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.cgst,qbvLine.sgst,qbvLine.igst)}</td>
                                                 </tr>
                                                  <tr class="hide-table-padding">
                                                     <td colSpan="10">
@@ -1909,7 +2141,84 @@ class QuotationByVendor extends Component{
                                                                         <input name={"quotations["+i+"][completeOther]"} value={qbvLine.otherChargeForDisplay} type="hidden" />
                                                                         <input name={"quotations["+i+"][priceBidId]"} value={qbvLine.priceBidId} disabled={isEmpty(qbvLine.priceBidId)} type="hidden" />
                                                                         <input name={"quotations["+i+"][itemBid][itemBidId]"} value={qbvLine.itemBid.itemBidId} type="hidden" />
-                                                                         <div class="row mb-1 p-0">
+                                                                        <div class="row mb-1 p-0">
+                                                                            <span className="col-4 text-right">CGST(%)</span>
+                                                                            {/* <span className="col-4"></span> */}
+                                                                            <input
+                                                                                type="number"
+                                                                                value={qbvLine.cgst}
+                                                                                onKeyDown={this.controlSubmit}
+                                                                               // className={"col-4 form-control " + this.props.readonly}
+                                                                                className={"col-3 form-control "}
+                                                                                name={"quotations["+i+"][cgst]"}
+                                                                                onChange={(event) => {
+                                                                                    this.calculateFrLineItem(event,i,"cgst","quotationForm")
+                                                                                    // changeTaxes(event, this, "quotations."+i+".taxRate");
+                                                                                  }}
+                                                                            />
+                                                                             <input
+                                                                                type="text"
+                                                                                value={this.calculatetaxAmountonCondition(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.cgst)}
+                                                                                onKeyDown={this.controlSubmit}
+                                                                               // className={"col-4 form-control " + this.props.readonly}
+                                                                                className={"col-2 form-control "}
+                                                                                name={"quotations["+i+"][cgstAmount]"}
+                                                                                
+                                                                            />
+                                                                        </div>
+                                                                        <div class="row mb-1 p-0">
+                                                                            <span className="col-4 text-right">SGST(%)</span>
+                                                                            {/* <span className="col-4"></span> */}
+                                                                            <input
+                                                                                type="number"
+                                                                                value={qbvLine.sgst}
+                                                                                onKeyDown={this.controlSubmit}
+                                                                               // className={"col-4 form-control " + this.props.readonly}
+                                                                               className={"col-3 form-control "}
+                                                                                name={"quotations["+i+"][sgst]"}
+                                                                                onChange={(event) => {
+                                                                                    this.calculateFrLineItem(event,i,"sgst","quotationForm")
+                                                                                    // changeTaxes(event, this, "quotations."+i+".taxRate");
+                                                                                  }}
+                                                                            />
+
+                                                                           <input
+                                                                                type="text"
+                                                                                value={this.calculatetaxAmountonCondition(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.sgst)}
+                                                                                onKeyDown={this.controlSubmit}
+                                                                               // className={"col-4 form-control " + this.props.readonly}
+                                                                                className={"col-2 form-control "}
+                                                                                name={"quotations["+i+"][sgstAmount]"}
+                                                                                
+                                                                            />
+                                                                        </div>
+                                                                        <div class="row mb-1 p-0">
+                                                                            <span className="col-4 text-right">IGST(%)</span>
+                                                                            {/* <span className="col-4"></span> */}
+                                                                            <input
+                                                                                type="number"
+                                                                                value={qbvLine.igst}
+                                                                                onKeyDown={this.controlSubmit}
+                                                                               // className={"col-4 form-control " + this.props.readonly}
+                                                                               className={"col-3 form-control "}
+                                                                                name={"quotations["+i+"][igst]"}
+                                                                                onChange={(event) => {
+                                                                                    this.calculateFrLineItem(event,i,"igst","quotationForm")
+                                                                                    // changeTaxes(event, this, "quotations."+i+".taxRate");
+                                                                                  }}
+                                                                            />
+
+<input
+                                                                                type="text"
+                                                                                value={this.calculatetaxAmountonCondition(qbvLine.netRate,qbvLine.otherChargeForDisplay,qbvLine.igst)}
+                                                                                onKeyDown={this.controlSubmit}
+                                                                               // className={"col-4 form-control " + this.props.readonly}
+                                                                                className={"col-2 form-control "}
+                                                                                name={"quotations["+i+"][igstAmount]"}
+                                                                                
+                                                                            />
+                                                                        </div>
+                                                                         {/* <div class="row mb-1 p-0">
                                                                             <span className="col-4 text-right">Taxes(%)</span>
                                                                             <span className="col-4"></span>
                                                                             <input
@@ -1924,13 +2233,7 @@ class QuotationByVendor extends Component{
                                                                                     // changeTaxes(event, this, "quotations."+i+".taxRate");
                                                                                   }}
                                                                             />
-                                                                            {/* <div className="offset-7 col-5">    
-                                                                                <FieldFeedbacks for={"quotations["+i+"][taxRate]"}>
-                                                                                    <FieldFeedback when="*"></FieldFeedback>
-                                                                                    <FieldFeedback when={value => value.length === 0}>Please fill out this field.</FieldFeedback>
-                                                                                </FieldFeedbacks>
-                                                                            </div> */}
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1982,6 +2285,8 @@ class QuotationByVendor extends Component{
                             <input name={"bidder[totalFreightChargeAmt]"} value={this.state.qbvArray.totalFreightChargeAmt} type="hidden" />
                             <input name={"bidder[totalPackingChargeAmt]"} value={this.state.qbvArray.totalPackingChargeAmt} type="hidden" />
                             <input name={"bidder[totalOtherChargeAmt]"} value={this.state.qbvArray.totalOtherChargeAmt} type="hidden" />
+                            <input name={"bidder[saprfqno]"} value={this.state.qbvArray.saprfqNo} type="hidden" />
+                            <input name={"bidder[isrfqnogenerated]"} value={this.state.qbvArray.isrfqnogenerated} type="hidden" />
 
 
                             { this.state.qbvArray.otherChargeType == 'header_level' ? 
@@ -2220,6 +2525,7 @@ class QuotationByVendor extends Component{
    
                       commonHandleChange(event,this,"qbvArray.vendorIncoDescription", "quotationForm");
                     }}
+                    style={{ textTransform: 'uppercase' }}
                   />
 
                             </div>
@@ -2292,18 +2598,20 @@ class QuotationByVendor extends Component{
                                             <button type="button" onClick={(e)=>{this.props.handleReadOnly(!this.props.readonly)} } className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-file" />&nbsp;{this.props.readonly?"Enable":"Disable"} Editing</button>
                                     :null} */}
                                        {/* {this.props.readonly && this.state.qbvArray.status==="SBMT"? */}
-                                       {this.state.qbvArray.status==="SBMT"?
+                                       {this.state.qbvArray.status==="SBMT" && (this.state.qbvArray.saprfqNo===null || this.state.qbvArray.saprfqNo==="")?
                                         <>
                                             {/* <button type="button" onClick={(e) =>{this.handleApproveQuotation(e)}} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button> */}
-                                            <button type="button"  onClick={(e) =>{commonSubmitFormNoValidation(e,this,"approveQuotation","/rest/approveQuotation","quotationForm")}} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" />&nbsp;Approve</button>
+                                            {/* <button type="button"  onClick={(e) =>{commonSubmitFormNoValidation(e,this,"approveQuotation","/rest/approveQuotation","quotationForm")}} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" />&nbsp;Approve</button> */}
+                                            <button type="button"  onClick={(e) =>{commonSubmitFormNoValidation(e,this,"approveQuotation","/rest/approveQuotation","quotationForm")}} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" />&nbsp;Approve & Generate RFQ</button>
                                             <button type="button" data-toggle="modal" data-target="#reasonModal" className="btn btn-sm btn-outline-danger mr-2"><i className="fa fa-times" />&nbsp;Reject</button>
                                         </>
                                             :""}
 
-                                            {this.state.qbvArray.status==="APPR" && this.state.qbvArray.saprfqNo===null?
-                                             <button type="button" onClick={this.generateRFQfromSAP} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" /> Generate RFQ</button>:""}
+                                            {/* {this.state.qbvArray.status==="APPR" && this.state.qbvArray.saprfqNo===null?
+                                             <button type="button" onClick={this.generateRFQfromSAP} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" /> Generate RFQ</button>:""} */}
 
                                 {this.state.qbvArray.status!="DR" && this.state.qbvArray.status==="APPR" && this.state.qbvArray.enquiry?.isMailsentFinalApproval!="Y" && this.state.qbvArray.enquiry?.firstLevelApprovalStatus!="REJECTED" && this.state.qbvArray.saprfqNo!=null?
+                               
                                         <>
                                             {/* <button type="button" onClick={(e) =>{this.handleApproveQuotation(e)}} className="btn btn-sm btn-outline-success mr-2"><i className="fa fa-check" />&nbsp;Approve</button> */}
                                             <button type="button"  onClick={(e) =>{commonSubmitFormNoValidation(e,this,"approveQuotation","/rest/approveQuotation")}} className="btn btn-sm btn-outline-primary mr-2"><i className="fa fa-check" />&nbsp;Edit & Submit</button>

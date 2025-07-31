@@ -526,19 +526,25 @@ console.log(filteredData,"filteredData2")
       {
         name: 'Purchase Manager Approver',
         selector: row => row.pmapprovedBy!=null?row.pmapprovedBy.name:"",
-        sortable: true
+        sortable: true,
+        wrap: true,
+        grow: 2
       },
    {
   name: 'PM Approved Date',
   selector: row => row.pmapprovedDate,
   cell: row => row.pmapprovedDate ? formatDate(row.pmapprovedDate) : "",
-  sortable: true
+  sortable: true,
+  wrap: true,
+  grow: 2
 },
 {
   name: 'PM Approved Time',
   selector: row => row.pmapprovedDate,
   cell: row => row.pmapprovedDate ? formatTime(row.pmapprovedDate) : "",
-  sortable: true
+  sortable: true,
+  wrap: true,
+  grow: 2
 }
 
     ]
@@ -608,7 +614,9 @@ console.log(filteredData,"filteredData2")
     name: 'Material Code & Description',
     selector: row =>`${row.materialCode} - ${row.materialDesc}`,
     minWidth: '250px',
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
   {
     name: 'Req. Qty.',
@@ -634,7 +642,9 @@ console.log(filteredData,"filteredData2")
           ? `${row.plant} - ${row.plantDesc}`
           : row.plant,
     width: '140px',
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
   },
   {
     name: 'Delivery Date',
@@ -651,16 +661,21 @@ console.log(filteredData,"filteredData2")
           onChange={(e) =>
             this.commonHandleChange(e, 'deliverDate', row.prNumber, index)
           }
+          disabled={true}
         />
       )},
     width: '160px',
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
   },
   {
     name: 'Material Group',
     selector: row =>`${row.matGrp ?? ''} - ${row.matGrpDesc ?? ''}`,
     minWidth: '180px',
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
   {
     name: 'Buyer',
@@ -673,6 +688,7 @@ console.log(filteredData,"filteredData2")
             this.commonHandleChange(e, 'buyer', row.prNumber, index)
           }
           value={row.buyer?.userId ?? ''}
+          disabled={true}
         >
           <option value="">Select Buyer</option>
           {this.props.buyerList.map((buyer) => (
@@ -684,6 +700,8 @@ console.log(filteredData,"filteredData2")
         
         ,
     width: '160px',
+    wrap: true,
+    grow: 3
   },
   {
     name: 'Tracking No',

@@ -188,7 +188,9 @@ const columns = [
   {
     name: 'Person Name',
     selector: row => row.name,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
 {
     name: 'Mobile No',
@@ -199,12 +201,16 @@ const columns = [
   {
     name: 'Mail ID',
     selector: row => row.email,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
   },
   {
     name: 'Company Name',
     selector: row => row.companyName,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
   {
     name: 'Vendor Code',
@@ -214,7 +220,9 @@ const columns = [
   {
     name: 'Invited By',
     selector: row => row.invitedBy,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
   },
   {
     name: 'Department',

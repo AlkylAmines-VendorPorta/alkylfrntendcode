@@ -483,6 +483,8 @@ render() {
     name: 'Sales Ord No',
     selector: row =>  row.saleOrdNo,
     sortable: true,
+    wrap: true,
+    grow: 2
 },
 {
     name: 'Date',
@@ -513,15 +515,24 @@ render() {
 {
     name: 'Sold To Party- Sold To Party Name',
     selector: row =>  row.soldToParty+"-"+row.soldToPartyName,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   }, {
     name: 'Material Desc',
     selector: row => row.material+"-"+row.materialDesc,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
  {
     name: 'Qty',
     selector: row => row.qty,
+    sortable: true
+  },
+  {
+    name: 'Balance Qty',
+    selector: row => row.balanceDeliveryQty,
     sortable: true
   },
  {
@@ -532,12 +543,16 @@ render() {
  {
     name: 'Inward Transporter',
     selector: row => row.inwardTransporter,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
  {
     name: 'Outward Transporter',
     selector: row => row.outwardTransporter,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
  {
     name: 'inco',
@@ -547,7 +562,9 @@ render() {
  {
     name: 'inco1',
     selector: row => row.inco1,
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
   },
 ]
     return (

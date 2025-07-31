@@ -351,7 +351,9 @@ const columns = [
     name: "PR No",
     selector: row => row.prNumber,
     width: "90px",
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
   },
   {
     name: "",
@@ -415,7 +417,9 @@ const columns = [
     name: "Material Code & Description",
     selector: row => `${row.materialCode} - ${row.materialDesc}`,
     minWidth: "220px",
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
   {
     name: "Req. Qty.",
@@ -446,7 +450,9 @@ const columns = [
     name: "Plant",
     selector: row => row.plantDesc ? `${row.plant} - ${row.plantDesc}` : row.plant,
     minWidth: "140px",
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
   },
   {
     name: "Delivery Date",
@@ -462,12 +468,16 @@ const columns = [
       />
     ),
     width: "130px",
+    wrap: true,
+    grow: 3
   },
   {
     name: "Material group",
     selector: row => `${row.matGrp ? row.matGrp + ' - ' : ''}${row.matGrpDesc || ''}`,
     minWidth: "120px",
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 3
   },
   {
     name: "Buyer",
@@ -487,6 +497,8 @@ const columns = [
       </select>
     ),
     width: "150px",
+    wrap: true,
+    grow: 4
   },
   {
     name: "Tracking No",
@@ -498,7 +510,9 @@ const columns = [
     name: "Status",
     selector: row => this.props.prStatusList[row.status],
     width: "100px",
-    sortable: true
+    sortable: true,
+    wrap: true,
+    grow: 2
 }
 
 ];

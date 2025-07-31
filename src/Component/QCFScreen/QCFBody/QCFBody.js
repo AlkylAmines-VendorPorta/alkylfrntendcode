@@ -93,7 +93,8 @@ class QCFBody extends Component {
         if((!isEmpty(props.priceBidList)) || (!isEmpty(props.annexureDto)))
         {
             this.props.changeLoaderState(false);
-            this.showhideQCFGenerateBtn(props.priceBidList)
+            //this.showhideQCFGenerateBtn(props.priceBidList)
+            this.showhideQCFGenerateBtn(props.bidderList)
           //this.showhideRFQGenerateBtn(props.priceBidList)
         } 
     }
@@ -118,11 +119,13 @@ class QCFBody extends Component {
     //       }
     //   }
 
-    showhideQCFGenerateBtn=(priceBidList)=>{
+    showhideQCFGenerateBtn=(bidList)=>{
         let bidderArray=[];
        // let showQCFbtn=this.state.showQCFbtn
-        priceBidList.forEach((pricebid)=>{
-            let setsaprfqno=pricebid.itemBid.bidder.saprfqno;
+
+       if (bidList && bidList.length > 0) {
+        bidList.forEach((bid)=>{
+            let setsaprfqno=bid.saprfqno;
             if(setsaprfqno===null){
                 bidderArray.push(false)
             }else{
@@ -141,7 +144,34 @@ class QCFBody extends Component {
           }
         //   return showQCFbtn;
       }
+    }
 
+    // showhideQCFGenerateBtn=(priceBidList)=>{
+    //     let bidderArray=[];
+    //    // let showQCFbtn=this.state.showQCFbtn
+
+    //    if (priceBidList && priceBidList.length > 0) {
+    //     priceBidList.forEach((pricebid)=>{
+    //         let setsaprfqno=pricebid.itemBid.bidder.saprfqno;
+    //         if(setsaprfqno===null){
+    //             bidderArray.push(false)
+    //         }else{
+    //             bidderArray.push(true)
+    //         }
+    //     })
+
+    //     if(bidderArray.includes(false)){
+    //         this.setState({
+    //           showQCFbtn:false
+    //         })
+    //       }else{
+    //         this.setState({
+    //           showQCFbtn:true
+    //         })
+    //       }
+    //     //   return showQCFbtn;
+    //   }
+    // }
 
     //   showhideRFQGenerateBtn=(priceBidList)=>{
     //     let priceBidArray=[];

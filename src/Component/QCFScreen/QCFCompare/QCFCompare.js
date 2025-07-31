@@ -900,11 +900,12 @@ gettotalOtherAmount(i){
   generateLandedCost = () => {
     let columns = [];
     for (var i = 0; i < this.state.i; i++) {
-     
-      let grossAmt= this.state.bidderList[i].grossAmt.replace(/,/g, "");
-      let taxAmt= this.state.bidderList[i].taxAmt.replace(/,/g, ""); 
+
+      let grossAmt= this.state.bidderList[i].grossAmt!=null?this.state.bidderList[i].grossAmt.replace(/,/g, ""):"";
+      let taxAmt= this.state.bidderList[i].taxAmt!=null? this.state.bidderList[i].taxAmt.replace(/,/g, ""):""; 
       columns.push(<>
         <th></th>
+        
         {/* <th>{Number(this.state.bidderList[i].grossAmt)-Number(this.state.bidderList[i].taxAmt)}</th></>); */}
         {/* <th>{(Number(this.state.bidderList[i].grossAmt)-Number(this.state.bidderList[i].taxAmt)).toFixed(2)}</th></>); */}
         {/* <th>{(Math.round((Number(this.state.bidderList[i].grossAmt)-Number(this.state.bidderList[i].taxAmt))*100)/100).toLocaleString('en',{ minimumFractionDigits: 2 })}</th></>); */}

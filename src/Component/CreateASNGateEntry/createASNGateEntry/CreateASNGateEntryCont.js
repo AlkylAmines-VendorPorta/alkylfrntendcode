@@ -562,6 +562,39 @@ searchPOData(){
   }
  }
 
+
+// searchPOData(){
+
+//    if(document.getElementById('POSearch').value==""){
+//      return false;
+//    }else{
+//     let po="";
+//     let doctyp="";
+//     let poLineNo="";
+//      if(this.state.doctype=="PO"){
+//        this.props.changeLoaderState(true);    
+//       po=this.state.po.purchaseOrderNumber;
+//       doctyp=this.state.doctype
+//       poLineNo=0;
+      
+//    }
+//    else if(this.state.doctype=="POSSN"){
+//     this.props.changeLoaderState(true);    
+//     po=this.state.po.purchaseOrderNumber;
+//     doctyp=this.state.doctype
+//     poLineNo=document.getElementById('POLinenoSearch').value;
+//    }
+//    else{
+//       po=this.state.po.outboundDeliveryNo;
+//       doctyp=this.state.doctype
+//       poLineNo=0;
+     
+//    }
+//    commonSubmitWithParam(this.props,"getPurchaseOrderforgateentry",'/rest/getPOforUser',po,doctyp,poLineNo)
+ 
+//    }
+//   }
+
  savePOData(){
   this.props.changeLoaderState(true);
   // this.props.changeLoaderState(false);
@@ -583,6 +616,37 @@ searchPOData(){
       }  
     }
  }
+
+
+// savePOData(){
+//   this.props.changeLoaderState(true);
+//     if(document.getElementById('POSearch').value==""){
+//     return false;
+//   }else{
+
+//     let po="";
+//     let doctyp="";
+//     let poLineNo="";
+//     if(this.state.doctype=="PO"){
+//      po=this.state.po.purchaseOrderNumber;
+//      doctyp=this.state.doctype
+//      poLineNo=0;
+  
+//       }
+//       else if(this.state.doctype=="POSSN"){
+//         this.props.changeLoaderState(true);    
+//         po=this.state.po.purchaseOrderNumber;
+//         doctyp=this.state.doctype
+//         poLineNo=document.getElementById('POLinenoSearch').value;
+//        }
+//       else{
+//       po=this.state.po.outboundDeliveryNo;
+//       doctyp=this.state.doctype
+//       poLineNo=0;
+//       }
+//       commonSubmitWithParam(this.props,"getPurchaseOrderforgateentry",'/rest/getPOforGateEntry',po,doctyp,poLineNo)  
+//     }
+//  }
 
 
  gateEntryASNReminder(){
@@ -700,6 +764,7 @@ var frmhidden = {
                               <MenuItem value="PO">PO</MenuItem>
                               {/* <MenuItem value="STO">STO</MenuItem> */}
                               <MenuItem value="Other">Other</MenuItem>
+                              {/* <MenuItem value="POSSN">PO-SSN</MenuItem> */}
                               {/* {(this.state.asnStatusList).map(item=>
                                 <option value={item.value}>{item.display}</option>
                               )}  */}
@@ -725,6 +790,22 @@ var frmhidden = {
 
             </div>
             : 
+            //   this.state.doctype=="POSSN"
+            // ? <div className="row mt-2" style={{paddingLeft:"16px"}}>
+            //          <div className="col-sm-3">
+                        
+            //             <TextField label="Po No" size="small" fullWidth variant="outlined" type="text"  id="POSearch"  className="form-control"  value={filter.poNoFrom} onInput={ (e) => {commonHandleChange(e,this,"po.purchaseOrderNumber");}} onChange={this.handleFilterChange.bind(this,'poNoFrom') }/>
+            //           </div>
+
+            //           <div className="col-sm-1">
+                        
+            //             <TextField label="Line No" size="small" fullWidth variant="outlined" type="text"  id="POLinenoSearch"  className="form-control"  value={filter.poLineNo} onInput={ (e) => {commonHandleChange(e,this,"po.poLineNo");}} onChange={this.handleFilterChange.bind(this,'poLineNo') }/>
+            //           </div>
+            //           <div className="col-sm-3">
+            //               <Button type="button" variant="contained" color="primary" onClick={this.handleSavePO.bind(this)}> Search </Button>
+            //           </div>
+                   
+            // </div>:
             // this.state.doctype=="STO"
             // ? <div className="row mt-2">
             //           <label className="col-sm-2 mt-55">OutBound Delivery Number</label>
