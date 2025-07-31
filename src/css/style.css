@@ -67,7 +67,9 @@ body {
   line-height: 0.50rem;
   /* min-width: 60px !important; */
 }
-
+.rnc-canvas{
+	height: 50px !important;
+}
 .rdt_TableCol {
   background-color: #c9d9e9;
   font-weight: bold;
