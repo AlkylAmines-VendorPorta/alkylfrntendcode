@@ -396,6 +396,9 @@ onOpenModal=()=>{
  handleRowClick = (row) => {
       this.props.SapSalesOrderList(row);
     };
+     handleSearchChange = (event) => {
+            this.setState({ searchQuery: event.target.value });
+          };
 render() {
   const {filter} = this.props;
   var displayService="none"; 

@@ -114,30 +114,43 @@ class Login extends Component {
         }
     return (
       <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        style={{
-          minHeight: "100vh",
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <Grid item xs={11} sm={8} md={6} lg={4}>
-          <Paper elevation={6} style={{ padding: "2rem", borderRadius: "10px", backdropFilter: "blur(8px)", background: "rgba(255, 255, 255, 0.8)" }}>
-            
-            <Grid container justifyContent="center" spacing={2}>
-              <Grid item xs={6}>
-                <img src={AlkylLogo} alt="Alkyl" style={{ width: "100%" }} />
-              </Grid>
-              <Grid item xs={6} style={{ textAlign: "right" }}>
-                <img src={RcLogo} alt="RC" style={{ width: "80px" }} />
-              </Grid>
-            </Grid>
-            <div  style={ shown }>
-            <form onSubmit={this.handleSubmit} style={{ marginTop: "1rem" }}>
+  container
+  justifyContent="center"
+  alignItems="center"
+  style={{
+    minHeight: "100vh",
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    padding: "1rem",
+  }}
+>
+  <Grid item xs={12} sm={10} md={6} lg={4}>
+    <Paper
+      elevation={6}
+      style={{
+        padding: "2rem",
+        borderRadius: "10px",
+        backdropFilter: "blur(8px)",
+        background: "rgba(255, 255, 255, 0.85)",
+        width: "100%",
+      }}
+    >
+      <Grid container justifyContent="center" spacing={2} alignItems="center">
+        <Grid item xs={6}>
+          <img src={AlkylLogo} alt="Alkyl" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: "right" }}>
+          <img src={RcLogo} alt="RC" style={{ width: "80px", maxHeight: 80, objectFit: "contain" }} />
+        </Grid>
+      </Grid>
+
+      {/* Login Form */}
+      <div style={shown}>
+        <form onSubmit={this.handleSubmit} style={{ marginTop: "1rem" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="User ID"
@@ -145,8 +158,10 @@ class Login extends Component {
                 name="usernameOrEmail"
                 onChange={this.handleChange}
                 required
-                style={{ marginBottom: "1rem" }}
               />
+            </Grid>
+
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Password"
@@ -163,61 +178,87 @@ class Login extends Component {
                   ),
                 }}
               />
+            </Grid>
 
+            <Grid item xs={12}>
               <Captcha
                 onChange={(status) => this.setState({ captchaSuccess: status })}
                 refreshcap={() => this.setState({ refreshCaptcha: false })}
                 refreshCaptchaFlag={this.state.refreshCaptcha}
               />
+            </Grid>
 
+            <Grid item xs={12}>
               {loginErrorMsg && <Typography color="error">Invalid Username or Password</Typography>}
               {captchaErrorMsg && <Typography color="error">Invalid Captcha</Typography>}
               {serverErrorMsg && <Typography color="error">Server Not Reachable</Typography>}
+            </Grid>
 
+            <Grid item xs={12}>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
-                style={{ marginTop: "1rem", padding: "0.75rem", fontSize: "1rem" }}
+                style={{ padding: "0.75rem", fontSize: "1rem" }}
                 disabled={buttonLoader}
               >
                 {buttonLoader ? <CircularProgress size={24} color="inherit" /> : "Login"}
               </Button>
-            </form>
+            </Grid>
 
-            <Grid container justifyContent="space-between" style={{ marginTop: "1rem" }}>
-              <Link to="#" onClick={this.toggle} style={{ textDecoration: "none" }}>
+            <Grid item xs={12} style={{ textAlign: "right" }}>
+              <Link to="#" onClick={this.toggle} style={{ textDecoration: "none", fontSize: "0.9rem" }}>
                 Forgot Password?
               </Link>
             </Grid>
-            </div>
-            <div  style={ hidden }>
-  {/* <form onSubmit={this.handleForget}> */}
-  <FormWithConstraints className={this.state.readOnly===true?"readonly":""} ref={formWithConstraints => this.form = formWithConstraints}
-                           onSubmit={this.handleForget} noValidate>
-  <div className="form-group">
-    <label htmlFor="exampleInputEmail1"  className="text-uppercase text-left width100">Email/User Id</label>
-    <input type="text" name="userName" className="form-control" placeholder="Enter Email Address/User Id"
-    value={this.state.email} required  onChange={this.handleChange.bind(this, 'email')}/> 
-     <FieldFeedbacks for="email">
-          <FieldFeedback when={value => value.length === 0}>Please fill out this field.</FieldFeedback>
-          {/* <FieldFeedback when={value => !/\S+@\S+/.test(value)}>Invalid email address.</FieldFeedback> */}
-        </FieldFeedbacks>  
-  </div>
-  <div className="clearfix"></div>
-    <div className="form-group">
-        <button   className="btn btn-info w-100 noBorderRadius blueButton"> Send Confirmation</button>
-    </div>    
-    <div className="clearfix"></div>
-    <div className="form-group top10">  
-       <button type="button" onClick={() => this.cancelForgot()} className="btn btn-danger w-100 noBorderRadius"> Cancel</button>    
-    </div>
-  </FormWithConstraints>
-  </div>
-          </Paper>
-        </Grid>
-      </Grid>
+          </Grid>
+        </form>
+      </div>
+
+      {/* Forgot Password Form */}
+      <div style={hidden}>
+        <FormWithConstraints
+          className={this.state.readOnly === true ? "readonly" : ""}
+          ref={(formWithConstraints) => (this.form = formWithConstraints)}
+          onSubmit={this.handleForget}
+          noValidate
+        >
+          <div className="form-group">
+            <label htmlFor="exampleInputEmail1" className="text-uppercase text-left width100">Email/User Id</label>
+            <input
+              type="text"
+              name="userName"
+              className="form-control"
+              placeholder="Enter Email Address/User Id"
+              value={this.state.email}
+              required
+              onChange={this.handleChange.bind(this, "email")}
+            />
+            <FieldFeedbacks for="email">
+              <FieldFeedback when={(value) => value.length === 0}>Please fill out this field.</FieldFeedback>
+            </FieldFeedbacks>
+          </div>
+
+          <div className="form-group">
+            <button className="btn btn-info w-100 noBorderRadius blueButton">Send Confirmation</button>
+          </div>
+
+          <div className="form-group top10">
+            <button
+              type="button"
+              onClick={() => this.cancelForgot()}
+              className="btn btn-danger w-100 noBorderRadius"
+            >
+              Cancel
+            </button>
+          </div>
+        </FormWithConstraints>
+      </div>
+    </Paper>
+  </Grid>
+</Grid>
+
     );
   }
 }

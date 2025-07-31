@@ -233,16 +233,20 @@ exportReportToExcel() {
     });
   }
   
-  getinoutTimeDifference(startDate,endDate){
-   
-    let timespan="";
-    var now  = startDate;
-    var then = endDate;
-    var diff = moment.duration(moment(then).diff(moment(now)));
-    timespan = diff.get("days").toString().padStart(2, '0')+" Days "+": "+diff.get("hours").toString().padStart(2, '0')+" Hours " +": "+ diff.get("minutes").toString().padStart(2, '0')+" Minutes";
-     
-    return timespan;
-          }
+  getinoutTimeDifference(startDate, endDate) {
+  if (!startDate || !endDate || !moment(startDate).isValid() || !moment(endDate).isValid()) {
+    return "Invalid date(s)";
+  }
+
+  const diff = moment.duration(moment(endDate).diff(moment(startDate)));
+
+  const days = Math.floor(diff.asDays());
+  const hours = diff.hours();
+  const minutes = diff.minutes();
+
+  return `${days.toString().padStart(2, '0')} Days : ${hours.toString().padStart(2, '0')} Hours : ${minutes.toString().padStart(2, '0')} Minutes`;
+}
+
 
   
           handleSearchChange = (event) => {
