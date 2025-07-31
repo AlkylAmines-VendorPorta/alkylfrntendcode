@@ -2800,8 +2800,7 @@ async componentDidMount() {
                                   {/*-------input type-------*/}
                                   <td className="col-1">
                                      <input type="number"
-                                        //step=".01"
-                                        // onKeyDown={textRestrict}
+                                        step=".01" onKeyDown={textRestrict}
                                       // maxLength={5}
                                        placeholder="0.000"
                                         className={"form-control " + ((['DR', 'SSRJ'].includes(this.state.asnDetails.status) || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
@@ -2809,7 +2808,7 @@ async componentDidMount() {
                                         defaultValue={this.state.serviceLineArray[index].deliveryQuantity}
                                         
                                         // onChange = {(e)=>{commonHandleChange(e,this,"serviceLineArray."+index+".deliveryQuantity")}} 
-                                        onChange={(e) => {textRestrict(e); this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
+                                        onChange={(e) => {this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
                                      />
                                     </td>
                                     {/*-------input type-------*/}
