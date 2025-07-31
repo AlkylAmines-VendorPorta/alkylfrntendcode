@@ -59,6 +59,8 @@ class NRGPReport extends Component {
       gateEntryListDto: {
         reqNoFrom: "",
         reqNoTo: "",
+        reqDateFrom:"",
+        reqDateTo:"",
         docType: "",
         plant: "",
         status: ""
@@ -151,6 +153,8 @@ class NRGPReport extends Component {
         gateEntryListDto: {
             reqNoFrom: "",
             reqNoTo: "",
+            reqDateFrom:"",
+            reqDateTo:"",
             docType: "",
             plant: "",
             status: ""
@@ -192,6 +196,8 @@ class NRGPReport extends Component {
       gateEntryListDto: {
       reqNoFrom: "",
       reqNoTo: "",
+      reqDateFrom:"",
+      reqDateTo:"",
       docType: "",
       plant: "",
       status: ""
@@ -389,6 +395,41 @@ class NRGPReport extends Component {
                        inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
                     />
                   </Grid>
+
+                  {/* REQ Date From */}
+                  <Grid item xs={12} sm={6} md={6}>
+                          <TextField
+                            fullWidth
+                            label="REQ Date From"
+                            variant="outlined" size="small"
+                            type="date"
+                            name="reqDateFrom"
+                            value={gateEntryListDto.reqDateFrom}
+                            onChange={(event) => {
+                              commonHandleChange(event, this, "gateEntryListDto.reqDateFrom", "printreports");
+                            }}
+                            InputLabelProps={{ shrink: true }}  
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                          />
+                        </Grid>
+  
+                        {/* REQ Date To */}
+                        <Grid item xs={12} sm={6} md={6}>
+                          <TextField
+                            fullWidth
+                            variant="outlined" 
+                            size="small"
+                            label="REQ Date To"
+                            type="date"
+                            name="reqDateTo"
+                            value={gateEntryListDto.reqDateTo}
+                            onChange={(event) => {
+                              commonHandleChange(event, this, "gateEntryListDto.reqDateTo", "printreports");
+                            }}
+                            InputLabelProps={{ shrink: true }}
+                            inputProps={{ style: { fontSize: 12, height: "15px",  } }} 
+                          />
+                        </Grid>
 
                   {/* Plant Dropdown */}
                   <Grid item xs={12} sm={6} md={6}>

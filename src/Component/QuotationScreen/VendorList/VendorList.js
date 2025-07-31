@@ -34,6 +34,7 @@ import {
 import { API_BASE_URL } from "../../../Constants";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import DeleteIcon from '@material-ui/icons/Delete';
 class VendorList extends Component {
   constructor(props) {
     super(props);
@@ -154,6 +155,24 @@ class VendorList extends Component {
       this.setState({ loading: false, error: error.message }); // Handle any errors
     }
   };
+
+  deleteEnquiry = async (id) => {
+    if (!id) {
+      console.error("Invalid ID");
+      return;
+    }
+  
+    this.setState({ loading: true, error: null });
+  
+    try {
+      const response = commonSubmitWithParam(this.props, "deleteEnquiryforBidder", "/rest/deleteEnquiryforBidder", id)
+      this.setState({ data: response.data, loading: false });
+    } catch (error) {
+      this.setState({ loading: false, error: error.message });
+    }
+  };
+
+
   handleRowClick = (row) => {
   
   this.props.loadVendorQuotationByBidder(row, row.bidderId);
@@ -227,6 +246,40 @@ class VendorList extends Component {
     button: true,
     minWidth:"180px"
       },
+{
+  name: 'Delete Enq',
+  selector: row => row.bidderId,
+  cell: (row) => (
+    <IconButton
+      size="small"
+      //color="secondary"
+      onClick={() => this.deleteEnquiry(row.bidderId)}
+      disabled={!!row.saprfqno} // disables if rfqno is not null
+    >
+      <DeleteIcon fontSize="small" />
+    </IconButton>
+  ),
+  ignoreRowClick: true,
+  button: true,
+  minWidth: "80px"
+},
+
+    //   {
+    //     name: 'Delete',
+    //     selector: row => row.bidderId,
+    //    cell: (row) => ( <Button size="small" variant="contained" 
+    //                      color="primary" 
+    //                      style={{fontSize:"8px", margin:"2px 0px"}}
+    //                      onClick={()=>this.deleteEnquiry(row.bidderId)}
+    //                      disabled={row.saprfqno !== null}
+    //                      >Delete Enq</Button>
+    //  )
+    
+    // ,
+    // ignoreRowClick: true,
+    // button: true,
+    // minWidth:"120px"
+    //   },
       {
         name: 'Bidder Code & Name',
         selector: row => row.bidderId + " & " + row.name,

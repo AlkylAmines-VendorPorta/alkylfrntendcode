@@ -1,7 +1,7 @@
 //Alkyl local
 //export const API_BASE_URL = 'http://localhost:8085/eat';
 //export const API_BASE_URL = 'http://172.16.1.169:8443/eat';
-//export const API_BASE_URL = 'http://localhost:8443/eat';
+export const API_BASE_URL = 'http://localhost:8443/eat';
 
 //alkyl NOVEL
 //export const API_BASE_URL = 'http://103.224.245.87:80/eat';
@@ -18,8 +18,9 @@
 //export const API_BASE_URL = 'https://localhost/eat'
 
 //Developement Link
-export const API_BASE_URL = 'http://172.16.1.8:8443/eat'
+//export const API_BASE_URL = 'http://172.16.1.8:8443/eat'
 
+//Production Link
 //export const API_BASE_URL = 'https://portal.alkylamines.com/eat';
 
 

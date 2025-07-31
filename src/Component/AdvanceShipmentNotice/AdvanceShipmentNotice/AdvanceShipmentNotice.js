@@ -2908,7 +2908,7 @@ getPurchaseOrderFromObj(po){
                                                    <td>{this.props.po.isServicePO ? asn.serviceSheetNo : asn.asnNumber}</td>
                                                    <td>{asn.po.purchaseOrderNumber}</td>
                                                  {/*  <td>{formatDateWithoutTimeNewDate2(asn.invoiceApplicable ? asn.invoiceDate : asn.deliveryNoteDate)}</td>*/}
-                                                   <td>{formatDate(asn.created)}</td>
+                                                   <td>{(asn.created)}</td>
                                                    <td>{asn.po.vendorName}</td>
                                                    <td>{asn.invoiceNo != null ? asn.invoiceNo : asn.deliveryNoteNo}</td>
                                                    <td style={{ display: this.state.displayDivForAsnHistoryTable }}>{asn.po.documentType}</td>

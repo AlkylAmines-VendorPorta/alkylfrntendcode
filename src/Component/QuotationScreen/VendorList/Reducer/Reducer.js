@@ -1,5 +1,6 @@
 let defaultState = {
-    vendorDropDownList: []
+    vendorDropDownList: [],
+    bidEnqDeleteButton:""
 }
 
 const vendorListForQuotationReducer = (state = defaultState, action) => {
@@ -9,7 +10,13 @@ const vendorListForQuotationReducer = (state = defaultState, action) => {
             ...state,
             vendorDropDownList: action.payload
         };
-    } else {
+    } else if(action.type==="DELETE_BIDDER_ENQ"){
+        return {
+            ...state,
+            bidEnqDeleteButton: action.payload.message,
+        
+          }
+    }else {
         return {
             ...state
         };

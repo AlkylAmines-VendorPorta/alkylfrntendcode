@@ -1008,7 +1008,7 @@ class PRBody extends Component {
                                         }}
                                         value={prLine.buyer?prLine.buyer.userId:null}
                                         //disabled={this.state.prLineReadOnly}
-                                        // disabled={true}
+                                         disabled={true}
                                       >
                                         <option value="">Select Buyer</option>
                                         {this.props.buyerList.map(records =>{

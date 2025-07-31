@@ -206,7 +206,7 @@ onFilterChange = (key,value) => {
 onFilter = () => {
   const {filter} = this.state;
   let params = {}
-  let arr = ['poDateFrom','poDateTo','poNoFrom','poNoTo','empCode','vendorCode','outboundDeliveryNo'];
+  let arr = ['poDateFrom','poDateTo','poNoFrom','poNoTo','empCode','vendorCode','outboundDeliveryNo','poLineNo'];
   !isEmpty(arr) && arr.map((item) => {
     if(!isEmpty(filter[item])) params = {...params,[item]: filter[item]}
     return item;
