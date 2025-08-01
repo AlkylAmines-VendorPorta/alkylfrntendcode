@@ -333,7 +333,7 @@ exportReportToExcel() {
       const inDate = row.advanceshipmentnotice.gateInDate;
       const outDate = row.advanceshipmentnotice.gateOutDate;
       return (inDate && outDate)
-        ? this.getinoutTimeDifference(formatDate(inDate), formatDate(outDate))
+        ? this.getinoutTimeDifference(inDate, outDate)
         : '';
     },
     sortable: true
