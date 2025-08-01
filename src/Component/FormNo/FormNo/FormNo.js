@@ -67,6 +67,10 @@ class FormNo extends Component {
     this.state = {
       costCenterList:[],
       isLoading: false,
+      
+         asnNo:"",
+         asnId:""
+      ,
       STOASNFetchDetails:{
          asnNumber:"",
          invoiceNo:"",
@@ -1690,11 +1694,49 @@ async componentDidMount() {
       //commonSubmitWithParam(this.props,"securityASNSubmit","/rest/printSecurityGateInForm",this.state.securityPOHeaderDto.asnHeaderId)
                                  
      }
-     onSubmit = async(e) => {
+
+
+   //   handleReportSubmit = async (e) => {
+   //    e.preventDefault();
+  
+   //    const response = commonSubmitForm(e,this, "securityASNSubmit","/rest/saveCommercialHeaderDetailsinASN") 
+  
+   //    const data = await response.json();
+  
+   //    // Java backend should return ASN Number and ASN ID
+   //    if (data.asnNo && data.asnId) {
+   //       this.setState({
+   //          asnNo: data.advanceShipmentNoticeNo, asnId: data.advanceShipmentNoticeId
+   //       })
+   //    //  setAsnData({ asnNo: data.asnNo, asnId: data.asnId });
+   //    }
+   //  };
+
+   //  handleGateIn = async () => {
+   //    try {
+   //      const response = commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",this.state.asnId)
+  
+   //      const result = await response.json();
+  
+   //      if (result.success) {
+   //        alert('✅ Gate In entry successful!');
+         
+   //      } else {
+   //        alert('❌ Gate In failed.');
+   //      }
+   //    } catch (err) {
+   //      console.error(err);
+   //      alert('❌ Server error during Gate In.');
+   //    }
+   //  };
+
+
+   onSubmit = async(e) => {
     this.setState({ loadASNDetails: true, loadASNLineList: true });
-    commonSubmitForm(e,this, "securityASNSubmit","/rest/saveCommercialHeaderDetailsinASN")                          
- //  commonSubmitForm(e, this, "securityASNSubmit", "/rest/saveSecurityHeaderDetails"); 
-                          } 
+   // this.handleReportSubmit(e);
+    commonSubmitForm(e,this, "securityASNSubmit","/rest/saveCommercialHeaderDetailsinASN") } 
+
+
      SwitchButtons(buttonId) {
       var hideBtn, showBtn, showBtn1 ;
       if (buttonId == 'report') {
@@ -2373,7 +2415,8 @@ async componentDidMount() {
                           (index === this.props.asnList.length-1?
                               <button type="button" className="btn btn-success mr-1 " id="gateIn" 
                               
-                              onClick={ (e)=> {commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",asn.advanceShipmentNoticeId); document.getElementById("gateIn").style.display = 'none';this.showDiv()}}
+                               onClick={ (e)=> {commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",asn.advanceShipmentNoticeId); document.getElementById("gateIn").style.display = 'none';this.showDiv()}}
+                             // onClick={(e)=>{this.handleGateIn(e)}}
                               >Gate IN</button>
                               
                               :"")
@@ -2747,7 +2790,7 @@ async componentDidMount() {
                               <th className="col-2">Service Description</th>
                               <th className="col-2 text-right"> PO Qty </th>
                               <th className="col-1"> UOM </th>
-                              <th className="col-1"> Qty </th>
+                              <th className="col-1"> Qty1 </th>
                               <th className="col-1"> Bal Qty </th>
                               <th className="col-2 text-right"> Rate </th>
                               <th className="col-1 text-right"> Cost center </th>
