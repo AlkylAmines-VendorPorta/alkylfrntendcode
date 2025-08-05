@@ -278,11 +278,25 @@ handleFilterClick = () => {
 }
 
 
+// toggleChecked = (e) => {
+//   let {checked} = e.target;
+//   const groupByList = this.state.prList.map(item => ({...item,isChecked:checked}));
+//   this.setState({checked,prList:groupByList})
+// }
 toggleChecked = (e) => {
-  let {checked} = e.target;
-  const groupByList = this.state.prList.map(item => ({...item,isChecked:checked}));
-  this.setState({checked,prList:groupByList})
-}
+  const { checked } = e.target;
+  const { prStatusList } = this.props;
+
+  const groupByList = this.state.prList.map(item => {
+    if (prStatusList?.[item.status] === "Purchase Head") {
+      return { ...item, isChecked: checked };
+    }
+    return item; // leave other items untouched
+  });
+
+  this.setState({ checked, prList: groupByList });
+};
+
 validateSelectVendor =()=>{
   let validate = false;
   for (let index = 0; index < this.state.prList.length; index++) {
@@ -309,6 +323,15 @@ onOpenModal=()=>{
     openModal:true
   })
 }
+isRowDisabled = (row) => {
+  const { prStatusList } = this.props;
+  return prStatusList?.[row.status] !== "Purchase Head";
+};
+isHeaderCheckboxDisabled = () => {
+  const { data = [] } = this.props;
+  return !data.some((row) => !this.isRowDisabled(row));
+};
+
   render() {
     const {selectedItemsPr, selectedItemsPL}=this.state
     const groupByList = this.state.prList.map((item, index) => ({
@@ -323,17 +346,10 @@ onOpenModal=()=>{
     const selectedItemsDisplay = filterPurhaseGroupList && filterPurhaseGroupList.filter(item => selectedItemsPr.includes(item.value));
     const selectedItemsDisplayPlant = filterPlantList && filterPlantList.filter(item => selectedItemsPL.includes(item.value));
 const columns = [
-  {
+ {
   name: (
     <input
       type="checkbox"
-      disabled={
-        !this.props.data || !this.props.prStatusList
-          ? true
-          : this.props.data.some(
-              (row) => this.props.prStatusList[row.status] !== "Purchase Head"
-            )
-      }
       checked={this.state.checked}
       onChange={this.toggleChecked}
     />
@@ -341,7 +357,7 @@ const columns = [
   cell: (row) => (
     <input
       type="checkbox"
-      disabled={this.props.prStatusList?.[row.status] !== "Purchase Head"}
+      disabled={this.isRowDisabled(row)}
       checked={row.isChecked}
       onChange={(e) =>
         commonHandleChangeCheckBox(e, this, `prList.${row._rowIndex}.isChecked`)
