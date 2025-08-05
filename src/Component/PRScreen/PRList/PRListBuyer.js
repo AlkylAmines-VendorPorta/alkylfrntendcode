@@ -324,29 +324,36 @@ onOpenModal=()=>{
     const selectedItemsDisplayPlant = filterPlantList && filterPlantList.filter(item => selectedItemsPL.includes(item.value));
 const columns = [
   {
-    name: (
-      <input
-        type="checkbox"
-        checked={this.state.checked}
-        onChange={this.toggleChecked}
-      />
-    ),
-    cell: (row) => (
-      <input
-        type="checkbox"
-        disabled={this.props.prStatusList[row.status] !== "Purchase Head"}
-        checked={row.isChecked}
-        onChange={(e) => {
-          commonHandleChangeCheckBox(e, this, `prList.${row._rowIndex}.isChecked`);
-        }}
-        className="display_block"
-      />
-    ),
-    width: "60px",
-    ignoreRowClick: true,
-    allowOverflow: true,
-    button: true,
-  },
+  name: (
+    <input
+      type="checkbox"
+      disabled={
+        !this.props.data || !this.props.prStatusList
+          ? true
+          : this.props.data.some(
+              (row) => this.props.prStatusList[row.status] !== "Purchase Head"
+            )
+      }
+      checked={this.state.checked}
+      onChange={this.toggleChecked}
+    />
+  ),
+  cell: (row) => (
+    <input
+      type="checkbox"
+      disabled={this.props.prStatusList?.[row.status] !== "Purchase Head"}
+      checked={row.isChecked}
+      onChange={(e) =>
+        commonHandleChangeCheckBox(e, this, `prList.${row._rowIndex}.isChecked`)
+      }
+      className="display_block"
+    />
+  ),
+  width: "60px",
+  ignoreRowClick: true,
+  allowOverflow: true,
+  button: true,
+},
   {
     name: "PR No",
     selector: row => row.prNumber,
