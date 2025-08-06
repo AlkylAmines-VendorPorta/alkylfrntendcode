@@ -132,26 +132,32 @@ class PRListBuyer extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-  console.log("next", nextProps);
-
-  if (!isEmpty(nextProps.prList)) {
-    this.setState({
-      prList: nextProps.prList,
-      isLoading: false, // ✅ Set loading false here
-    });
+ componentWillReceiveProps(nextProps) {
+   if (!isEmpty(nextProps.prList)) {
+          this.setState({
+            prList: nextProps.prList,
+          });
+        }
+  // When documents are fetched
+  if (this.state.loadGetDocuments && !isEmpty(nextProps.documents)) {
+    this.props.changeLoaderState(false); // Stop global loader
+    this.setGetDocuments(nextProps);     // Custom function call
   }
 
-  if (this.state.loadGetDocuments && !isEmpty(nextProps.documents)) {
-    this.props.changeLoaderState(false);
-    this.setGetDocuments(nextProps); 
-  } else if (!isEmpty(nextProps.prLineList)) {
+  // When prLineList is updated
+  if (!isEmpty(nextProps.prLineList)) {
     this.setState({ viewInquirymy: nextProps.prLineList });
-  } else {
+  }
+
+  // If no documents and no prLineList (fallback)
+  if (
+    this.state.loadGetDocuments &&
+    isEmpty(nextProps.documents) &&
+    isEmpty(nextProps.prLineList)
+  ) {
     this.props.changeLoaderState(false);
   }
 }
-
 
   closeModal = () => {
     this.props.disabledLoading();
@@ -556,7 +562,7 @@ const columns = [
 
     return (
       <> 
-      <LoaderWithProps isLoading={this.state.isLoading} />
+      {/* <LoaderWithProps isLoading={this.state.isLoading} /> */}
 <div className="modal" id="viewPrDetail" style={{marginTop:50}}>
 
 

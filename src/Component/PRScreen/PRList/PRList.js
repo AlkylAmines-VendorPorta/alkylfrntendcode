@@ -233,7 +233,6 @@ onSubmit = (e) => {
       if (!isEmpty(nextProps.prList)) {
         this.setState({
           prList: nextProps.prList,
-          isLoading: false, // ✅ Set loading false here
         });
       }
     if(!isEmpty(nextProps.prList)){
@@ -247,7 +246,6 @@ onSubmit = (e) => {
     }
 
   }
-
   // commonHandleChange(event,keyName,key,index){
 
   //   let {prList} = this.state;
@@ -717,7 +715,7 @@ console.log(filteredData,"filteredData2")
 
     return (
       <>
-<LoaderWithProps isLoading={this.state.isLoading} />
+{/* <LoaderWithProps isLoading={this.state.isLoading} /> */}
 <div className="modal" id="viewPrDetail" >
 
 
