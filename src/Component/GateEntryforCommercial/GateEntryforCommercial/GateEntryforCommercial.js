@@ -20,7 +20,7 @@ import { useState } from "react"
 import axios from 'axios';
 import formatDate, { formatTime } from "../../../Util/DateUtil";
 import { searchTableDataThree, searchTableDataFour } from "../../../Util/DataTable";
-import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate } from "../../../Util/DateUtil";
+import { formatDateWithoutTime, formatDateWithoutTimeWithMonthName,formatDateWithoutTimeNewDate,formatDateWithoutTimeNewDate2 } from "../../../Util/DateUtil";
 import { is } from "@babel/types";
 import { getCommaSeperatedValue, getDecimalUpto, removeLeedingZeros,addZeroes,textRestrict } from "../../../Util/CommonUtil";
 import { isServicePO } from "../../../Util/AlkylUtil";
@@ -337,8 +337,7 @@ class GateEntryForCommerical extends Component {
 )
 }
   handleGateINClick = (e)=> {
- 
-   commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",this.state.asnDetails.asnId); document.getElementById("gateIn").style.display = 'none';this.showDiv()
+    commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",this.state.asnDetails.asnId); document.getElementById("gateIn").style.display = 'none';this.showDiv()
      }
 
    handleClick = (e) => {
@@ -592,13 +591,13 @@ getPurchaseOrderFromObj(po){
          serviceSheetNo: asnObj.serviceSheetNo,
          po: this.getPurchaseOrderFromObj(asnObj.po),
          invoiceNo: asnObj.invoiceNo,
-         invoiceDate: formatDateWithoutTimeWithMonthName(asnObj.invoiceDate),
+         invoiceDate: asnObj.invoiceDate===null?"":formatDateWithoutTimeNewDate(asnObj.invoiceDate),
          created:formatDateWithoutTimeWithMonthName(asnObj.created),
          invoiceAmount: asnObj.invoiceAmount,
          mismatchAmount: asnObj.mismatchAmount,
          deliveryNoteNo: asnObj.deliveryNoteNo,
          deliveryNoteDate: formatDateWithoutTimeWithMonthName(asnObj.deliveryNoteDate),
-         lrDate: formatDateWithoutTime(asnObj.lrDate),
+         lrDate: asnObj.lrDate===null?"":formatDateWithoutTimeNewDate(asnObj.lrDate),
          lrNumber: asnObj.lrNumber,
          transporterNo: asnObj.transporterNo,
          vehicalNo: asnObj.vehicalNo,
@@ -1946,7 +1945,8 @@ async componentDidMount() {
                                     <label className="col-sm-2">Invoice Date</label>
                                     <div className="col-sm-2 ">
                                     <input type="date" className="form-control" name="invoiceDate" 
-                                       value={formatDateWithoutTimeNewDate(this.state.asnDetails.invoiceDate)}
+                                        value={this.state.asnDetails.invoiceDate}
+                                      // value={this.state.asnDetails.invoiceDate}
                                        onChange={(e) => { commonHandleChange(e, this, "asnDetails.invoiceDate");  }}
                                       /> 
                                        </div>
@@ -1970,7 +1970,8 @@ async componentDidMount() {
                                     <label className="col-sm-2">LR Date</label>
                                     <div className="col-sm-2 ">
                                        <input type="date" className="form-control"
-                                          value={formatDateWithoutTimeNewDate(this.state.asnDetails.lrDate)}
+                                          // value={formatDateWithoutTimeNewDate(this.state.asnDetails.lrDate)}
+                                          value={this.state.asnDetails.lrDate}
                                           name="lrDate" onChange={(e) => { commonHandleChange(e, this, "asnDetails.lrDate") }} />
                                     </div>
                                  </div>

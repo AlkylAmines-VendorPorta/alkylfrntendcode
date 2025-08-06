@@ -16,7 +16,7 @@ export function gateEntryResponse(response,c,e) {
   export function securityASNSubmit(response) {
     debugger
     if(!isEmpty(response) && !isEmpty(response.success)){
-    // showAlertAndReload(!response.success, response.message,"GateEntryforCommercial");
+     showAlertAndReload(!response.success, response.message);
         if(response.success){
         
             return{
@@ -24,7 +24,7 @@ export function gateEntryResponse(response,c,e) {
                 payload:response
             }
         }else{
-         //showAlert(!response.success, response.message);
+         showAlert(!response.success, response.message);
             return {
                 type : "SECURITY_ASN_SUBMIT_FAILED",
                 payload: response

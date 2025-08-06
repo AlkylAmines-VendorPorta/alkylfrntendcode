@@ -35,6 +35,7 @@ class AdvancePayApproval extends Component {
             getVendorPayListforApproval:[],
             acceptedCheckedItems:[],
             rejectedCheckedItems:[],
+            expandedRows: {}, // keeps track of expanded parent rows
         }}
 
 
@@ -502,6 +503,14 @@ onApprovalStateChange=(e,payment,key,index)=> {
   updateState(this,{getVendorPayListforApproval});
  // this.setState({getVendorPayListforApproval})
             }
+toggleRow = (key) => {
+              this.setState((prevState) => ({
+                expandedRows: {
+                  ...prevState.expandedRows,
+                  [key]: !prevState.expandedRows[key],
+                },
+              }));
+            };
 
             render() {
                
@@ -565,131 +574,71 @@ onApprovalStateChange=(e,payment,key,index)=> {
                        <tbody id="DataTableBodyTwo">
 
                        {Object.keys(this.state.getVendorPayListforApproval).map((key, i) => {
-                          // console.log('groupByList',groupByList)
-                          let itemData = this.state.getVendorPayListforApproval[key];
-                          let childs = !isEmptyDeep(itemData) ? itemData:[];
-                           return (
-                            <>
-                            <tr  class="accordion-toggle">
-                            <td id={"accordion" + i} data-toggle="collapse" data-parent={"#accordion" + i} href={"#collapse" + i} >{key}<span class="expand-button collapsed"></span></td>
-                            
-                            {/* <td>{this.calculateGrossAmount(childs)}</td> */}
-                            <td></td><td></td><td></td>
-                            {/* <td>{this.calculateTotalInvoiceAmount(childs)}</td> */}
-                            <td>{this.calculateTotalInvoiceAmount(this.state.acceptedCheckedItems,key)}</td>
-                            <td></td><td></td><td></td><td></td><td></td>
-                            {/* <td>{this.calculateTotalInterestAmount(childs)}</td>
-                            <td>{this.calculateTotalCGSTAmount(childs)}</td>
-                            <td>{this.calculateTotalSGSTAmount(childs)}</td>
-                            <td>{this.calculateTotalIGSTAmount(childs)}</td>
-                            <td>{this.calculateGrossAmount(childs)}</td>
-                            <td>{this.calculateNetPayableAmount(childs)}</td>*/}
-                            <td>{this.calculateTotalInterestAmount(this.state.acceptedCheckedItems,key)}</td>
-                            
-                            <td>{this.calculateTotalCGSTAmount(this.state.acceptedCheckedItems,key)}</td>
-                            <td>{this.calculateTotalSGSTAmount(this.state.acceptedCheckedItems,key)}</td>
-                            <td>{this.calculateTotalIGSTAmount(this.state.acceptedCheckedItems,key)}</td>
-                            <td>{this.calculateGrossAmount(this.state.acceptedCheckedItems,key)}</td>
-                            <td>{this.calculateNetPayableAmount(this.state.acceptedCheckedItems,key)}</td>
-                            <td>
-                              </td><td></td>
-                              {/* <td></td><td></td><td></td>
-                              <td></td> */}
-                            {/* <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> */}
-                            {/* <td><button type="button" onClick={this.onApproval} className={"btn btn-primary"}  >Approve</button></td>
-                            <td><button type="button" onClick={this.onReject} className={"btn btn-primary"}  >Reject</button></td> */}
-                            </tr>
-                            {
-                            childs.map((payment,index) => {
-                              return(
-                                <tr class="hide-table-padding">
-                                <td colSpan="1"></td>
-                               {/* <td></td> */}
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.vendorName}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.documentNumber}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.reference}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{(payment.amountInLC).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.invoiceDate!=null?formatDate(payment.invoiceDate):""}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.actualPaymentDate!=null?formatDate(payment.actualPaymentDate):""}</td>
-                               {/* <td id={"collapse" + i} class="collapse in p-1">{payment.nextPaymentDate!=null?formatDate(payment.nextPaymentDate):""}</td> */}
-                               <td id={"collapse" + i} class="collapse in p-1"> <input
-                                                                                type="date" 
-                                                                                className={"col-12 form-control "}
-                                                                                defaultValue={formatDateWithoutTime(payment.nextPaymentDate)}
-                                                                                
-                                                                                onChange={(e) => {
-                                                                                  this.onApprovalStateChange(e,payment,key,index)
-                                                                                    // commonHandleChange(e, this, "quotations."+i+".deliveryDate","quotationForm");
-                                                                                }}
-                                                                                
-                                                                            /></td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.gapinDays}</td>
-                               <td id={"collapse" + i} class="collapse in p-1">{payment.interestRate}</td>
-                           
-                              <td id={"collapse" + i} class="collapse in p-1">{(payment.interestAmount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                                
-                              {/* <td id={"collapse" + i} class="collapse in p-1">{payment.cgst}</td>
-                              <td id={"collapse" + i} class="collapse in p-1">{payment.sgst}</td>
-                              <td id={"collapse" + i} class="collapse in p-1">{payment.igst}</td> */}
-                              <td id={"collapse" + i} class="collapse in p-1">{(payment.cgstAmount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                              <td id={"collapse" + i} class="collapse in p-1">{(payment.sgstAmount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                              <td id={"collapse" + i} class="collapse in p-1">{(payment.igstAmount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                              <td id={"collapse" + i} class="collapse in p-1">{(payment.grossAmount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                              <td id={"collapse" + i} class="collapse in p-1">{payment.netPayableAmount!=null? (payment.netPayableAmount).toLocaleString('en-IN', {minimumFractionDigits: 2}):""}</td>
-                             
-                               { payment.status==="APPROVED" || payment.status==="REJECTED"?
-                          <td id={"collapse" + i} class="collapse in p-1">{payment.status}</td> :
-                          <>
-                          <td id={"collapse" + i} class="collapse in p-1"> <input type="checkbox" onChange={e => this.onApprovedChecked(e,payment)}  /></td>
-                         {/* <td id={"collapse" + i} class="collapse in p-1"> <input type="checkbox" onChange={this.onApprovedChecked.bind(this,payment)} /></td> */}
-                         <td id={"collapse" + i} class="collapse in p-1"> <input type="checkbox" onChange={e=> this.onRejectedChecked(e,payment)} /></td>
-                          {/* <td id={"collapse" + i} class="collapse in p-1"><button onClick={() => { this.approvePayment(payment.advancePaymentId, payment.interestRate); } } type="button" class="btn btn-outline-primary">Accept</button></td>
-                          <td id={"collapse" + i} class="collapse in p-1"><button onClick={e => this.rejectpayment(payment.advancePaymentId)} type="button" class="btn btn-outline-primary">Reject</button></td> */}
-                          </> 
-                          }
-                          {/* </div>  */}
-                          
-                          
-                           </tr> 
-                                
-                            //       <tr>
-                            //       <td colSpan="1"></td>
-                            //       <td>{payment.vendorName}</td>
-                            //      <td>{payment.documentNumber}</td>
-                            //      <td>{payment.reference}</td>
-                            //      <td>{payment.amountInLC}</td>
-                            //      <td>{payment.invoiceDate!=null?formatDateWithoutTime(payment.invoiceDate):""}</td>
-                            //      <td>{payment.actualPaymentDate!=null?formatDateWithoutTime(payment.actualPaymentDate):""}</td>
-                            //      <td>{payment.nextPaymentDate!=null?formatDateWithoutTime(payment.nextPaymentDate):""}</td>
-                            //      <td>{payment.gapinDays}</td>
-                            //      <td>{payment.interestRate} 
-                                
-                            //     </td>
-                             
-                            //     <td>
-                            //     {payment.interestAmount}</td>
-                                  
-                            //     <td>{payment.cgst}</td>
-                            //     <td>{payment.sgst}</td>
-                            //     <td>{payment.igst}</td>
-                            //     <td>{payment.cgstAmount}</td>
-                            //     <td>{payment.sgstAmount}</td>
-                            //     <td>{payment.igstAmount}</td>
-                            //     <td>{payment.grossAmount}</td>
-                            //      { payment.status==="APPROVED" || payment.status==="REJECTED"?
-                            // <td>{payment.status}</td> :
-                            // <>
-                            // <td><button onClick={() => { this.approvePayment(payment.advancePaymentId, payment.interestRate); } } type="button" class="btn btn-outline-primary">Accept</button></td>
-                            // <td><button onClick={e => this.rejectpayment(payment.advancePaymentId)} type="button" class="btn btn-outline-primary">Reject</button></td></> }
-                            //       </tr> 
-                              )
-                            }
-                          )
-                            }
-                           </>
-                           )
-                          
-                          })}
+          let itemData = this.state.getVendorPayListforApproval[key];
+          let childs = !isEmptyDeep(itemData) ? itemData : [];
+
+          return (
+            <React.Fragment key={key}>
+              {/* Parent Row */}
+              <tr className="accordion-toggle">
+                <td onClick={() => this.toggleRow(key)} style={{ cursor: 'pointer' }}
+                >
+                  {key}{" "}
+                  <span className={`${this.state.expandedRows[key] ? 'expanded' : 'collapsed'}`}>{this.state.expandedRows[key] ? '▲' : '▼'}</span>
+                </td>
+                <td></td><td></td><td></td>
+                <td>{this.calculateTotalInvoiceAmount(this.state.acceptedCheckedItems, key)}</td>
+                <td></td><td></td><td></td><td></td><td></td>
+                <td>{this.calculateTotalInterestAmount(this.state.acceptedCheckedItems, key)}</td>
+                <td>{this.calculateTotalCGSTAmount(this.state.acceptedCheckedItems, key)}</td>
+                <td>{this.calculateTotalSGSTAmount(this.state.acceptedCheckedItems, key)}</td>
+                <td>{this.calculateTotalIGSTAmount(this.state.acceptedCheckedItems, key)}</td>
+                <td>{this.calculateGrossAmount(this.state.acceptedCheckedItems, key)}</td>
+                <td>{this.calculateNetPayableAmount(this.state.acceptedCheckedItems, key)}</td>
+                <td></td><td></td>
+              </tr>
+
+              {/* Child Rows */}
+              {this.state.expandedRows[key] && childs.map((payment, index) => (
+                <tr key={index} className="child-row">
+                  <td></td>
+                  <td>{payment.vendorName}</td>
+                  <td>{payment.documentNumber}</td>
+                  <td>{payment.reference}</td>
+                  <td>{(payment.amountInLC).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td>{payment.invoiceDate ? formatDate(payment.invoiceDate) : ""}</td>
+                  <td>{payment.actualPaymentDate ? formatDate(payment.actualPaymentDate) : ""}</td>
+                  <td>
+                    <input
+                      type="date"
+                      className="col-12 form-control"
+                      defaultValue={formatDateWithoutTime(payment.nextPaymentDate)}
+                      onChange={(e) => this.onApprovalStateChange(e, payment, key, index)}
+                    />
+                  </td>
+                  <td>{payment.gapinDays}</td>
+                  <td>{payment.interestRate}</td>
+                  <td>{(payment.interestAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td>{(payment.cgstAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td>{(payment.sgstAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td>{(payment.igstAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td>{(payment.grossAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td>{payment.netPayableAmount ? (payment.netPayableAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : ""}</td>
+
+                  {payment.status === "APPROVED" || payment.status === "REJECTED" ? (
+                    <td>{payment.status}</td>
+                  ) : (
+                    <>
+                      <td><input type="checkbox" onChange={e => this.onApprovedChecked(e, payment)} /></td>
+                      <td><input type="checkbox" onChange={e => this.onRejectedChecked(e, payment)} /></td>
+                    </>
+                  )}
+                </tr>
+              ))}
+
+                    </React.Fragment>
+                     );
+                    })}
 
                             {/* {
                               this.state.getVendorPayListforApproval.map((payment,i)=>

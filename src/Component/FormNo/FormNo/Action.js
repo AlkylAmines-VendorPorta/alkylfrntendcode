@@ -17,11 +17,16 @@ export function gateEntryResponse(response,c,e) {
     debugger
     if(!isEmpty(response) && !isEmpty(response.success)){
         if(response.success){
-          showAlert(!response.success, response.message);
+           showAlert(!response.success, response.message);
+          //showAlertAndReload(!response.success, response.message);
+            // return{
+            //     type:"SECURITY_ASN_SUBMIT_RES",
+            //     payload:response
+            // }
             return{
-                type:"SECURITY_ASN_SUBMIT_RES",
-                payload:response
-            }
+              type:"UPDATE_ASN_STATUS",
+              payload:response
+          }
         }else{
             showAlert(!response.success, response.message);
             return {
@@ -469,4 +474,16 @@ export function getSTOASNDetails(response){
     type: "STO_ASN_DETAILS",
     payload: response
   };
+}
+
+
+export function handleASNResponse (response)  {
+  if(!isEmpty(response) && !isEmpty(response.success)){
+    if(response.success){
+  showAlert(!response.success, response.message);
+  return {
+    type: "ASN_SUBMIT_DETAILS",
+    payload: response
+  };
+}}
 }

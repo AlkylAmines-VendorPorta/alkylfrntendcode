@@ -22,7 +22,9 @@ let defaultState = {
 
   stoASNList:[],
   asnListDetails:[],
-  status:""
+  status:"",
+  asnNo:"",
+  asnId:""
 }
 
 const ASNWithoutPO = (state = defaultState, action) => {
@@ -173,7 +175,13 @@ else if (action.type === "SECURITY_ASN_SUBMIT_RES") {
     ...state,
     asnListDetails : action.payload.objectMap.asnListDetails,
     status:action.payload.objectMap.status
-  };}
+  };}else if(action.type==="ASN_SUBMIT_DETAILS"){
+    return {
+      ...state,
+      asnId: action.payload.objectMap.asnId,
+      asnNo:action.payload.objectMap.asnNo
+    };
+  }
 else {
     return {
       ...state

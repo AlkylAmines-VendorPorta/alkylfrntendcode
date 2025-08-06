@@ -213,7 +213,7 @@ class PRContainer extends Component {
       buyer: prLineObj.buyer ? prLineObj.buyer:{},
       desiredVendor: prLineObj.desiredVendor ? prLineObj.desiredVendor:{},
       prLineNumber: prLineObj.prLineNumber,
-      prNumber: prLineObj.pr.prNumber,
+      prNumber: prLineObj.pr.prNumber?prLineObj.pr.prNumber:"",
       status: prLineObj.pr.status,
       pr:prLineObj.pr,
       prId:prLineObj.pr.prId,

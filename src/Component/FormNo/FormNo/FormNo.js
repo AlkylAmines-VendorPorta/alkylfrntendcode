@@ -69,8 +69,9 @@ class FormNo extends Component {
       isLoading: false,
       
          asnNo:"",
-         asnId:""
-      ,
+         asnId:"",
+         reportingDone: false,
+      
       STOASNFetchDetails:{
          asnNumber:"",
          invoiceNo:"",
@@ -852,6 +853,12 @@ async componentWillReceiveProps(props) {
       this.setState({ grn: props.grn });
    }
 
+   if (!isEmpty(props.asnId) && !isEmpty(props.asnNo)) {
+      this.setState({ asnId: props.asnId,asnNo:props.asnNo,reportingDone:true 
+      
+      });
+   }
+
    // if (!isEmpty(props.qc)) {
    //    this.setState({ qc: props.qc || this.state.role === "QCADM" });
    // }
@@ -1057,11 +1064,21 @@ async componentWillReceiveProps(props) {
       });
    }
 
+   // if (!isEmpty(props.asnStatus)) {
+   //    this.setState({
+   //       asnStatus: props.asnStatus
+   //           });
+   //    this.props.changeLoaderState(false);
+   // } else {
+   //    this.props.changeLoaderState(false);
+   // }
+
    if (!isEmpty(props.asnStatus)) {
-      this.props.changeLoaderState(false);
-   } else {
-      this.props.changeLoaderState(false);
-   }
+      this.setState({
+         asnStatus: props.asnStatus
+             });
+     
+   } 
 
    if (!isEmpty(props.asnStatus) && this.props.updateASNStatus) {
       this.props.changeLoaderState(false);
@@ -1622,7 +1639,7 @@ async componentDidMount() {
       // }
 
       onSelectConstCenter = (item) => {
-         if (isEmpty(item.deliveryQuantity)) return alert('please enter qty')
+         if (isEmpty(item.deliveryQuantity) || item.deliveryQuantity===0 || item.deliveryQuantity==="0") return alert('please enter qty')
          item = { ...item, asnLineCostCenter: !isEmptyDeep(item.asnLineCostCenter) ? item.asnLineCostCenter : [{ quantity: 0, costCenter: '' }] }
          this.setState({ selectedAsnListItem: item, openModal: true })
          //commonSubmitWithParam(this.props, "getCostcenterFromSAP", "/rest/getCostCenterfromSAP", item.orderNo, item.poLineNumber, item.plant);
@@ -1683,10 +1700,12 @@ async componentDidMount() {
       document.getElementById("report").style.display = 'none';
      }
      handleSearch=(i)=>{
-      this.props.asnList.map((asn, index) => 
-         (index === this.props.asnList.length-1?
-         commonSubmitWithParam(this.props,"securityASNSubmit","/rest/printSecurityGateInForm",asn.advanceShipmentNoticeId)                   
-         :""))}
+      commonSubmitWithParam(this.props,"securityASNSubmit","/rest/printSecurityGateInForm",this.state.asnId)                   
+      // this.props.asnList.map((asn, index) => 
+      //    (index === this.props.asnList.length-1?
+      //    commonSubmitWithParam(this.props,"securityASNSubmit","/rest/printSecurityGateInForm",asn.advanceShipmentNoticeId)                   
+      //    :""))
+      }
    
    handleClick = async (e) => {
       await delay(2000);
@@ -1696,45 +1715,12 @@ async componentDidMount() {
      }
 
 
-   //   handleReportSubmit = async (e) => {
-   //    e.preventDefault();
-  
-   //    const response = commonSubmitForm(e,this, "securityASNSubmit","/rest/saveCommercialHeaderDetailsinASN") 
-  
-   //    const data = await response.json();
-  
-   //    // Java backend should return ASN Number and ASN ID
-   //    if (data.asnNo && data.asnId) {
-   //       this.setState({
-   //          asnNo: data.advanceShipmentNoticeNo, asnId: data.advanceShipmentNoticeId
-   //       })
-   //    //  setAsnData({ asnNo: data.asnNo, asnId: data.asnId });
-   //    }
-   //  };
-
-   //  handleGateIn = async () => {
-   //    try {
-   //      const response = commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",this.state.asnId)
-  
-   //      const result = await response.json();
-  
-   //      if (result.success) {
-   //        alert('✅ Gate In entry successful!');
-         
-   //      } else {
-   //        alert('❌ Gate In failed.');
-   //      }
-   //    } catch (err) {
-   //      console.error(err);
-   //      alert('❌ Server error during Gate In.');
-   //    }
-   //  };
-
-
    onSubmit = async(e) => {
     this.setState({ loadASNDetails: true, loadASNLineList: true });
    // this.handleReportSubmit(e);
-    commonSubmitForm(e,this, "securityASNSubmit","/rest/saveCommercialHeaderDetailsinASN") } 
+   // commonSubmitForm(e,this, "securityASNSubmit","/rest/saveCommercialHeaderDetailsinASN") 
+   commonSubmitForm(e,this, "handleASNResponse","/rest/saveCommercialHeaderDetailsinASN") 
+   } 
 
 
      SwitchButtons(buttonId) {
@@ -2410,7 +2396,7 @@ async componentDidMount() {
                                     <button type="submit" className="btn btn-primary mr-1 " id="report"
                         onClick={this.handleClick}
                         >Report</button>
-                           {
+                           {/* {
                           this.props.asnList.map((asn, index) => 
                           (index === this.props.asnList.length-1?
                               <button type="button" className="btn btn-success mr-1 " id="gateIn" 
@@ -2421,13 +2407,22 @@ async componentDidMount() {
                               
                               :"")
 
-    )}   
-                                 <div id="welcomeDiv"  style={{display:"none"}}>
+    )}    */}
+
+{this.state.reportingDone && this.props.asnStatus!="GATE_IN" && (
+  <div>
+    <button type="button" className="btn btn-success mr-1 " id="gateIn"  onClick={ (e)=> {commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",this.state.asnId);this.showDiv()}}>Gate In</button>
+    
+  </div>
+)} 
+                                 {/* <div id="welcomeDiv"  style={{display:"none"}}> */}
+                                 {this.state.reportingDone && this.props.asnStatus==="GATE_IN" &&
                                <button type="button" className="btn btn-success mr-1 " id="gateIn" 
                                data-toggle="modal" data-target="#getReportModal"
                                onClick={this.handleSearch}
                                >Print</button>
-                               </div>                             
+                                 }
+                               {/* </div>                              */}
                               
                               {/* {
                           this.props.asnList.map((asn, index) => 
@@ -2790,7 +2785,7 @@ async componentDidMount() {
                               <th className="col-2">Service Description</th>
                               <th className="col-2 text-right"> PO Qty </th>
                               <th className="col-1"> UOM </th>
-                              <th className="col-1"> Qty1 </th>
+                              <th className="col-1"> Qty </th>
                               <th className="col-1"> Bal Qty </th>
                               <th className="col-2 text-right"> Rate </th>
                               <th className="col-1 text-right"> Cost center </th>
@@ -2843,7 +2838,8 @@ async componentDidMount() {
                                   {/*-------input type-------*/}
                                   <td className="col-1">
                                      <input type="number"
-                                        step=".01" onKeyDown={textRestrict}
+                                        step=".01" 
+                                        //onKeyDown={textRestrict}
                                       // maxLength={5}
                                        placeholder="0.000"
                                         className={"form-control " + ((['DR', 'SSRJ'].includes(this.state.asnDetails.status) || isEmpty(this.state.asnDetails.status) || !this.state.canEdit) ? "" : "readonly")}
@@ -2851,7 +2847,7 @@ async componentDidMount() {
                                         defaultValue={this.state.serviceLineArray[index].deliveryQuantity}
                                         
                                         // onChange = {(e)=>{commonHandleChange(e,this,"serviceLineArray."+index+".deliveryQuantity")}} 
-                                        onChange={(e) => {this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
+                                        onChange={(e) => {textRestrict(e); this.calculateBasicAmount(e, index, "serviceLineArray"); this.calculateBalanceQuantity(e, index, "serviceLineArray") }}
                                      />
                                     </td>
                                     {/*-------input type-------*/}
@@ -3310,7 +3306,17 @@ async componentDidMount() {
                                 <div class="row my-2">
                                     <div class="col-sm-4"></div>
                                     <div class="col-sm-8">
-                                    {
+                                    
+                          
+                           {this.state.reportingDone && this.props.asnStatus==="GATE_IN" && (
+                           <a  className="btn btn-success mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${this.state.asnNo}&VEHICLE=TRUCK`}
+                                     target="_blank">TRUCK</a>
+
+                                    //  <a  className="btn btn-success mr-1"  id="print" href={`https://172.18.2.28:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}`}
+                                    //  target="_blank">Print Form</a>
+                                    
+)}   
+                                    {/* {
                           this.props.asnList.map((asn, index) => 
                           (index === this.props.asnList.length-1?
                            // <a  className="btn btn-success mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}&VEHICLE=TRUCK&ASNID=${asn.asnId}`}
@@ -3321,21 +3327,29 @@ async componentDidMount() {
                                     //  <a  className="btn btn-success mr-1"  id="print" href={`https://172.18.2.28:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}`}
                                     //  target="_blank">Print Form</a>
                                     :"")
-)}   
-                 {
-                          this.props.asnList.map((asn, index) => 
-                          (index === this.props.asnList.length-1?
-                           // <a  className="btn btn-warning mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}&VEHICLE=TANKER&ASNID=${asn.asnId}`}
-                           // target="_blank">TANKER</a>
-                           <a  className="btn btn-warning mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}&VEHICLE=TANKER`}
+)}    */}
+                 
+                          {this.state.reportingDone && this.props.asnStatus==="GATE_IN" && (
+                           <a  className="btn btn-warning mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${this.state.asnNo}&VEHICLE=TANKER`}
                            target="_blank">TANKER</a>
 
                                     //  <a  className="btn btn-success mr-1"  id="print" href={`https://172.18.2.28:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}`}
                                     //  target="_blank">Print Form</a>
-                                    :"")
+                                  
 
-)}  
-{
+)} 
+
+ {this.state.reportingDone && this.props.asnStatus==="GATE_IN" && (
+                        
+                                    <a  className="btn btn-primary"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${this.state.asnNo}&VEHICLE=PACKING MATERIAL`}
+                                     target="_blank">PACKING MATERIAL</a>
+
+                                    //  <a  className="btn btn-success mr-1"  id="print" href={`https://172.18.2.28:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}`}
+                                    //  target="_blank">Print Form</a>
+                                  
+
+)} 
+{/* {
                           this.props.asnList.map((asn, index) => 
                           (index === this.props.asnList.length-1?
                                     <a  className="btn btn-primary"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}&VEHICLE=PACKING MATERIAL`}
@@ -3345,7 +3359,7 @@ async componentDidMount() {
                                     //  target="_blank">Print Form</a>
                                     :"")
 
-)} 
+)}  */}
                                       
                                     </div>
                                 </div>

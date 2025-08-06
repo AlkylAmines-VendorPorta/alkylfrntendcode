@@ -21,7 +21,9 @@ let defaultState = {
   gateentryAsnList:[],
   asnList:[],
   stoASNList:[],
-  costCenterList:[]
+  costCenterList:[],
+  asnNo:"",
+  asnId:""
 }
 
 const formNo = (state = defaultState, action) => {
@@ -173,7 +175,14 @@ else if(action.type==="STO_ASN_DETAILS"){
     ...state,
     stoASNList: action.payload.objectMap.stoASNList
   };
+}else if(action.type==="ASN_SUBMIT_DETAILS"){
+  return {
+    ...state,
+    asnId: action.payload.objectMap.asnId,
+    asnNo:action.payload.objectMap.asnNo
+  };
 }
+
 else {
     return {
       ...state

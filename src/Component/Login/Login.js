@@ -37,16 +37,19 @@ class Login extends Component {
     this.props.loadLogin();
   }
 
+  // handleChange = (e) => {
+  //   this.setState({ [e.target.name]: e.target.value, loginErrorMsg: false, captchaErrorMsg: false });
+  // };
   handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value, loginErrorMsg: false, captchaErrorMsg: false });
+    this.setState({ [e.target.name]: e.target.value, loginErrorMsg: false });
   };
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    if (!this.state.captchaSuccess) {
-      this.setState({ captchaErrorMsg: true, refreshCaptcha: true });
-      return;
-    }
+    // if (!this.state.captchaSuccess) {
+    //   this.setState({ captchaErrorMsg: true, refreshCaptcha: true });
+    //   return;
+    // }
     
     this.setState({ buttonLoader: true });
 
@@ -64,7 +67,7 @@ class Login extends Component {
           buttonLoader: false,
           loginErrorMsg: response.status === 401,
           serverErrorMsg: response.status !== 401,
-          refreshCaptcha: true,
+          // refreshCaptcha: true,
         });
       }
     });
@@ -104,7 +107,8 @@ class Login extends Component {
   }
 
   render() {
-    const { showPassword, buttonLoader, loginErrorMsg, captchaErrorMsg, serverErrorMsg } = this.state;
+    // const { showPassword, buttonLoader, loginErrorMsg, captchaErrorMsg, serverErrorMsg } = this.state;
+    const { showPassword, buttonLoader, loginErrorMsg, serverErrorMsg } = this.state;
     var shown = {
 			display: this.state.shown ? "block" : "none"
 		};
@@ -180,17 +184,17 @@ class Login extends Component {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Captcha
                 onChange={(status) => this.setState({ captchaSuccess: status })}
                 refreshcap={() => this.setState({ refreshCaptcha: false })}
                 refreshCaptchaFlag={this.state.refreshCaptcha}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               {loginErrorMsg && <Typography color="error">Invalid Username or Password</Typography>}
-              {captchaErrorMsg && <Typography color="error">Invalid Captcha</Typography>}
+              {/* {captchaErrorMsg && <Typography color="error">Invalid Captcha</Typography>} */}
               {serverErrorMsg && <Typography color="error">Server Not Reachable</Typography>}
             </Grid>
 

@@ -1510,7 +1510,7 @@ getPurchaseOrderFromObj(po){
    }
 
    onSelectConstCenter = (item) => {
-      if (isEmpty(item.deliveryQuantity)) return alert('please enter qty')
+      if (isEmpty(item.deliveryQuantity) || item.deliveryQuantity===0 || item.deliveryQuantity==="0") return alert('please enter qty')
       item = { ...item, asnLineCostCenter: !isEmptyDeep(item.asnLineCostCenter) ? item.asnLineCostCenter : [{ quantity: 0, costCenter: '' }] }
       this.setState({ selectedAsnListItem: item, openModal: true })
       commonSubmitWithParam(this.props, "getCostcenterFromSAP", "/rest/getCostCenterfromSAP", item.orderNo, item.poLineNumber, item.plant);

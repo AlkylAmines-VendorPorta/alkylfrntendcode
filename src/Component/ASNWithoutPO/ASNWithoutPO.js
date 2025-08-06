@@ -77,6 +77,9 @@ class ASNWithoutPO extends Component {
     this.state = {
       isLoading: false,
       status:"",
+      asnNo:"",
+      asnId:"",
+      reportingDone: false,
 
       securityPOHeaderDto: {
         asnNumber: "",
@@ -309,31 +312,24 @@ class ASNWithoutPO extends Component {
   }
 
   onSubmit = async (e) => {
-    // this.setState({ loadASNDetails: true, loadASNLineList: true });
-    //  commonSubmitForm(e,this, "securityASNSubmit","/rest/saveCommercialHeaderDetailsinASN","asnFormDet")
-    commonSubmitForm(
-      e,
-      this,
-      "securityASNSubmit",
-      "/rest/saveASNwithoutPO",
-      "asnFormDet"
+    // commonSubmitForm(
+    //   e,
+    //   this,
+    //   "securityASNSubmit",
+    //   "/rest/saveASNwithoutPO",
+    //   "asnFormDet"
+    // );
+    commonSubmitForm(e,this,"handleASNResponse", "/rest/saveASNwithoutPO","asnFormDet"
     );
-
-    // await delay(2000);
-    // this.handleSubmit();
-
-    //  commonSubmitForm(e, this, "securityASNSubmit", "/rest/saveSecurityHeaderDetails");
   };
 
   handleSearch = (i) => {
-    this.props.asnList.map((asn, index) =>
-      index === this.props.asnList.length - 1
-        ? 
+    
         commonSubmitWithParam(
           this.props,
           "securityASNSubmit",
           "/rest/printSecurityGateInFormWithoutPO",
-          asn.advanceShipmentNoticeId
+          this.state.asnId
         )
         // commonSubmitWithParam(
         //     this.props,
@@ -341,9 +337,27 @@ class ASNWithoutPO extends Component {
         //     "/rest/printSecurityGateInForm",
         //     asn.advanceShipmentNoticeId
         //   )
-        : ""
-    );
+      
   };
+  // handleSearch = (i) => {
+  //   this.props.asnList.map((asn, index) =>
+  //     index === this.props.asnList.length - 1
+  //       ? 
+  //       commonSubmitWithParam(
+  //         this.props,
+  //         "securityASNSubmit",
+  //         "/rest/printSecurityGateInFormWithoutPO",
+  //         asn.advanceShipmentNoticeId
+  //       )
+  //       // commonSubmitWithParam(
+  //       //     this.props,
+  //       //     "securityASNSubmit",
+  //       //     "/rest/printSecurityGateInForm",
+  //       //     asn.advanceShipmentNoticeId
+  //       //   )
+  //       : ""
+  //   );
+  // };
 
   getASNLineFromPOLine(poLine) {
     return {
@@ -496,6 +510,12 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
       status: props.status
     });
   }
+
+  if (!isEmpty(props.asnId) && !isEmpty(props.asnNo)) {
+    this.setState({ asnId: props.asnId,asnNo:props.asnNo,reportingDone:true 
+    
+    });
+ }
 
 }
     //   if (props.showHistory) {
@@ -1412,7 +1432,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                           </table>
                         </div>
                         <div className="col-sm-12 text-center mt-2 ">
-                          {this.props.asnStatus!="REPORTED" || this.props.asnStatus!="GATE_OUT"?
+                          {/* {this.props.asnStatus!="REPORTED" || this.props.asnStatus!="GATE_OUT"?
                           <button
                             type="submit"
                             className="btn btn-primary mr-1 "
@@ -1421,8 +1441,22 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                           >
                             Report
                           </button>:""
-                          }
-                          {this.props.asnStatus==="REPORTED"?
+                          } */}
+
+{!this.state.reportingDone && (
+  <div>
+    <button type="submit" className="btn btn-primary mr-1 "id="report" 
+     > Report</button> 
+  </div>
+)} 
+                          
+{this.state.reportingDone && this.props.asnStatus!="GATE_IN" && this.props.asnStatus!="GATE_OUT_WITHOUT_PO" && (
+  <div>
+    <button type="button" className="btn btn-success mr-1 " id="gateIn"  onClick={ (e)=> {commonSubmitWithParam(this.props,"securityASNSubmit","/rest/getInSecurityStatusUpdate",this.state.asnId);this.showDiv()}}>Gate In</button>
+    
+  </div>
+)} 
+                          {/* {this.props.asnStatus==="REPORTED"?
                           (this.props.asnList.map((asn, index) =>
                           index === this.props.asnList.length - 1 ?
                           <button
@@ -1443,7 +1477,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                           }}
                         >
                           Gate IN
-                        </button>:"" )):""}
+                        </button>:"" )):""} */}
                            {/* {this.props.asnList.map((asn, index) =>}
                             index === this.props.asnList.length - 1 ? (
                               <button
@@ -1471,7 +1505,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                             )
                           )}  */}
 
-                          {this.props.asnStatus==="GATE_IN"?
+                          {/* {this.props.asnStatus==="GATE_IN"?
 
                           this.props.asnList.map((asn, index) =>
                             index === this.props.asnList.length - 1 ? (
@@ -1513,9 +1547,34 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                             ) : (
                               ""
                             )
-                          ):""}
+                          ):""} */}
 
-<div id="welcomeDiv"  style={{display:"none"}} className="col-sm-8 text-right mt-2">
+{this.state.reportingDone &&  this.props.asnStatus==="GATE_IN" && this.props.asnStatus!="GATE_OUT_WITHOUT_PO" &&
+
+      <button
+        type="button"
+        className={"btn btn-primary mr-1 "}
+        id="gateout"
+        onClick={(e) => {
+          commonSubmitWithParam(
+            this.props,
+            "gateOutResponse",
+            "/rest/asnGateOutWithoutPO",
+            this.state.asnId
+          );
+          document.getElementById(
+            "gateout"
+          ).style.display = "none";
+          this.handleSearch();
+        }}
+      >
+        Gate Out
+      </button>
+    // </div>
+  }
+
+{/* <div id="welcomeDiv"  style={{display:"none"}} className="col-sm-8 text-right mt-2"> */}
+{this.state.reportingDone && this.props.asnStatus==="GATE_IN" &&
                           <button
                             type="button"
                             className="btn btn-success mr-1 "
@@ -1526,7 +1585,9 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                           >
                             Print
                           </button>
-                        </div>
+                        
+                        }
+                        {/* </div> */}
 
                           {/* <a className={this.props.role!== "VENADM" ? "btn btn-primary mr-1" : "none"} href={window.location.href}><i className="fa fa-arrow-left" aria-hidden="true"></i></a> */}
                           {/* <button className="btn btn-primary" type="button" onClick={()=>{this.setState({loadPOLineList:true, shown: !this.state.shown, hidden: !this.state.hidden});}}><i className="fa fa-arrow-left" aria-hidden="true"></i></button> */}
@@ -1562,7 +1623,26 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                            <div class="row my-2">
                                <div class="col-sm-4"></div>
                                <div class="col-sm-8">
-                               {
+
+                               {this.state.reportingDone && this.props.asnStatus==="GATE_IN" && (
+                               <a  className="btn btn-success mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${""}&ASNNO=${this.state.asnNo}&VEHICLE=TRUCK`}
+                                target="_blank">TRUCK</a>
+
+                               //  <a  className="btn btn-success mr-1"  id="print" href={`https://172.18.2.28:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}`}
+                               //  target="_blank">Print Form</a>
+                               
+)} 
+
+                     {this.state.reportingDone && this.props.asnStatus==="GATE_IN" && (
+                               <a  className="btn btn-warning mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${""}&ASNNO=${this.state.asnNo}&VEHICLE=TANKER`}
+                                target="_blank">TANKER</a>
+
+                               //  <a  className="btn btn-success mr-1"  id="print" href={`https://172.18.2.28:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}`}
+                               //  target="_blank">Print Form</a>
+                               
+
+)}   
+                               {/* {
                      this.props.asnList.map((asn, index) => 
                      (index === this.props.asnList.length-1?
                                <a  className="btn btn-success mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${""}&ASNNO=${asn.advanceShipmentNoticeNo}&VEHICLE=TRUCK`}
@@ -1571,8 +1651,8 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                                //  <a  className="btn btn-success mr-1"  id="print" href={`https://172.18.2.28:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${this.props.po.purchaseOrderNumber}&ASNNO=${asn.advanceShipmentNoticeNo}`}
                                //  target="_blank">Print Form</a>
                                :"")
-)}   
-            {
+)}    */}
+            {/* {
                      this.props.asnList.map((asn, index) => 
                      (index === this.props.asnList.length-1?
                                <a  className="btn btn-warning mr-2"  id="print" href={`https://172.18.2.36:44300/sap/bc/yweb03_ws_23?sap-client=100&PO=${""}&ASNNO=${asn.advanceShipmentNoticeNo}&VEHICLE=TANKER`}
@@ -1582,7 +1662,7 @@ if (!isEmpty(props.asnStatusList) && this.state.loadAsnStatusList) {
                                //  target="_blank">Print Form</a>
                                :"")
 
-)}   
+)}    */}
                                  
                                </div>
                            </div>

@@ -106,17 +106,51 @@ export function getCommaSeperatedValue(value){
     return numberAsString
   };
 
-  export function textRestrict(e) {
-    var decimal_index = e.target.value.indexOf('.');
-   if(decimal_index > -1){
-    var decimals = e.target.value.substring(decimal_index, e.target.value.length);
-     //var decimals = e.target.value.substring(decimal_index, e.target.value.length+1);
-     if(decimals.length > 3){
-        //e.preventDefault();
-        e.target.value = e.target.value.substring(0,decimal_index) + decimals.substring(0,3);
-     }
-     //this.props.onChange();
-   }
+//   export function textRestrict(e) {
+//     var decimal_index = e.target.value.indexOf('.');
+//    if(decimal_index > -1){
+//     var decimals = e.target.value.substring(decimal_index, e.target.value.length);
+//      //var decimals = e.target.value.substring(decimal_index, e.target.value.length+1);
+//      if(decimals.length > 3){
+//         //e.preventDefault();
+//         e.target.value = e.target.value.substring(0,decimal_index) + decimals.substring(0,3);
+//      }
+//      //this.props.onChange();
+//    }
+//  }
+
+
+export function textRestrict(e) {
+   
+
+    let inputVal = e.target.value;
+
+    if (inputVal.includes('.')) {
+        let parts = inputVal.split('.');
+        if (parts[1].length > 0 && e.key === 'Backspace') {
+            e.target.value=inputVal.slice(0, -1)
+            return e.target.value;
+        }
+        else{
+              var decimal_index = e.target.value.indexOf('.');
+                if(decimal_index > -1){
+                var decimals = e.target.value.substring(decimal_index, e.target.value.length);
+             //var decimals = e.target.value.substring(decimal_index, e.target.value.length+1);
+                if(decimals.length > 3){
+                //e.preventDefault();
+                e.target.value = e.target.value.substring(0,decimal_index) + decimals.substring(0,4);
+             }
+               return e.target.value
+            //  return (e.keyCode!=13)
+             //this.props.onChange();
+           }
+        }
+    }
+
+   if (e.key === 'Enter' && e.shiftKey === false) {
+    e.preventDefault();
+    // callback(submitAddress);
+  }
  }
 
 export function getDecimalUpto(value,digits){
