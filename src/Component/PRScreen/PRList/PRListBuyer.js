@@ -210,7 +210,7 @@ console.log('mohan', item)
 
   getHiddenFields = (prLine, index) => {
     if(isEmptyDeep(prLine)) return ;
-if(this.state.checked===true){
+if(this.state.checked===true && prLine?.status==="BA"){
     return (
         <>
             <input
