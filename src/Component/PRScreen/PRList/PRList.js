@@ -229,9 +229,13 @@ onSubmit = (e) => {
     });
 };
 
-  componentWillReceiveProps(nextProps){
-    let list = groupBy(nextProps.prList, 'prNumber');
-    this.setState({prList: nextProps.prList})
+  componentWillReceiveProps(nextProps){    
+      if (!isEmpty(nextProps.prList)) {
+        this.setState({
+          prList: nextProps.prList,
+          isLoading: false, // ✅ Set loading false here
+        });
+      }
     if(!isEmpty(nextProps.prList)){
       this.setState({isLoading:false})
     }
@@ -349,7 +353,7 @@ handleSelect = (item) => {
   }
 
   handleFilterClick = () => {
-    this.setState({openModal:false, openModalNew:false})
+    this.setState({isLoading:true, openModal:false, openModalNew:false})
     this.props.onFilter &&  this.props.onFilter()
     this.clearFields();
   }

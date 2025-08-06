@@ -241,9 +241,10 @@ class PRList extends Component {
   handleRowsPerPageChange = (event) => {
     this.setState({ rowsPerPage: parseInt(event.target.value, 50), page: 0 });
   };
-    handleRowClick = (row) => {
-  
-  this.props.loadPRDetails(row.prId);
+handleRowClick = (row) => {
+  const index = this.props.purchaseManager ? this.state.prList:this.props.prList.findIndex(v => v.prId === row.prId);
+  this.props.loadPRDetails(index);
+  //this.props.loadPRDetails(row);
 };
   render() {
     const {filterBuyerList,filterPlantList,filterPRStatusList,filter} = this.props;

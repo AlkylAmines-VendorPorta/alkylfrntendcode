@@ -11,7 +11,7 @@ import {
   commonHandleChange,
   commonSubmitWithParam
 } from "../../../Util/ActionUtil";
-import { submitForm } from "../../../Util/APIUtils";
+import { isLoading, submitForm } from "../../../Util/APIUtils";
 import formatDate, { formatDateWithoutTimeNewDate2, disablePastDate} from "../../../Util/DateUtil";
 import * as actionCreators from "../PRList/Action/Action";
 import { connect } from "react-redux";
@@ -19,6 +19,7 @@ import { API_BASE_URL } from "../../../Constants";
 import { getUserDto, getFileAttachmentDto,getDecimalUpto,removeLeedingZeros } from "../../../Util/CommonUtil";
 import { Button, Checkbox, FormControl, Grid, IconButton, InputLabel, ListItemText, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@material-ui/core";
 import DataTable from "react-data-table-component";
+import LoaderWithProps from "../../FormElement/Loader/LoaderWithProps";
 
 class PRListBuyer extends Component {
   constructor(props) {
@@ -42,6 +43,7 @@ class PRListBuyer extends Component {
       loadGetDocuments:false,
       getDocuments:[],
       viewInquirymy:[],
+      isLoading:false
     };
   }
 
@@ -130,20 +132,26 @@ class PRListBuyer extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps){
-    console.log("next",nextProps)
-    this.setState({prList: nextProps.prList})
-    
-    if(this.state.loadGetDocuments && !isEmpty(nextProps.documents)){
-      this.props.changeLoaderState(false);
-      this.setGetDocuments(nextProps); 
-    }else if(!isEmpty(nextProps.prLineList)){
-      this.setState({viewInquirymy:nextProps.prLineList})
-    }
-    else{
-      this.props.changeLoaderState(false);
-    }
+  componentWillReceiveProps(nextProps) {
+  console.log("next", nextProps);
+
+  if (!isEmpty(nextProps.prList)) {
+    this.setState({
+      prList: nextProps.prList,
+      isLoading: false, // ✅ Set loading false here
+    });
   }
+
+  if (this.state.loadGetDocuments && !isEmpty(nextProps.documents)) {
+    this.props.changeLoaderState(false);
+    this.setGetDocuments(nextProps); 
+  } else if (!isEmpty(nextProps.prLineList)) {
+    this.setState({ viewInquirymy: nextProps.prLineList });
+  } else {
+    this.props.changeLoaderState(false);
+  }
+}
+
 
   closeModal = () => {
     this.props.disabledLoading();
@@ -272,7 +280,7 @@ clearFields = () => {
   this.setState({selectedItemsPr: [],selectedItemsPL:[]})
 }
 handleFilterClick = () => {
-  this.setState({ openModal:false})
+  this.setState({ isLoading:true, openModal:false})
   this.props.onFilter &&  this.props.onFilter()
   this.clearFields();
 }
@@ -548,7 +556,7 @@ const columns = [
 
     return (
       <> 
-      
+      <LoaderWithProps isLoading={this.state.isLoading} />
 <div className="modal" id="viewPrDetail" style={{marginTop:50}}>
 
 
