@@ -12,6 +12,7 @@ import Loader from "../FormElement/Loader/LoaderWithProps";
 import {groupBy} from 'lodash-es';
 import { ROLE_PURCHASE_MANAGER_ADMIN,ROLE_BUYER_ADMIN,ROLE_REQUISTIONER_ADMIN,ROLE_APPROVER_ADMIN } from "../../Constants/UrlConstants";
 import MaterialTable from "./MaterialTable/MaterialTable";
+import LoaderWithProps from "../FormElement/Loader/LoaderWithProps";
 
 class PRContainer extends Component {
   constructor(props) {
@@ -49,6 +50,7 @@ class PRContainer extends Component {
       filterPlantList:[],
       filterPRStatusList:[],
       filterPurhaseGroupList:[],
+      newLoader:false
      
     };
   }
@@ -61,7 +63,7 @@ class PRContainer extends Component {
       loadPartner: true,
       loadProirityList:true,
       loadBuyerList:true,
-      loadTechnicalList:true
+      loadTechnicalList:true,
     })
     commonSubmitWithParam(this.props,"getPR","/rest/getPR"); 
     commonSubmitWithParam(this.props,"getFilterData","/rest/getPRStatus");
@@ -72,7 +74,7 @@ class PRContainer extends Component {
     if(this.state.loadPRList && !isEmpty(props.prList)){
       this.changeLoaderState(false);
       this.setPRList(props);
-      this.setState({isLoading:true})
+      this.setState({isLoading:false})
     }else{
       this.changeLoaderState(false);
       this.setState({isLoading:false})
@@ -146,7 +148,7 @@ class PRContainer extends Component {
   
   changeLoaderState = (action) =>{
     this.setState({
-      isLoading:action
+      //isLoading:action
     });
   }
   setPRList=(props)=>{
@@ -358,7 +360,8 @@ class PRContainer extends Component {
       loadPartner: true,
       loadUser : true,
       prList:[],
-      isLoading:true
+      isLoading:true,
+      newLoader:true
     });
 
     {(this.props.role==="PMADM") || (this.props.role==="BUADM")?
@@ -378,7 +381,7 @@ class PRContainer extends Component {
       <>
         {(this.state.role==="VENADM")?<VendorDashboardHeader/>:<UserDashboardHeader/>}
         
-      <Loader isLoading={this.state.isLoading} />
+      <LoaderWithProps isLoading={this.state.isLoading} />
         <PRBody 
           prList={this.state.prList} 
           prStatusList={this.state.prStatusList}
